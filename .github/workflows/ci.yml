@@ -39,20 +39,14 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Start SSH agent
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.RASPBERRY_SSH_KEY }}
-
       - name: Deploy to Raspberry Pi
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RASPBERRY_HOST }}
           port: ${{ secrets.RASPBERRY_PORT }}
           username: ${{ secrets.RASPBERRY_USER }}
+          key: ${{ secrets.RASPBERRY_SSH_KEY }}  # Ajoutez cette ligne
+          debug: true  # Pour avoir plus de détails sur l'erreur
           script: |
             cd workspace/ft_transcendence/
             echo "Pulling latest changes..."
