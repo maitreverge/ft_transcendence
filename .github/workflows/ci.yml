@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "**" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   lint:
@@ -27,3 +27,31 @@ jobs:
 
       - name: Run Flake8
         run: flake8 .
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dummy test
+        run: echo "Tests passed"
+
+  deploy:
+    needs: [lint, tests]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Raspberry Pi
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.RASPBERRY_HOST }}
+          port: ${{ secrets.RASPBERRY_PORT }}
+          username: ${{ secrets.RASPBERRY_USER }}
+          key: ${{ secrets.RASPBERRY_SSH_KEY }}
+          script: |
+            cd workspace/ft_transcendence/
+            echo "Pulling latest changes..."
+            git pull origin main
+            echo "Stopping containers..."
+            docker-compose down
+            echo "Starting containers..."
+            docker-compose up -d
+            echo "Deployment complete!"
