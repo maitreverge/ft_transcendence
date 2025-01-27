@@ -1,0 +1,41 @@
+services:
+  nginx:
+    # depends_on:
+    #   - tournament
+    container_name: ctn_nginx
+    build :
+      # Docker file location
+      context: ./nginx/
+    image: img_nginx
+    ports: # Ports => Link the port from container to host
+      - "443:443" #https
+      - "80:80" #http
+    networks:
+      - transcendence_network
+    restart: on-failure
+
+  tournament:
+    # depends_on:
+    #   - blah
+    container_name: ctn_tournament
+    build :
+      # Docker file location
+      context: ./tournament/
+    image: img_tournament
+    # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
+    expose:
+      - "8000"
+    # ports:          # ???
+      # - "8000:8000" # ???
+
+    networks:
+      - transcendence_network
+    restart: on-failure # need to double check the 
+
+# volumes:
+
+networks:
+  transcendence_network:
+    name: transcendence_network
+    driver : bridge # for making bind-mount
+
