@@ -1,0 +1,308 @@
+version: '3'
+
+services:
+  user_service:
+    build: ./user_service
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db_user_service
+    volumes:
+      - ./user_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.user_service.settings
+    networks:
+      - my_network
+
+  matchmaking_service:
+    build: ./matchmaking_service
+    ports:
+      - "8002:8002"
+    depends_on:
+      - db_matchmaking_service
+    volumes:
+      - ./matchmaking_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.matchmaking_service.settings
+    networks:
+      - my_network
+
+  match_service:
+    build: ./match_service
+    ports:
+      - "8003:8003"
+    depends_on:
+      - db_match_service
+    volumes:
+      - ./match_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.match_service.settings
+    networks:
+      - my_network
+
+  game_service:
+    build: ./game_service
+    ports:
+      - "8004:8004"
+    depends_on:
+      - db_game_service
+    volumes:
+      - ./game_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.game_service.settings
+    networks:
+      - my_network
+      
+
+  tournament_service:
+    build: ./tournament_service
+    ports:
+      - "8005:8005"
+    depends_on:
+      - db_tournament_service
+    volumes:
+      - ./tournament_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.tournament_service.settings
+    networks:
+      - my_network
+      
+
+  logs_service:
+    build: ./logs_service
+    ports:
+      - "8006:8006"
+    depends_on:
+      - db_logs_service
+    volumes:
+      - ./logs_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.logs_service.settings
+    networks:
+      - my_network
+      
+
+  stats_service:
+    build: ./stats_service
+    ports:
+      - "8007:8007"
+    depends_on:
+      - db_stats_service
+    volumes:
+      - ./stats_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.stats_service.settings
+    networks:
+      - my_network
+      
+
+  ai_service:
+    build: ./ai_service
+    ports:
+      - "8008:8008"
+    depends_on:
+      - db_ai_service
+    volumes:
+      - ./ai_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.ai_service.settings
+    networks:
+      - my_network
+      
+
+  api_gateway_service:
+    build: ./api_gateway_service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - user_service
+      - matchmaking_service
+      - match_service
+      - game_service
+      - tournament_service
+      - logs_service
+      - stats_service
+      - ai_service
+    volumes:
+      - ./api_gateway_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.api_gateway_service.settings
+    networks:
+      - my_network
+      
+
+  frontend_service:
+    build: ./frontend_service
+    ports:
+      - "8009:8009"
+    depends_on:
+      - api_gateway_service
+    volumes:
+      - ./frontend_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.frontend_service.settings
+    networks:
+      - my_network
+      
+
+  monitoring_service:
+    build: ./monitoring_service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user_service
+      - matchmaking_service
+      - match_service
+      - game_service
+      - tournament_service
+      - logs_service
+      - stats_service
+      - ai_service
+    volumes:
+      - ./monitoring_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.monitoring_service.settings
+    networks:
+      - my_network
+      
+
+  vault_service:
+    build: ./vault_service
+    ports:
+      - "8200:8200"
+    depends_on:
+      - user_service
+      - matchmaking_service
+      - match_service
+      - game_service
+      - tournament_service
+      - logs_service
+      - stats_service
+      - ai_service
+    volumes:
+      - ./vault_service:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendance.vault_service.settings
+    networks:
+      - my_network
+      
+  portainer:
+    build: ./nginx
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+    - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - portainer_data:/data
+    ports:
+      - "9000:9000"
+    networks:
+      - my_network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro      # Le fichier principal est directement dans ./nginx/
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro              # Le dossier conf.d contient default.conf
+    depends_on:
+      - api_gateway_service
+    networks:
+      - my_network
+    restart: unless-stopped
+
+  db_user_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_user_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  db_matchmaking_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_matchmaking_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_matchmaking_data:/var/lib/postgresql/data
+
+  db_match_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_match_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_match_data:/var/lib/postgresql/data
+
+  db_game_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_game_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_game_data:/var/lib/postgresql/data
+
+  db_tournament_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_tournament_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_tournament_data:/var/lib/postgresql/data
+
+  db_logs_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_logs_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_logs_data:/var/lib/postgresql/data
+
+  db_stats_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_stats_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_stats_data:/var/lib/postgresql/data
+
+  db_ai_service:
+    image: postgres
+    environment:
+      - POSTGRES_DB=ft_transcendance_ai_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_ai_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+  db_matchmaking_data:
+  db_match_data:
+  db_game_data:
+  db_tournament_data:
+  db_logs_data:
+  db_stats_data:
+  db_ai_data:
+  portainer_data:
+
+
+
+networks:
+  my_network:
+    driver: bridge
