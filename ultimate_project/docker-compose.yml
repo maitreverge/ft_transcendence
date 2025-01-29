@@ -40,8 +40,8 @@ services:
     # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
     expose:
       - "8001"
-    ports: # Ports => Link the port from container to host
-      - "8001:8001" #https
+    # ports: # Ports => Link the port from container to host
+    #   - "8001:8001" #https
     networks:
       - transcendence_network
     restart: on-failure # need to double check the 
