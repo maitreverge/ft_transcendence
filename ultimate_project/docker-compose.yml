@@ -25,9 +25,21 @@ services:
     # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
     expose:
       - "8000"
-    # ports:          # ???
-      # - "8000:8000" # ???
+    networks:
+      - transcendence_network
+    restart: on-failure # need to double check the 
 
+  static_files:
+    # depends_on:
+    #   - blah
+    container_name: ctn_static_files
+    build :
+      # Docker file location
+      context: ./static_files/
+    image: img_static_files
+    # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
+    expose:
+      - "8001"
     networks:
       - transcendence_network
     restart: on-failure # need to double check the 
