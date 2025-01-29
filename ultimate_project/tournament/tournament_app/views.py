@@ -3,5 +3,6 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+
 def start_tournament(request):
-	return HttpResponse("<h1>Tournament</h1>")
+    return HttpResponse("<h1>Tournament</h1>")
