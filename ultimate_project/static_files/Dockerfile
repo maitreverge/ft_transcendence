@@ -7,8 +7,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN mkdir -p /app/staticfiles
+
 RUN python manage.py collectstatic --noinput
 
 
-CMD ["uvicorn", "myproject.asgi:application", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "static_files.asgi:application", "--host", "0.0.0.0", "--port", "8001", "--reload"]
 
