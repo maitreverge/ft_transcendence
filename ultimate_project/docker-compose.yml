@@ -12,7 +12,7 @@ services:
       - "443:443" #https
       - "80:80" #http
     volumes:
-      - ./staticfiles:/usr/share/nginx/static  # Bind mount des fichiers statiques
+      - staticvol:/usr/share/nginx/static  # Bind mount des fichiers statiques
     networks:
       - transcendence_network
     restart: on-failure
@@ -52,10 +52,12 @@ services:
     networks:
       - transcendence_network
     volumes:
-      - ./staticfiles:/app/staticfiles  # Bind mount des fichiers statiques
+      - staticvol:/app/staticfiles
     restart: on-failure # need to double check the 
 
-# volumes:
+volumes:
+  staticvol:
+    driver: local
 
 networks:
   transcendence_network:

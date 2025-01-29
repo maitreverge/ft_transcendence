@@ -3,19 +3,23 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dan <dan@student.42.fr>                    +#+  +:+       +#+         #
+#    By: seblin <seblin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/01/29 21:15:10 by dan              ###   ########.fr        #
+#    Updated: 2025/01/29 23:10:38 by seblin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 all:
-	-docker-compose up --build -d
+	-docker-compose up --build
+
+prod: clean
+	-docker-compose -f docker-compose.yml up --build
 	
 clean:
 	-docker stop $$(docker ps -qa)
 	-docker rm $$(docker ps -qa)
+# -docker rmi $$(docker images -qa)
 	-docker volume rm $$(docker volume ls -q)
 	-echo y | docker network rm $$(docker network ls -q)
 	rm -rf staticfiles/*
