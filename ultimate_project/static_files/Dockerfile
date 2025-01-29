@@ -9,8 +9,9 @@ COPY . .
 
 RUN mkdir -p /app/staticfiles
 
-RUN python manage.py collectstatic --noinput
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["uvicorn", "static_files.asgi:application", "--host", "0.0.0.0", "--port", "8001", "--reload"]
 
