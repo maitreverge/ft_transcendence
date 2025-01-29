@@ -120,7 +120,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Répertoire où collecter les fichiers statiques (après collectstatic)
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = "/app/staticfiles"
 
 # Répertoires supplémentaires pour rechercher des fichiers statiques
 STATICFILES_DIRS = [

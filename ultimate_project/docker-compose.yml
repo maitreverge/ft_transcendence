@@ -11,6 +11,8 @@ services:
     ports: # Ports => Link the port from container to host
       - "443:443" #https
       - "80:80" #http
+    volumes:
+      - ./staticfiles:/usr/share/nginx/static  # Bind mount des fichiers statiques
     networks:
       - transcendence_network
     restart: on-failure
@@ -35,16 +37,22 @@ services:
     #   - blah
     container_name: ctn_static_files
     build :
+      args:
+          ENV: development 
       # Docker file location
       context: ./static_files/
     image: img_static_files
     # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
     expose:
       - "8001"
-    # ports: # Ports => Link the port from container to host
-    #   - "8001:8001" #https
+    ports: # Ports => Link the port from container to host
+      - "8001:8001" #https
+    environment:
+      - DJANGO_ENV=development
     networks:
       - transcendence_network
+    volumes:
+      - ./staticfiles:/app/staticfiles  # Bind mount des fichiers statiques
     restart: on-failure # need to double check the 
 
 # volumes:

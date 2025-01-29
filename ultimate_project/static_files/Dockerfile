@@ -7,8 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8001
+RUN python manage.py collectstatic --noinput
 
-CMD ["python", "./manage.py", "runserver", "0.0.0.0:8001"]
 
+CMD ["uvicorn", "myproject.asgi:application", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
