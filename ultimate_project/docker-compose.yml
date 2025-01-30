@@ -7,6 +7,8 @@ services:
     build :
       # Docker file location
       context: ./nginx/
+      args:
+        env: prod
     image: img_nginx
     ports: # Ports => Link the port from container to host
       - "443:443" #https
