@@ -6,7 +6,7 @@
 #    By: seblin <seblin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/01/29 23:10:38 by seblin           ###   ########.fr        #
+#    Updated: 2025/01/30 13:57:05 by seblin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ prod: clean
 clean:
 	-docker stop $$(docker ps -qa)
 	-docker rm $$(docker ps -qa)
-# -docker rmi $$(docker images -qa)
+	-docker rmi $$(docker images -qa)
 	-docker volume rm $$(docker volume ls -q)
 	-echo y | docker network rm $$(docker network ls -q)
 	rm -rf staticfiles/*

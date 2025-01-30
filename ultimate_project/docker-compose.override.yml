@@ -3,5 +3,8 @@ services:
     volumes:
       - ./staticfiles:/usr/share/nginx/static     
   static_files:
-      volumes:
-        - ./staticfiles:/app/staticfiles
+    volumes:
+      - ./staticfiles:/app/staticfiles
+  tournament:
+    volumes:
+      - ./tournament:/app/

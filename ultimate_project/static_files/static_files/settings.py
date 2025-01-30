@@ -124,7 +124,7 @@ STATIC_ROOT = "/app/staticfiles"
 
 # Répertoires supplémentaires pour rechercher des fichiers statiques
 STATICFILES_DIRS = [
-    BASE_DIR / "static_files/static_files_app/static",  # Ton dossier de fichiers statiques principaux
+    BASE_DIR / "static_files_app/static",  # Ton dossier de fichiers statiques principaux
 ]
 
 # Default primary key field type
