@@ -2,4 +2,5 @@ from django.shortcuts import render
 
 
 def index(request):
-    return render(request, "index.html") 
+    arg = "toto"
+    return render(request, "index.html", {'arg':arg}) 
