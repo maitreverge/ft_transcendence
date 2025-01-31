@@ -1,21 +1,30 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.middleware import csrf
+from django.template import Context, Template
+
+
 
 def index(request):
-    username = "username"
+    username = request.session.get('username')
     return render(request, 'index.html', {'username': username})
 
+
 def login_form(request):
-    return HttpResponse("""
+    csrf_token = csrf.get_token(request)
+    template = Template("""
         <form hx-post="/login/" hx-target="body">
+            {% csrf_token %}
             <input type="text" name="username" placeholder="Entrez votre nom">
             <button type="submit">Connexion</button>
         </form>
     """)
+    context = Context({'csrf_token': csrf_token})
+    return HttpResponse(template.render(context))
 
 def login(request):
     username = request.POST.get('username')
-    username = "username"
+    request.session['username'] = username
     return redirect('/')
 
 def tournament(request):
