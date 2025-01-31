@@ -5,4 +5,12 @@ from django.http import HttpResponse
 
 
 def start_tournament(request):
-    return HttpResponse("<h1>Tournament houla la</h1>")
+    return HttpResponse("""
+        <div class="overlay">
+            <div class="overlay-content">
+                <h2>Tournament Oulala</h2>
+                <!-- Tournament content -->
+                <button hx-get="/" hx-target="body">Close</button>
+            </div>
+        </div>
+    """)
