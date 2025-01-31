@@ -1,5 +1,5 @@
 <head>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../static/styles.css">
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
 
@@ -8,5 +8,15 @@
     <div id="main-content">
         <h1>welcome to pong world area gaming voila gros lilofsfute</h1>
         {{ arg }}
+        
+        <!-- Bouton qui va charger le contenu de /tournament/ -->
+        <button hx-get="/tournament/" 
+                hx-trigger="click" 
+                hx-target="#tournament-content">
+            start tournament
+        </button>
+
+        <!-- La réponse de /tournament/ sera insérée ici -->
+        <div id="tournament-content"></div>
     </div>
 </body>
