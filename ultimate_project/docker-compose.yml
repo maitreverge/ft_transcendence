@@ -55,7 +55,7 @@ services:
       - transcendence_network
     volumes:
       - staticvol:/app/staticfiles
-    restart: on-failure # need to double check the 
+    restart: always # need to double check the 
 
 volumes:
   staticvol:
