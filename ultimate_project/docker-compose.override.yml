@@ -13,5 +13,8 @@ services:
       # - ./staticfiles:/app/staticfiles
       - ./static_files:/app
   tournament:
+    build:
+      args:
+        env: dev
     volumes:
       - ./tournament:/app/

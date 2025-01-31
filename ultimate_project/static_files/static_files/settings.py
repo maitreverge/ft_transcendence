@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os #!
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-yhu)0t6)-j5#_5wtcyi6v^a4h9)skb*%t44wt+v%=2jz&x#i$q"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('env', 'prod') != 'prod'
+DEBUG = os.getenv('env', 'prod') != 'prod' #!
 
 ALLOWED_HOSTS = ['*']
 
@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    "static_files_app",
+    "static_files_app", #!modif
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -117,14 +117,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 # URL pour accéder aux fichiers statiques
-STATIC_URL = "/static/"
+STATIC_URL = "/static/" #!
 
 # Répertoire où collecter les fichiers statiques (après collectstatic)
-STATIC_ROOT = "/app/staticfiles"
+STATIC_ROOT = "/app/staticfiles" #!
 
 # Répertoires supplémentaires pour rechercher des fichiers statiques
 STATICFILES_DIRS = [
-    BASE_DIR / "static_files_app/static",  # Ton dossier de fichiers statiques principaux
+    # BASE_DIR / "static_files_app/static",  # Ton dossier de fichiers statiques principaux
 ]
 
 # Default primary key field type

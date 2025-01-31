@@ -25,11 +25,13 @@ services:
     container_name: ctn_tournament
     build :
       # Docker file location
+      args:
+        env: prod
       context: ./tournament/
     image: img_tournament
     # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
-    expose:
-      - "8000"
+    # expose:
+    #   - "8001"
     networks:
       - transcendence_network
     restart: on-failure # need to double check the 
@@ -46,9 +48,9 @@ services:
     image: img_static_files
     # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
     expose:
-      - "8001"
+      - "8000"
     ports: # Ports => Link the port from container to host
-      - "8001:8001" #https
+      - "8000:8000" #https
     environment:
       - DJANGO_ENV=development
     networks:
