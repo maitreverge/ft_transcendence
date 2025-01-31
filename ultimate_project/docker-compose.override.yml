@@ -6,6 +6,9 @@ services:
     volumes:
       - ./staticfiles:/usr/share/nginx/static        
   static_files:
+    build:
+      args:
+        env: dev
     volumes:
       # - ./staticfiles:/app/staticfiles
       - ./static_files:/app

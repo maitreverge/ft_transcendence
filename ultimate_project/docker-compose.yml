@@ -40,7 +40,7 @@ services:
     container_name: ctn_static_files
     build :
       args:
-          ENV: development 
+        env: prod  
       # Docker file location
       context: ./static_files/
     image: img_static_files
