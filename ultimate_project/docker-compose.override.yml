@@ -10,8 +10,7 @@ services:
       args:
         env: dev
     volumes:
-      # - ./staticfiles:/app/staticfiles
-      - ./static_files:/app
+      - ./static_files:/app/
   tournament:
     build:
       args:

@@ -19,4 +19,7 @@ from django.contrib import admin
 from django.urls import path
 import tournament_app.views
 
-urlpatterns = [path("tournament/", tournament_app.views.start_tournament)]
+urlpatterns = [
+	path("tournament/", tournament_app.views.start_tournament),
+	path("test/", tournament_app.views.test),
+	]

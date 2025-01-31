@@ -2,21 +2,21 @@
     <link rel="stylesheet" href="../static/styles.css">
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
-
-
 <body>
     <div id="main-content">
-        <h1>welcome to pong world area gaming voila gdededouloure</h1>
-        {{ arg }}
-        
-        <!-- Bouton qui va charger le contenu de /tournament/ -->
-        <button hx-get="/tournament/" 
-                hx-trigger="click" 
-                hx-target="#tournament-content">
-            start tournament
-        </button>
-
-        <!-- La réponse de /tournament/ sera insérée ici -->
-        <div id="tournament-content"></div>
+        {% if not username %}
+            <div class="overlay" hx-get="/login-form/" hx-trigger="load" hx-target="#login-container">
+                <div id="login-container" class="overlay-content">
+                    <!-- Le formulaire de login sera chargé ici -->
+                </div>
+            </div>
+        {% else %}
+            <h1>Welcome {{ username }}</h1>
+                <button hx-get="/tournament/" 
+                hx-target="#overlay-content">Tournament</button>
+                <button hx-get="/simple-match/" 
+                hx-target="#overlay-content">Simple Match</button>
+            <div id="overlay-content"></div>
+        {% endif %}
     </div>
 </body>

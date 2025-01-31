@@ -32,9 +32,11 @@ services:
     # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
     # expose:
     #   - "8001"
+    volumes:
+      - staticvol:/app/staticfiles
     networks:
       - transcendence_network
-    restart: on-failure # need to double check the 
+    restart: always # need to double check the 
 
   static_files:
     # depends_on:

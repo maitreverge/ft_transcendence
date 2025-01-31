@@ -24,9 +24,9 @@ SECRET_KEY = "django-insecure-8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('env', 'prod') != 'prod' #!
+# DEBUG = True
 
-ALLOWED_HOSTS = []  # domain name to be added ???
-
+ALLOWED_HOSTS = ['localhost']  # domain name to be added ???
 
 # Application definition
 
