@@ -11,8 +11,10 @@ services:
         env: prod
     image: img_nginx
     ports: # Ports => Link the port from container to host
-      - "443:443" #https
-      - "80:80" #http
+      # - "443:443" #https NOT WORKING AT 42!!!
+      # - "80:80" #http NOT WORKING AT 42!!!
+      - "8443:443" #https
+      - "8080:80" #http
     volumes:
       - staticvol:/usr/share/nginx/static  # Bind mount des fichiers statiques
     networks:

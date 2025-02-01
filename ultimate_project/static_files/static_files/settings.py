@@ -27,6 +27,10 @@ DEBUG = os.getenv('env', 'prod') != 'prod' #!
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+]
 
 # Application definition
 
