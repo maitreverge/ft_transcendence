@@ -117,12 +117,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 # URL pour accéder aux fichiers statiques
-STATIC_URL = "/static/" #!
-
-# Répertoire où collecter les fichiers statiques (après collectstatic)
+# STATIC_URL = "/static/static_files/" #!
+# if DEBUG:
+#     STATIC_URL = "/static/static_files/"  # URL en mode dev (proxy_pass correspond à ça)
+# else:
+#     STATIC_URL = "/static/"
+    
+STATIC_URL = "/static/static_files/" if DEBUG else "/static/"  # URL correcte en prod
+    # STATIC_ROOT = "/app/staticfiles"
+# Répertoire où collecter les fichiers statiques (après collectstatic) en prod
 STATIC_ROOT = "/app/staticfiles" #!
 
-# Répertoires supplémentaires pour rechercher des fichiers statiques
+# Répertoires supplémentaires pour rechercher des fichiers statiques seulement en dev
 STATICFILES_DIRS = [
     # BASE_DIR / "static_files_app/static",  # Ton dossier de fichiers statiques principaux
 ]
