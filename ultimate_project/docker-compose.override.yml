@@ -10,6 +10,7 @@ services:
       args:
         env: dev
     volumes:
+    
       - ./static_files:/app/
   tournament:
     build:

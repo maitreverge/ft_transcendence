@@ -127,7 +127,7 @@ USE_TZ = True
 # else:
 #     STATIC_URL = "/static/"
     
-STATIC_URL = "/static/static_files/" if DEBUG else "/static/"  # URL correcte en prod
+STATIC_URL = "/static/static_files/" if DEBUG else "/static/"  # URL correcte
     # STATIC_ROOT = "/app/staticfiles"
 # Répertoire où collecter les fichiers statiques (après collectstatic) en prod
 STATIC_ROOT = "/app/staticfiles" #!
