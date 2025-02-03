@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "match_app", #! to be changed!
+	"channels",
 ]
 
 MIDDLEWARE = [
@@ -68,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "match.wsgi.application" #! to be changed!
+ASGI_APPLICATION = "match.asgi.application" #! to be changed! estceque je remet wsgi ?
 
 
 # Database

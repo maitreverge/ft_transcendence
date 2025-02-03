@@ -26,10 +26,11 @@ services:
     #   - blah
     container_name: ctn_tournament
     build :
-      # Docker file location
-      args:
-        env: prod
       context: ./tournament/
+    environment:
+      - env=prod
+      - port=8001
+      - name=tournament
     image: img_tournament
     # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
     # expose:

@@ -15,7 +15,7 @@ import os #!
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+NAME = os.getenv('name')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "tournament_app", #! to be changed!
+    f"{NAME}_app", #! to be changed!
 ]
 
 MIDDLEWARE = [
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "tournament.urls" #! to be changed!
+ROOT_URLCONF = f"{NAME}.urls" #! to be changed!
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "tournament.wsgi.application" #! to be changed!
+WSGI_APPLICATION = f"{NAME}.wsgi.application" #! to be changed!
 
 
 # Database
@@ -116,7 +116,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "/static/tournament/" if DEBUG else "/static/"  # URL correcte #!
+STATIC_URL = f"/static/{NAME}/" if DEBUG else "/static/"  # URL correcte #!
 
 # Répertoire où collecter les fichiers statiques (après collectstatic)
 STATIC_ROOT = "/app/staticfiles" #!

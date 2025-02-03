@@ -3,9 +3,9 @@
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
 	python manage.py collectstatic --noinput; \
-	uvicorn tournament.asgi:application --host 0.0.0.0 --port 8001; \
+	uvicorn ${name}.asgi:application --host 0.0.0.0 --port ${port}; \
 else \
-	python ./manage.py runserver 0.0.0.0:8001; \
+	python ./manage.py runserver 0.0.0.0:${port}; \
 fi
 
 exec "$@"
