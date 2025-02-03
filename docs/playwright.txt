@@ -1,5 +1,6 @@
 lancer l'environnement virtuel puis
 pip install playwright
 playwright install
-playwright codegen http://localhost:8080 pour enregistrer, copier coller le resultat ds un fichier ex:tests/test_navigation.py
+playwright codegen http://localhost:8080 pour enregistrer,
+copier coller le resultat ds un fichier ex:tests/test_navigation.py
 python3 tests/test_navigation.py pour lancer le test
