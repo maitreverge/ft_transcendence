@@ -4,23 +4,22 @@ services:
       args:
         env: dev
     volumes:
-      - ./staticfiles:/usr/share/nginx/static        
+      - ./staticfiles:/usr/share/nginx/static   
+
   static_files:
-    build:
-      args:
-        env: dev
+    environment:
+      - env=dev
     volumes:    
       - ./static_files:/app/
+
   tournament:
-    build:
-      args:
-        env: dev
+    environment:
+      - env=dev
     volumes:
       - ./tournament:/app/
 
   match:
-    build:
-      args:
-        env: dev
+    environment:
+      - env=dev
     volumes:
       - ./match:/app/
