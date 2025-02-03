@@ -1,14 +1,13 @@
 ADDING A CONTAINER:
 
 - make sure you are in a virtual env (source ./myscript.sh)
-- create folders in project_name/project_name_app/static/project_name/style.css, following other'd struct
-- changes to be made in settings (see comments)
+- create folders in project_name/project_name_app/static/project_name/style.css, following other's struct
+- settings: copy paste from tournament
 - nginx: config.dev.conf: add block for static files AND container path
 - nginx: config.dev.prod: add block for container path
 - docker-compose (+.override): copy existing container config + adapt
 - dockerfile: copy paste :)
-- entrypoint.sh: one path to be changed (container name) + PORT NUMBER (x2)
+- entrypoint.sh: copy paste :)
 - copier fichier requirements.txt
-
 
 + for html / css content, refere to existing container, ex: tournament
