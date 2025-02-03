@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os  #!
+import os  # !
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-yhu)0t6)-j5#_5wtcyi6v^a4h9)skb*%t44wt+v%=2jz&x#i$q"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("env", "prod") != "prod"  #!
+DEBUG = os.getenv("env", "prod") != "prod"  # !
 
 ALLOWED_HOSTS = ["*"]
 
@@ -36,7 +36,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
-    "static_files_app",  #!modif
+    "static_files_app",  # !modif
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -92,7 +92,8 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.\
+            UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -122,20 +123,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 # URL pour accéder aux fichiers statiques
-# STATIC_URL = "/static/static_files/" #!
+# STATIC_URL = "/static/static_files/" # !
 # if DEBUG:
-#     STATIC_URL = "/static/static_files/"  # URL en mode dev (proxy_pass correspond à ça)
+#     STATIC_URL = "/static/static_files/"  # URL en mode dev
 # else:
 #     STATIC_URL = "/static/"
 
 STATIC_URL = "/static/static_files/" if DEBUG else "/static/"  # URL correcte
 # STATIC_ROOT = "/app/staticfiles"
 # Répertoire où collecter les fichiers statiques (après collectstatic) en prod
-STATIC_ROOT = "/app/staticfiles"  #!
+STATIC_ROOT = "/app/staticfiles"  # !
 
 # Répertoires supplémentaires pour rechercher des fichiers statiques seulement en dev
 STATICFILES_DIRS = [
-    # BASE_DIR / "static_files_app/static",  # Ton dossier de fichiers statiques principaux
+    # BASE_DIR / "static_files_app/static",
 ]
 
 # Default primary key field type

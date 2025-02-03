@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os  #!
+import os  # !
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("env", "prod") != "prod"  #!
+DEBUG = os.getenv("env", "prod") != "prod"  # !
 # DEBUG = True
 
-ALLOWED_HOSTS = ["localhost"]  #! must be changes (for prod)
+ALLOWED_HOSTS = ["localhost"]  # ! must be changes (for prod)
 
 # Application definition
 
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "tournament_app",  #! to be changed!
+    "tournament_app",  # ! to be changed!
 ]
 
 MIDDLEWARE = [
@@ -51,7 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "tournament.urls"  #! to be changed!
+ROOT_URLCONF = "tournament.urls"  # ! to be changed!
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "tournament.wsgi.application"  #! to be changed!
+WSGI_APPLICATION = "tournament.wsgi.application"  # ! to be changed!
 
 
 # Database
@@ -88,7 +88,8 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.\
+            UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -117,10 +118,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "/static/tournament/" if DEBUG else "/static/"  # URL correcte #!
+STATIC_URL = "/static/tournament/" if DEBUG else "/static/"  # URL correcte # !
 
 # Répertoire où collecter les fichiers statiques (après collectstatic)
-STATIC_ROOT = "/app/staticfiles"  #!
+STATIC_ROOT = "/app/staticfiles"  # !
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
