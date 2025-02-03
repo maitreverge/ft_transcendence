@@ -7,6 +7,6 @@
 
 pip install virtualenv	# permet d'installer l'environnement virtuel a 42 sans VM
 python3 -m venv env
-. env/bin/activate 
+source env/bin/activate 
 pip install django
 pip freeze > requirements.txt
