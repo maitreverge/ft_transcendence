@@ -3,11 +3,14 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+
 def test(request):
-    return render(request, 'test.html', {'touille':'champion du bidule'})
+    return render(request, "test.html", {"touille": "champion du bidule"})
+
 
 def start_tournament(request):
-    return HttpResponse("""
+    return HttpResponse(
+        """
         <div class="overlay">
             <div class="overlay-content">
                 <h2>Tournament Oulala</h2>
@@ -15,4 +18,5 @@ def start_tournament(request):
                 <button hx-get="/" hx-target="body">Close</button>
             </div>
         </div>
-    """)
+    """
+    )

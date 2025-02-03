@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os #!
+import os  #!
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,19 +24,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-yhu)0t6)-j5#_5wtcyi6v^a4h9)skb*%t44wt+v%=2jz&x#i$q"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('env', 'prod') != 'prod' #!
+DEBUG = os.getenv("env", "prod") != "prod"  #!
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8080',
-    'http://127.0.0.1:8080',
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
 
 # Application definition
 
 INSTALLED_APPS = [
-    "static_files_app", #!modif
+    "static_files_app",  #!modif
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -126,11 +127,11 @@ USE_TZ = True
 #     STATIC_URL = "/static/static_files/"  # URL en mode dev (proxy_pass correspond à ça)
 # else:
 #     STATIC_URL = "/static/"
-    
+
 STATIC_URL = "/static/static_files/" if DEBUG else "/static/"  # URL correcte
-    # STATIC_ROOT = "/app/staticfiles"
+# STATIC_ROOT = "/app/staticfiles"
 # Répertoire où collecter les fichiers statiques (après collectstatic) en prod
-STATIC_ROOT = "/app/staticfiles" #!
+STATIC_ROOT = "/app/staticfiles"  #!
 
 # Répertoires supplémentaires pour rechercher des fichiers statiques seulement en dev
 STATICFILES_DIRS = [
@@ -142,5 +143,4 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-
+SESSION_ENGINE = "django.contrib.sessions.backends.file"

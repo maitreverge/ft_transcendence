@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os #!
+import os  #!
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('env', 'prod') != 'prod' #!
+DEBUG = os.getenv("env", "prod") != "prod"  #!
 # DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']  #! 
+ALLOWED_HOSTS = ["localhost"]  #!
 
 # Application definition
 
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "match_app", #! to be changed!
+    "match_app",  #! to be changed!
 ]
 
 MIDDLEWARE = [
@@ -50,7 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "match.urls" #! to be changed!
+ROOT_URLCONF = "match.urls"  #! to be changed!
 
 TEMPLATES = [
     {
@@ -68,7 +69,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "match.wsgi.application" #! to be changed!
+WSGI_APPLICATION = "match.wsgi.application"  #! to be changed!
 
 
 # Database
@@ -119,7 +120,7 @@ USE_TZ = True
 STATIC_URL = "/static/match/" if DEBUG else "/static/"  # URL correcte #! to be changed!
 
 # Répertoire où collecter les fichiers statiques (après collectstatic)
-STATIC_ROOT = "/app/staticfiles" #!
+STATIC_ROOT = "/app/staticfiles"  #!
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -250,4 +251,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
