@@ -1,0 +1,26 @@
+services:
+  nginx:
+    build:
+      args:
+        env: dev
+    volumes:
+      - ./staticfiles:/usr/share/nginx/static        
+  static_files:
+    build:
+      args:
+        env: dev
+    volumes:    
+      - ./static_files:/app/
+  tournament:
+    build:
+      args:
+        env: dev
+    volumes:
+      - ./tournament:/app/
+
+  match:
+    build:
+      args:
+        env: dev
+    volumes:
+      - ./match:/app/

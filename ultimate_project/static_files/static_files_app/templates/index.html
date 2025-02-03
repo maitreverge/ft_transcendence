@@ -1,0 +1,23 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'static_files/styles.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+</head>
+<body>
+    <div id="main-content">
+        {% if not username %}
+            <div class="overlay" hx-get="/login-form/" hx-trigger="load" hx-target="#login-container">
+                <div id="login-container" class="overlay-content">
+                    <!-- Le formulaire de login sera chargé ici -->
+                </div>
+            </div>
+        {% else %}
+            <h1>Welcome {{ username }}</h1>
+                <button hx-get="/tournament/" 
+                hx-target="#overlay-content">Tournament</button>
+                <button hx-get="/simple-match/" 
+                hx-target="#overlay-content">Simple Match</button>
+            <div id="overlay-content"></div>
+        {% endif %}
+    </div>
+</body>
