@@ -5,80 +5,67 @@ services:
       - static_files
     container_name: ctn_nginx
     build :
-      # Docker file location
       context: ./nginx/
       args:
         env: prod
     image: img_nginx
-    ports: # Ports => Link the port from container to host
+    ports:
       # - "443:443" #https NOT WORKING AT 42!!!
       # - "80:80" #http NOT WORKING AT 42!!!
-      - "8443:443" #https
-      - "8080:80" #http
+      - "8443:443"
+      - "8080:80"
     volumes:
-      - staticvol:/usr/share/nginx/static  # Bind mount des fichiers statiques
+      - staticvol:/usr/share/nginx/static
     networks:
       - transcendence_network
     restart: on-failure
 
   tournament:
-    # depends_on:
-    #   - blah
     container_name: ctn_tournament
     build :
-      # Docker file location
-      args:
-        env: prod
       context: ./tournament/
+    environment:
+      - env=prod
+      - port=8001
+      - name=tournament
     image: img_tournament
-    # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
-    # expose:
-    #   - "8001"
     volumes:
       - staticvol:/app/staticfiles
     networks:
       - transcendence_network
-    restart: always # need to double check the 
+    restart: always
 
   match:
     container_name: ctn_match
     build :
-      # Docker file location
-      args:
-        env: prod
       context: ./match/
+    environment:
+      - env=prod
+      - port=8002
+      - name=match
     image: img_match
-    # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
-    # expose:
-    #   - "8001"
     volumes:
       - staticvol:/app/staticfiles
     networks:
       - transcendence_network
-    restart: always # need to double check the 
+    restart: always 
 
   static_files:
-    # depends_on:
-    #   - blah
     container_name: ctn_static_files
     build :
-      args:
-        env: prod  
-      # Docker file location
       context: ./static_files/
-    image: img_static_files
-    # Expose => Expose a port within a Docker Networks. The port is then not available for the host.
-    expose:
-      - "8000"
-    ports: # Ports => Link the port from container to host
-      - "8000:8000" #https
     environment:
-      - DJANGO_ENV=development
+      - env=prod
+      - port=8000
+      - name=static_files
+    image: img_static_files
+    ports:
+      - "8000:8000"
     networks:
       - transcendence_network
     volumes:
       - staticvol:/app/staticfiles
-    restart: always # need to double check the 
+    restart: always
 
 volumes:
   staticvol:
@@ -87,5 +74,5 @@ volumes:
 networks:
   transcendence_network:
     name: transcendence_network
-    driver : bridge # for making bind-mount
+    driver : bridge
 
