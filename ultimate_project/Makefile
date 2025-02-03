@@ -3,18 +3,18 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: seblin <seblin@student.42.fr>              +#+  +:+       +#+         #
+#    By: flverge <flverge@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/01/31 11:31:58 by seblin           ###   ########.fr        #
+#    Updated: 2025/02/03 20:19:53 by flverge          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-all:
-	-docker-compose up --build
+all: install_compose
+	-docker compose up --build
 
-prod: clean 
-	-docker-compose -f docker-compose.yml up --build
+prod: install_compose clean 
+	-docker compose -f docker-compose.yml up --build
 
 clean:
 	-docker stop $$(docker ps -qa)
@@ -26,7 +26,10 @@ clean:
 
 re: clean all
 
+install_compose:
+	@sudo apt-get install docker-compose-plugin
 
+.PHONY: all prod clean re install_compose
 
 # all:
 # 	docker-compose up
