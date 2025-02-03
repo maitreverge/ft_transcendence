@@ -1,0 +1,28 @@
+Dans Django, la variable DEBUG dans le fichier settings.py est cruciale pour déterminer le comportement du framework pendant le développement et en production. Voici les effets principaux de DEBUG = True et DEBUG = False :
+
+Quand DEBUG = True (en développement) :
+Affichage des erreurs détaillées :
+Si une exception se produit, Django affiche une page d'erreur détaillée avec la trace de l'erreur, les variables locales, les requêtes, etc.
+Fichiers statiques non optimisés :
+Les fichiers statiques (CSS, JS, images) sont servis directement par le serveur Django pendant le développement sans nécessiter un serveur séparé comme NGINX ou un processus de collecte de fichiers statiques.
+Chargement automatique des templates :
+Les templates sont rechargés automatiquement sans avoir besoin de redémarrer le serveur Django.
+Middleware de sécurité désactivé :
+Certaines protections de sécurité comme X-Content-Type-Options ou X-Frame-Options peuvent être moins strictes pour faciliter le développement.
+Les logs de requêtes et de données sont plus détaillés :
+Django enregistre de manière plus exhaustive les requêtes HTTP, ce qui est utile pour le débogage.
+Quand DEBUG = False (en production) :
+Affichage des erreurs limité :
+En cas d'erreur, Django affiche une page générique d'erreur sans détails pour éviter de divulguer des informations sensibles (comme les chemins de fichiers ou les requêtes SQL).
+Fichiers statiques servis par un serveur web externe :
+Les fichiers statiques sont normalement servis par un serveur web comme NGINX ou Apache, après avoir été collectés avec la commande collectstatic.
+Sécurité renforcée :
+Django active diverses protections de sécurité, par exemple, en s'assurant que les cookies sont envoyés de manière sécurisée (en activant SESSION_COOKIE_SECURE et CSRF_COOKIE_SECURE), ou encore en vérifiant la validité de l'ALLOWED_HOSTS.
+Désactivation du rechargement des templates :
+Les templates ne sont plus rechargés automatiquement et doivent être modifiés manuellement, avec un redémarrage du serveur pour prendre en compte les modifications.
+Logs d'erreurs limités :
+Les logs d'erreurs sont souvent moins détaillés pour éviter de trop exposer l'application aux utilisateurs finaux.
+En résumé :
+DEBUG = True est destiné au développement local, avec des informations détaillées sur les erreurs et un environnement de développement plus flexible.
+DEBUG = False est destiné à un environnement de production où la sécurité est renforcée et les informations détaillées sur les erreurs sont masquées.
+Tu peux utiliser DEBUG = True uniquement en développement, car en production, cela présente des risques de sécurité.
