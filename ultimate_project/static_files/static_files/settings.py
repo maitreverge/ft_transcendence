@@ -21,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-yhu)0t6)-j5#_5wtcyi6v^a4h9)skb*%t44wt+v%=2jz&x#i$q"
+SECRET_KEY = \
+    "django-insecure-yhu)0t6)-j5#_5wtcyi6v^a4h9)skb*%t44wt+v%=2jz&x#i$q"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"  # !
@@ -96,13 +97,16 @@ AUTH_PASSWORD_VALIDATORS = [
             UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.\
+            password_validation.MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.\
+            password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.\
+            password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -134,7 +138,7 @@ STATIC_URL = "/static/static_files/" if DEBUG else "/static/"  # URL correcte
 # Répertoire où collecter les fichiers statiques (après collectstatic) en prod
 STATIC_ROOT = "/app/staticfiles"  # !
 
-# Répertoires supplémentaires pour rechercher des fichiers statiques seulement en dev
+# Répertoires supp. pour rechercher des fichiers statiques seulement en dev
 STATICFILES_DIRS = [
     # BASE_DIR / "static_files_app/static",
 ]
