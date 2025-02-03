@@ -9,8 +9,7 @@ services:
     build:
       args:
         env: dev
-    volumes:
-    
+    volumes:    
       - ./static_files:/app/
   tournament:
     build:
@@ -18,3 +17,10 @@ services:
         env: dev
     volumes:
       - ./tournament:/app/
+
+  match:
+    build:
+      args:
+        env: dev
+    volumes:
+      - ./match:/app/

@@ -4,7 +4,7 @@ from django.http import HttpResponse
 # Create your views here.
 
 def test(request):
-    return render(request, 'test.html', {'touille':'champion du babyfoot'})
+    return render(request, 'test.html', {'touille':'champion du bidule'})
 
 def start_tournament(request):
     return HttpResponse("""

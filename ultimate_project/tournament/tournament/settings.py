@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt
 DEBUG = os.getenv('env', 'prod') != 'prod' #!
 # DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']  # domain name to be added ???
+ALLOWED_HOSTS = ['localhost']  #! must be changes (for prod)
 
 # Application definition
 
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "tournament_app",
+    "tournament_app", #! to be changed!
 ]
 
 MIDDLEWARE = [
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "tournament.urls"
+ROOT_URLCONF = "tournament.urls" #! to be changed!
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "tournament.wsgi.application"
+WSGI_APPLICATION = "tournament.wsgi.application" #! to be changed!
 
 
 # Database
@@ -125,3 +125,4 @@ STATIC_ROOT = "/app/staticfiles" #!
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+

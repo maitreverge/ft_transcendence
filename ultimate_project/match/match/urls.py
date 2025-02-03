@@ -1,5 +1,5 @@
 """
-URL configuration for tournament project.
+URL configuration for match project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -14,13 +14,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.contrib import admin
 from django.urls import path
-import tournament_app.views
+import match_app.views
 
 urlpatterns = [
-	path("tournament/", tournament_app.views.start_tournament),
-	path("test/", tournament_app.views.test),
-	]
+    path('admin/', admin.site.urls),
+    path('match/', match_app.views.match),
+]
 
