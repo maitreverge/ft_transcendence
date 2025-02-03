@@ -5,8 +5,9 @@
 # pip install django	# installe django (no? seriously?)
 # pip freeze > requirements.txt 	# documente les dependances
 
-pip install virtualenv	# permet d'installer l'environnement virtuel a 42 sans VM
+# pip install virtualenv	# permet d'installer l'environnement virtuel a 42 sans VM
 python3 -m venv env
-. env/bin/activate 
+source env/bin/activate 
 pip install django
+pip install black flake8
 pip freeze > requirements.txt

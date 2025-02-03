@@ -4,31 +4,35 @@ from django.middleware import csrf
 from django.template import Context, Template
 
 
-
 def index(request):
-    username = request.session.get('username')
-    return render(request, 'index.html', {'username': username})
+    username = request.session.get("username")
+    return render(request, "index.html", {"username": username})
 
 
 def login_form(request):
     csrf_token = csrf.get_token(request)
-    template = Template("""
+    template = Template(
+        """
         <form hx-post="/login/" hx-target="body">
             {% csrf_token %}
             <input type="text" name="username" placeholder="Entrez votre nom">
             <button type="submit">Connexion</button>
         </form>
-    """)
-    context = Context({'csrf_token': csrf_token})
+    """
+    )
+    context = Context({"csrf_token": csrf_token})
     return HttpResponse(template.render(context))
 
+
 def login(request):
-    username = request.POST.get('username')
-    request.session['username'] = username
-    return redirect('/')
+    username = request.POST.get("username")
+    request.session["username"] = username
+    return redirect("/")
+
 
 def tournament(request):
-    return HttpResponse("""
+    return HttpResponse(
+        """
         <div class="overlay">
             <div class="overlay-content">
                 <h2>Tournament creation</h2>
@@ -36,10 +40,13 @@ def tournament(request):
                 <button hx-get="/" hx-target="body">Close</button>
             </div>
         </div>
-    """)
+    """
+    )
+
 
 def simple_match(request):
-    return HttpResponse("""
+    return HttpResponse(
+        """
         <div class="overlay">
             <div class="overlay-content">
                 <h2>Simple Match</h2>
@@ -47,4 +54,5 @@ def simple_match(request):
                 <button hx-get="/" hx-target="body">Close</button>
             </div>
         </div>
-    """)
+    """
+    )
