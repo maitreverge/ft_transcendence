@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "1140-46-193-66-225.ngrok-free.app"]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
