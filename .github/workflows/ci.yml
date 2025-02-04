@@ -115,9 +115,14 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
       
-      - name: Merge branches
+      - name: Fetch all branches
+        run: git fetch --all
+    
+      - name: Checkout prod branch
+        run: git checkout prod || git checkout -b prod
+
+      - name: Merge dev into prod
         run: |
-          git checkout prod
           git merge dev --no-ff -m "Auto-merge dev into prod"
           git push origin prod
 
