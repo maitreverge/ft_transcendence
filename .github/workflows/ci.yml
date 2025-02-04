@@ -123,8 +123,7 @@ jobs:
 
       - name: Merge dev into prod
         run: |
-          git merge dev --no-ff -m "Auto-merge dev into prod"
-          git push origin prod
+          git merge dev --no-ff -m "Auto-merge dev into prod" --allow-unrelated-histories
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/dansylvain/ft_transcendence.git prod
 
 
