@@ -28,6 +28,8 @@ services:
       - env=prod
       - port=8001
       - name=tournament
+    ports:
+      - "8002:8000"
     image: img_tournament
     volumes:
       - staticvol:/app/staticfiles
@@ -60,7 +62,7 @@ services:
       - name=static_files
     image: img_static_files
     ports:
-      - "8001:8000"
+      - "8080:8000"
     networks:
       - transcendence_network
     volumes:
