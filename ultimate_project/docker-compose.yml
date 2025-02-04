@@ -13,7 +13,7 @@ services:
       # - "443:443" #https NOT WORKING AT 42!!!
       # - "80:80" #http NOT WORKING AT 42!!!
       - "8443:443"
-      - "8080:80"
+      - "8000:80"
     volumes:
       - staticvol:/usr/share/nginx/static
     networks:
@@ -28,6 +28,9 @@ services:
       - env=prod
       - port=8001
       - name=tournament
+      - PI_DOMAIN={PI_DOMAIN}
+    ports:
+      - "8002:8000"
     image: img_tournament
     volumes:
       - staticvol:/app/staticfiles
@@ -43,6 +46,7 @@ services:
       - env=prod
       - port=8002
       - name=match
+      - PI_DOMAIN={PI_DOMAIN}
     image: img_match
     volumes:
       - staticvol:/app/staticfiles
@@ -58,9 +62,10 @@ services:
       - env=prod
       - port=8000
       - name=static_files
+      - PI_DOMAIN={PI_DOMAIN}
     image: img_static_files
     ports:
-      - "8000:8000"
+      - "8080:8000"
     networks:
       - transcendence_network
     volumes:

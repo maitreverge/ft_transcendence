@@ -5,14 +5,27 @@ from playwright.sync_api import Playwright, sync_playwright  # , expect
 
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
     page = context.new_page()
 
+    # Loguer toutes les requêtes effectuées
+    def handle_request(request):
+        print(f"➡️ Requête envoyée : {request.url}")
+
+    # Loguer toutes les réponses reçues
     def handle_response(response):
+        print(f"⬅️ Réponse reçue : {response.url} - Statut: {response.status}")
         if response.status == 404:
-            print(f"Erreur 404 détectée pour : {response.url}")
-            raise Exception(f"Erreur 404 sur la ressource: {response.url}")
+            print(f"❌ Erreur 404 détectée pour : {response.url}")
+
+    page.on("request", handle_request)
+    page.on("response", handle_response)
+
+    # def handle_response(response):
+    #     if response.status == 404:
+    #         print(f"Erreur 404 détectée pour : {response.url}")
+    #         raise Exception(f"Erreur 404 sur la ressource: {response.url}")
 
     page.on("response", handle_response)
 

@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+pi_domain = os.getenv("PI_DOMAIN", "default_value_if_not_set")
+
 NAME = os.getenv("name")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,11 +30,12 @@ SECRET_KEY = "django-insecure-\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", f"{pi_domain}"]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    f"https://{pi_domain}",
 ]
 
 # Application definition
