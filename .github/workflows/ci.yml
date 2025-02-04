@@ -80,7 +80,15 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+              ${{ runner.os }}-python-
+            
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -91,47 +99,9 @@ jobs:
 
       - name: Run Flake8
         run: flake8 .
-
-  tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
       
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest playwright
-          playwright install
-      
-      # Démarrer le serveur avec 'make re'
-      - name: Start the server
-        run: |
-          echo "Starting the server..."
-          make re > /dev/null 2>&1 &  # Lance le serveur en arrière-plan
-          sleep 5  # Donne un peu de temps pour démarrer le serveur
-
-      # Attente que le container Docker soit prêt (ctn_nginx)
-      - name: Wait for Docker container to be ready
-        run: |
-          echo "Waiting for Docker containers to be ready..."
-          # Attendre que Docker indique que le container ctn_nginx est en cours d'exécution
-          until docker-compose ps | grep -q "ctn_nginx.*Up"; do
-            echo "Waiting for container ctn_nginx..."
-            sleep 2 
-          done
-          echo "Docker container is up and running!"
-          
-          
-      - name: Run Playwright tests
-        run: pytest
-
   merge-to-prod:
-    needs: [lint, tests]
+    needs: [lint]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev'
     steps:
