@@ -100,7 +100,7 @@ jobs:
 
   deploy:
     needs: [lint, tests]
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Raspberry Pi
