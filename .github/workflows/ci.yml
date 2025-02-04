@@ -125,6 +125,8 @@ jobs:
         run: |
           git merge dev --no-ff -m "Auto-merge dev into prod"
           git push origin prod
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/dansylvain/ft_transcendence.git prod
+
 
   deploy:
     needs: [merge-to-prod]
