@@ -1,6 +1,7 @@
-import re
-from playwright.sync_api import Playwright, sync_playwright, expect
-import time
+# import re
+from playwright.sync_api import Playwright, sync_playwright  # , expect
+
+# import time
 
 
 def run(playwright: Playwright) -> None:
@@ -13,7 +14,7 @@ def run(playwright: Playwright) -> None:
             print(f"Erreur 404 détectée pour : {response.url}")
             raise Exception(f"Erreur 404 sur la ressource: {response.url}")
 
-    page.on('response', handle_response)
+    page.on("response", handle_response)
 
     page.goto("http://localhost:8080/")
     page.get_by_role("textbox", name="Entrez votre nom").click()
@@ -24,7 +25,7 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="Simple Match").click()
     page.get_by_role("button", name="Close").click()
     page.goto("http://localhost:8080/match/")
-    
+
     # ---------------------
     context.close()
     browser.close()
