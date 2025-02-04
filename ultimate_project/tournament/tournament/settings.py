@@ -15,6 +15,8 @@ import os
 
 NAME = os.getenv("name")
 
+PI_DOMAIN = os.getenv("pi_domain")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,12 +30,12 @@ SECRET_KEY = "django-insecure-\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*", "https://1140-46-193-66-225.ngrok-free.app"]
+ALLOWED_HOSTS = ["*", f"https://{PI_DOMAIN}"]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "https://1140-46-193-66-225.ngrok-free.app",
+    f"https://{PI_DOMAIN}",
 ]
 
 # Application definition
