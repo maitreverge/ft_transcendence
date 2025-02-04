@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
-pi_domain = os.getenv('PI_DOMAIN', 'default_value_if_not_set')
+pi_domain = os.getenv("PI_DOMAIN", "default_value_if_not_set")
 
 NAME = os.getenv("name")
 
