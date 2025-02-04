@@ -115,11 +115,19 @@ jobs:
             cd workspace/ft_transcendence/ultimate_project
             echo "Pulling latest changes..."
             git pull origin dev
+
             echo "Stopping containers..."
-            make clean
+            docker ps -qa | xargs -r docker stop
+            docker ps -qa | xargs -r docker rm
+            docker volume ls -q | xargs -r docker volume rm
+            docker network ls --filter 'type=custom' -q | xargs -r docker network rm
+            rm -rf staticfiles/*
+
             echo "Starting containers..."
-            make dev &>/dev/null
-            echo "Deployment complete!"
-            
+            nohup make prod &> deployment.log &
+
+            echo "Waiting for containers to start..."
+            sleep 5
+            docker ps
 
             
