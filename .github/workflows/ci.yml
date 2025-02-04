@@ -126,7 +126,6 @@ jobs:
           git merge dev --no-ff -m "Auto-merge dev into prod" --allow-unrelated-histories
           git push https://${{ secrets.GITHUB_TOKEN }}@github.com/dansylvain/ft_transcendence.git prod
 
-
   deploy:
     needs: [merge-to-prod]
     runs-on: ubuntu-latest
