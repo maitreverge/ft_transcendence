@@ -112,7 +112,7 @@ jobs:
           key: ${{ secrets.RASPBERRY_SSH_KEY }}  # Ajoutez cette ligne
           debug: true  # Pour avoir plus de détails sur l'erreur
           script: |
-            cd workspace/ft_transcendence/
+            cd workspace/ft_transcendence/ultimate_project
             echo "Pulling latest changes..."
             git pull origin prod
             echo "Stopping containers..."
