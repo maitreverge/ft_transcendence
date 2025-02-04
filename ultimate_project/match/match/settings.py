@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    f"{NAME}_app",
 	"channels",
+    f"{NAME}_app",
 ]
 
 CHANNEL_LAYERS = {
@@ -50,7 +50,7 @@ CHANNEL_LAYERS = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-	"whitenoise.middleware.WhiteNoiseMiddleware",
+	"whitenoise.middleware.WhiteNoiseMiddleware",                               #! for static file with daphne
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -60,7 +60,7 @@ MIDDLEWARE = [
 
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" #! for static file with daphne
 
 ROOT_URLCONF = f"{NAME}.urls"
 
