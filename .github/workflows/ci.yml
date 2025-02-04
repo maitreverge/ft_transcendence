@@ -108,6 +108,16 @@ jobs:
           pip install pytest playwright
           playwright install
       
+      - name: Start the server
+        run: |
+          make re > /dev/null 2>&1 &  # Lance le serveur en arrière-plan
+      
+      - name: Wait for Docker container to be ready
+        run: |
+          until docker ps --filter "name=ctn_nginx" --filter "status=running" | grep -q "ctn_nginx"; do
+            sleep 1
+          done
+
       - name: Run Playwright tests
         run: pytest
 
