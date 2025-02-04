@@ -28,6 +28,7 @@ services:
       - env=prod
       - port=8001
       - name=tournament
+      - pi_domain=${PI_DOMAIN}
     ports:
       - "8002:8000"
     image: img_tournament
@@ -45,6 +46,7 @@ services:
       - env=prod
       - port=8002
       - name=match
+      - pi_domain=${PI_DOMAIN}
     image: img_match
     volumes:
       - staticvol:/app/staticfiles
@@ -60,6 +62,7 @@ services:
       - env=prod
       - port=8000
       - name=static_files
+      - pi_domain=${PI_DOMAIN}
     image: img_static_files
     ports:
       - "8080:8000"
