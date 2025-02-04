@@ -114,11 +114,11 @@ jobs:
           script: |
             cd workspace/ft_transcendence/ultimate_project
             echo "Pulling latest changes..."
-            git pull origin prod
+            git pull origin dev
             echo "Stopping containers..."
             make clean
             echo "Starting containers..."
-            nohup make prod &>/dev/null &
+            nohup make dev &>/dev/null &
             echo "Deployment complete!"
             
 
