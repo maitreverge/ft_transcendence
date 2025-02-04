@@ -129,5 +129,3 @@ jobs:
             echo "Waiting for containers to start..."
             sleep 5
             docker ps
-
-            
