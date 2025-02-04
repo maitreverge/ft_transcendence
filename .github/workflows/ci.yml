@@ -116,9 +116,9 @@ jobs:
             echo "Pulling latest changes..."
             git pull origin prod
             echo "Stopping containers..."
-            docker-compose down
+            make clean
             echo "Starting containers..."
-            docker-compose up -d
+            make prod
             echo "Deployment complete!"
 
             
