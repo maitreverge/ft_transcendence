@@ -59,8 +59,6 @@ services:
       - port=8000
       - name=static_files
     image: img_static_files
-    ports:
-      - "8000:8000"
     networks:
       - transcendence_network
     volumes:

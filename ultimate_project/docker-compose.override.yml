@@ -9,17 +9,23 @@ services:
   static_files:
     environment:
       - env=dev
+    ports:
+      - "8000:8000"
     volumes:    
       - ./static_files:/app/
 
   tournament:
     environment:
       - env=dev
+    ports:
+      - "8001:8001"
     volumes:
       - ./tournament:/app/
 
   match:
     environment:
       - env=dev
+    ports:
+      - "8002:8002"
     volumes:
       - ./match:/app/

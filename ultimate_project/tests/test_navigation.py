@@ -10,8 +10,8 @@ def run(playwright: Playwright) -> None:
 
     def handle_response(response):
         if response.status == 404:
-            print(f"Erreur 404 détectée pour : {response.url}")
-            raise Exception(f"Erreur 404 sur la ressource: {response.url}")
+            print(f"Erreur détectée pour : {response.url}")
+            raise Exception(f"Erreur sur la ressource: {response.url}")
 
     page.on('response', handle_response)
 
@@ -24,6 +24,7 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="Simple Match").click()
     page.get_by_role("button", name="Close").click()
     page.goto("http://localhost:8080/match/")
+    page.goto("http://localhost:8080/test/")
     
     # ---------------------
     context.close()

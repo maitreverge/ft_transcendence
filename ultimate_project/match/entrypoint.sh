@@ -3,9 +3,9 @@
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
 	python manage.py collectstatic --noinput; \
-	uvicorn ${name}.asgi:application --host 0.0.0.0 --port ${port}; \
+	daphne -b 0.0.0.0 -p ${port} ${name}.asgi:application; \
 else \
-	python ./manage.py runserver 0.0.0.0:${port}; \
+	daphne -b 0.0.0.0 -p ${port} ${name}.asgi:application; \
 fi
 
 exec "$@"
