@@ -118,7 +118,7 @@ jobs:
             echo "Stopping containers..."
             make clean
             echo "Starting containers..."
-            nohup make dev &>/dev/null &
+            make dev &>/dev/null
             echo "Deployment complete!"
             
 
