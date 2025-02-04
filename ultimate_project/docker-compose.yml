@@ -28,7 +28,7 @@ services:
       - env=prod
       - port=8001
       - name=tournament
-      - PI_DOMAIN=1140-46-193-66-225.ngrok-free.app
+      - PI_DOMAIN={PI_DOMAIN}
     ports:
       - "8002:8000"
     image: img_tournament
@@ -46,7 +46,7 @@ services:
       - env=prod
       - port=8002
       - name=match
-      - PI_DOMAIN=1140-46-193-66-225.ngrok-free.app
+      - PI_DOMAIN={PI_DOMAIN}
     image: img_match
     volumes:
       - staticvol:/app/staticfiles
@@ -62,7 +62,7 @@ services:
       - env=prod
       - port=8000
       - name=static_files
-      - PI_DOMAIN=1140-46-193-66-225.ngrok-free.app
+      - PI_DOMAIN={PI_DOMAIN}
     image: img_static_files
     ports:
       - "8080:8000"
