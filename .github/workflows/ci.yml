@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Raspberry Pi
-        uses: appleboy/ssh-action@prod
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RASPBERRY_HOST }}
           port: ${{ secrets.RASPBERRY_PORT }}
@@ -114,10 +114,11 @@ jobs:
           script: |
             cd workspace/ft_transcendence/
             echo "Pulling latest changes..."
-            git pull origin master
+            git pull origin prod
             echo "Stopping containers..."
             docker-compose down
             echo "Starting containers..."
             docker-compose up -d
             echo "Deployment complete!"
 
+            
