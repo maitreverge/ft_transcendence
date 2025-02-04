@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Raspberry Pi
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@prod
         with:
           host: ${{ secrets.RASPBERRY_HOST }}
           port: ${{ secrets.RASPBERRY_PORT }}
@@ -121,4 +121,3 @@ jobs:
             docker-compose up -d
             echo "Deployment complete!"
 
-            
