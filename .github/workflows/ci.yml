@@ -108,16 +108,33 @@ jobs:
           pip install pytest playwright
           playwright install
       
+      # Assurer que Docker est installé
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl enable --now docker
+
+      # Démarrer le serveur avec 'make re'
       - name: Start the server
         run: |
+          echo "Starting the server..."
+          make clean > /dev/null 2>&1
           make re > /dev/null 2>&1 &  # Lance le serveur en arrière-plan
-      
+          sleep 5  # Donne un peu de temps pour démarrer le serveur
+
+      # Attente que le container Docker soit prêt (ctn_nginx)
       - name: Wait for Docker container to be ready
         run: |
+          echo "Waiting for Docker containers to be ready..."
+          # Attendre que Docker indique que le container ctn_nginx est en cours d'exécution
           until docker ps --filter "name=ctn_nginx" --filter "status=running" | grep -q "ctn_nginx"; do
-            sleep 1
+            echo "Waiting for container ctn_nginx..."
+            sleep 2  # Attendre 2 secondes avant de vérifier à nouveau
           done
+          echo "Docker container is up and running!"
 
+          
       - name: Run Playwright tests
         run: pytest
 
