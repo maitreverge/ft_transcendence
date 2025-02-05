@@ -1,4 +1,5 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'match/styles.css' %}">
+<script> window.rasp = "{{ rasp }}" </script>
 <script src="{% static 'match/script.js' %}"></script>
-<h1> je suis un {{truc}}</h1>
+<h1> je suis un {{truc}} et {{ rasp }}</h1>
