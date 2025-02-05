@@ -5,7 +5,7 @@ from playwright.sync_api import Playwright, sync_playwright  # , expect
 
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=True)
+    browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
 
@@ -29,7 +29,7 @@ def run(playwright: Playwright) -> None:
 
     page.on("response", handle_response)
 
-    page.goto("http://localhost:8080/")
+    page.goto("http://localhost:8000/")
     page.get_by_role("textbox", name="Entrez votre nom").click()
     page.get_by_role("textbox", name="Entrez votre nom").fill("kapouet")
     page.get_by_role("button", name="Connexion").click()
@@ -37,7 +37,8 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="Close").click()
     page.get_by_role("button", name="Simple Match").click()
     page.get_by_role("button", name="Close").click()
-    page.goto("http://localhost:8080/match/")
+    page.goto("http://localhost:8000/match/")
+    page.goto("http://localhost:8000/test/")
 
     # ---------------------
     context.close()
