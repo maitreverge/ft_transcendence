@@ -8,6 +8,10 @@ services:
       context: ./nginx/
       args:
         env: prod
+    environment:
+      - static_files_port=${static_files_port}
+      - tournament_port=${tournament_port}
+      - match_port=${match_port}
     image: img_nginx
     ports:
       # - "443:443" #https NOT WORKING AT 42!!!
@@ -26,11 +30,11 @@ services:
       context: ./tournament/
     environment:
       - env=prod
-      - port=8001
+      - port=${tournament_port}
       - name=tournament
       - pi_domain=${PI_DOMAIN}
-    ports:
-      - "8002:8000"
+    # ports:
+    #   - "8002:8000"
     image: img_tournament
     volumes:
       - staticvol:/app/staticfiles
@@ -44,7 +48,7 @@ services:
       context: ./match/
     environment:
       - env=prod
-      - port=8002
+      - port=${match_port}
       - name=match
       - pi_domain=${PI_DOMAIN}
     image: img_match
@@ -60,12 +64,12 @@ services:
       context: ./static_files/
     environment:
       - env=prod
-      - port=8000
+      - port=${static_files_port}
       - name=static_files
       - pi_domain=${PI_DOMAIN}
     image: img_static_files
-    ports:
-      - "8080:8000"
+    # ports:
+    #   - "8080:8000"
     networks:
       - transcendence_network
     volumes:
@@ -80,4 +84,3 @@ networks:
   transcendence_network:
     name: transcendence_network
     driver : bridge
-
