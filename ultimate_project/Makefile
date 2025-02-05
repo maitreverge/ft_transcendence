@@ -3,15 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: seblin <seblin@student.42.fr>              +#+  +:+       +#+         #
+#    By: dan <dan@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/01/31 11:31:58 by seblin           ###   ########.fr        #
+#    Updated: 2025/02/05 09:28:13 by dan              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 all:
-	-docker-compose up --build
+	docker network create transcendence_network || true
+	docker-compose -f docker-compose.yml -f docker-compose.logging.yml up --build
 
 prod: clean 
 	-docker-compose -f docker-compose.yml up --build
