@@ -22,11 +22,6 @@ def run(playwright: Playwright) -> None:
     page.on("request", handle_request)
     page.on("response", handle_response)
 
-    # def handle_response(response):
-    #     if response.status == 404:
-    #         print(f"Erreur 404 détectée pour : {response.url}")
-    #         raise Exception(f"Erreur 404 sur la ressource: {response.url}")
-
     page.on("response", handle_response)
 
     page.goto("http://localhost:8000/")
@@ -37,8 +32,24 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="Close").click()
     page.get_by_role("button", name="Simple Match").click()
     page.get_by_role("button", name="Close").click()
-    page.goto("http://localhost:8000/match/")
     page.goto("http://localhost:8000/test/")
+    page.goto("http://localhost:8000/match/")
+    websocket_connected = False
+
+    def handle_websocket(ws):
+        nonlocal websocket_connected
+        websocket_connected = True
+        print(f"🔌 WebSocket connectée à : {ws.url}")
+
+    page.on("websocket", handle_websocket)
+    page.goto("http://localhost:8000/match/")
+    try:
+        if not websocket_connected:
+            raise ValueError("❌ La connexion WebSocket a échoué.")
+        else:
+            print("✅ La connexion WebSocket est réussie.")
+    except ValueError as e:
+        print(e)
 
     # ---------------------
     context.close()
