@@ -37,8 +37,24 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="Close").click()
     page.get_by_role("button", name="Simple Match").click()
     page.get_by_role("button", name="Close").click()
-    page.goto("https://1140-46-193-66-225.ngrok-free.app/match/")
     page.goto("https://1140-46-193-66-225.ngrok-free.app/test/")
+    page.goto("https://1140-46-193-66-225.ngrok-free.app/match/")
+    websocket_connected = False
+
+    def handle_websocket(ws):
+        nonlocal websocket_connected
+        websocket_connected = True
+        print(f"🔌 WebSocket connectée à : {ws.url}")
+
+    page.on("websocket", handle_websocket)
+    page.goto("http://1140-46-193-66-225.ngrok-free.app/match/")
+    try:
+        if not websocket_connected:
+            raise ValueError("❌ La connexion WebSocket a échoué.")
+        else:
+            print("✅ La connexion WebSocket est réussie.")
+    except ValueError as e:
+        print(e)
 
     # ---------------------
     context.close()
