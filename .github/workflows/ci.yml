@@ -116,6 +116,8 @@ jobs:
           script: |
             cd workspace/ft_transcendence/ultimate_project
 
+            export rasp=true
+
             echo "Pulling latest changes from dev..."
             git checkout dev
             git pull origin dev
