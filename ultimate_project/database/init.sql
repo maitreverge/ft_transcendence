@@ -1,14 +1,31 @@
 -- USERS SERVICE
-CREATE SCHEMA [IF NOT EXISTS] user_schema;
+CREATE SCHEMA [IF NOT EXISTS] users;
+CREATE TABLE [IF NOT EXISTS] users.user (
+	"id" INTEGER NOT NULL,
+	PRIMARY KEY ("id")
+
+)
 
 -- MATCH-MACKING
-CREATE SCHEMA [IF NOT EXISTS] match_schema;
+CREATE SCHEMA [IF NOT EXISTS] matches;
+CREATE TABLE [IF NOT EXISTS] matches.match (
+	"id" INTEGER NOT NULL,
+	PRIMARY KEY ("id")
 
+)
 
 -- FRIENDSHIP SERVICE
-CREATE SCHEMA [IF NOT EXISTS] friendship_schema;
+CREATE SCHEMA [IF NOT EXISTS] friendships;
+CREATE TABLE [IF NOT EXISTS] friendships.friendship (
+	"id" INTEGER NOT NULL,
+	PRIMARY KEY ("id")
 
-
+)
 
 -- TOURNAMENT
-CREATE SCHEMA [IF NOT EXISTS] tournament_schema;
+CREATE SCHEMA [IF NOT EXISTS] tournaments;
+CREATE TABLE [IF NOT EXISTS] tournaments.tournament (
+	"id" INTEGER NOT NULL,
+	PRIMARY KEY ("id")
+
+)
