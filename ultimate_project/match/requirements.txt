@@ -1,3 +1,6 @@
 django
 requests   
-uvicorn 
+uvicorn
+channels
+daphne
+whitenoise

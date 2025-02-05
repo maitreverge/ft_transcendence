@@ -15,6 +15,8 @@ import os
 
 NAME = os.getenv("name")
 
+PI_DOMAIN = os.getenv("pi_domain")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,11 +41,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "channels",
     f"{NAME}_app",
 ]
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        # Utilise la mémoire pour les messages #! prod: redis
+    },
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # ! static files with daphne
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -51,6 +62,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# ! for static file with daphne
 
 ROOT_URLCONF = f"{NAME}.urls"
 
@@ -71,7 +85,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = f"{NAME}.wsgi.application"
-# ASGI_APPLICATION = f"{NAME}.asgi.application"
+ASGI_APPLICATION = f"{NAME}.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
