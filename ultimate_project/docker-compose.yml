@@ -8,6 +8,10 @@ services:
       context: ./nginx/
       args:
         env: prod
+    environment:
+      - static_files_port=${static_files_port}
+      - tournament_port=${tournament_port}
+      - match_port=${match_port}
     image: img_nginx
     ports:
       # - "443:443" #https NOT WORKING AT 42!!!
@@ -26,7 +30,7 @@ services:
       context: ./tournament/
     environment:
       - env=prod
-      - port=8001
+      - port=${tournament_port}
       - name=tournament
     image: img_tournament
     volumes:
@@ -41,7 +45,7 @@ services:
       context: ./match/
     environment:
       - env=prod
-      - port=8002
+      - port=${match_port}
       - name=match
     image: img_match
     volumes:
@@ -56,7 +60,7 @@ services:
       context: ./static_files/
     environment:
       - env=prod
-      - port=8000
+      - port=${static_files_port}
       - name=static_files
     image: img_static_files
     networks:

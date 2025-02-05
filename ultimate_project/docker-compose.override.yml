@@ -10,7 +10,7 @@ services:
     environment:
       - env=dev
     ports:
-      - "8000:8000"
+      - "${static_files_port}:${static_files_port}"
     volumes:    
       - ./static_files:/app/
 
@@ -18,7 +18,7 @@ services:
     environment:
       - env=dev
     ports:
-      - "8001:8001"
+      - "${tournament_port}:${tournament_port}"
     volumes:
       - ./tournament:/app/
 
@@ -26,6 +26,6 @@ services:
     environment:
       - env=dev
     ports:
-      - "8002:8002"
+      - "${match_port}:${match_port}"
     volumes:
       - ./match:/app/
