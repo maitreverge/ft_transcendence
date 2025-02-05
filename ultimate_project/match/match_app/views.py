@@ -9,6 +9,6 @@ def match(request):
         {
             "truc": "trouffion du bidule",
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pidom", "localhost:8000"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),
         },
     )
