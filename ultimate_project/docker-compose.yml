@@ -51,7 +51,7 @@ services:
       - port=${match_port}
       - name=match
       - pi_domain=${PI_DOMAIN}
-      - rasp=false
+      - rasp=${rasp}
     image: img_match
     volumes:
       - staticvol:/app/staticfiles
