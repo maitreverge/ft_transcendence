@@ -1,7 +1,7 @@
 # import re
 from playwright.sync_api import Playwright, sync_playwright  # , expect
 
-with open("../.env", "r") as file:
+with open(".env", "r") as file:
     for line in file:
         if line.startswith("PI_DOMAIN="):
             PI_DOMAIN = line.split("=")[1].strip()
