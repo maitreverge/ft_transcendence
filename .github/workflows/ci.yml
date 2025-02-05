@@ -115,8 +115,15 @@ jobs:
           debug: true  # Pour avoir plus de détails sur l'erreur
           script: |
             cd workspace/ft_transcendence/ultimate_project
-            echo "Pulling latest changes..."
+
+            echo "Pulling latest changes from dev..."
+            git checkout dev
             git pull origin dev
+
+            echo "Merging dev into prod..."
+            git checkout prod
+            git merge dev --no-ff -m "Auto-merge dev into prod"
+            git push origin prod  # Met à jour la branche prod sur GitHub
 
             echo "Stopping containers..."
             docker ps -qa | xargs -r docker stop
