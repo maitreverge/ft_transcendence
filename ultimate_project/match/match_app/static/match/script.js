@@ -1,7 +1,4 @@
 
-// const socket = new WebSocket("ws://localhost:8000/ws/somepath/");
-// const socket = new WebSocket( window.rasp + "/ws/somepath/");
-
 if (window.rasp == "true")
 	socket = new WebSocket(`wss://${window.pidom}/ws/somepath/`);
 else
@@ -28,4 +25,3 @@ document.addEventListener("keydown", function(event) {
         }
     }
 });
-
