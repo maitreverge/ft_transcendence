@@ -134,8 +134,8 @@ jobs:
             docker network ls --filter 'type=custom' -q | xargs -r docker network rm
             rm -rf staticfiles/*
 
-            echo "Starting containers..."
-            nohup make prod &> deployment.log &
+            echo  "Starting containers..."
+            nohup bash -c "export PI_DOMAIN=5d81-46-193-66-225.ngrok-free.app && make prod" &> deployment.log &
 
             echo "Waiting for containers to start..."
             sleep 5
