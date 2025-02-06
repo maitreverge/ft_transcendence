@@ -1,6 +1,8 @@
 #!/bin/bash
 
+set -e
 
+./tests/test_linters.sh
 
 read -p "Enter commit message: " commit_message
 command="git add . && git commit -m \"$commit_message\" && git push && git status"
