@@ -135,7 +135,7 @@ jobs:
             rm -rf staticfiles/*
 
             echo  "Starting containers..."
-            make prod &> deployment.log
+            nohup bash -c "make prod" &> deployment.log &
 
             echo "Waiting for containers to start..."
             sleep 5
