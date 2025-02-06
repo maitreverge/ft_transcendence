@@ -5,6 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class MyConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()  # Accepte la connexion websocket
@@ -18,5 +19,8 @@ class MyConsumer(AsyncWebsocketConsumer):
         sys.stdout.flush()
         logger.info("🚀 loggerinfo !")
         await self.send(
-            text_data=json.dumps(f"from server ici houston, on a recu ça {text_data}")
+            text_data=json.dumps(
+                f"from server ici houston, \
+                                 on a recu ça {text_data}"
+            )
         )  # Envoie une réponse
