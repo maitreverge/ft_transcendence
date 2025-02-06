@@ -24,7 +24,4 @@ document.addEventListener("keydown", function(event) {
             console.log("Message envoyé !");
         } else {
             console.log("WebSocket non connecté !");
-        }
-    }
-});
-
+    
