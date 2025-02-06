@@ -33,8 +33,6 @@ services:
       - port=${tournament_port}
       - name=tournament
       - pi_domain=${PI_DOMAIN}
-    # ports:
-    #   - "8002:8000"
     image: img_tournament
     volumes:
       - staticvol:/app/staticfiles
