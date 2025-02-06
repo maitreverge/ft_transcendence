@@ -3,7 +3,7 @@
 // const socket = new WebSocket( window.rasp + "/ws/somepath/");
 
 if (window.rasp == "true")
-	socket = new WebSocket(`wss://${window.pidom}/ws/somepath/`);
+	socket = new WebSocket(`ws://${window.pidom}/ws/somepath/`);
 else
 	socket = new WebSocket("ws://localhost:8000/ws/somepath/");
 
