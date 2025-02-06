@@ -16,7 +16,10 @@ class MyConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         # data = json.loads(text_data)  # Décode le message JSON reçu
         data = json.loads(text_data)
-        print(f"ici houston, voila l'action {data.get('action')}, et puis voila la direction {data.get('direction')}\n")
+        print(
+            f"ici houston, voila l'action {data.get('action')}, \
+                et puis voila la direction {data.get('direction')}\n"
+        )
 
         sys.stdout.flush()
         logger.info("🚀 loggerinfo !")
