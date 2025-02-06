@@ -69,8 +69,6 @@ services:
       - name=static_files
       - pi_domain=${PI_DOMAIN}
     image: img_static_files
-    # ports:
-    #   - "8080:8000"
     networks:
       - transcendence_network
     volumes:
