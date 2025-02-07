@@ -6,7 +6,7 @@
 #    By: seblin <seblin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/01/31 11:31:58 by seblin           ###   ########.fr        #
+#    Updated: 2025/02/07 14:39:19 by seblin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,8 +26,12 @@ clean:
 
 re: clean all
 
+match:
+	-docker stop ctn_match
+	-docker rm ctn_match
+	-docker-compose up --build match
 
-
+.PHONY: match
 # all:
 # 	docker-compose up
 
