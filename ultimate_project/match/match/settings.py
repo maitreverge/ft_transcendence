@@ -81,11 +81,7 @@ TEMPLATES = [
         "DIRS": [],
         "APP_DIRS": not DEBUG,
         "OPTIONS": {
-			"debug": DEBUG,  # ✅ Forcer le rechargement des templates
-            "loaders": [
-                ("django.template.loaders.filesystem.Loader", {}),
-                ("django.template.loaders.app_directories.Loader", {}),
-            ],
+			"debug": DEBUG,  # ✅ Forcer le rechargement des templates          
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -95,6 +91,12 @@ TEMPLATES = [
         },
     },
 ]
+
+if DEBUG:  # ✅ Forcer le rechargement des templates 
+    TEMPLATES[0]["OPTIONS"]["loaders"] = [
+        "django.template.loaders.filesystem.Loader",
+        "django.template.loaders.app_directories.Loader",
+    ]
 
 WSGI_APPLICATION = f"{NAME}.wsgi.application"
 ASGI_APPLICATION = f"{NAME}.asgi.application"
