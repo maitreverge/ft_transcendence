@@ -6,7 +6,7 @@
 #    By: seblin <seblin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/02/07 14:55:18 by seblin           ###   ########.fr        #
+#    Updated: 2025/02/07 14:57:35 by seblin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,6 @@ clean:
 
 re: clean all
 
-.PHONY: match
 # all:
 # 	docker-compose up
 
