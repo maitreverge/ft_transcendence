@@ -73,6 +73,22 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
+  user:
+    container_name: ctn_user
+    build :
+      context: ./user/
+    environment:
+      - env=prod
+      - port=${user_port}
+      - name=user
+      - pi_domain=${PI_DOMAIN}
+    image: img_user
+    networks:
+      - transcendence_network
+    volumes:
+      - staticvol:/app/staticfiles
+    restart: always
+
 volumes:
   staticvol:
     driver: local
