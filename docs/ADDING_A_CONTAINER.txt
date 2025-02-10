@@ -1,13 +1,16 @@
 ADDING A CONTAINER:
 
 - make sure you are in a virtual env (source ./myscript.sh)
+- django-admin startproject <project_name>
+- cd <project_name>
+- python3 manage.py startapp <project_name>_app
 - create folders in project_name/project_name_app/static/project_name/style.css, following other's struct
-- settings: copy paste from tournament
-- nginx: config.dev.conf: add block for static files AND container path
-- nginx: config.dev.prod: add block for container path
 - docker-compose (+.override): copy existing container config + adapt
 - dockerfile: copy paste :)
 - entrypoint.sh: copy paste :)
 - copier fichier requirements.txt
+- nginx: config.dev.conf: add block for static files AND container path
+- nginx: config.dev.prod: add block for container path
+- settings: copy paste from tournament
 
 + for html / css content, refere to existing container, ex: tournament
