@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
     # allauth socials optionals apps
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.oauth2',
     'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.github',
     # 'allauth.socialaccount.providers.apple',
