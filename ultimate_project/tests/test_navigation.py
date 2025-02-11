@@ -44,10 +44,10 @@ def run(playwright: Playwright) -> None:
     page.on("websocket", handle_websocket)
     page.goto("http://localhost:8000/match/")
     try:
-        if not websocket_connected:
-            raise ValueError("❌ La connexion WebSocket a échoué.")
-        else:
+        if websocket_connected:
             print("✅ La connexion WebSocket est réussie.")
+        else:
+            raise ValueError("❌ La connexion WebSocket a échoué.")
     except ValueError as e:
         print(e)
 
