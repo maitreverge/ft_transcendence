@@ -48,6 +48,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     f"{NAME}_app",
+
+    # allauth mandatory apps
+    'allauth',
+    'allauth.account',
+
+    # allauth socials optionals apps
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.apple',
+    # 'allauth.socialaccount.providers.facebook',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +69,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    # allauth middleware
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -70,6 +84,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
+                # Needed for allauth 
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -136,3 +151,29 @@ STATIC_ROOT = "/app/staticfiles"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    '42_oauth2': {
+        'APP': { # 'APP' is a mandatory name for OAuth2 provider.
+            'client_id': 'your_42_client_id',
+            'secret': 'your_42_client_secret',
+            'key': ''
+        }
+    },
+    # 'google': {
+    #         'APP': { # 'APP' is a mandatory name for OAuth2 provider.
+    #         'client_id': 'your_42_client_id',
+    #         'secret': 'your_42_client_secret',
+    #         'key': ''
+    #     }
+    # },
+}

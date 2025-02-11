@@ -1,3 +1,7 @@
 django
-requests   
-uvicorn 
+requests
+uvicorn
+
+# Authentification libraries
+django-allauth
+django-allauth[google]
