@@ -22,6 +22,14 @@ services:
     volumes:
       - ./tournament:/app/
 
+  user:
+    environment:
+      - env=dev
+    ports:
+      - "${user_port}:${user_port}"
+    volumes:
+      - ./user:/app/
+
   match:
     environment:
       - env=dev
