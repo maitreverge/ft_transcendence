@@ -1,7 +1,7 @@
 # import re
 from playwright.sync_api import Playwright, sync_playwright  # , expect
 
-# import time
+import time
 
 
 def run(playwright: Playwright) -> None:
@@ -34,6 +34,12 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="Close").click()
     page.goto("http://localhost:8000/test/")
     page.goto("http://localhost:8000/match/")
+
+    # TEST FLO
+    time.sleep(1)
+    page.goto("http://localhost:8000/user/")
+    time.sleep(1)
+    # TEST FLO
     websocket_connected = False
 
     def handle_websocket(ws):
