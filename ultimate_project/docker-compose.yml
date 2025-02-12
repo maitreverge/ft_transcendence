@@ -79,9 +79,11 @@ services:
       context: ./user/
     environment:
       - env=prod
-      - port=${user_port}
       - name=user
-      - pi_domain=${PI_DOMAIN}
+      - port=${user_port}
+      - pi_domain=${PI_DOMAIN} # maybe not set up yet
+    env_file:
+      - .env
     image: img_user
     networks:
       - transcendence_network

@@ -25,6 +25,8 @@ services:
   user:
     environment:
       - env=dev
+    env_file:
+      - .env
     ports:
       - "${user_port}:${user_port}"
     volumes:
