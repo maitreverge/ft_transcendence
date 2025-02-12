@@ -5,3 +5,6 @@ uvicorn
 # Authentification libraries
 django-allauth
 django-allauth[google]
+
+# JSON WEB TOKENS (needed for allauth)
+jwt
