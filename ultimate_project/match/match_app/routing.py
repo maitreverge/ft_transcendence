@@ -5,6 +5,6 @@ from match_app.services.consumer import (
 
 websocket_urlpatterns = [
     path(
-        "ws/somepath/", MyConsumer.as_asgi()
+        "ws/match/<str:match_id>/", MyConsumer.as_asgi()
     ),  # Définit le chemin d'accès au websocket
 ]

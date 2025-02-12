@@ -2,7 +2,7 @@
 function init() {
 
 	if (window.rasp == "true")
-		socket = new WebSocket(`wss://${window.pidom}/ws/somepath/`);
+		socket = new WebSocket(`wss://${window.pidom}/ws/match/${window.matchId}`);
 	else
 	socket = new WebSocket("ws://localhost:8000/ws/somepath/");
 

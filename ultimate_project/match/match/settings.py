@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "channels",
-    f"{NAME}_app",
+	f"{NAME}_app",
+    # f"{NAME}_app.services.testapp.TonAppConfig",
+    
 ]
 
 CHANNEL_LAYERS = {

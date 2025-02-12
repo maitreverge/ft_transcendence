@@ -1,9 +1,13 @@
 {% load static %}
 <head>
 	<link rel="stylesheet" href="{% static 'match/styles.css' %}">
-	<script> window.rasp = "{{ rasp }}"; window.pidom = "{{ pidom }}" </script>
+	<script>
+		window.rasp = "{{ rasp }}"; 
+		window.pidom = "{{ pidom }}";
+		window.matchId = "{{ matchId }}";
+	</script>
 	<script src="{% static 'match/script.js' %}"></script>
-	<h1> je suis un {{ truc }} et {{ rasp }} et {{ pidom }}</h1>
+	<h1> match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}</h1>
 </head>
 
 <body>	
