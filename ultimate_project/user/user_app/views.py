@@ -8,6 +8,9 @@ def test(request):
 
 # Create your views here.
 def login(request):
+
+    url_42 = f"https://api.intra.42.fr/oauth/authorize?client_id={getenv(AUTH_UDI_42)}&redirect"
+
     return HttpResponse(
         """
        <h1> HELLO CONNEXION PAGE </h1>
