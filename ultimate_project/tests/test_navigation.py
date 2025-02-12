@@ -1,7 +1,7 @@
 # import re
 from playwright.sync_api import Playwright, sync_playwright  # , expect
 
-# import time
+import time
 
 
 def run(playwright: Playwright) -> None:
@@ -25,16 +25,27 @@ def run(playwright: Playwright) -> None:
     page.on("response", handle_response)
 
     page.goto("http://localhost:8000/")
+    time.sleep(0.4)
     page.get_by_role("textbox", name="Entrez votre nom").click()
+    time.sleep(0.4)
     page.get_by_role("textbox", name="Entrez votre nom").fill("kapouet")
+    time.sleep(0.4)
     page.get_by_role("button", name="Connexion").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Tournament").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Close").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Simple Match").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Close").click()
+    time.sleep(0.4)
     page.goto("http://localhost:8000/test/")
+    time.sleep(0.4)
     page.goto("http://localhost:8000/match/")
+    time.sleep(0.4)
     websocket_connected = False
+    time.sleep(0.4)
 
     def handle_websocket(ws):
         nonlocal websocket_connected
