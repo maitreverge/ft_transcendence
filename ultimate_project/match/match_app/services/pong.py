@@ -34,6 +34,7 @@ class Pong:
 	def __init__(self):
 		Pong.id += 1
 		self.id = Pong.id
+		self.y = 0
 		# self.players = players
 		print("launch init" , flush=True)
 		threading.Thread(target=self.launchTask, daemon=True).start()
@@ -48,26 +49,45 @@ class Pong:
 		# myEventLoop.run_until_complete(self.launch())
 
 	async def launch(self):
+		back = False
 		self.myEventLoop.create_task(self.sendState())
 		while (True):			
-			print(f"game state {self.id}" , flush=True)
+			# print(f"game state {self.id}" , flush=True)
+			# self.y += -1 if back else 1 
+			# # back = True if self.y > 90 elif self.y <= 0 False
+			# if (self.y > 90):
+			# 	back = True
+			# elif (self.y <= 0):
+			# 	back = False
 			# await self.sendState()
-			await asyncio.sleep(1)
+			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
+
+			for p in self.myplayers:
+				if p['dir'] != None:
+					if p['dir'] == 'up':
+						self.y -= 1
+					elif  p['dir'] == 'down':
+						self.y += 1
+					p['dir'] = None
+
+					
+			await asyncio.sleep(0.1)
 
 	# async def sendState(self):
 	# 	while (True):
 	# 		time.sleep(5)
 	# 		print("SEND" , flush=True)
-	async def sendState(self):
+	async def sendState(self):		
 		while (True):
-			print(consumer.players)
+			# print(consumer.players)
 			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
-			print(self.myplayers)
+			# print(self.myplayers)
 			for p in self.myplayers:	
-				print(f"send state {self.id}", flush=True)
-				await p["socket"].send(text_data=f"youhou {self.id} et {p['matchId']}")
+				# print(f"send state {self.id}", flush=True)
+				await p["socket"].send(text_data=f"{self.y}")
+				# await p["socket"].send(text_data=f"youhou {self.id} et {p['matchId']}")
 			# time.sleep(1)
-			await asyncio.sleep(1)
+			await asyncio.sleep(0.1)
 
 
 

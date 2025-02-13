@@ -10,21 +10,27 @@ function init() {
 		console.log("Connexion établie 😊");
 	};
 
+	const p1 = document.getElementById("p1");
 	socket.onmessage = (event) => {
-	console.log("Message reçu :", event.data);
+		// console.log("Message reçu :", event.data);
+		p1.style.top = event.data + "vh"
 	};
 
 	document.addEventListener("keydown", function(event) {
-		if (event.key === "ArrowUp") {
-			event.preventDefault(); // Empêche l'action par défaut
-			console.log("Flèche haut pressée !");
-			if (socket.readyState === WebSocket.OPEN) { // Vérifie si le WebSocket est bien connecté
+		
+		if (socket.readyState === WebSocket.OPEN) { // Vérifie si le WebSocket est bien connecté
 				// socket.send("houlala la fleche du haut est presse daller en haut");//
-				socket.send(JSON.stringify({action: 'move', direction: 'hight'}));
-				console.log("Message envoyé !");
-			} else {
-				console.log("WebSocket non connecté !");
+			if (event.key === "ArrowUp") {
+				event.preventDefault(); // Empêche l'action par défaut
+				// console.log("Flèche haut pressée !");
+				socket.send(JSON.stringify({action: 'move', dir: 'up'}));				
+			} else if (event.key === "ArrowDown") {
+				event.preventDefault();
+				// console.log("Flèche bas pressée !");
+				socket.send(JSON.stringify({action: 'move', dir: 'down'}));
 			}
+		} else {
+			console.log("WebSocket non connecté !");
 		}
 	});
 }

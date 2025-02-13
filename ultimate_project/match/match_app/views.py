@@ -11,7 +11,7 @@ def newMatch(request):
 def startMatch(request : HttpRequest):
     return render(
         request,
-        "match.html",
+        "pong.html",
         {           
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8000"),
