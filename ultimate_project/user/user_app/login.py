@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from .forms import LoginForm
 from urllib.parse import urlencode
 
-def yes_login(request, context):
-    return render(request, "user_app/yes_login.html", context)
+def yes_login(request):
+    return render(request, "user_app/yes_login.html")
 
 
 def add(request):
@@ -30,19 +30,21 @@ def add(request):
 			
             new_user.save()
 
-            url = reverse("login:yes_login")
-            query_string = urlencode({"username": username})
-            return HttpResponseRedirect(f"{url}?{query_string}")
+            # url = reverse("login:yes_login")
+            # query_string = urlencode({"username": username})
+            return HttpResponseRedirect(reverse("login:yes_login"))
             
         else:
-            return render(request, "user_app/login.html", {
+            return render(request, "user_app/signin.html", {
 				# If the form in invalid, we pass to the client the same form he tried to sumbit
 				# So he can actually see what mistakes he made
                 "form": form,
+                "message" : "form not valid",
             })
 
-    return render(request, "user_app/login.html", {
+    return render(request, "user_app/signin.html", {
         "form" : LoginForm(),
+        "message" : "not post request",
     })
 
 

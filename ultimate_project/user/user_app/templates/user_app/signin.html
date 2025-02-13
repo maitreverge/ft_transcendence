@@ -1,8 +1,11 @@
 {% load static %}
 
-<h1> THIS IS CURRENT UID {{ uid }}</h1>
-
 <h1> SIGN IN PAGE</h1>
+
+{% if message %}
+<h1> DEBUG MESSAGE = {{ message }}</h1>
+{% else %}
+{% endif %}
 
 <form action="{% url 'login:add' %}" method="post">
 	{% csrf_token %}
