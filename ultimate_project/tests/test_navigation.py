@@ -25,14 +25,23 @@ def run(playwright: Playwright) -> None:
     page.on("response", handle_response)
 
     page.goto("http://localhost:8000/")
+    time.sleep(0.4)
     page.get_by_role("textbox", name="Entrez votre nom").click()
+    time.sleep(0.4)
     page.get_by_role("textbox", name="Entrez votre nom").fill("kapouet")
+    time.sleep(0.4)
     page.get_by_role("button", name="Connexion").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Tournament").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Close").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Simple Match").click()
+    time.sleep(0.4)
     page.get_by_role("button", name="Close").click()
+    time.sleep(0.4)
     page.goto("http://localhost:8000/test/")
+    time.sleep(0.4)
     page.goto("http://localhost:8000/match/")
 
     # TEST FLO
@@ -40,7 +49,9 @@ def run(playwright: Playwright) -> None:
     page.goto("http://localhost:8000/user/")
     time.sleep(1)
     # TEST FLO
+
     websocket_connected = False
+    time.sleep(0.4)
 
     def handle_websocket(ws):
         nonlocal websocket_connected
@@ -50,10 +61,10 @@ def run(playwright: Playwright) -> None:
     page.on("websocket", handle_websocket)
     page.goto("http://localhost:8000/match/")
     try:
-        if not websocket_connected:
-            raise ValueError("❌ La connexion WebSocket a échoué.")
-        else:
+        if websocket_connected:
             print("✅ La connexion WebSocket est réussie.")
+        else:
+            raise ValueError("❌ La connexion WebSocket a échoué.")
     except ValueError as e:
         print(e)
 

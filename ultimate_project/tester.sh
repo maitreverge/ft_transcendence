@@ -7,6 +7,7 @@ python3 --version > /dev/null 2>&1 || { echo -e "${RED}Python3 is not installed!
 ./tests/test_linters.sh
 ./tests/start_server.sh re
 ./tests/test_playwright.sh
+sleep 3
 ./tests/start_server.sh prod
 ./tests/test_playwright.sh
 
