@@ -14,7 +14,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		print(f"new user connection for match: {self.matchId}", flush=True)
 		await self.accept() 
 		id = len(players) + 1
-		players.append({'id': id, 'socket': self})
+		players.append({'playerId': id, 'matchId': self.matchId, 'socket': self})
 
 	async def disconnect(self, close_code):
 		global players
@@ -24,8 +24,6 @@ class MyConsumer(AsyncWebsocketConsumer):
 				print(p['id'], flush=True)
 		players = [p for p in players if p['socket'] != self]
 		
-		
-
 	async def receive(self, text_data):
 		
 		data = json.loads(text_data)

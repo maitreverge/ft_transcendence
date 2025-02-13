@@ -21,6 +21,6 @@ import match_app.views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("match/", match_app.views.match),
+    path("match/", match_app.views.startMatch),
 	path("match/new-match/", match_app.views.newMatch),
 ]

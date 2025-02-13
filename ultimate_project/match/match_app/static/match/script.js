@@ -2,9 +2,9 @@
 function init() {
 
 	if (window.rasp == "true")
-		socket = new WebSocket(`wss://${window.pidom}/ws/match/${window.matchId}`);
+		socket = new WebSocket(`wss://${window.pidom}/ws/match/${window.matchId}/`);
 	else
-	socket = new WebSocket("ws://localhost:8000/ws/somepath/");
+	socket = new WebSocket(`ws://localhost:8000/ws/match/${window.matchId}/`);
 
 	socket.onopen = () => {
 		console.log("Connexion établie 😊");
