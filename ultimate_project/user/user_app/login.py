@@ -3,6 +3,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from os import getenv
 from django.contrib.auth.models import User
 from .forms import LoginForm
+from urllib.parse import urlencode
+
+def yes_login(request, context):
+    return render(request, "user_app/yes_login.html", context)
+
 
 def add(request):
 
@@ -20,10 +25,14 @@ def add(request):
 			# Extract the field named "task"
             username = request.POST["username"]
             password = request.POST["password"]
+
+            print(f"Username ={username}\nPassword={password}")
 			
             new_user.save()
 
-            return HttpResponseRedirect(reverse("tasks:index", {"username": username}))
+            url = reverse("login:yes_login")
+            query_string = urlencode({"username": username})
+            return HttpResponseRedirect(f"{url}?{query_string}")
             
         else:
             return render(request, "user_app/login.html", {
@@ -32,7 +41,7 @@ def add(request):
                 "form": form,
             })
 
-    return render(request, "user_app/add.html", {
+    return render(request, "user_app/login.html", {
         "form" : LoginForm(),
     })
 
@@ -46,4 +55,4 @@ def sign_in(request):
         "form" : LoginForm()
     }
 
-    return render(request, "user_app/login.html", context)
+    return render(request, "user_app/signin.html", context)
