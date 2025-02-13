@@ -9,8 +9,10 @@ ADDING A CONTAINER:
 - dockerfile: copy paste :)
 - entrypoint.sh: copy paste :)
 - copier fichier requirements.txt
-- nginx: config.dev.conf: add block for static files AND container path
-- nginx: config.dev.prod: add block for container path
+- nginx: config.dev.conf: add block for static files AND container path + change port number (x2)
+- nginx: config.dev.prod: add block for container path + change port number
 - settings: copy paste from tournament
+- add service port to .env file
 
 + for html / css content, refere to existing container, ex: tournament
+
