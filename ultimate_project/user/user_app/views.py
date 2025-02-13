@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 
 def test(request):
-    return render(request, "user.html", {"test": "COUCOU CONNEXION"})
+    return render(request, "user_app/user.html", {"test": "COUCOU CONNEXION"})
 
 
 # Create your views here.
