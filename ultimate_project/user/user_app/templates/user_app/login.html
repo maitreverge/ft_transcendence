@@ -1,0 +1,9 @@
+{% load static %}
+
+<h1> THIS IS CURRENT UID {{ uid }}</h1>
+
+<form action="{% url 'login:add' %}" method="post">
+	{% csrf_token %}
+	{{ form }}
+	<input type="submit">
+</form>

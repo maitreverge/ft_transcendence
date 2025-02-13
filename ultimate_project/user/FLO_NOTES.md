@@ -9,7 +9,7 @@ TO ASK
 PRIORITY
 --------------------------------------------------------------------------------
 # TO FIX :
-- 
+- Create a superuser for django admin
 
 
 # PRIORITY :
