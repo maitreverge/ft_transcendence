@@ -8,10 +8,10 @@ class LoginForm(AuthenticationForm):
     
     # Define a password field with a label "Password", no stripping of whitespace,
     # and a password input widget
-    password = forms.CharField(label="Password", strip=False, widget=forms.PasswordInput)
+    password = forms.CharField()
 
-    class Meta:
-        # Specify the model to use for this form
-        model = User
-        # Define the fields to include in the form
-        fields = ['username', 'password']
+    # class Meta:
+    #     # Specify the model to use for this form
+    #     model = User
+    #     # Define the fields to include in the form
+    #     fields = ['username', 'password']

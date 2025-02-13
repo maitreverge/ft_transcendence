@@ -1,9 +1,12 @@
 from django.shortcuts import render, reverse
-from django.http import HttpResponse, HttpResponseRedirect
-from os import getenv
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from .forms import LoginForm
-from urllib.parse import urlencode
+
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 def yes_login(request):
     return render(request, "user_app/yes_login.html")
@@ -11,11 +14,17 @@ def yes_login(request):
 
 def add(request):
 
+    for _ in range(10):
+        print("HERE")
+    logger.info(request.POST) 
+
     new_user = User()
     if request.method == "POST":
         # request.POST contains all the data the user submited
 		# And we put it 
         form = LoginForm(request.POST)
+
+        logger.info(request.POST) 
 
         # Checking if the form is valid is making both a server side check even
         # if the client-side check seems to be valid.

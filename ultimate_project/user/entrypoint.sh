@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Apply database migrations
+echo "Apply database migrations"
+python manage.py migrate
+
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
 	python manage.py collectstatic --noinput; \
