@@ -30,6 +30,14 @@ services:
     volumes:
       - ./user:/app/
 
+  api_gateway:
+    environment:
+      - env=dev
+    ports:
+      - "${api_gateway_port}:${api_gateway_port}"
+    volumes:
+      - ./api_gateway:/app/
+
   match:
     environment:
       - env=dev
