@@ -17,7 +17,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		print("disconnected", flush=True)
 		for p in players: 
 			if p['socket'] == self:
-				print(p['id'], flush=True)
+				print(p['playerId'], flush=True)
 		players = [p for p in players if p['socket'] != self]
 		
 	async def receive(self, text_data):

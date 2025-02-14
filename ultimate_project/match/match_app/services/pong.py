@@ -4,7 +4,7 @@ import time
 import match_app.services.consumer as consumer
 
 import asyncio
-
+import json
 # class Pong:
 
 # 	id = 0
@@ -34,7 +34,8 @@ class Pong:
 	def __init__(self):
 		Pong.id += 1
 		self.id = Pong.id
-		self.y = 0
+		self.yp1 = 0
+		self.yp2 = 0
 		# self.players = players
 		print("launch init" , flush=True)
 		threading.Thread(target=self.launchTask, daemon=True).start()
@@ -61,17 +62,23 @@ class Pong:
 			# 	back = False
 			# await self.sendState()
 			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
-
+			pad = 0
 			for p in self.myplayers:
 				if p['dir'] != None:
 					if p['dir'] == 'up':
-						self.y -= 1
+						pad -= 1
 					elif  p['dir'] == 'down':
-						self.y += 1
+						pad += 1
+					if p['playerId'] == 1:
+						self.yp1 += pad
+					elif p['playerId'] == 2:
+						self.yp2 += pad
 					p['dir'] = None
+				
+
 
 					
-			await asyncio.sleep(0.1)
+			await asyncio.sleep(0.05)
 
 	# async def sendState(self):
 	# 	while (True):
@@ -84,10 +91,11 @@ class Pong:
 			# print(self.myplayers)
 			for p in self.myplayers:	
 				# print(f"send state {self.id}", flush=True)
-				await p["socket"].send(text_data=f"{self.y}")
+				# await p["socket"].send(text_data=f"{self.y}")
+				await p["socket"].send(text_data=json.dumps({"yp1": self.yp1, "yp2": self.yp2}))
 				# await p["socket"].send(text_data=f"youhou {self.id} et {p['matchId']}")
 			# time.sleep(1)
-			await asyncio.sleep(0.1)
+			await asyncio.sleep(0.05)
 
 
 

@@ -11,9 +11,12 @@ function init() {
 	};
 
 	const p1 = document.getElementById("p1");
+	const p2 = document.getElementById("p2");
 	socket.onmessage = (event) => {
 		// console.log("Message reçu :", event.data);
-		p1.style.top = event.data + "vh"
+		const data = JSON.parse(event.data);
+		p1.style.top = data.yp1 + "vh";
+		p2.style.top = data.yp2 + "vh";
 	};
 
 	document.addEventListener("keydown", function(event) {
