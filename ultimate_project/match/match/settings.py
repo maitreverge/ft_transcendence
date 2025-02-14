@@ -49,9 +49,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "channels",
-	f"{NAME}_app",
+    f"{NAME}_app",
     # f"{NAME}_app.services.testapp.TonAppConfig",
-    
 ]
 
 CHANNEL_LAYERS = {
@@ -83,7 +82,7 @@ TEMPLATES = [
         "DIRS": [],
         "APP_DIRS": not DEBUG,
         "OPTIONS": {
-			"debug": DEBUG,  # ✅ Forcer le rechargement des templates          
+            "debug": DEBUG,  # ✅ Forcer le rechargement des templates
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -94,7 +93,7 @@ TEMPLATES = [
     },
 ]
 
-if DEBUG:  # ✅ Forcer le rechargement des templates 
+if DEBUG:  # ✅ Forcer le rechargement des templates
     TEMPLATES[0]["OPTIONS"]["loaders"] = [
         "django.template.loaders.filesystem.Loader",
         "django.template.loaders.app_directories.Loader",

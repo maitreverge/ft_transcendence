@@ -2,12 +2,15 @@
 from django.apps import AppConfig
 import threading
 import time
+
+
 class TonAppConfig(AppConfig):
-    name = 'match_app'
+    name = "match_app"
 
     def ready(self):
         # Code à exécuter au démarrage de l'app
         threading.Thread(target=ma_tache_de_fond, daemon=True).start()
+
 
 def ma_tache_de_fond():
     while True:

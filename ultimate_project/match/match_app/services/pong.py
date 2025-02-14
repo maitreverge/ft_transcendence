@@ -71,7 +71,7 @@ class Pong:
 					p['dir'] = None
 
 					
-			await asyncio.sleep(0.1)
+			await asyncio.sleep(0.01)
 
 	# async def sendState(self):
 	# 	while (True):
@@ -87,7 +87,7 @@ class Pong:
 				await p["socket"].send(text_data=f"{self.y}")
 				# await p["socket"].send(text_data=f"youhou {self.id} et {p['matchId']}")
 			# time.sleep(1)
-			await asyncio.sleep(0.1)
+			await asyncio.sleep(0.01)
 
 
 
