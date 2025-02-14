@@ -1,3 +1,8 @@
-body {
+
+#myh1 {
+	display:block;
+	width:auto;
+	height:auto;
+	color: rgb(191, 34, 181);
 	background-color: rgb(30, 222, 200);
 }

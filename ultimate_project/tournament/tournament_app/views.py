@@ -9,6 +9,7 @@ def test(request):
 
 
 def start_tournament(request):
+    return render(request, "test.html", {"touille": "champion du bidulee"})
     return HttpResponse(
         """
         <div class="overlay">
@@ -20,3 +21,5 @@ def start_tournament(request):
         </div>
     """
     )
+
+

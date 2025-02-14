@@ -62,18 +62,44 @@ class Pong:
 			# 	back = False
 			# await self.sendState()
 			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
-			pad = 0
-			for p in self.myplayers:
-				if p['dir'] != None:
-					if p['dir'] == 'up':
-						pad -= 1
-					elif  p['dir'] == 'down':
-						pad += 1
-					if p['playerId'] == 1:
-						self.yp1 += pad
-					elif p['playerId'] == 2:
-						self.yp2 += pad
-					p['dir'] = None
+			if len(self.myplayers) >= 2:
+				if self.myplayers[0]["dir"] is not None :
+					if self.myplayers[0]["dir"] == 'up':
+						self.yp1 -= 1
+					elif self.myplayers[0]["dir"] == 'down':
+						self.yp1 += 1
+					self.myplayers[0]["dir"] = None
+				if self.myplayers[1]["dir"] is not None :
+					if self.myplayers[1]["dir"] == 'up':
+						self.yp2 -= 1
+					elif self.myplayers[1]["dir"] == 'down':
+						self.yp2 += 1
+					self.myplayers[1]["dir"] = None
+
+			# pad = 0
+			# for p in self.myplayers:
+			# 	if p['dir'] != None:
+			# 		if p['dir'] == 'up':
+			# 			pad -= 1
+			# 		elif  p['dir'] == 'down':
+			# 			pad += 1
+			# 		if p['playerId'] == 1:
+			# 			self.yp1 += pad
+			# 		elif p['playerId'] == 2:
+			# 			self.yp2 += pad
+			# 		p['dir'] = None
+			# pad = 0
+			# for p in self.myplayers:
+			# 	if p['dir'] != None:
+			# 		if p['dir'] == 'up':
+			# 			pad -= 1
+			# 		elif  p['dir'] == 'down':
+			# 			pad += 1
+			# 		if p['playerId'] == 1:
+			# 			self.yp1 += pad
+			# 		elif p['playerId'] == 2:
+			# 			self.yp2 += pad
+			# 		p['dir'] = None
 				
 
 
