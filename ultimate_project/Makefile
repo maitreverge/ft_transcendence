@@ -6,7 +6,7 @@
 #    By: seblin <seblin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/01/31 11:31:58 by seblin           ###   ########.fr        #
+#    Updated: 2025/02/07 14:57:35 by seblin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,8 +25,6 @@ clean:
 	rm -rf staticfiles/*
 
 re: clean all
-
-
 
 # all:
 # 	docker-compose up

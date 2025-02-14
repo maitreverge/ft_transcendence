@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
-pi_domain = os.getenv("PI_DOMAIN", "default_value_if_not_set")
-
 NAME = os.getenv("name")
+
+PI_DOMAIN = os.getenv("pi_domain")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,13 +30,15 @@ SECRET_KEY = "django-insecure-\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*", f"{pi_domain}"]
+ALLOWED_HOSTS = ["*", f"{PI_DOMAIN}"]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    f"https://{pi_domain}",
+    f"https://{PI_DOMAIN}",
 ]
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,11 +48,21 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "channels",
     f"{NAME}_app",
+    # f"{NAME}_app.services.testapp.TonAppConfig",
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        # Utilise la mémoire pour les messages #! prod: redis
+    },
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # ! static files with daphne
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -59,14 +71,18 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# ! for static file with daphne
+
 ROOT_URLCONF = f"{NAME}.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
-        "APP_DIRS": True,
+        "APP_DIRS": not DEBUG,
         "OPTIONS": {
+            "debug": DEBUG,  # ✅ Forcer le rechargement des templates
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -77,8 +93,14 @@ TEMPLATES = [
     },
 ]
 
+if DEBUG:  # ✅ Forcer le rechargement des templates
+    TEMPLATES[0]["OPTIONS"]["loaders"] = [
+        "django.template.loaders.filesystem.Loader",
+        "django.template.loaders.app_directories.Loader",
+    ]
+
 WSGI_APPLICATION = f"{NAME}.wsgi.application"
-# ASGI_APPLICATION = f"{NAME}.asgi.application"
+ASGI_APPLICATION = f"{NAME}.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

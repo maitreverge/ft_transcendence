@@ -1,7 +1,12 @@
 # import re
 from playwright.sync_api import Playwright, sync_playwright  # , expect
 
-# import time
+with open(".env", "r") as file:
+    for line in file:
+        if line.startswith("PI_DOMAIN="):
+            PI_DOMAIN = line.split("=")[1].strip()
+            print(PI_DOMAIN)
+            break
 
 
 def run(playwright: Playwright) -> None:
@@ -22,9 +27,14 @@ def run(playwright: Playwright) -> None:
     page.on("request", handle_request)
     page.on("response", handle_response)
 
+    # def handle_response(response):
+    #     if response.status == 404:
+    #         print(f"Erreur 404 détectée pour : {response.url}")
+    #         raise Exception(f"Erreur 404 sur la ressource: {response.url}")
+
     page.on("response", handle_response)
 
-    page.goto("http://localhost:8000/")
+    page.goto(f"https://{PI_DOMAIN}/")
     page.get_by_role("textbox", name="Entrez votre nom").click()
     page.get_by_role("textbox", name="Entrez votre nom").fill("kapouet")
     page.get_by_role("button", name="Connexion").click()
@@ -32,8 +42,8 @@ def run(playwright: Playwright) -> None:
     page.get_by_role("button", name="Close").click()
     page.get_by_role("button", name="Simple Match").click()
     page.get_by_role("button", name="Close").click()
-    page.goto("http://localhost:8000/test/")
-    page.goto("http://localhost:8000/match/")
+    page.goto(f"https://{PI_DOMAIN}/test/")
+    page.goto(f"https://{PI_DOMAIN}/match/")
     websocket_connected = False
 
     def handle_websocket(ws):
@@ -42,7 +52,7 @@ def run(playwright: Playwright) -> None:
         print(f"🔌 WebSocket connectée à : {ws.url}")
 
     page.on("websocket", handle_websocket)
-    page.goto("http://localhost:8000/match/")
+    page.goto(f"http://{PI_DOMAIN}/match/")
     try:
         if not websocket_connected:
             raise ValueError("❌ La connexion WebSocket a échoué.")
