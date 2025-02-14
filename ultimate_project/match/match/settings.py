@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "channels",
     f"{NAME}_app",
+    # f"{NAME}_app.services.testapp.TonAppConfig",
 ]
 
 CHANNEL_LAYERS = {
@@ -79,8 +80,9 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
-        "APP_DIRS": True,
+        "APP_DIRS": not DEBUG,
         "OPTIONS": {
+            "debug": DEBUG,  # ✅ Forcer le rechargement des templates
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
@@ -90,6 +92,12 @@ TEMPLATES = [
         },
     },
 ]
+
+if DEBUG:  # ✅ Forcer le rechargement des templates
+    TEMPLATES[0]["OPTIONS"]["loaders"] = [
+        "django.template.loaders.filesystem.Loader",
+        "django.template.loaders.app_directories.Loader",
+    ]
 
 WSGI_APPLICATION = f"{NAME}.wsgi.application"
 ASGI_APPLICATION = f"{NAME}.asgi.application"
