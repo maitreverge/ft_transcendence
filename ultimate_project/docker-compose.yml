@@ -41,7 +41,7 @@ services:
     restart: always
 
   match:
-    container_name: ctn_match
+    container_name: ctn-match
     build :
       context: ./match/
     environment:

@@ -1,17 +1,19 @@
 {% load static %}
-<head>
-	<link rel="stylesheet" href="{% static 'match/styles.css' %}">
-	<script>
-		window.rasp = "{{ rasp }}"; 
-		window.pidom = "{{ pidom }}";
-		window.matchId = "{{ matchId }}";
-	</script>
+<div>
+	<head>
+		<link rel="stylesheet" href="{% static 'match/styles.css' %}">
+		<script>
+			window.rasp = "{{ rasp }}"; 
+			window.pidom = "{{ pidom }}";
+			window.matchId = "{{ matchId }}";
+			</script>
 	<script src="{% static 'match/script.js' %}"></script>
 	<h1> match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}</h1>
 </head>
+</div>
 
-<body>	
+<div>	
 	<button onclick="launch()"> launch match </button>
 	<div id="p1"></div>
 	<div id="p2"></div>
-</body>
+</div>
