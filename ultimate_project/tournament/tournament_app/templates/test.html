@@ -5,9 +5,19 @@
 		<script src="{% static 'tournament/script.js' %}"></script>
 	</head>
 </div>
-<h1 id ="myh1"> Match Data: {{matchData}}</h1>
-
-<button
-	hx-get="/match/?matchId={{matchData.id}}/" 
-	hx-target="#overlay-content">New Match</button>
-<div id="overlay-content"></div>
+<div id="tournament">
+	<h1>Tournament</h1>
+	<h2 id ="myh1">
+		j'ai appelé "http://ctn-match:8002/match/new-match/"
+		> .views.newMatch et j'ai
+		recu l'identifiant du match qui m'est attribué,
+		j'aurai surement besoin de l'id du joueur qui m'est attribué dans l'avenir.
+	</h2>
+	<h2 id ="myh1"> Match Data: {{matchData}}</h2>
+	
+	<button
+		hx-get="/match/?matchId={{matchData.id}}/" 
+		hx-target="#overlay-startmatch">
+		Connect to Match /match/?matchId={{matchData.id}}/ > .views.startMatch</button>
+	<div id="overlay-startmatch"></div>
+</div>

@@ -9,6 +9,7 @@ def newMatch(request):
     return JsonResponse({"id":f"{pong.id}"}, status=201)
 
 def startMatch(request : HttpRequest):
+    # return HttpResponse("<h1>TEST</h1>")
     return render(
         request,
         "pong.html",

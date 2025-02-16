@@ -37,11 +37,11 @@ class Pong:
 		self.yp1 = 0
 		self.yp2 = 0
 		# self.players = players
-		print("launch init" , flush=True)
+		print("launch init", flush=True)
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
 	def launchTask(self):
-		print("launch task" , flush=True)
+		print("launch task", flush=True)
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)
 		self.myEventLoop.create_task(self.launch())
