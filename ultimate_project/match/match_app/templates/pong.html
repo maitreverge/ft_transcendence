@@ -1,21 +1,20 @@
 {% load static %}
-<div id="match">
-	<div>
-		<head>
-			<link rel="stylesheet" href="{% static 'match/styles.css' %}">
-			<script>
-				window.rasp = "{{ rasp }}"; 
-			window.pidom = "{{ pidom }}";
-			window.matchId = "{{ matchId }}";
-			</script>
+<div style="display:none">
+	<head>
+		<link rel="stylesheet" href="{% static 'match/styles.css' %}">
+		<script>
+			window.rasp = "{{ rasp }}"; 
+				window.pidom = "{{ pidom }}";
+				window.matchId = "{{ matchId }}";
+		</script>
 		<script src="{% static 'match/script.js' %}"></script>
-		<h1>Match</h1>
-		
-		<h2>j'ai recu l'identifiant du match par query string</h2>
-		<h2>match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}</h2>
 	</head>
+<div>		
+<div id="match">
+	<h1>Match</h1>
+	<h2>j'ai recu l'identifiant du match par query string</h2>
+	<h2>match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}</h2>
 	
-		<div>	
 			<button onclick="launch()">
 				launch match, clique et je vais connecter les websockets via l'id du match</button>
 			<div id="p1"></div>

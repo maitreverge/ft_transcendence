@@ -1,0 +1,44 @@
+{% load static %}
+<div style="display:none;">
+	<head>
+		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
+		<script>
+			window.rasp = "{{ rasp }}"; 
+			window.pidom = "{{ pidom }}";	
+			window.simpleUsers = "{{ simpleUsers }}";			
+		</script>
+		<script src="{% static 'tournament/script.js' %}" onload="initWs()">;</script>
+	</head>
+</div>	
+<div id="simple-selections">
+	<h1>Simple - Selections</h1>
+	<h2 id ="myh1">
+		Je dois choisir un joueur et envoyer mon choix a tournament! !
+	</h2>
+	<div id="users">
+		{% for user in simpleUsers %}
+		 	<div
+				class="user"			
+				onclick="console.log(`choice: {{user.playerId}}`); window.userIdChosen ='{{ user.playerId }}';
+				this.style.backgroundColor = 'red'"
+				
+				>user {{user.playerId}}</div>
+		{% endfor %}
+	</div>
+	<button id ="startMatchButton"
+		hx-get="/tournament/start-match/" 
+		hx-target="#overlay-startmatch">
+		Envoyer le choix a Match/tournament/start-match/ > .views.start_match</button>
+	<div id="overlay-startmatch"></div>
+	<script>
+		// Assure-toi que userIdChosen est initialisé
+		window.userIdChosen = null;
+	
+		// Avant que htmx n'envoie la requête, on modifie l'URL avec le paramètre choisi
+		document.body.addEventListener("htmx:configRequest", function(evt) {
+			if(evt.detail.elt.id === "startMatchButton" && window.userIdChosen !== null){
+				evt.detail.path = "/tournament/start-match/?select=" + window.userIdChosen;
+			}
+		});
+	</script>
+</div>

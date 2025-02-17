@@ -8,15 +8,14 @@
 <div id="tournament-selections">
 	<h1>Tournament - Selections</h1>
 	<h2 id ="myh1">
-		Je dois choisir un joueur et envoyer mon choix a tournament-match {{tournamentUsers.0.id}}
+		Je dois choisir un joueur et envoyer mon choix a tournament
 	</h2>
 	<div id="users">
 		{% for user in tournamentUsers %}
 		 	<div
 				class="user"
-				hx-get=""
-				hx-
-				>user</div>
+				
+				>user: {{user.id}}</div>
 		{% endfor %}
 	</div>
 	<button
