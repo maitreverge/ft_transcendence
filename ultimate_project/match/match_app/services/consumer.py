@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+import urllib
 
 players = []
 
@@ -7,10 +8,13 @@ class MyConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		self.matchId = self.scope["url_route"]["kwargs"]["match_id"]    
+		query_string = self.scope["query_string"].decode()  
+		params = urllib.parse.parse_qs(query_string)
+		playerId = params.get("playerId", [None])[0]
 		print(f"new user connection for match: {self.matchId}", flush=True)
 		await self.accept() 
-		id = len(players) + 1
-		players.append({'playerId': id, 'matchId': self.matchId, 'socket': self, 'dir': None})
+		# id = len(players) + 1
+		players.append({'playerId': playerId, 'matchId': self.matchId, 'socket': self, 'dir': None})
 
 	async def disconnect(self, close_code):
 		global players

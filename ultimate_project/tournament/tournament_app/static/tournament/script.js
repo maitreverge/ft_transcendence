@@ -29,6 +29,20 @@ function updateUsersList(players) {
     });
 }
 
+function makeChoice(selfId) {
+	document.getElementById("player").innerText = 
+	"Je suis le joueur " + selfId;
+		   // Assure-toi que userIdChosen est initialisé
+   window.userIdChosen = null;
+
+   // Avant que htmx n'envoie la requête, on modifie l'URL avec le paramètre choisi
+   document.body.addEventListener("htmx:configRequest", function(evt) {
+	   if(evt.detail.elt.id === "startMatchButton" && window.userIdChosen !== null){
+		   evt.detail.path = "/tournament/start-match/?selfid=" + selfId + "&select=" + window.userIdChosen;
+	   }
+   });
+}
+
 function initWs() {
 	console.log("initWs");
 	if (window.rasp == "true")
@@ -45,7 +59,21 @@ function initWs() {
 	socket.onmessage = (event) => {
 		console.log("Message reçu :", event.data);
 		const data = JSON.parse(event.data);
-		updateUsersList(data);
+		if (data.type == "selfAssign")	
+			makeChoice(data.selfId);	
+		// 	document.getElementById("player").innerText = 
+		//  "Je suis le joueur " + data.selfId;
+		// 		// Assure-toi que userIdChosen est initialisé
+		// window.userIdChosen = null;
+	
+		// // Avant que htmx n'envoie la requête, on modifie l'URL avec le paramètre choisi
+		// document.body.addEventListener("htmx:configRequest", function(evt) {
+		// 	if(evt.detail.elt.id === "startMatchButton" && window.userIdChosen !== null){
+		// 		evt.detail.path = "/tournament/start-match/selfid=?select=" + window.userIdChosen;
+		// 	}
+		// });
+		else if (data.type == "playerList")
+			updateUsersList(data.players);
 		// p1.style.top = data.yp1 + "vh";
 		// p2.style.top = data.yp2 + "vh";
 	};

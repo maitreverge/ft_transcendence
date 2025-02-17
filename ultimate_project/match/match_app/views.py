@@ -16,7 +16,8 @@ def startMatch(request : HttpRequest):
         {           
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8000"),
-            "matchId": request.GET.get("matchId", "0")
+            "matchId": request.GET.get("matchId", "0"),
+            "playerId": request.GET.get("playerId", "0")
         },
     )
 

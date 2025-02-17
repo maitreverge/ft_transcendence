@@ -4,12 +4,13 @@
 		<link rel="stylesheet" href="{% static 'match/styles.css' %}">
 		<script>
 			window.rasp = "{{ rasp }}"; 
-				window.pidom = "{{ pidom }}";
-				window.matchId = "{{ matchId }}";
+			window.pidom = "{{ pidom }}";
+			window.matchId = "{{ matchId }}"
+			window.playerId = "{{ playerId }}";
 		</script>
 		<script src="{% static 'match/script.js' %}"></script>
 	</head>
-<div>		
+</div>		
 <div id="match">
 	<h1>Match</h1>
 	<h2>j'ai recu l'identifiant du match par query string</h2>

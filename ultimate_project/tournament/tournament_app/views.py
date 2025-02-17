@@ -26,7 +26,8 @@ def receive_invit(request):
 
 def start_match(request):
 
-	p1 = simpleUsers[0].id
+	# p1 =consumer.players[''].id
+	p1 = request.GET.get('selfid')
 	p2 = request.GET.get('select')
 	# print(f"select:{select}", flush=True)
 	data = requests.get(f"http://ctn-match:8002/match/new-match/?p1={p1}&p2={p2}").json() #! opti url and gateway!!!

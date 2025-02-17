@@ -13,8 +13,9 @@ class MyConsumer(AsyncWebsocketConsumer):
 		id = len(players) + 1
 		players.append({'playerId': id})
 		selfPlayers.append({'socket': self})
+		await self.send(text_data=json.dumps({"type": "selfAssign", "selfId": id})) 
 		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps(players)) #change for channels
+			await selfplay['socket'].send(text_data=json.dumps({"type": "playerList", "players": players})) #change for channels
 
 	async def disconnect(self, close_code):
 		global players

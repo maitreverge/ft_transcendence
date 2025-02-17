@@ -4,7 +4,10 @@ function init() {
 	if (window.rasp == "true")
 		socket = new WebSocket(`wss://${window.pidom}/ws/match/${window.matchId}/`);
 	else
-	socket = new WebSocket(`ws://localhost:8000/ws/match/${window.matchId}/`);
+	{
+		console.log(`playerId: ${window.playerId}`)
+		socket = new WebSocket(`ws://localhost:8000/ws/match/${window.matchId}/?playerId=${window.playerId}`);
+	}
 
 	socket.onopen = () => {
 		console.log("Connexion établie 😊");

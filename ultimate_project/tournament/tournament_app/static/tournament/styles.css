@@ -22,10 +22,10 @@
 }
 
 #overlay-startmatch {
-	/* position:relative;
+	position:relative;
 	display:block;
-	top:0; */
-    background: white;
+	top:0;
+    /* background: white; */
     margin: 10px;   
 }
 

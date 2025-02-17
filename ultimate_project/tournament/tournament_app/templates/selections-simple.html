@@ -15,6 +15,8 @@
 	<h2 id ="myh1">
 		Je dois choisir un joueur et envoyer mon choix a tournament! !
 	</h2>
+	<h2 id="player">Je suis le joueur ...</h2>
+
 	<div id="users">
 		{% for user in simpleUsers %}
 		 	<div
@@ -30,15 +32,15 @@
 		hx-target="#overlay-startmatch">
 		Envoyer le choix a Match/tournament/start-match/ > .views.start_match</button>
 	<div id="overlay-startmatch"></div>
-	<script>
+	<!-- <script>
 		// Assure-toi que userIdChosen est initialisé
 		window.userIdChosen = null;
 	
 		// Avant que htmx n'envoie la requête, on modifie l'URL avec le paramètre choisi
 		document.body.addEventListener("htmx:configRequest", function(evt) {
 			if(evt.detail.elt.id === "startMatchButton" && window.userIdChosen !== null){
-				evt.detail.path = "/tournament/start-match/?select=" + window.userIdChosen;
+				evt.detail.path = "/tournament/start-match/selfid=?select=" + window.userIdChosen;
 			}
 		});
-	</script>
+	</script> -->
 </div>
