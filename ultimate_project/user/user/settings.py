@@ -47,16 +47,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    f"{NAME}_app",
+    "user_app",
+    "auth_app",
+    # f"{NAME}_app",
 
     # allauth mandatory apps
-    'allauth',
-    'allauth.account',
+    # 'allauth',
+    # 'allauth.account',
 
     # allauth socials optionals apps
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.oauth2',
-    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.oauth2',
+    # 'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.github',
     # 'allauth.socialaccount.providers.apple',
     # 'allauth.socialaccount.providers.facebook',
@@ -72,7 +74,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 
     # allauth middleware
-    "allauth.account.middleware.AccountMiddleware",
+    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -160,21 +162,3 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
-# Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    '42_oauth2': {
-        'APP': { # 'APP' is a mandatory name for OAuth2 provider.
-            'client_id': 'your_42_client_id',
-            'secret': 'your_42_client_secret',
-            'key': ''
-        }
-    },
-    # 'google': {
-    #         'APP': { # 'APP' is a mandatory name for OAuth2 provider.
-    #         'client_id': 'your_42_client_id',
-    #         'secret': 'your_42_client_secret',
-    #         'key': ''
-    #     }
-    # },
-}
