@@ -47,21 +47,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "user_app",
-    "auth_app",
-    # f"{NAME}_app",
-
-    # allauth mandatory apps
-    # 'allauth',
-    # 'allauth.account',
-
-    # allauth socials optionals apps
-    # 'allauth.socialaccount',
-    # 'allauth.socialaccount.providers.oauth2',
-    # 'allauth.socialaccount.providers.google',
-    # 'allauth.socialaccount.providers.github',
-    # 'allauth.socialaccount.providers.apple',
-    # 'allauth.socialaccount.providers.facebook',
 ]
 
 MIDDLEWARE = [
@@ -72,9 +57,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
-    # allauth middleware
-    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"

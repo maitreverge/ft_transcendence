@@ -1,7 +1,11 @@
 #!/bin/bash
 
+# Make the scripts fails if any command fails
+set -e
+
 # Apply database migrations
 echo "Apply database migrations"
+python manage.py makemigrations
 python manage.py migrate
 
 if [ "${env}" = "prod" ]; then \
