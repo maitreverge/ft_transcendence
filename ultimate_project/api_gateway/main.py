@@ -46,9 +46,8 @@ app = FastAPI()
 # Définition des containers
 services = {
     "tournament": "http://tournament:8001",
-    "match": "http://ctn_match:8002",
-    "user": "http://ctn_user:8004",
-    "static_files": "http://ctn_static_files:8003",
+    "match": "http://match:8002",
+    "user": "http://user:8004",
 }
 
 # Fonction pour proxy une requête
@@ -66,15 +65,11 @@ async def tournament_proxy(path: str):
 
 @app.get("/match/{path:path}")
 async def match_proxy(path: str):
-    return await proxy_request("match", f"/{path}")
+    return await proxy_request("match", f"/match/{path}")
 
 @app.get("/user/{path:path}")
 async def user_proxy(path: str):
-    return await proxy_request("user", f"/{path}")
-
-@app.get("/static/static_files/{path:path}")
-async def static_files_proxy(path: str):
-    return await proxy_request("static_files", f"/static/static_files/{path}")
+    return await proxy_request("user", f"/user/{path}")
 
 if __name__ == "__main__":
     import uvicorn
