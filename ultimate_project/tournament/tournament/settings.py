@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*", f"https://{PI_DOMAIN}"]
+ALLOWED_HOSTS = ["*", "ctn_tournament:8001", "ctn_tournament", "ctn_api_gateway", "api_gateway"]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
