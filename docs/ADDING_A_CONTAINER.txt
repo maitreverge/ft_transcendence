@@ -6,6 +6,7 @@ ADDING A CONTAINER:
 - python3 manage.py startapp <project_name>_app
 - create folders in project_name/project_name_app/static/project_name/style.css, following other's struct
 - docker-compose (+.override): copy existing container config + adapt
+- Add a new port in `.env`
 - dockerfile: copy paste :)
 - entrypoint.sh: copy paste :)
 - copier fichier requirements.txt
