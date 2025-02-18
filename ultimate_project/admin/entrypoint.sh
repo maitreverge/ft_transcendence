@@ -4,14 +4,17 @@
 set -e
 
 # Create superuser if it does not exist
-if [ "${env}" = "prod" ]; then
-	cat << EOF | python manage.py shell
+cat << EOF | python manage.py shell
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
-if not User.objects.filter(username='admin').exists():
-	User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')
+if not User.objects.filter(is_superuser=True).exists():
+    User.objects.create_superuser(username='admin', password='admin', email='admin@email.com')
+    print("Superuser created.")
+else:
+    print("Superuser already exists.")
 EOF
-fi
+
 
 python manage.py makemigrations
 python manage.py migrate
