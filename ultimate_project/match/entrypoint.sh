@@ -5,6 +5,6 @@ if [ "${env}" = "prod" ]; then \
 	python manage.py collectstatic --noinput; \
 fi
 
-daphne -b 0.0.0.0 -p ${port} ${name}.asgi:application; \
+daphne -b 0.0.0.0 -p ${port} ${name}.asgi:application
 
 exec "$@"
