@@ -9,6 +9,8 @@ def index(request):
         return HttpResponseRedirect(reverse("login"))
 
 def login_view(request):
+    if request.method == "POST":
+        pass
     return render(request, "auth_app/login.html")
 
 def signin_view(request):
