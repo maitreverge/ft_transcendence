@@ -1,7 +1,18 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 # Create your views here.
 def index(request):
-    return render(request, "auth_app/index.html", {
-        "title" : "WELCOME TO AUTH PAGE"
-    })
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+
+def login_view(request):
+    return render(request, "auth_app/login.html")
+
+def signin_view(request):
+    pass
+
+def logout_view(request):
+    pass

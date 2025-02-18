@@ -9,7 +9,8 @@ TO ASK
 PRIORITY
 --------------------------------------------------------------------------------
 # TO FIX :
-- Create a superuser for django admin
+- Create a superuser for django admin (potentially create an new container )
+
 
 
 # PRIORITY :
