@@ -96,11 +96,9 @@ services:
       - name=postgres
       - pi_domain=${PI_DOMAIN}
       - port=${postgres_port}
-      - POSTGRES_DB: ${POSTGRES_DB}
-      - POSTGRES_USER: ${POSTGRES_USER}
-      - POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      - POSTGRES_HOST: ${POSTGRES_HOST}
-      - POSTGRES_PORT: ${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     env_file:
       - .env
     # HOST_PORT:CONTAINER_PORT
@@ -114,7 +112,7 @@ services:
       start_period: 30s
     volumes:
       - postgres_volume:/var/lib/postgresql/data
-      - ./postgres/init_db.sh:/docker-entrypoint-initdb.d/init_db.sh
+      - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     networks:
       - transcendence_network
     restart: always

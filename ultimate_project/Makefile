@@ -6,7 +6,7 @@
 #    By: flverge <flverge@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 13:35:00 by seblin            #+#    #+#              #
-#    Updated: 2025/02/19 09:56:49 by flverge          ###   ########.fr        #
+#    Updated: 2025/02/19 16:41:48 by flverge          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ all: install_compose create_volume
 prod: install_compose clean 
 	-docker compose -f docker-compose.yml up --build
 
-clean: delete_volume
+clean:
 	-docker stop $$(docker ps -qa)
 	-docker rm $$(docker ps -qa)
 # -docker rmi $$(docker images -qa)
@@ -37,6 +37,7 @@ create_volume:
 	@sudo mkdir -p /home/volumes_transcendence/postgres
 	@echo "\n\033[1;32m***| PostgreSQL Volumes Created |***\033[0m\n"
 
+# Using this rule actually deletes the DB. Run it at your own risks.
 delete_volume:
 	@echo "\n\033[1;33m***| Deleting PostgreSQL volumes |***\033[0m\n"
 	@sudo rm -rf /home/volumes_transcendence/postgres
