@@ -1,20 +1,28 @@
+✅
+⛔
+🟧 
 --------------------------------------------------------------------------------
 TO ASK
 --------------------------------------------------------------------------------
 
 - Shift from `-environment` to `-env_file` in compose ?
+- Make the posgreSQL works with the compose-prod
 
 
 --------------------------------------------------------------------------------
-PRIORITY
+TOUDOU LIST
 --------------------------------------------------------------------------------
 # TO FIX :
-- Create a superuser for django admin (potentially create an new container )
-
 
 
 # PRIORITY :
-- 
+- ⛔ Create a dummy model + Connect A regular container to the DB
+- ⛔ Connect Django Admin to the DB
+- ⛔ Make Django Admin connect to the db and write in it (double check with SQL queries straight in the container)
+- ⛔ Connect another container with another models
+- ⛔ Connect another model to the DB, and with Django Admin again
+
+- Write doc on what to change for others (migrations, ect...)
 
 
 --------------------------------------------------------------------------------
@@ -41,12 +49,3 @@ WIP
 --------------------------------------------------------------------------------
 DUMP
 --------------------------------------------------------------------------------
-
-## LOGIN IDEAS DUMP :
-
-### LOG IN
-
-
-### SIGN UP
-
-- Make the basic ideas necessary for 
