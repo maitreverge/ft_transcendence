@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.middleware import csrf
 from django.template import Context, Template
+from django.utils.translation import gettext as _
 
 
 def index(request):
     username = request.session.get("username")
-    return render(request, "index.html", {"username": username})
+    message = _("Hello, world!")
+    return render(request, "index.html", {"username": username, "message": message})
 
 
 def login_form(request):

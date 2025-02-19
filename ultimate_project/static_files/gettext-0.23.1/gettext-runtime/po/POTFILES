@@ -1,0 +1,3 @@
+     ../src/envsubst.c \
+     ../src/gettext.c \
+     ../src/ngettext.c
