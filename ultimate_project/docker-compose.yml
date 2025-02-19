@@ -89,9 +89,41 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
+  postgres:
+    image: postgres:17
+    container_name: ctn_postgres
+    restart: always
+    environment:
+      - name=postgres
+      - pi_domain=${PI_DOMAIN}
+      - port=${postgres_port}
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+      # - ./init-scripts:/docker-entrypoint-initdb.d
+
 volumes:
+  
+  # Seb Static files volumes
   staticvol:
     driver: local
+  
+  postgres_volume:
+    # Use the local driver for the volume
+    driver: local
+    # Define a name of the volume which serves as identifier for containers
+    name: postgres_volume
+    driver_opts:
+      # Specify the type as 'none' to use a bind mount
+      type: none
+      # When assigned to a container, the mariadb_volume will reflect what's in this specified path.
+      device: '/home/volumes_transcendence/postgres'
+      # Bind the specified host path to the volume
+      o: bind
+
 
 networks:
   transcendence_network:
