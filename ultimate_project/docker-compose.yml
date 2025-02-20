@@ -91,23 +91,23 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
-  admin:
-    container_name: ctn_admin
-    build :
-      context: ./admin/
-    environment:
-      - env=prod
-      - name=admin
-      - port=${admin_port}
-      - pi_domain=${PI_DOMAIN} # maybe not set up yet
-    env_file: # ! Maybe delete depending on which postgres data I need
-      - .env
-    image: img_admin
-    networks:
-      - transcendence_network
-    volumes:
-      - staticvol:/app/staticfiles
-    restart: always
+  # admin:
+  #   container_name: ctn_admin
+  #   build :
+  #     context: ./admin/
+  #   environment:
+  #     - env=prod
+  #     - name=admin
+  #     - port=${admin_port}
+  #     - pi_domain=${PI_DOMAIN} # maybe not set up yet
+  #   env_file: # ! Maybe delete depending on which postgres data I need
+  #     - .env
+  #   image: img_admin
+  #   networks:
+  #     - transcendence_network
+  #   volumes:
+  #     - staticvol:/app/staticfiles
+  #   restart: always
 
   postgres:
     image: postgres:latest

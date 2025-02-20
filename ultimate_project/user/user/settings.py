@@ -86,10 +86,23 @@ ASGI_APPLICATION = f"{NAME}.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# ! OLD DEFAULT SQLITE3 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+# ! NEW POSTGRES 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'transc_db', # Name of the Database
+        'USER': 'user1', # Username for accessing the database
+        'PASSWORD': 'password', # Password for the database user.
+        'HOST': 'postgres', # Hostname where the database server is running.
+        'PORT': '5432', # Port number on which the database server is listening.
     }
 }
 

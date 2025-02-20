@@ -8,11 +8,26 @@ TO ASK
 - Shift from `-environment` to `-env_file` in compose ?
 - Make the posgreSQL works with the compose-prod
 
+--------------------------------------------------------------------------------
+WIP
+--------------------------------------------------------------------------------
+## DB linking with Postgres :
+
+- Now admin container if OFF
+
+- Test admin inside users
+- Test creating stuff with user admin
+- Restart containers and check
+
+
+Container `users` with an admin makes the build crash
+- Need to fix ngninx with healchecks
 
 --------------------------------------------------------------------------------
 TOUDOU LIST
 --------------------------------------------------------------------------------
 # TO FIX :
+- Make ngnix start after all containers are healthy
 
 
 # PRIORITY :
@@ -33,16 +48,6 @@ TO SEARCH
 --------------------------------------------------------------------------------
 
 
---------------------------------------------------------------------------------
-WIP
---------------------------------------------------------------------------------
-## USER MANAGEMENT :
-
-- Create a very simple sign in / Log In / Logout system
-
-- Make this login with username + password only
-- Store those logins in a model
-- Sync this model in a DB
 
 
 
