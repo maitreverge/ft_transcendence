@@ -9,6 +9,7 @@ def test(request):
 
 
 def start_tournament(request):
+    print("Tournament was called", flush=True)
     return HttpResponse(
         """
         <div class="overlay">
