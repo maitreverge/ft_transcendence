@@ -19,12 +19,7 @@
 
 	<div id="users">
 		{% for user in simpleUsers %}
-		 	<div
-				class="user"			
-				onclick="console.log(`choice: {{user.playerId}}`); window.userIdChosen ='{{ user.playerId }}';
-				this.style.backgroundColor = 'red'"
-				
-				>user {{user.playerId}}</div>
+		 	<div class="user">user {{user.playerId}}</div>
 		{% endfor %}
 	</div>
 	<button id ="startMatchButton"
@@ -32,15 +27,4 @@
 		hx-target="#overlay-startmatch">
 		Envoyer le choix a Match/tournament/start-match/ > .views.start_match</button>
 	<div id="overlay-startmatch"></div>
-	<!-- <script>
-		// Assure-toi que userIdChosen est initialisé
-		window.userIdChosen = null;
-	
-		// Avant que htmx n'envoie la requête, on modifie l'URL avec le paramètre choisi
-		document.body.addEventListener("htmx:configRequest", function(evt) {
-			if(evt.detail.elt.id === "startMatchButton" && window.userIdChosen !== null){
-				evt.detail.path = "/tournament/start-match/selfid=?select=" + window.userIdChosen;
-			}
-		});
-	</script> -->
 </div>
