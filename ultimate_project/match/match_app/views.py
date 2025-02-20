@@ -10,13 +10,14 @@ def newMatch(request):
 
 def startMatch(request : HttpRequest):
     # return HttpResponse("<h1>TEST</h1>")
+    print(f"in start match playerId : {request.GET.get('playerId')}")
     return render(
         request,
         "pong.html",
         {           
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8000"),
-            "matchId": request.GET.get("matchId", "0"),
+            "matchId": request.GET.get("matchId", "0"),           
             "playerId": request.GET.get("playerId", "0")
         },
     )

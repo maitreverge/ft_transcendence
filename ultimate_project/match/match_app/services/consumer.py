@@ -9,9 +9,10 @@ class MyConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 		self.matchId = self.scope["url_route"]["kwargs"]["match_id"]    
 		query_string = self.scope["query_string"].decode()  
+		print(f"querystring: {query_string}")
 		params = urllib.parse.parse_qs(query_string)
 		playerId = params.get("playerId", [None])[0]
-		print(f"new user connection for match: {self.matchId}", flush=True)
+		print(f"new user connection for match: {self.matchId} and {playerId}", flush=True)
 		await self.accept() 
 		# id = len(players) + 1
 		players.append({'playerId': playerId, 'matchId': self.matchId, 'socket': self, 'dir': None})

@@ -2,7 +2,7 @@
 <div style="display:none;">
 	<head>
 		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
-		<script src="{% static 'tournament/script.js' %}"></script>
+		<script onload="sendMatchId(window.socket, '{{matchData.id}}', window.userIdChosen)" src="{% static 'tournament/script.js' %}"></script>
 	</head>
 </div>
 <div id="tournament-match">
@@ -13,10 +13,10 @@
 		recu l'identifiant du match qui m'est attribué,
 		j'aurai surement besoin de l'id du joueur qui m'est attribué dans l'avenir.
 	</h2>
-	<h2 id ="myh1"> Match Data: {{matchData}}, p1: {{p1}}, p2: {{p2}}</h2>
+	<h2 id ="myh1"> Match Data: {{matchData}}, player: {{playerId}}, other: {{otherId}}</h2>
 	
 	<button
-		hx-get="/match/?matchId={{matchData.id}}/?playerId={{playerId}}" 
+		hx-get="/match/?matchId={{matchData.id}}&playerId={{playerId}}" 
 		hx-target="#overlay-startmatch">
 		Connect to Match /match/?matchId={{matchData.id}}/ > .views.startMatch</button>
 	<div id="overlay-startmatch"></div>
