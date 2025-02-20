@@ -33,6 +33,9 @@ WIP
 Container `users` with an admin makes the build crash
 - Need to fix ngninx with healchecks
 
+IMPORTANT :
+When in a multi DB environment, migrations applies to the default, we need to specify which migration we need to make
+
 --------------------------------------------------------------------------------
 TOUDOU LIST
 --------------------------------------------------------------------------------
@@ -41,7 +44,7 @@ TOUDOU LIST
 
 
 # PRIORITY :
-- ⛔ Create a dummy model + Connect A regular container to the DB
+- ✅ Create a dummy model + Connect A regular container to the DB
 - ⛔ Connect Django Admin to the DB
 - ⛔ Make Django Admin connect to the db and write in it (double check with SQL queries straight in the container)
 - ⛔ Connect another container with another models
