@@ -10,9 +10,12 @@ function init() {
 	}
 
 	socket.onopen = () => {
-		console.log("Connexion établie 😊");
+		console.log("Connexion Match établie 😊");
 	};
-
+	socket.onclose = () => {
+		console.log("Connexion Match disconnected 😈");
+	
+	};
 	const p1 = document.getElementById("p1");
 	const p2 = document.getElementById("p2");
 	socket.onmessage = (event) => {

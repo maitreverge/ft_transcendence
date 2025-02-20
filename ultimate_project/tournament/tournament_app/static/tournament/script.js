@@ -106,10 +106,13 @@ function initWs() {
 		window.socket = new WebSocket(`ws://localhost:8000/ws/tournament/`);
 
 	window.socket.onopen = () => {
-		console.log("Connexion établie 😊");
+		console.log("Connexion Tournament établie 😊");
 	
 	};
-
+	window.socket.onclose = () => {
+		console.log("Connexion Tournament disconnected 😈");
+	
+	};
 	// const p1 = document.getElementById("p1");
 	// const p2 = document.getElementById("p2");
 	

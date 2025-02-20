@@ -19,7 +19,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		global selfPlayers
-		print("disconnected", flush=True)
+		print(f"tournament disconnected id:{self.id}", flush=True)
 		for p in selfPlayers: 
 			if p['socket'] == self:
 				print(p['playerId'], flush=True)

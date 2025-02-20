@@ -11,15 +11,15 @@ class MyConsumer(AsyncWebsocketConsumer):
 		query_string = self.scope["query_string"].decode()  
 		print(f"querystring: {query_string}")
 		params = urllib.parse.parse_qs(query_string)
-		playerId = params.get("playerId", [None])[0]
-		print(f"new user connection for match: {self.matchId} and {playerId}", flush=True)
+		self.playerId = params.get("playerId", [None])[0]
+		print(f"new user connection for match: {self.matchId} and {self.playerId}", flush=True)
 		await self.accept() 
 		# id = len(players) + 1
-		players.append({'playerId': playerId, 'matchId': self.matchId, 'socket': self, 'dir': None})
+		players.append({'playerId': self.playerId, 'matchId': self.matchId, 'socket': self, 'dir': None})
 
 	async def disconnect(self, close_code):
 		global players
-		print("disconnected", flush=True)
+		print(f"match disconnected id:{self.playerId}", flush=True)
 		for p in players: 
 			if p['socket'] == self:
 				print(p['playerId'], flush=True)
