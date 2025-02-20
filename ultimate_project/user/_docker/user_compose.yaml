@@ -1,16 +1,14 @@
 services:
   user:
-    depends_on:
-      user_db:
-        condition: service_healthy
     container_name: ctn_user
     build :
-      context: ./
+      context: .
+      dockerfile: Dockerfile
     environment:
-      - env=prod
-      - name=user
-      - port=${user_port}
-      - pi_domain=${PI_DOMAIN} # maybe not set up yet
+      env: prod
+      name: user
+      port: $user_port
+      pi_domain: $PI_DOMAIN # maybe not set up yet
     env_file: # ! Maybe delete depending on which postgres data I need
       - ../../.env
     image: img_user
@@ -31,12 +29,12 @@ services:
     image: postgres:latest
     container_name: ctn_user_db
     environment:
-      - name=user_db
-      - pi_domain=${PI_DOMAIN}
-      - port=${POSTGRES_PORT} # really usefull ?
-      - POSTGRES_DB=${USER_POSTGRES_DB}
-      - POSTGRES_USER=${USER_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${USER_POSTGRES_PASSWORD}
+      name: user_db
+      pi_domain: $PI_DOMAIN
+      port: $POSTGRES_PORT # really usefull ?
+      POSTGRES_DB: $USER_POSTGRES_DB
+      POSTGRES_USER: $USER_POSTGRES_USER
+      POSTGRES_PASSWORD: $USER_POSTGRES_PASSWORD
     # HOST_PORT:CONTAINER_PORT
     env_file: # ! Maybe delete depending on which postgres data I need
       - ../../.env

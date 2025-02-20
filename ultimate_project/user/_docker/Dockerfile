@@ -11,7 +11,11 @@ RUN apt update && \
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+
+COPY entrypoint.sh .
+
+# Copy the whole parent directory
+COPY ../ .
 
 RUN chmod +x entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
