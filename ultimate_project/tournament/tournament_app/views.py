@@ -15,7 +15,7 @@ def start_tournament(request):
             <div class="overlay-content">
                 <h2>Tournament Oulala</h2>
                 <!-- Tournament content -->
-                <button hx-get="/" hx-target="body">Close</button>
+                <button hx-get="/" hx-target="body" data-translate="close"></button>
             </div>
         </div>
     """
