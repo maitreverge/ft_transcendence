@@ -5,6 +5,7 @@ function applyTranslations(translations) {
     document.querySelectorAll('[data-translate]').forEach(element => {
         const key = element.getAttribute('data-translate');
         if (translations[key]) {
+            console.log("content:" + element.innerText);
             element.innerText = translations[key];
         }
     });

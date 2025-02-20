@@ -19,7 +19,7 @@
                 </div>
             </div>
         {% else %}
-            <h1 data-translate="welcome"> {{ username }}</h1>
+            <h1><span  data-translate="welcome"></span> </span>{{ username }}</h1>
                 <button hx-get="/tournament/" 
                 hx-target="#overlay-content" data-translate="tournament"></button>
                 <button hx-get="/simple-match/" 
