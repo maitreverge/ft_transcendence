@@ -1,9 +1,13 @@
 services:
   nginx:
     depends_on:
-      - tournament
-      - static_files
-      - user
+      # tournament:
+      #   condition: service_healthy
+      # static_files:
+      #   condition: service_healthy
+      user:
+        condition: service_healthy
+
     container_name: ctn_nginx
     build :
       context: ./nginx/
@@ -74,32 +78,45 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
-  user:
-    depends_on:
-      - postgres
-    container_name: ctn_user
-    build :
-      context: ./user/
-    environment:
-      - env=prod
-      - name=user
-      - port=${user_port}
-      - pi_domain=${PI_DOMAIN} # maybe not set up yet
-    env_file: # ! Maybe delete depending on which postgres data I need
-      - .env
-    image: img_user
-    networks:
-      - transcendence_network
-    volumes:
-      - staticvol:/app/staticfiles
-    healthcheck:
-      # Health check done in non root user
-      test: ["CMD", "curl", "-f", "http://localhost:${user_port}/health/"]
-      interval: 1m30s    # How often to run the health check (every 90 seconds)
-      timeout: 5s       # Maximum time to wait for the check to complete
-      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
-      start_period: 30s  # Initial grace period where failures don't count (container startup time)
-    restart: always
+  # USERS
+    user:
+      extends:
+        file: ./user/_docker/user_compose.yml
+        service: user
+      depends_on:
+        user_db:
+          condition: service_healthy
+    user_db:
+      extends:
+        file: ./user/_docker/user_compose.yml
+        service: user_db
+
+  # user:
+  #   depends_on:
+  #     - postgres
+  #   container_name: ctn_user
+  #   build :
+  #     context: ./user/
+  #   environment:
+  #     - env=prod
+  #     - name=user
+  #     - port=${user_port}
+  #     - pi_domain=${PI_DOMAIN} # maybe not set up yet
+  #   env_file: # ! Maybe delete depending on which postgres data I need
+  #     - .env
+  #   image: img_user
+  #   networks:
+  #     - transcendence_network
+  #   volumes:
+  #     - staticvol:/app/staticfiles
+  #   healthcheck:
+  #     # Health check done in non root user
+  #     test: ["CMD", "curl", "-f", "http://localhost:${user_port}/health/"]
+  #     interval: 1m30s    # How often to run the health check (every 90 seconds)
+  #     timeout: 5s       # Maximum time to wait for the check to complete
+  #     retries: 5         # Number of consecutive failures needed to mark container as unhealthy
+  #     start_period: 30s  # Initial grace period where failures don't count (container startup time)
+  #   restart: always
 
   # admin:
   #   container_name: ctn_admin
@@ -119,36 +136,36 @@ services:
   #     - staticvol:/app/staticfiles
   #   restart: always
 
-  postgres:
-    image: postgres:latest
-    container_name: ctn_postgres
-    environment:
-      - name=postgres
-      - pi_domain=${PI_DOMAIN}
-      - port=${postgres_port}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    env_file:
-      - .env
-    # HOST_PORT:CONTAINER_PORT
-    ports:
-      - "5433:5432"
-    healthcheck:
-      # Health check done in non root user
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
-    volumes:
-      # Bind mount for db in local
-      - postgres_volume:/var/lib/postgresql/data
-      # Init script for init db and users
-      - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-    networks:
-      - transcendence_network
-    restart: always
+  # postgres:
+  #   image: postgres:latest
+  #   container_name: ctn_postgres
+  #   environment:
+  #     - name=postgres
+  #     - pi_domain=${PI_DOMAIN}
+  #     - port=${postgres_port}
+  #     - POSTGRES_DB=${POSTGRES_DB}
+  #     - POSTGRES_USER=${POSTGRES_USER}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #   env_file:
+  #     - .env
+  #   # HOST_PORT:CONTAINER_PORT
+  #   ports:
+  #     - "5433:5432"
+  #   healthcheck:
+  #     # Health check done in non root user
+  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+  #     interval: 1m30s
+  #     timeout: 30s
+  #     retries: 5
+  #     start_period: 30s
+  #   volumes:
+  #     # Bind mount for db in local
+  #     - postgres_volume:/var/lib/postgresql/data
+  #     # Init script for init db and users
+  #     - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+  #   networks:
+  #     - transcendence_network
+  #   restart: always
 
 
 volumes:
@@ -157,10 +174,10 @@ volumes:
   staticvol:
     driver: local
   
-  postgres_volume:
+  user_db_volume:
     # Use the local driver for the volume
     driver: local
-    name: postgres_volume
+    name: user_db_volume
     driver_opts:
       # Specify the type as 'none' to use a bind mount
       type: none

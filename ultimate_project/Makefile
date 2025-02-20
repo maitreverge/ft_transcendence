@@ -23,13 +23,15 @@ install_compose:
 
 create_volume:
 	@echo "\n\033[1;33m***| Creating PostgreSQL Volumes |***\033[0m\n"
-	@sudo mkdir -p /home/volumes_transcendence/postgres
+	@sudo mkdir -p /home/volumes_transcendence/postgres/user
+	@sudo mkdir -p /home/volumes_transcendence/postgres/match
+	@sudo mkdir -p /home/volumes_transcendence/postgres/tournament
 	@echo "\n\033[1;32m***| PostgreSQL Volumes Created |***\033[0m\n"
 
 # Using this rule actually deletes the DB. Run it at your own risks.
 delete_volume:
 	@echo "\n\033[1;33m***| Deleting PostgreSQL volumes |***\033[0m\n"
-	@sudo rm -rf /home/volumes_transcendence/postgres
+	@sudo rm -rf /home/volumes_transcendence/
 	@echo "\n\033[1;32m***| PostgreSQL Volumes Deteted |***\033[0m\n"
 
 .PHONY: all prod clean re install_compose create_volume delete_volume prune
