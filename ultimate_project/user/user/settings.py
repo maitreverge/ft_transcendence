@@ -98,11 +98,11 @@ ASGI_APPLICATION = f"{NAME}.asgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'transc_db', # Name of the Database
-        'USER': 'user1', # Username for accessing the database
-        'PASSWORD': 'password', # Password for the database user.
-        'HOST': 'postgres', # Hostname where the database server is running.
-        'PORT': '5432', # Port number on which the database server is listening.
+        'NAME': os.getenv(USER_POSTGRES_DB), # Name of the Database
+        'USER': os.getenv(USER_POSTGRES_USER), # Username for accessing the database
+        'PASSWORD': os.getenv(USER_POSTGRES_PASSWORD), # Password for the database user.
+        'HOST': os.getenv(USER_POSTGRES_HOST), # Hostname where the database server is running.
+        'PORT': os.getenv(POSTGRES_PORT), # Port number on which the database server is listening.
     }
 }
 

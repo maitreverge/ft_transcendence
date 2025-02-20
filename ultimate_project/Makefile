@@ -16,7 +16,7 @@ re: clean all
 
 # Prune does removes volumes, including the DB.
 prune:
-	docker system prune --all --force
+	docker system prune --all --volumes --force
 
 install_compose:
 	@sudo apt-get install docker-compose-plugin

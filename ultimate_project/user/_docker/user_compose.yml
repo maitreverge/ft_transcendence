@@ -12,7 +12,7 @@ services:
       - port=${user_port}
       - pi_domain=${PI_DOMAIN} # maybe not set up yet
     env_file: # ! Maybe delete depending on which postgres data I need
-      - ../.env
+      - ../../.env
     image: img_user
     networks:
       - transcendence_network
@@ -37,23 +37,23 @@ services:
       - POSTGRES_DB=${USER_POSTGRES_DB}
       - POSTGRES_USER=${USER_POSTGRES_USER}
       - POSTGRES_PASSWORD=${USER_POSTGRES_PASSWORD}
-    env_file:
-      - ../.env
     # HOST_PORT:CONTAINER_PORT
+    env_file: # ! Maybe delete depending on which postgres data I need
+      - ../../.env
     ports:
       - "5433:5432" # TODO : Increment hosts ports for each db container
     healthcheck:
       # Health check done in non root user, toherwise fails
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5ms
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      interval: 5m
+      timeout: 30s
+      retries: 10
+      start_period: 1m
     volumes:
       # Bind mount for db in local
       - user_db_volume:/var/lib/postgresql/data
       # Init script for init db and users
-      - ../postgres/init_db.sh:/docker-entrypoint-initdb.d/init_db.sh
+      - ../../postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     networks:
       - transcendence_network
     restart: always
