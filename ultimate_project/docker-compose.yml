@@ -3,6 +3,7 @@ services:
     depends_on:
       - tournament
       - static_files
+      - user
     container_name: ctn_nginx
     build :
       context: ./nginx/
@@ -74,6 +75,8 @@ services:
     restart: always
 
   user:
+    depends_on:
+      - postgres
     container_name: ctn_user
     build :
       context: ./user/
@@ -89,6 +92,13 @@ services:
       - transcendence_network
     volumes:
       - staticvol:/app/staticfiles
+    healthcheck:
+      # Health check done in non root user
+      test: ["CMD", "curl", "-f", "http://localhost:${user_port}/health/"]
+      interval: 1m30s    # How often to run the health check (every 90 seconds)
+      timeout: 5s       # Maximum time to wait for the check to complete
+      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
+      start_period: 30s  # Initial grace period where failures don't count (container startup time)
     restart: always
 
   # admin:

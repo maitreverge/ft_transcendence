@@ -1,9 +1,19 @@
 ✅
 ⛔
 🟧 
+
+--------------------------------------------------------------------------------
+MY ROUTES
+--------------------------------------------------------------------------------
+http://localhost:8000/user/
+http://localhost:8000/auth/  ==>  redirect to http://localhost:8000/auth/login/
+
+
+
 --------------------------------------------------------------------------------
 TO ASK
 --------------------------------------------------------------------------------
+
 
 - Shift from `-environment` to `-env_file` in compose ?
 - Make the posgreSQL works with the compose-prod
@@ -13,7 +23,7 @@ WIP
 --------------------------------------------------------------------------------
 ## DB linking with Postgres :
 
-- Now admin container if OFF
+- Now `admin` container if OFF + desactivate nginx routes
 
 - Test admin inside users
 - Test creating stuff with user admin
