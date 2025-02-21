@@ -31,6 +31,15 @@ services:
       - "${user_port}:${user_port}"
     volumes:
       - ./user:/app/
+  user_db:
+    environment:
+      - env=dev
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./user_db:/app/
 
   # admin:
   #   environment:

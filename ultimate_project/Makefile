@@ -1,8 +1,10 @@
+# all : calls all the compose
 all: install_compose create_volume
 	-docker compose up --build
 
+# all : calls only the classic compose
 prod: install_compose clean 
-	-docker compose -f docker-compose.yml up --build
+	-docker compose -f docker-compose.yaml up --build
 
 clean:
 	-docker stop $$(docker ps -qa)
