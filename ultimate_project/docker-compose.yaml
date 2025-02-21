@@ -29,20 +29,29 @@ services:
     restart: on-failure
 
   tournament:
-    container_name: ctn_tournament
-    build :
-      context: ./tournament/
-    environment:
-      - env=prod
-      - port=${tournament_port}
-      - name=tournament
-      - pi_domain=${PI_DOMAIN}
-    image: img_tournament
-    volumes:
-      - staticvol:/app/staticfiles
-    networks:
-      - transcendence_network
-    restart: always
+    extends:
+      file: ./tournament/_docker/tournament_compose.yaml
+      service: tournament
+
+  tournament_db:
+    extends:
+      file: ./tournament/_docker/tournament_compose.yaml
+      service: tournament_db
+  # tournament:
+  #   container_name: ctn_tournament
+  #   build :
+  #     context: ./tournament/
+  #   environment:
+  #     - env=prod
+  #     - port=${tournament_port}
+  #     - name=tournament
+  #     - pi_domain=${PI_DOMAIN}
+  #   image: img_tournament
+  #   volumes:
+  #     - staticvol:/app/staticfiles
+  #   networks:
+  #     - transcendence_network
+  #   restart: always
 
   match:
     container_name: ctn_match
@@ -121,6 +130,18 @@ volumes:
       type: none
       # When assigned to a container, the posgreSQL will reflect what's in this specified path.
       device: '/home/volumes_transcendence/postgres/user'
+      # Bind the specified host path to the volume
+      o: bind
+  
+  tournament_db_volume:
+    # Use the local driver for the volume
+    driver: local
+    name: tournament_db_volume
+    driver_opts:
+      # Specify the type as 'none' to use a bind mount
+      type: none
+      # When assigned to a container, the posgreSQL will reflect what's in this specified path.
+      device: '/home/volumes_transcendence/postgres/tournament'
       # Bind the specified host path to the volume
       o: bind
 
