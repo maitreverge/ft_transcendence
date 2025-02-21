@@ -4,5 +4,4 @@ uvicorn
 channels
 daphne
 whitenoise
-psycopg2
 psycopg2-binary
