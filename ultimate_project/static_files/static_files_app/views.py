@@ -53,7 +53,7 @@ def simple_match(request):
 def translations(request, lang):
     print("********** translations called **********", flush=True)
     try:
-        file_path = os.path.join(settings.BASE_DIR, 'static', 'translations', f'{lang}.json')
+        file_path = os.path.join(settings.BASE_DIR, 'static_files_app', 'static', 'translations', f'{lang}.json')
         with open(file_path, 'r') as file:
             return JsonResponse(file.read(), safe=False)
     except FileNotFoundError:
