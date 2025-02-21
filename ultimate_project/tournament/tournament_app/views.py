@@ -32,7 +32,7 @@ def start_match(request):
 		p1 = request.GET.get('selfid')
 		p2 = request.GET.get('select')
 		# print(f"select:{select}", flush=True)
-		data = requests.get(f"http://ctn-match:8002/match/new-match/?p1={p1}&p2={p2}").json() #! opti url and gateway!!!
+		data = requests.get(f"http://match:8002/match/new-match/?p1={p1}&p2={p2}").json() #! opti url and gateway!!!
 		matchs.append({"matchId": data, "playerId": p2, "otherId": p1})
 		print(data, flush=True)
 		return render(request, "test.html", {"matchData": data, "playerId": p1, "otherId": p2})

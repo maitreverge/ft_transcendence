@@ -42,3 +42,11 @@
 	height:80%;
 	background-color: rgb(222, 30, 72);
 }
+
+.invitation-waiting {
+	background-color: rgb(151, 175, 16);
+}
+
+.invitation-confirmed {
+	background-color: rgb(16, 90, 175);
+}
