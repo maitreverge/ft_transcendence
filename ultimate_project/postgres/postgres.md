@@ -4,7 +4,9 @@ Run the container in exec mode and run
 
 
 ```bash
-psql -h localhost -p 5432 -U user1 -d transc_db
+
+psql -h localhost -p 5432 -U user1 -d user_db
+psql -h localhost -p 5432 -U user2 -d tournament_db
 ```
 
 > [!NOTE]
