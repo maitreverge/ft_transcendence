@@ -88,33 +88,6 @@ services:
       file: ./user/_docker/user_compose.yaml
       service: user_db
 
-  # user:
-  #   depends_on:
-  #     - postgres
-  #   container_name: ctn_user
-  #   build :
-  #     context: ./user/
-  #   environment:
-  #     - env=prod
-  #     - name=user
-  #     - port=${user_port}
-  #     - pi_domain=${PI_DOMAIN} # maybe not set up yet
-  #   env_file: # ! Maybe delete depending on which postgres data I need
-  #     - .env
-  #   image: img_user
-  #   networks:
-  #     - transcendence_network
-  #   volumes:
-  #     - staticvol:/app/staticfiles
-  #   healthcheck:
-  #     # Health check done in non root user
-  #     test: ["CMD", "curl", "-f", "http://localhost:${user_port}/health/"]
-  #     interval: 1m30s    # How often to run the health check (every 90 seconds)
-  #     timeout: 5s       # Maximum time to wait for the check to complete
-  #     retries: 5         # Number of consecutive failures needed to mark container as unhealthy
-  #     start_period: 30s  # Initial grace period where failures don't count (container startup time)
-  #   restart: always
-
   # admin:
   #   container_name: ctn_admin
   #   build :
@@ -132,38 +105,6 @@ services:
   #   volumes:
   #     - staticvol:/app/staticfiles
   #   restart: always
-
-  # postgres:
-  #   image: postgres:latest
-  #   container_name: ctn_postgres
-  #   environment:
-  #     - name=postgres
-  #     - pi_domain=${PI_DOMAIN}
-  #     - port=${postgres_port}
-  #     - POSTGRES_DB=${POSTGRES_DB}
-  #     - POSTGRES_USER=${POSTGRES_USER}
-  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-  #   env_file:
-  #     - .env
-  #   # HOST_PORT:CONTAINER_PORT
-  #   ports:
-  #     - "5433:5432"
-  #   healthcheck:
-  #     # Health check done in non root user
-  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-  #     interval: 1m30s
-  #     timeout: 30s
-  #     retries: 5
-  #     start_period: 30s
-  #   volumes:
-  #     # Bind mount for db in local
-  #     - postgres_volume:/var/lib/postgresql/data
-  #     # Init script for init db and users
-  #     - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-  #   networks:
-  #     - transcendence_network
-  #   restart: always
-
 
 volumes:
   
