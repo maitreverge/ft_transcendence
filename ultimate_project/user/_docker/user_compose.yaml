@@ -2,8 +2,8 @@ services:
   user:
     container_name: ctn_user
     build :
-      context: .
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: _docker/Dockerfile
     environment:
       env: prod
       name: user
@@ -20,8 +20,8 @@ services:
       # Health check done in non root user
       test: ["CMD", "curl", "-f", "http://localhost:${user_port}/health/"]
       interval: 1m30s    # How often to run the health check (every 90 seconds)
-      timeout: 5s       # Maximum time to wait for the check to complete
-      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
+      timeout: 1m       # Maximum time to wait for the check to complete
+      retries: 50         # Number of consecutive failures needed to mark container as unhealthy
       start_period: 30s  # Initial grace period where failures don't count (container startup time)
     restart: always
 
@@ -39,7 +39,7 @@ services:
     env_file: # ! Maybe delete depending on which postgres data I need
       - ../../.env
     ports:
-      - "5433:5432" # TODO : Increment hosts ports for each db container
+      - "5434:5432"
     healthcheck:
       # Health check done in non root user, toherwise fails
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
