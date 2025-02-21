@@ -77,10 +77,8 @@ function updateUsersList(socket, players) {
 					this.classList.add("invitation-waiting");				
 					sendInvitation(socket, window.select);
 				}
-				else
-				{
-					cancelInvitation(socket, user.playerId);
-				}
+				else				
+					cancelInvitation(socket, user.playerId);				
     		};
 		}
     	usersContainer.appendChild(div);
@@ -137,9 +135,7 @@ function receiveConfirmation(choosenId, response) {
 		choosenElement.classList.remove("invitation-waiting");
 		choosenElement.classList.add("invitation-confirmed");
 		choosenElement.confirmed = "yes";
-		console.log("ICI: " +  choosenElement.confirmed + " id: " +  choosenElement.id)	;	
-		askMatchId(choosenId);
-		alert(`${choosenId} says: yes my bitch`);
+		askMatchId(choosenId);		
 	}
 	else
 	{

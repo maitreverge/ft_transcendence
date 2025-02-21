@@ -23,5 +23,4 @@ urlpatterns = [
 	path("tournament/simple-match/", tournament_app.views.simple_match),
     path("tournament/", tournament_app.views.start_tournament),
 	path("tournament/start-match/", tournament_app.views.start_match),
-    path("test/", tournament_app.views.test),
 ]

@@ -7,9 +7,6 @@ import os
 
 import tournament_app.services.consumer as consumer
 
-def test(request):
-    return render(request, "test.html", {"touille": "champion du bidule"})
-
 class User:
 	def __init__(self, id):
 		self.id = id
@@ -23,7 +20,6 @@ def start_tournament(request : HttpRequest):
 def receive_invit(request):
 	p1 = request.GET.get('select')
 
-matchs = []
 def start_match(request):
 	# p1 =consumer.players[''].id
 	matchId = request.GET.get('matchId', None)
@@ -33,17 +29,17 @@ def start_match(request):
 		p2 = request.GET.get('select')
 		# print(f"select:{select}", flush=True)
 		data = requests.get(f"http://match:8002/match/new-match/?p1={p1}&p2={p2}").json() #! opti url and gateway!!!
-		matchs.append({"matchId": data, "playerId": p2, "otherId": p1})
+		consumer.matchs.append({"matchId": data, "playerId": p2, "otherId": p1})
 		print(data, flush=True)
-		return render(request, "test.html", {"matchData": data, "playerId": p1, "otherId": p2})
+		return render(request, "match_simple.html", {"matchData": data, "playerId": p1, "otherId": p2})
 	else:
 		print(f"matchId in start match: {matchId}", flush=True)
-		for p in matchs:
+		for p in consumer.matchs:
 			print(p, flush=True)
-		choosenMatch = [p for p in matchs if p['matchId']['id'] == matchId]	
+		choosenMatch = [p for p in consumer.matchs if p['matchId']['id'] == matchId]	
 		print("choosenMatch: ", flush=True)
 		print(choosenMatch, flush=True)
-		return render(request, "test.html", {"matchData": choosenMatch[0]['matchId'], "playerId": choosenMatch[0]['playerId'], "otherId": choosenMatch[0]['otherId']})
+		return render(request, "match_simple.html", {"matchData": choosenMatch[0]['matchId'], "playerId": choosenMatch[0]['playerId'], "otherId": choosenMatch[0]['otherId']})
 	# return JsonResponse(data, status= 201)
 	
 
