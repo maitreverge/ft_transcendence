@@ -44,11 +44,11 @@ services:
       - "5434:5432" # TODO : Increment Host port for each db
     healthcheck:
       # Health check done in non root user
-      test: ["CMD-SHELL", "pg_isready", "-U", "$POSTGRES_USER"]
+      test: ["CMD-SHELL", "pg_isready -U ${USER_POSTGRES_USER} -d ${USER_POSTGRES_DB}"]
       interval: 10s
       timeout: 2s
       retries: 5
-      start_period: 30s
+      start_period: 60s
     volumes:
       # Bind mount for db in local
       - user_db_volume:/var/lib/postgresql/data

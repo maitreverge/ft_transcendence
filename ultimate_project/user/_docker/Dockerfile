@@ -1,27 +1,19 @@
 FROM python:3.9-slim
 
-WORKDIR /app
-
-COPY . .
-
-# COPY requirements.txt .
-
-RUN apt update && \ 
+RUN apt update -y && \ 
 	apt upgrade -y && \
 	apt install curl -y
 
+WORKDIR /app
 
-RUN pip install --no-cache-dir -r _docker/requirements.txt
+COPY _docker/requirements.txt .
 
+RUN pip install --no-cache-dir -r requirements.txt
 
-# COPY my_entrypoint.sh .
-
-# Copy the whole parent directory
-
+COPY . .
 
 RUN chmod +x _docker/my_entrypoint.sh
 
 ENTRYPOINT ["/bin/sh", "_docker/my_entrypoint.sh"]
-
-
 # ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+
