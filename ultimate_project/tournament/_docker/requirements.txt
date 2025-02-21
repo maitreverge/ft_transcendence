@@ -3,4 +3,3 @@ requests
 uvicorn
 psycopg
 psycopg2-binary
-psycopg2-binary

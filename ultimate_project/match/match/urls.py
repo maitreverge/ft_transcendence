@@ -18,9 +18,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import match_app.views
+from django.http import HttpResponse
+
+# Compose health-check, do not remove
+def health_check(request):
+    return HttpResponse(status=200)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('health/', health_check, name='health_check'), # Compose health-check, do not remove
     path("match/", match_app.views.startMatch),
     path("match/new-match/", match_app.views.newMatch),
 ]

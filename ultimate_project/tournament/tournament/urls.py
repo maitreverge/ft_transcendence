@@ -20,12 +20,12 @@ from django.urls import path
 import tournament_app.views
 from django.http import HttpResponse
 
-
+# Compose health-check, do not remove
 def health_check(request):
     return HttpResponse(status=200)
 
 urlpatterns = [
-    path('health/', health_check, name='health_check'),
+    path('health/', health_check, name='health_check'), # Compose health-check, do not remove
     path("tournament/", tournament_app.views.start_tournament),
     path("test/", tournament_app.views.test),
 ]

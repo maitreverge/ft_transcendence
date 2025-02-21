@@ -14,7 +14,7 @@ http://localhost:8000/auth/  ==>  redirect to http://localhost:8000/auth/login/
 
 - "5434:5432"  => USER_DB
 - "5435:5432"  => TOURNAMENT_DB
-- "5435:5432"  => 
+- "5436:5432"  => MATCH_DB
 - "5436:5432"  => 
 - "5437:5432"  => 
 

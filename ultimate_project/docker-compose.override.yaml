@@ -21,6 +21,15 @@ services:
       - "${tournament_port}:${tournament_port}"
     volumes:
       - ./tournament:/app/
+  tournament_db:
+    environment:
+      - env=dev
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./tournament_db:/app/
 
   user:
     environment:
@@ -58,3 +67,12 @@ services:
       - "${match_port}:${match_port}"
     volumes:
       - ./match:/app/
+  match_db:
+    environment:
+      - env=dev
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./match_db:/app/
