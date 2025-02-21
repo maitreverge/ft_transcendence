@@ -12,8 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x _docker/my_entrypoint.sh
+RUN chmod +x _docker/entrypoint.sh
 
-ENTRYPOINT ["/bin/sh", "_docker/my_entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "_docker/entrypoint.sh"]
 # ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-
