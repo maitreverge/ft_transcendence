@@ -88,24 +88,28 @@ function updatePlayers(socket, players) {
 	// userElements = document.getElementsByClassName("user");
 
 	// if (!players.includes(element.dataset.id))	
+	
+    [...usersContainer.children].forEach( player => {
 
-    [...userElements].forEach( player => {
 		console.log("il ya un element ds le bazar c le :" + player.id);
-		if (players.some(el => el.playerId == player.id))
+		if (players.every(el => {console.log("in: " + el.playerId); return el.playerId != player.id}))
 		{
 			console.log("il ya un au moins un element qui sont egaux:" + player.id);
 			usersContainer.removeChild(player);
-		}
+		}				
 	});
 
 	players.forEach( player => {
 		console.log("foreach: playerId: " + player.playerId);
-		if (![...userElements].some(el => el.id == player.playerId))	
+		if ([...usersContainer.children].every(el => el.id != player.playerId))	
 		{
 			console.log("is added");
 			addToPlayers(usersContainer, player);
 		}
 	});
+
+
+
 
     // 	const div = document.createElement("div");
     // 	div.className = "user";
