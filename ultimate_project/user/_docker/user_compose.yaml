@@ -1,15 +1,18 @@
 services:
   user:
+    depends_on:
+      user_db:
+        condition: service_healthy
     container_name: ctn_user
     build :
-      context: ../
+      context: ../ # ! FUCKING DO NOT TOUCH THIS, I LOST 5 LIFETIME YEARS ON THIS
       dockerfile: _docker/Dockerfile
     environment:
       env: prod
       name: user
       port: $user_port
       pi_domain: $PI_DOMAIN # maybe not set up yet
-    env_file: # ! Maybe delete depending on which postgres data I need
+    env_file:
       - ../../.env
     image: img_user
     networks:
@@ -17,11 +20,10 @@ services:
     volumes:
       - staticvol:/app/staticfiles
     healthcheck:
-      # Health check done in non root user
       test: ["CMD", "curl", "-f", "http://localhost:${user_port}/health/"]
       interval: 1m30s    # How often to run the health check (every 90 seconds)
-      timeout: 1m       # Maximum time to wait for the check to complete
-      retries: 50         # Number of consecutive failures needed to mark container as unhealthy
+      timeout: 2s       # Maximum time to wait for the check to complete
+      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
       start_period: 30s  # Initial grace period where failures don't count (container startup time)
     restart: always
 
@@ -36,17 +38,17 @@ services:
       POSTGRES_USER: $USER_POSTGRES_USER
       POSTGRES_PASSWORD: $USER_POSTGRES_PASSWORD
     # HOST_PORT:CONTAINER_PORT
-    env_file: # ! Maybe delete depending on which postgres data I need
+    env_file:
       - ../../.env
     ports:
-      - "5434:5432"
+      - "5434:5432" # TODO : Increment Host port for each db
     healthcheck:
-      # Health check done in non root user, toherwise fails
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5m
-      timeout: 30s
-      retries: 10
-      start_period: 1m
+      # Health check done in non root user
+      test: ["CMD-SHELL", "pg_isready", "-U", "$POSTGRES_USER"]
+      interval: 10s
+      timeout: 2s
+      retries: 5
+      start_period: 30s
     volumes:
       # Bind mount for db in local
       - user_db_volume:/var/lib/postgresql/data

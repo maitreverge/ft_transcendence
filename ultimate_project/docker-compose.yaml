@@ -82,9 +82,7 @@ services:
     extends:
       file: ./user/_docker/user_compose.yaml
       service: user
-    # depends_on:
-    #   user_db:
-    #     condition: service_healthy
+
   user_db:
     extends:
       file: ./user/_docker/user_compose.yaml

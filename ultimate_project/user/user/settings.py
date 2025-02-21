@@ -101,7 +101,7 @@ DATABASES = {
         'NAME': os.getenv('USER_POSTGRES_DB'), # Name of the Database
         'USER': os.getenv('USER_POSTGRES_USER'), # Username for accessing the database
         'PASSWORD': os.getenv('USER_POSTGRES_PASSWORD'), # Password for the database user.
-        'HOST': os.getenv('USER_POSTGRES_HOST'), # Hostname where the database server is running.
+        'HOST': os.getenv('USER_POSTGRES_HOST'), # Hostname where the database server is running == compose service == Name of the db
         'PORT': os.getenv('POSTGRES_PORT'), # Port number on which the database server is listening.
     }
 }
