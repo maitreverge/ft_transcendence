@@ -23,7 +23,7 @@ function sendMatchId(socket, matchId, choosenId) {
 		socket.send(JSON.stringify({matchId: matchId, choosenId: choosenId}))
 }
 
-function updateUsersList(players, socket) {
+function updateUsersList(socket, players) {
 
     const usersContainer = document.getElementById("users");
     usersContainer.innerHTML = "";
@@ -33,29 +33,39 @@ function updateUsersList(players, socket) {
     	const div = document.createElement("div");
     	div.className = "user";
     	div.textContent = `user: ${user.playerId}`;
-    
-    	div.onclick = function() {
-			console.log(`my choice: ${user.playerId}`);
-			window.select = user.playerId;
-			this.style.backgroundColor = 'red';
-    	};
-      
-      usersContainer.appendChild(div);
+		
+		if (user.playerId === window.selfId)
+		{
+			div.style.backgroundColor = 'violet'
+			div.onclick = function() {
+				alert("you can't choose yourself");
+			};
+		}
+		else
+		{
+    		div.onclick = function() {
+				console.log(`my choice: ${user.playerId}`);
+				window.select = user.playerId;
+				this.style.backgroundColor = 'red';
+				sendInvitation(socket, window.select);
+    		};
+		}
+    	usersContainer.appendChild(div);
     });
-	elements = document.getElementsByClassName("user");
+	// elements = document.getElementsByClassName("user");
 
-	Array.from(elements).forEach( element => {
+	// Array.from(elements).forEach( element => {
 
-		element.addEventListener("click", event => {
-			console.log("ye" + window.select);
-			console.log(`choice: {{user.playerId}}`); window.select ='{{ user.playerId }}';
-			this.style.backgroundColor = 'red';
-			sendInvitation(socket, window.select);
-		});
-	});
+	// 	element.addEventListener("click", event => {
+	// 		console.log("ye" + window.select);
+	// 		console.log(`choice: {{user.playerId}}`); window.select ='{{ user.playerId }}';
+	// 		this.style.backgroundColor = 'red';
+	// 		sendInvitation(socket, window.select);
+	// 	});
+	// });
 }
 
-function makeChoice(selfId) {
+function setSelfId(selfId) {
 	window.selfId = selfId;
 	document.getElementById("player").innerText = 
 	"Je suis le joueur " + window.selfId;
@@ -66,12 +76,16 @@ function makeChoice(selfId) {
 }
 
 function receiveInvitation(socket, host) {
+
 	console.log("i have had and invitation from: " + host)
+
 	sendConfirmation(socket, host);
 }
 
 function askMatchId(choosenId) {
+
 	document.body.addEventListener("htmx:configRequest", function(evt) {
+
 		if (evt.detail.elt.id === "startMatchButton" && window.select !== null){
 			evt.detail.path = "/tournament/start-match/?selfid=" + window.selfId + "&select=" + choosenId;
 		}
@@ -79,8 +93,10 @@ function askMatchId(choosenId) {
 }
 
 function receiveConfirmation(choosenId, response) {
+
 	console.log("i have had and confirmation from: " + choosenId
 		+ ", the answer is :" + response);
+
 	askMatchId(choosenId);
 }
 
@@ -93,56 +109,35 @@ function receiveMatchId(matchId) {
 	});
 }
 
-function initWs() {
+function initTournamentWs() {
 
 	if (window.rasp == "true")
-		window.socket = new WebSocket(`wss://${window.pidom}/ws/match/${window.matchId}/`);//!
+		window.tournamentSocket = new WebSocket(`wss://${window.pidom}/ws/match/${window.matchId}/`);//!
 	else
-		window.socket = new WebSocket(`ws://localhost:8000/ws/tournament/`);
+		window.tournamentSocket = new WebSocket(`ws://localhost:8000/ws/tournament/`);
 
-	window.socket.onopen = () => {
+	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
-	};
-	window.socket.onclose = () => {
+	}
+	window.tournamentSocket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");	
 	};
 	
-	window.socket.onmessage = (event) => {
+	window.tournamentSocket.onmessage = (event) => {
+
 		console.log("Message reçu :", event.data);
 		const data = JSON.parse(event.data);
-		console.log("new message");
-		if (data.type == "selfAssign")
-		{
-			var selfId = data.selfId;
-			window.selfId = data.selfId;
-			makeChoice(data.selfId);
-		}	
+		
+		if (data.type == "selfAssign")			
+			setSelfId(data.selfId);		
 		else if (data.type == "playerList")
-			updateUsersList(data.players, window.socket);
-		else if (data.type == "invitation")
-		{
-			console.log("window selfid:", window.selfId);
-			console.log("var selfid:", selfId);
-			receiveInvitation(window.socket, data.player)
-		}
+			updateUsersList(window.tournamentSocket, data.players);
+		else if (data.type == "invitation")		
+			receiveInvitation(window.tournamentSocket, data.player);		
 		else if (data.type == "confirmation")		
 			receiveConfirmation(data.choosen, data.response);		
 		else if (data.matchId)		
 			receiveMatchId(data.matchId);
-	};
-
-	document.addEventListener("keydown", function(event) {
-		
-		if (window.socket.readyState === WebSocket.OPEN) {		
-			if (event.key === "ArrowUp") {
-				event.preventDefault();				
-				window.socket.send(JSON.stringify({action: 'move', dir: 'up'}));				
-			} else if (event.key === "ArrowDown") {
-				event.preventDefault();				
-				window.socket.send(JSON.stringify({action: 'move', dir: 'down'}));
-			}
-		} else 
-			console.log("WebSocket non connecté !");		
-	});
+	};	
 }
 

@@ -49,5 +49,5 @@ def start_match(request):
 
 def simple_match(request : HttpRequest):	
 
-	return render(request, "selections-simple.html", {"rasp": os.getenv("rasp", "false"),
+	return render(request, "selection_simple.html", {"rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8000"), "simpleUsers": consumer.players})

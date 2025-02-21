@@ -2,7 +2,7 @@
 <div style="display:none;">
 	<head>
 		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
-		<script onload="sendMatchId(window.socket, '{{matchData.id}}', window.userIdChosen)" src="{% static 'tournament/script.js' %}"></script>
+		<script onload="sendMatchId(window.tournamentSocket, '{{matchData.id}}', window.select)" src="{% static 'tournament/selection_simple.js' %}"></script>
 	</head>
 </div>
 <div id="tournament-match">
