@@ -48,42 +48,94 @@ function invitationCancelled(applicantId) {
 	applicantElement.confirmed = 'no';
 }
 
-function updateUsersList(socket, players) {
+function addToPlayers(usersContainer, player) {
+  	
+	const div = document.createElement("div");
+	div.className = "user";
+	div.textContent = `user: ${player.playerId}`;
+	div.id = player.playerId;
+	if (player.playerId === window.selfId)
+	{
+		div.style.backgroundColor = 'violet'
+		div.onclick = function() {
+			alert("you can't choose yourself");
+		};
+	}
+	else
+	{
+		div.onclick = function() {
+			console.log("user confirmed: " + div.confirmed + " id: " + div.id);
+			if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
+			{
+				console.log(`my choice: ${player.playerId}`);
+				window.select = player.playerId;//!
+				this.classList.add("invitation-waiting");				
+				sendInvitation(socket, window.select);
+			}
+			else				
+				cancelInvitation(socket, player.playerId);				
+		};
+	}
+    usersContainer.appendChild(div);
+}
+
+
+function updatePlayers(socket, players) {
 
     const usersContainer = document.getElementById("users");
-    usersContainer.innerHTML = "";
+	userElements = usersContainer.children;
+    // usersContainer.innerHTML = "";
+	// userElements = document.getElementsByClassName("user");
 
-    players.forEach(user => {
+	// if (!players.includes(element.dataset.id))	
 
-    	const div = document.createElement("div");
-    	div.className = "user";
-    	div.textContent = `user: ${user.playerId}`;
-		div.id = user.playerId;
-		if (user.playerId === window.selfId)
+    [...userElements].forEach( player => {
+		console.log("il ya un element ds le bazar c le :" + player.id);
+		if (players.some(el => el.playerId == player.id))
 		{
-			div.style.backgroundColor = 'violet'
-			div.onclick = function() {
-				alert("you can't choose yourself");
-			};
+			console.log("il ya un au moins un element qui sont egaux:" + player.id);
+			usersContainer.removeChild(player);
 		}
-		else
+	});
+
+	players.forEach( player => {
+		console.log("foreach: playerId: " + player.playerId);
+		if (![...userElements].some(el => el.id == player.playerId))	
 		{
-    		div.onclick = function() {
-				console.log("user confirmed: " + div.confirmed + " id: " + div.id);
-				if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
-				{
-					console.log(`my choice: ${user.playerId}`);
-					window.select = user.playerId;//!
-					this.classList.add("invitation-waiting");				
-					sendInvitation(socket, window.select);
-				}
-				else				
-					cancelInvitation(socket, user.playerId);				
-    		};
+			console.log("is added");
+			addToPlayers(usersContainer, player);
 		}
-    	usersContainer.appendChild(div);
-    });
-	// elements = document.getElementsByClassName("user");
+	});
+
+    // 	const div = document.createElement("div");
+    // 	div.className = "user";
+    // 	div.textContent = `user: ${user.playerId}`;
+	// 	div.id = user.playerId;
+	// 	if (user.playerId === window.selfId)
+	// 	{
+	// 		div.style.backgroundColor = 'violet'
+	// 		div.onclick = function() {
+	// 			alert("you can't choose yourself");
+	// 		};
+	// 	}
+	// 	else
+	// 	{
+    // 		div.onclick = function() {
+	// 			console.log("user confirmed: " + div.confirmed + " id: " + div.id);
+	// 			if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
+	// 			{
+	// 				console.log(`my choice: ${user.playerId}`);
+	// 				window.select = user.playerId;//!
+	// 				this.classList.add("invitation-waiting");				
+	// 				sendInvitation(socket, window.select);
+	// 			}
+	// 			else				
+	// 				cancelInvitation(socket, user.playerId);				
+    // 		};
+	// 	}
+    // 	usersContainer.appendChild(div);
+    // });
+	
 
 	// Array.from(elements).forEach( element => {
 
@@ -94,6 +146,7 @@ function updateUsersList(socket, players) {
 	// 		sendInvitation(socket, window.select);
 	// 	});
 	// });
+	
 }
 
 function setSelfId(selfId) {
@@ -177,7 +230,7 @@ function initTournamentWs() {
 		if (data.type == "selfAssign")			
 			setSelfId(data.selfId);		
 		else if (data.type == "playerList")
-			updateUsersList(window.tournamentSocket, data.players);
+			updatePlayers(window.tournamentSocket, data.players);
 		else if (data.type == "invitation")		
 			receiveInvitation(window.tournamentSocket, data.player);
 		else if (data.type == "cancelInvitation")		

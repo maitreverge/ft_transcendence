@@ -25,6 +25,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 			if p['socket'] == self:
 				print(p['playerId'], flush=True)
 		selfPlayers = [p for p in selfPlayers if p['socket'] != self]
+		for selfplay in selfPlayers:
+			await selfplay['socket'].send(text_data=json.dumps({"type": "playerList", "players": players})) 
 		
 	async def receive(self, text_data):
 		
@@ -69,7 +71,6 @@ class MyConsumer(AsyncWebsocketConsumer):
 				for p in selfPlayers:
 					if p['playerId'] == data['choosenId']:
 						await p['socket'].send(text_data=json.dumps({"matchId": data['matchId']}))
-
 			case _:
 				pass  
 
