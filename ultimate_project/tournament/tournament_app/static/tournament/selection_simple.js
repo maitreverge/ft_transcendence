@@ -80,6 +80,38 @@ function addToPlayers(socket, usersContainer, player) {
     usersContainer.appendChild(div);
 }
 
+function addToMatchs(socket, matchsContainer, match) {
+  	
+	const div = document.createElement("div");
+	div.className = "match";
+	div.textContent = `match: ${match.matchId}`;
+	div.id = match.matchId;
+	// if (match.matchId === window.selfId)
+	// {
+	// 	div.classList.add("self-match");
+	// 	div.onclick = function() {
+	// 		alert("you can't choose yourself");
+	// 	};
+	// }
+	// else
+	// {
+	// 	div.onclick = function() {
+
+	// 		console.log("user confirmed: " + div.confirmed + " id: " + div.id);
+	// 		if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
+	// 		{
+	// 			console.log(`my choice: ${match.matchId}`);
+	// 			window.select = match.matchId;//!
+	// 			this.classList.add("invitation-waiting");				
+	// 			sendInvitation(socket, window.select);
+	// 		}
+	// 		else				
+	// 			cancelInvitation(socket, match.matchId);				
+	// 	};
+	// }
+    matchsContainer.appendChild(div);
+}
+
 function updatePlayers(socket, players) {
 
     const usersContainer = document.getElementById("users");
@@ -92,6 +124,21 @@ function updatePlayers(socket, players) {
 	players.forEach( player => {	
 		if (userElements.every(el => el.id != player.playerId))		
 			addToPlayers(socket, usersContainer, player);		
+	});	
+}
+
+function updateMatchs(socket, matchs) {
+
+    const matchsContainer = document.getElementById("matchs");
+	matchElements = [...matchsContainer.children];
+		
+    matchElements.forEach( match => {	
+		if (matchs.every(el => el.matchId != match.id))		
+			matchsContainer.removeChild(match);					
+	});
+	matchs.forEach( match => {	
+		if (matchElements.every(el => el.id != match.matchId))		
+			addToMatchs(socket, matchsContainer, match);		
 	});	
 }
 
@@ -171,20 +218,49 @@ function initTournamentWs() {
 	window.tournamentSocket.onmessage = (event) => {
 
 		console.log("Message reçu :", event.data);
+
 		const data = JSON.parse(event.data);
+
+		switch (data.type)
+		{
+			case "selfAssign":
+				setSelfId(data.selfId);
+				break;
+			case "playerList":
+				updatePlayers(window.tournamentSocket, data.players);
+				break;
+			case "matchList":
+				updatePlayers(window.tournamentSocket, data.matchs);
+				break;
+			case "invitation":
+				receiveInvitation(window.tournamentSocket, data.player);
+				break;
+			case "cancelInvitation":
+				invitationCancelled(data.player);
+				break;
+			case "confirmation":
+				receiveConfirmation(data.choosen, data.response);
+				break;
+			default:
+				if (data.matchId) 
+					receiveMatchId(data.matchId);			
+				break;
+		}
+
+		// const data = JSON.parse(event.data);
 		
-		if (data.type == "selfAssign")			
-			setSelfId(data.selfId);		
-		else if (data.type == "playerList")
-			updatePlayers(window.tournamentSocket, data.players);
-		else if (data.type == "invitation")		
-			receiveInvitation(window.tournamentSocket, data.player);
-		else if (data.type == "cancelInvitation")		
-			invitationCancelled(data.player);		
-		else if (data.type == "confirmation")		
-			receiveConfirmation(data.choosen, data.response);		
-		else if (data.matchId)		
-			receiveMatchId(data.matchId);
+		// if (data.type == "selfAssign")			
+		// 	setSelfId(data.selfId);		
+		// else if (data.type == "playerList")
+		// 	updatePlayers(window.tournamentSocket, data.players);
+		// else if (data.type == "invitation")		
+		// 	receiveInvitation(window.tournamentSocket, data.player);
+		// else if (data.type == "cancelInvitation")		
+		// 	invitationCancelled(data.player);		
+		// else if (data.type == "confirmation")		
+		// 	receiveConfirmation(data.choosen, data.response);		
+		// else if (data.matchId)		
+		// 	receiveMatchId(data.matchId);
 	};	
 }
 
