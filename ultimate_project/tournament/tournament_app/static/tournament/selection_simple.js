@@ -48,7 +48,7 @@ function invitationCancelled(applicantId) {
 	applicantElement.confirmed = 'no';
 }
 
-function addToPlayers(usersContainer, player) {
+function addToPlayers(socket, usersContainer, player) {
   	
 	const div = document.createElement("div");
 	div.className = "user";
@@ -104,7 +104,7 @@ function updatePlayers(socket, players) {
 		if ([...usersContainer.children].every(el => el.id != player.playerId))	
 		{
 			console.log("is added");
-			addToPlayers(usersContainer, player);
+			addToPlayers(socket, usersContainer, player);
 		}
 	});
 
