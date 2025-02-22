@@ -52,6 +52,10 @@
 	background-color: rgb(16, 90, 175);
 }
 
+.self-player {
+	background-color: rgb(250, 8, 250);
+}
+
 button {
 	margin:10px;
 }

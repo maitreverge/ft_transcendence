@@ -56,7 +56,7 @@ function addToPlayers(socket, usersContainer, player) {
 	div.id = player.playerId;
 	if (player.playerId === window.selfId)
 	{
-		div.style.backgroundColor = 'violet'
+		div.classList.add("self-player");
 		div.onclick = function() {
 			alert("you can't choose yourself");
 		};
@@ -64,6 +64,7 @@ function addToPlayers(socket, usersContainer, player) {
 	else
 	{
 		div.onclick = function() {
+
 			console.log("user confirmed: " + div.confirmed + " id: " + div.id);
 			if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
 			{
@@ -79,78 +80,19 @@ function addToPlayers(socket, usersContainer, player) {
     usersContainer.appendChild(div);
 }
 
-
 function updatePlayers(socket, players) {
 
     const usersContainer = document.getElementById("users");
-	userElements = usersContainer.children;
-    // usersContainer.innerHTML = "";
-	// userElements = document.getElementsByClassName("user");
-
-	// if (!players.includes(element.dataset.id))	
-	
-    [...usersContainer.children].forEach( player => {
-
-		console.log("il ya un element ds le bazar c le :" + player.id);
-		if (players.every(el => {console.log("in: " + el.playerId); return el.playerId != player.id}))
-		{
-			console.log("il ya un au moins un element qui sont egaux:" + player.id);
-			usersContainer.removeChild(player);
-		}				
+	userElements = [...usersContainer.children];
+		
+    userElements.forEach( player => {	
+		if (players.every(el => el.playerId != player.id))		
+			usersContainer.removeChild(player);					
 	});
-
-	players.forEach( player => {
-		console.log("foreach: playerId: " + player.playerId);
-		if ([...usersContainer.children].every(el => el.id != player.playerId))	
-		{
-			console.log("is added");
-			addToPlayers(socket, usersContainer, player);
-		}
-	});
-
-
-
-
-    // 	const div = document.createElement("div");
-    // 	div.className = "user";
-    // 	div.textContent = `user: ${user.playerId}`;
-	// 	div.id = user.playerId;
-	// 	if (user.playerId === window.selfId)
-	// 	{
-	// 		div.style.backgroundColor = 'violet'
-	// 		div.onclick = function() {
-	// 			alert("you can't choose yourself");
-	// 		};
-	// 	}
-	// 	else
-	// 	{
-    // 		div.onclick = function() {
-	// 			console.log("user confirmed: " + div.confirmed + " id: " + div.id);
-	// 			if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
-	// 			{
-	// 				console.log(`my choice: ${user.playerId}`);
-	// 				window.select = user.playerId;//!
-	// 				this.classList.add("invitation-waiting");				
-	// 				sendInvitation(socket, window.select);
-	// 			}
-	// 			else				
-	// 				cancelInvitation(socket, user.playerId);				
-    // 		};
-	// 	}
-    // 	usersContainer.appendChild(div);
-    // });
-	
-
-	// Array.from(elements).forEach( element => {
-
-	// 	element.addEventListener("click", event => {
-	// 		console.log("ye" + window.select);
-	// 		console.log(`choice: {{user.playerId}}`); window.select ='{{ user.playerId }}';
-	// 		this.style.backgroundColor = 'red';
-	// 		sendInvitation(socket, window.select);
-	// 	});
-	// });
-	
+	players.forEach( player => {	
+		if (userElements.every(el => el.id != player.playerId))		
+			addToPlayers(socket, usersContainer, player);		
+	});	
 }
 
 function setSelfId(selfId) {
