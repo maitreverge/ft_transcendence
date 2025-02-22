@@ -50,6 +50,8 @@ TOUDOU LIST
 --------------------------------------------------------------------------------
 # TO FIX :
 - Write all healths checks for all django containers
+- DB containers actually create folders
+- Automate `makemigrations` on each new app created
 
 # MULTIPLES DATABASE CONTAINERS :
 

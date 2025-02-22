@@ -7,8 +7,8 @@ services:
         condition: service_healthy
       match:
         condition: service_healthy
-      # static_files:
-      #   condition: service_healthy
+      static_files:
+        condition: service_healthy
     container_name: ctn_nginx
     build :
       context: ./nginx/

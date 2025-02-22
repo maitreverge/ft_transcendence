@@ -41,7 +41,7 @@ services:
     env_file:
       - ../../.env
     ports:
-      - "5437:5432" # TODO : Increment Host port for each db
+      - "5436:5432" # TODO : Increment Host port for each db
     healthcheck:
       # Health check done in non root user
       test: ["CMD-SHELL", "pg_isready -U ${MATCH_POSTGRES_USER} -d ${MATCH_POSTGRES_DB}"]

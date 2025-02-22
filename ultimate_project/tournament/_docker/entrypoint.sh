@@ -4,17 +4,18 @@
 set -e
 
 # Apply database migrations
-# ! IMPORTANT : You need to create a new `makemigrations` for every app
+# ! IMPORTANT : You need to create a new `makemigrations` rule for every app
+# ! You also need to pipe it in the 'yes' command to avoid prompting confirmation
 
-python manage.py makemigrations tournament_app
-python manage.py migrate
+yes | python3 manage.py makemigrations tournament_app
+python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
-	python manage.py collectstatic --noinput; \
+	python3 manage.py collectstatic --noinput; \
 	uvicorn ${name}.asgi:application --host 0.0.0.0 --port ${port}; \
 else \
-	python ./manage.py runserver 0.0.0.0:${port}; \
+	python3 ./manage.py runserver 0.0.0.0:${port}; \
 fi
 
 exec "$@"
