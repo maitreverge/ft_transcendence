@@ -30,6 +30,7 @@ services:
       - transcendence_network
     restart: on-failure
 
+  # ========= TOURNAMENTS ==========
   tournament:
     extends:
       file: ./tournament/_docker/tournament_compose.yaml
@@ -39,6 +40,7 @@ services:
       file: ./tournament/_docker/tournament_compose.yaml
       service: tournament_db
 
+  # ========= MATCHES ==========
   match:
     extends:
       file: ./match/_docker/match_compose.yaml
@@ -48,6 +50,15 @@ services:
       file: ./match/_docker/match_compose.yaml
       service: match_db
 
+  # ========= USERS ==========
+  user:
+    extends:
+      file: ./user/_docker/user_compose.yaml
+      service: user
+  user_db:
+    extends:
+      file: ./user/_docker/user_compose.yaml
+      service: user_db
 
   static_files:
     container_name: ctn_static_files
@@ -63,17 +74,14 @@ services:
       - transcendence_network
     volumes:
       - staticvol:/app/staticfiles
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${static_files_port}/health/"]
+      interval: 1m30s    # How often to run the health check (every 90 seconds)
+      timeout: 2s       # Maximum time to wait for the check to complete
+      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
+      start_period: 30s  # Initial grace period where failures don't count (container startup time)
     restart: always
 
-  # USERS
-  user:
-    extends:
-      file: ./user/_docker/user_compose.yaml
-      service: user
-  user_db:
-    extends:
-      file: ./user/_docker/user_compose.yaml
-      service: user_db
 
   # admin:
   #   container_name: ctn_admin
