@@ -85,11 +85,38 @@ ASGI_APPLICATION = f"{NAME}.asgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
+    "default": { # Default admin DB can stay in a sqlite3 form
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+    },
+    'users': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('USER_POSTGRES_DB'), # Name of the Database
+        'USER': os.getenv('USER_POSTGRES_USER'), # Username for accessing the database
+        'PASSWORD': os.getenv('USER_POSTGRES_PASSWORD'), # Password for the database user.
+        'HOST': 'user_db', # Hostname where the database server is running == compose service == Name of the db
+        'PORT': '5432', # Port number on which the database server is listening.
+    },
+    'matches': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('MATCH_POSTGRES_DB'),
+        'USER': os.getenv('MATCH_POSTGRES_USER'),
+        'PASSWORD': os.getenv('MATCH_POSTGRES_PASSWORD'),
+        'HOST': 'match_db',
+        'PORT': '5432',
+    },
+    'tournaments': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('TOURNAMENT_POSTGRES_DB'),
+        'USER': os.getenv('TOURNAMENT_POSTGRES_USER'),
+        'PASSWORD': os.getenv('TOURNAMENT_POSTGRES_PASSWORD'),
+        'HOST': 'tournament_db',
+        'PORT': '5432',
     }
 }
+
+DATABASE_ROUTERS = ['db_router.MultiDBRouter']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

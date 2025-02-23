@@ -1,5 +1,10 @@
 FROM python:3.11-slim
 
+RUN apt update -y && \ 
+	apt upgrade -y && \
+	apt install curl -y && \
+	apt install postgresql-client -y
+
 WORKDIR /app
 
 COPY requirements.txt .
