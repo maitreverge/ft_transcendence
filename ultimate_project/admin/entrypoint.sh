@@ -3,29 +3,18 @@
 # Make the scripts fails if any command fails
 set -e
 
-# cat << EOF | python3 manage.py shell
-# from django.contrib.auth import get_user_model
-
-# User = get_user_model()
-# if not User.objects.filter(is_superuser=True).exists():
-#     User.objects.create_superuser(username='admin', password='admin', email='admin@email.com')
-#     print("Superuser created.")
-# else:
-#     print("Superuser already exists.")
-# EOF
-
 # Create superuser if it does not exist
 if [ "$(python3 manage.py shell -c 'from django.contrib.auth.models import User; print(User.objects.filter(is_superuser=True).exists())')" = "False" ]; then
 	python3 manage.py createsuperuser --noinput
 fi
 
-python3 manage.py makemigrations
+# python3 manage.py makemigrations
 
-python3 manage.py migrate --database=user_db
-python3 manage.py migrate --database=match_db
-python3 manage.py migrate --database=tournament_db
+# python3 manage.py migrate --database=user_db
+# python3 manage.py migrate --database=match_db
+# python3 manage.py migrate --database=tournament_db
 
-python3 manage.py migrate
+python3 manage.py migrate --database=default
 
 
 if [ "${env}" = "prod" ]; then \
