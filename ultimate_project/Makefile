@@ -36,7 +36,9 @@ delete_volume:
 	@sudo rm -rf /home/volumes_transcendence/
 	@echo "\n\033[1;32m***| PostgreSQL Volumes Deteted |***\033[0m\n"
 
-.PHONY: all prod clean re install_compose create_volume delete_volume prune
+rebuild: delete_volume clean prune all
+
+.PHONY: all prod clean re install_compose create_volume delete_volume prune rebuild
 
 # all:
 # 	docker-compose up

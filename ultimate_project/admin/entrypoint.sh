@@ -14,6 +14,11 @@ set -e
 #     print("Superuser already exists.")
 # EOF
 
+# Create superuser if it does not exist
+if [ "$(python3 manage.py shell -c 'from django.contrib.auth.models import User; print(User.objects.filter(is_superuser=True).exists())')" = "False" ]; then
+	python3 manage.py createsuperuser --noinput
+fi
+
 python3 manage.py makemigrations
 
 python3 manage.py migrate --database=users
@@ -21,11 +26,6 @@ python3 manage.py migrate --database=matches
 python3 manage.py migrate --database=tournaments
 
 python3 manage.py migrate
-
-# Create superuser if it does not exist
-if [ -z "$(python3 manage.py shell -c 'from django.contrib.auth.models import User; print(User.objects.filter(is_superuser=True).exists())')" ]; then
-    python3 manage.py createsuperuser --noinput
-fi
 
 
 if [ "${env}" = "prod" ]; then \
