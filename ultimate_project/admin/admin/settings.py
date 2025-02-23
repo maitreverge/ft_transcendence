@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    f"{NAME}_app",
+    # "admin_app",
 ]
 
 MIDDLEWARE = [
@@ -115,7 +115,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['db_router.MultiDBRouter']
+DATABASE_ROUTERS = ['admin.db_routers.MultiDBRouter']
 
 
 # Password validation

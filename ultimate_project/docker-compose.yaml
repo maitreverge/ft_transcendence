@@ -84,6 +84,13 @@ services:
 
 
   admin:
+    depends_on:
+      user_db:
+        condition: service_healthy
+      match_db:
+        condition: service_healthy
+      tournament_db:
+        condition: service_healthy
     container_name: ctn_admin
     build :
       context: ./admin/
