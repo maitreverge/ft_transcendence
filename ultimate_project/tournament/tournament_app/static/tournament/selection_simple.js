@@ -74,93 +74,19 @@ function addToPlayers(socket, usersContainer, player) {
     usersContainer.appendChild(div);
 }
 
-function addToMatchs(socket, matchsContainer, match) {
-  	
-	const div = document.createElement("div");
-	div.className = "match";
-	div.textContent = `match: ${match.matchId}`;
-	div.id = match.matchId;
-	// if (match.matchId === window.selfId)
-	// {
-	// 	div.classList.add("self-match");
-	// 	div.onclick = function() {
-	// 		alert("you can't choose yourself");
-	// 	};
-	// }
-	// else
-	// {
-	// 	div.onclick = function() {
-
-	// 		console.log("user confirmed: " + div.confirmed + " id: " + div.id);
-	// 		if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
-	// 		{
-	// 			console.log(`my choice: ${match.matchId}`);
-	// 			window.select = match.matchId;//!
-	// 			this.classList.add("invitation-waiting");				
-	// 			sendInvitation(socket, window.select);
-	// 		}
-	// 		else				
-	// 			cancelInvitation(socket, match.matchId);				
-	// 	};
-	// }
-    matchsContainer.appendChild(div);
-}
-
-function updatePlayers(socket, players) {
-
-    const usersContainer = document.getElementById("users");
-	userElements = [...usersContainer.children];
-		
-    userElements.forEach( player => {	
-		if (players.every(el => el.playerId != player.id))		
-			usersContainer.removeChild(player);					
-	});
-	players.forEach( player => {	
-		if (userElements.every(el => el.id != player.playerId))		
-			addToPlayers(socket, usersContainer, player);		
-	});	
-}
-
-function updateMatchs(socket, matchs) {
-	console.log("new udate " + matchs);
-    const matchsContainer = document.getElementById("matchs");
-	matchElements = [...matchsContainer.children];
-		
-    matchElements.forEach( match => {	
-		if (matchs.every(el => el.matchId != match.id))		
-			matchsContainer.removeChild(match);
-		// if (match.id == window.selfMatchId)
-		// {
-		// 	console.log("in uupdate selfmatchid: " + window.selfMatchId);
-		// 	match.classList.add("self-match");					
-		// }
-	});
-	matchs.forEach( match => {	
-		if (matchElements.every(el => el.id != match.matchId))		
-			addToMatchs(socket, matchsContainer, match);		
-	});	
-}
-
-function setSelfId(selfId) {
-	window.selfId = selfId;
-	document.getElementById("player").innerText = 
-	"Je suis le joueur " + window.selfId;
-	
-  	window.select = null;
-}
-
 function setSelfMatchId()
 {
 	const matchsContainer = document.getElementById("matchs");
 	matchElements = [...matchsContainer.children];
 		
-    matchElements.forEach( match => {		
+    matchElements.forEach( match => {	
+		console.log("here!: windowselfmatchid: " + window.selfMatchId + " et matchid: " + match.id);
 		if (match.id == window.selfMatchId)
 		{
 			console.log("in uupdate selfmatchid: " + window.selfMatchId);
 			match.classList.add("self-match");
 			match.onclick = function() {
-				fetch(`/match/?matchId=${window.selfMatchId}&playerId=${window.selfId}`)
+				fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
 				.then( response => {
 					if (!response.ok) 
 						throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
@@ -199,8 +125,117 @@ function setSelfMatchId()
 				.catch( error => console.log(error))
 			};					
 		}
+		else
+		{
+			console.log("je suis ds else");
+			match.onclick = function() {
+				console.log("tu as bien clique man");
+				fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
+				.then( response => {
+					if (!response.ok) 
+						throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
+					return response.text();
+				})
+				.then( data => {
+					overlayMatch = document.getElementById("overlay-match");
+					overlayMatch.innerHTML = data;
+					let scripts = overlayMatch.getElementsByTagName("script");
+					for (let script of scripts) {
+                        let newScript = document.createElement("script");
+                        if (script.src) {                           
+                            newScript.src = script.src;
+                            newScript.async = true;  
+							newScript.onload = script.onload;
+                        } else {                      
+                            newScript.textContent = script.textContent;
+                        }
+                        document.body.appendChild(newScript);
+                    }
+				})
+				.catch( error => console.log(error))
+			};		
+		}
 	});
 }
+
+function addToMatchs(socket, matchsContainer, match) {
+  	
+	const div = document.createElement("div");
+	div.className = "match";
+	div.textContent = `match: ${match.matchId}`;
+	div.id = match.matchId;
+
+	// if (match.matchId === window.selfId)
+	// {
+	// 	div.classList.add("self-match");
+	// 	div.onclick = function() {
+	// 		alert("you can't choose yourself");
+	// 	};
+	// }
+	// else
+	// {
+	// 	div.onclick = function() {
+
+	// 		console.log("user confirmed: " + div.confirmed + " id: " + div.id);
+	// 		if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
+	// 		{
+	// 			console.log(`my choice: ${match.matchId}`);
+	// 			window.select = match.matchId;//!
+	// 			this.classList.add("invitation-waiting");				
+	// 			sendInvitation(socket, window.select);
+	// 		}
+	// 		else				
+	// 			cancelInvitation(socket, match.matchId);				
+	// 	};
+	// }
+    matchsContainer.appendChild(div);
+}
+
+
+function updatePlayers(socket, players) {
+
+    const usersContainer = document.getElementById("users");
+	userElements = [...usersContainer.children];
+		
+    userElements.forEach( player => {	
+		if (players.every(el => el.playerId != player.id))		
+			usersContainer.removeChild(player);					
+	});
+	players.forEach( player => {	
+		if (userElements.every(el => el.id != player.playerId))		
+			addToPlayers(socket, usersContainer, player);		
+	});	
+}
+
+function updateMatchs(socket, matchs) {
+	console.log("new udate " + matchs);
+    const matchsContainer = document.getElementById("matchs");
+	matchElements = [...matchsContainer.children];
+		
+    matchElements.forEach( match => {	
+		if (matchs.every(el => el.matchId != match.id))		
+			matchsContainer.removeChild(match);
+		// if (match.id == window.selfMatchId)
+		// {
+		// 	console.log("in uupdate selfmatchid: " + window.selfMatchId);
+		// 	match.classList.add("self-match");					
+		// }
+	});
+	matchs.forEach( match => {	
+		if (matchElements.every(el => el.id != match.matchId))		
+			addToMatchs(socket, matchsContainer, match);		
+	});
+	setSelfMatchId();	
+}
+
+function setSelfId(selfId) {
+	window.selfId = selfId;
+	document.getElementById("player").innerText = 
+	"Je suis le joueur " + window.selfId;
+	
+  	window.select = null;
+}
+
 
 function receiveInvitation(socket, applicantId) {
 

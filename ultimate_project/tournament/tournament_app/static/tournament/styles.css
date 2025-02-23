@@ -38,8 +38,10 @@
 }
 
 .match {
+	
 	margin:5px;
-	display:inline;
+	margin-top:10px;
+	display:inline-block;
 	background: rgb(251, 255, 0);
 }
 

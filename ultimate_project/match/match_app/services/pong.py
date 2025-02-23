@@ -66,14 +66,14 @@ class Pong:
 			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
 			self.player1 = next((p for p in self.myplayers if self.idP1 == p["playerId"]), None)
 			self.player2 = next((p for p in self.myplayers if self.idP2 == p["playerId"]), None)
-			if len(self.myplayers) >= 2:
-				if self.player1["dir"] is not None :
+			if None not in (self.player1, self.player2):
+				if self.player1.get("dir") is not None :
 					if self.player1["dir"] == 'up':
 						self.yp1 -= 1
 					elif self.player1["dir"] == 'down':
 						self.yp1 += 1
 					self.player1["dir"] = None
-				if self.player2["dir"] is not None :
+				if  self.player2.get("dir") is not None :
 					if self.player2["dir"] == 'up':
 						self.yp2 -= 1
 					elif self.player2["dir"] == 'down':
