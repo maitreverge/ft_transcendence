@@ -21,8 +21,8 @@
 	background-color: rgb(222, 30, 72);
 }
 
-#overlay-startmatch {
-	position:relative;
+#overlay-match {
+	/* position:relative; */
 	display:block;
 	top:0;
     /* background: white; */
