@@ -19,6 +19,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		await self.send(text_data=json.dumps({"type": "selfAssign", "selfId": self.id})) 
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({"type": "playerList", "players": players})) #change for channels
+			await selfplay['socket'].send(text_data=json.dumps({"type": "matchList", "matchs": matchs}))
 
 	async def disconnect(self, close_code):
 		global selfPlayers
@@ -30,8 +31,15 @@ class MyConsumer(AsyncWebsocketConsumer):
 		selfPlayers = [p for p in selfPlayers if p['socket'] != self]
 		players = [p for p in players if p['playerId'] != self.id]
 		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({"type": "playerList", "players": players})) 
-		
+			await selfplay['socket'].send(text_data=json.dumps({"type": "playerList", "players": players}))
+			await selfplay['socket'].send(text_data=json.dumps({"type": "matchList", "matchs": matchs}))
+
+	@staticmethod
+	async def matchUpdate():
+		print("MATCH UPDATE", flush=True)
+		for selfplay in selfPlayers:
+			await selfplay['socket'].send(text_data=json.dumps({"type": "matchList", "matchs": matchs}))
+
 	async def receive(self, text_data):
 		
 		data = json.loads(text_data)

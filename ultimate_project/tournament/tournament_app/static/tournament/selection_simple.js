@@ -11,10 +11,12 @@ function sendConfirmation(socket, applicantId, response) {
 
 	console.log(`i will send ${response} to applicant: ${applicantId}`);
 
-	const applicantElement = document.getElementById(applicantId);
-	applicantElement.classList.add("invitation-confirmed");	
-	applicantElement.confirmed = 'yes';
-
+	if (response === "yes") 
+	{
+		const applicantElement = document.getElementById(applicantId);
+		applicantElement.classList.add("invitation-confirmed");	
+		applicantElement.confirmed = 'yes';
+	}
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({type: "confirmation", response: response, applicantId: applicantId}))
 }
@@ -128,7 +130,7 @@ function updatePlayers(socket, players) {
 }
 
 function updateMatchs(socket, matchs) {
-
+	console.log("new udate " + matchs);
     const matchsContainer = document.getElementById("matchs");
 	matchElements = [...matchsContainer.children];
 		
@@ -230,7 +232,7 @@ function initTournamentWs() {
 				updatePlayers(window.tournamentSocket, data.players);
 				break;
 			case "matchList":
-				updatePlayers(window.tournamentSocket, data.matchs);
+				updateMatchs(window.tournamentSocket, data.matchs);
 				break;
 			case "invitation":
 				receiveInvitation(window.tournamentSocket, data.player);

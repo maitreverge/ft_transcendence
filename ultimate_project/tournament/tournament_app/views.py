@@ -20,7 +20,7 @@ def start_tournament(request : HttpRequest):
 def receive_invit(request):
 	p1 = request.GET.get('select')
 
-def start_match(request):
+async def start_match(request):
 	# p1 =consumer.players[''].id
 	matchId = request.GET.get('matchId', None)
 	print(f"first print matchId in start match: {matchId}", flush=True)
@@ -30,6 +30,7 @@ def start_match(request):
 		# print(f"select:{select}", flush=True)
 		data = requests.get(f"http://match:8002/match/new-match/?p1={p1}&p2={p2}").json() #! opti url and gateway!!!
 		consumer.matchs.append({"matchId": data, "playerId": p2, "otherId": p1})
+		await consumer.MyConsumer.matchUpdate()
 		print(data, flush=True)
 		return render(request, "match_simple.html", {"matchData": data, "playerId": p1, "otherId": p2})
 	else:
