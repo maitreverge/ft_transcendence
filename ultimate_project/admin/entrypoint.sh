@@ -21,9 +21,9 @@ fi
 
 python3 manage.py makemigrations
 
-python3 manage.py migrate --database=users
-python3 manage.py migrate --database=matches
-python3 manage.py migrate --database=tournaments
+python3 manage.py migrate --database=user_db
+python3 manage.py migrate --database=match_db
+python3 manage.py migrate --database=tournament_db
 
 python3 manage.py migrate
 

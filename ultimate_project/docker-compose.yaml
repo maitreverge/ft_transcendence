@@ -95,11 +95,12 @@ services:
     build :
       context: ./admin/
     environment:
-      - env=prod
-      - name=admin
-      - port=${admin_port}
-      - pi_domain=${PI_DOMAIN} # maybe not set up yet
-    env_file: # ! Maybe delete depending on which postgres data I need
+      env: prod
+      name: admin
+      port: ${admin_port}
+      pi_domain: ${PI_DOMAIN} # maybe not set up yet
+      DJANGO_SETTINGS_MODULE: admin.settings
+    env_file:
       - .env
     image: img_admin
     networks:
@@ -107,7 +108,7 @@ services:
     volumes:
       - staticvol:/app/staticfiles
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${admin_files_port}/health/"]
+      test: ["CMD", "curl", "-f", "http://localhost:${admin_port}/health/"]
       interval: 1m30s
       timeout: 2s
       retries: 5

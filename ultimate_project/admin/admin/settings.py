@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "admin_app",
+    'admin_app',
 ]
 
 MIDDLEWARE = [
@@ -89,7 +89,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },
-    'users': {
+    'user_db': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('USER_POSTGRES_DB'), # Name of the Database
         'USER': os.getenv('USER_POSTGRES_USER'), # Username for accessing the database
@@ -97,7 +97,7 @@ DATABASES = {
         'HOST': 'user_db', # Hostname where the database server is running == compose service == Name of the db
         'PORT': '5432', # Port number on which the database server is listening.
     },
-    'matches': {
+    'match_db': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('MATCH_POSTGRES_DB'),
         'USER': os.getenv('MATCH_POSTGRES_USER'),
@@ -105,7 +105,7 @@ DATABASES = {
         'HOST': 'match_db',
         'PORT': '5432',
     },
-    'tournaments': {
+    'tournament_db': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('TOURNAMENT_POSTGRES_DB'),
         'USER': os.getenv('TOURNAMENT_POSTGRES_USER'),
@@ -115,8 +115,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['admin.db_routers.MultiDBRouter']
-
+DATABASE_ROUTERS = ['admin_app.db_router.AdminRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
