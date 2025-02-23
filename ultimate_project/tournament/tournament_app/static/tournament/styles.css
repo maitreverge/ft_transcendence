@@ -37,6 +37,12 @@
 	background: rgb(251, 255, 0);
 }
 
+.match {
+	margin:5px;
+	display:inline;
+	background: rgb(251, 255, 0);
+}
+
 #simple-selections {
 
 	width:100%;

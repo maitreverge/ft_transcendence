@@ -2,7 +2,7 @@
 <div style="display:none;">
 	<head>
 		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
-		<script onload="sendMatchId(window.tournamentSocket, '{{matchData.id}}', window.select)" src="{% static 'tournament/selection_simple.js' %}"></script>
+		<script onload="sendMatchId(window.tournamentSocket, '{{matchId}}', window.select)" src="{% static 'tournament/selection_simple.js' %}"></script>
 	</head>
 </div>
 <div id="tournament-match">
@@ -13,7 +13,7 @@
 		recu l'identifiant du match qui m'est attribué,
 		j'aurai surement besoin de l'id du joueur qui m'est attribué dans l'avenir.
 	</h2>
-	<h2 id ="myh1"> Match Data: {{matchData}}, player: {{playerId}}, other: {{otherId}}</h2>
+	<h2 id ="myh1"> Match Data: {{matchId}}, player: {{playerId}}, other: {{otherId}}</h2>
 	
 	<button
 		hx-get="/match/?matchId={{matchData.id}}&playerId={{playerId}}" 

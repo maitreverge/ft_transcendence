@@ -6,7 +6,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 
 def newMatch(request):
     pong = Pong(request.GET.get("p1"), request.GET.get("p2") )
-    return JsonResponse({"id":f"{pong.id}"}, status=201)
+    return JsonResponse({"matchId":f"{pong.id}"}, status=201)
 
 def startMatch(request : HttpRequest):
     # return HttpResponse("<h1>TEST</h1>")
