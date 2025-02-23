@@ -21,14 +21,6 @@ function sendConfirmation(socket, applicantId, response) {
 		socket.send(JSON.stringify({type: "confirmation", response: response, applicantId: applicantId}))
 }
 
-function sendMatchId(socket, matchId, choosenId) {
-
-	console.log("i will send matchId: " + matchId + " to choosen: " + choosenId);
-
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({matchId: matchId, choosenId: choosenId}))
-}
-
 function cancelInvitation(socket, choosenId) {
 	
 	console.log("i will cancel invitation to choosenId: " + choosenId);
@@ -136,7 +128,12 @@ function updateMatchs(socket, matchs) {
 		
     matchElements.forEach( match => {	
 		if (matchs.every(el => el.matchId != match.id))		
-			matchsContainer.removeChild(match);					
+			matchsContainer.removeChild(match);
+		// if (match.id == window.selfMatchId)
+		// {
+		// 	console.log("in uupdate selfmatchid: " + window.selfMatchId);
+		// 	match.classList.add("self-match");					
+		// }
 	});
 	matchs.forEach( match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
@@ -152,6 +149,59 @@ function setSelfId(selfId) {
   	window.select = null;
 }
 
+function setSelfMatchId()
+{
+	const matchsContainer = document.getElementById("matchs");
+	matchElements = [...matchsContainer.children];
+		
+    matchElements.forEach( match => {		
+		if (match.id == window.selfMatchId)
+		{
+			console.log("in uupdate selfmatchid: " + window.selfMatchId);
+			match.classList.add("self-match");
+			match.onclick = function() {
+				fetch(`/match/?matchId=${window.selfMatchId}&playerId=${window.selfId}`)
+				.then( response => {
+					if (!response.ok) 
+						throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
+					return response.text();
+				})
+				.then( data => {
+					overlayMatch = document.getElementById("overlay-match");
+					overlayMatch.innerHTML = data;
+					let scripts = overlayMatch.getElementsByTagName("script");
+					for (let script of scripts) {
+                        let newScript = document.createElement("script");
+                        if (script.src) {
+                            // Si c'est un script externe, on le recharge
+                            newScript.src = script.src;
+                            newScript.async = true;  // Permet un chargement non bloquant
+							newScript.onload = script.onload;
+                        } else {
+                            // Si c'est un script inline, on copie son contenu
+                            newScript.textContent = script.textContent;
+                        }
+                        document.body.appendChild(newScript); // Exécuter le script
+                    }
+
+					// let scripts = overlayMatch.getElementsByTagName("script");
+                    // for (let script of scripts) {
+                    //     let newScript = document.createElement("script");
+                    //     newScript.textContent = script.textContent; // Recharger le script
+                    //     document.body.appendChild(newScript); // Exécuter le script
+                    // }
+					// console.log("data:" + data.matchId);
+					// window.selfMatchId = data.matchId;
+					// setSelfMatchId();
+					// console.log("in ask selfmatchid: " + window.selfMatchId);
+					// sendMatchId(socket, data.matchId, choosenId);
+				})
+				.catch( error => console.log(error))
+			};					
+		}
+	});
+}
+
 function receiveInvitation(socket, applicantId) {
 
 	console.log("i have had and invitation from: " + applicantId)
@@ -162,17 +212,45 @@ function receiveInvitation(socket, applicantId) {
 		sendConfirmation(socket, applicantId, "no");
 }
 
-function askMatchId(choosenId) {
+function sendMatchId(socket, matchId, choosenId) {
 
-	document.body.addEventListener("htmx:configRequest", function(evt) {
+	console.log("i will send matchId: " + matchId + " to choosen: " + choosenId);
 
-		if (evt.detail.elt.id === "startMatchButton" && window.select !== null){
-			evt.detail.path = "/tournament/start-match/?selfid=" + window.selfId + "&select=" + choosenId;
-		}
-	});
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({matchId: matchId, choosenId: choosenId}))
 }
 
-function receiveConfirmation(choosenId, response) {
+function initSelfMatch() {
+	const matchsContainer = document.getElementsById("matchs");
+	matchElements = [...matchsContainer.children];
+}
+
+function askMatchId(socket, choosenId) {
+
+	// document.body.addEventListener("htmx:configRequest", function(evt) {
+
+	// 	if (evt.detail.elt.id === "startMatchButton" && window.select !== null){
+	// 		evt.detail.path = "/tournament/start-match/?selfid=" + window.selfId + "&select=" + choosenId;
+	// 	}
+	// });
+
+	fetch(`/tournament/start-match/?selfid=${window.selfId}&select=${choosenId}`)
+		.then( response => {
+			if (!response.ok) 
+				throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
+			return response.json();
+		})
+		.then( data => {
+			console.log("data:" + data.matchId);
+			window.selfMatchId = data.matchId;
+			setSelfMatchId();
+			console.log("in ask selfmatchid: " + window.selfMatchId);
+			sendMatchId(socket, data.matchId, choosenId);
+		})
+		.catch( error => console.log(error))	
+}
+
+function receiveConfirmation(socket, choosenId, response) {
 
 	console.log("i have had and confirmation from: " + choosenId
 		+ ", the answer is :" + response);
@@ -183,7 +261,7 @@ function receiveConfirmation(choosenId, response) {
 		choosenElement.classList.remove("invitation-waiting");
 		choosenElement.classList.add("invitation-confirmed");
 		choosenElement.confirmed = "yes";
-		askMatchId(choosenId);		
+		askMatchId(socket, choosenId);		
 	}
 	else
 	{
@@ -197,11 +275,13 @@ function receiveMatchId(matchId) {
 
 	console.log("i have had and matchId: " + matchId)
 
-	document.body.addEventListener("htmx:configRequest", function(evt) {
-		if (evt.detail.elt.id === "startMatchButton"){
-			evt.detail.path = `/tournament/start-match/?matchId=${matchId}`;
-		}
-	});
+	// document.body.addEventListener("htmx:configRequest", function(evt) {
+	// 	if (evt.detail.elt.id === "startMatchButton"){
+	// 		evt.detail.path = `/tournament/start-match/?matchId=${matchId}`;
+	// 	}
+	// });
+	window.selfMatchId = matchId;
+	setSelfMatchId();
 }
 
 function initTournamentWs() {
@@ -241,7 +321,7 @@ function initTournamentWs() {
 				invitationCancelled(data.player);
 				break;
 			case "confirmation":
-				receiveConfirmation(data.choosen, data.response);
+				receiveConfirmation(window.tournamentSocket, data.choosen, data.response);
 				break;
 			default:
 				if (data.matchId) 

@@ -28,10 +28,11 @@ async def start_match(request):
 		p1 = request.GET.get('selfid')
 		p2 = request.GET.get('select')
 		# print(f"select:{select}", flush=True)
-		newMatchId = requests.get(f"http://match:8002/match/new-match/?p1={p1}&p2={p2}").json()['id'] #! opti url and gateway!!!
+		newMatchId = requests.get(f"http://match:8002/match/new-match/?p1={p1}&p2={p2}").json()['matchId'] #! opti url and gateway!!!
 		consumer.matchs.append({"matchId": newMatchId, "playerId": p2, "otherId": p1})
 		await consumer.MyConsumer.matchUpdate()
 		print(newMatchId, flush=True)
+		return JsonResponse({"matchId": newMatchId}, status= 201)
 		return render(request, "match_simple.html", {"matchId": newMatchId, "playerId": p1, "otherId": p2})
 	else:
 		for p in consumer.matchs:
