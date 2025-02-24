@@ -6,7 +6,7 @@ if [ "$(python3 manage.py shell -c 'from django.contrib.auth.models import User;
 	python3 manage.py createsuperuser --noinput
 fi
 
-yes | python3 manage.py makemigrations
+yes | python3 manage.py makemigrations admin_app
 python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \
