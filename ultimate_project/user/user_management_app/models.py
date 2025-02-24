@@ -7,6 +7,9 @@ class Player(AbstractBaseUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, unique=True)
+    username = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=100)
+
 
     class Meta:
         # managed = False
@@ -20,13 +23,18 @@ class Match(models.Model):
     id = models.AutoField(primary_key=True)
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'match_schema.match'
 
+    def __str__(self):
+        pass
 
 class Tournament(models.Model):
     id = models.AutoField(primary_key=True)
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'tournament_schema.tournament'
+    
+    def __str__(self):
+        pass
