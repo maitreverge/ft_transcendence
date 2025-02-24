@@ -43,6 +43,9 @@ class Pong:
 		print("launch init", flush=True)
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
+	def end(self, winner):
+
+
 	def launchTask(self):
 		print("launch task", flush=True)
 		self.myEventLoop = asyncio.new_event_loop()
@@ -83,6 +86,11 @@ class Pong:
 					self.player2["dir"] = None
 			else:
 				self.waiting = True
+			
+			if self.yp1 > 80:
+				self.end(self.player1)
+			elif self.yp2 > 80:
+				self.end(self.player2)
 			# pad = 0
 			# for p in self.myplayers:
 			# 	if p['dir'] != None:
