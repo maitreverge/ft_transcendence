@@ -36,9 +36,25 @@ function initMatchWs() {
 
 	const p1 = document.getElementById("p1");
 	const p2 = document.getElementById("p2");
+	const waiting = document.getElementById("waiting");
+	let waitingState = true;
 	socket.onmessage = (event) => {
 
 		const data = JSON.parse(event.data);
+		if (waitingState != data.waiting) 
+		{
+			console.log("Valeur reçue pour waiting:", data.waiting, typeof data.waiting);
+			waitingState = data.waiting;
+			if (data.waiting == true)
+			{
+				console.log("REMOVE:", data.waiting, typeof data.waiting);
+				waiting.classList.remove("no-waiting");
+			}
+			else {
+				console.log("ADD:", data.waiting, typeof data.waiting);
+				waiting.classList.add("no-waiting");
+			}
+		}
 		p1.style.top = data.yp1 + "vh";
 		p2.style.top = data.yp2 + "vh";
 	};

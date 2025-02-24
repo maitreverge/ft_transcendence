@@ -38,6 +38,7 @@ class Pong:
 		self.idP2 = idP2
 		self.yp1 = 0
 		self.yp2 = 0
+		self.waiting = True
 		# self.players = players
 		print("launch init", flush=True)
 		threading.Thread(target=self.launchTask, daemon=True).start()
@@ -67,6 +68,7 @@ class Pong:
 			self.player1 = next((p for p in self.myplayers if self.idP1 == p["playerId"]), None)
 			self.player2 = next((p for p in self.myplayers if self.idP2 == p["playerId"]), None)
 			if None not in (self.player1, self.player2):
+				self.waiting = False
 				if self.player1.get("dir") is not None :
 					if self.player1["dir"] == 'up':
 						self.yp1 -= 1
@@ -79,7 +81,8 @@ class Pong:
 					elif self.player2["dir"] == 'down':
 						self.yp2 += 1
 					self.player2["dir"] = None
-
+			else:
+				self.waiting = True
 			# pad = 0
 			# for p in self.myplayers:
 			# 	if p['dir'] != None:
@@ -122,7 +125,7 @@ class Pong:
 			for p in self.myplayers:	
 				# print(f"send state {self.id}", flush=True)
 				# await p["socket"].send(text_data=f"{self.y}")
-				await p["socket"].send(text_data=json.dumps({"yp1": self.yp1, "yp2": self.yp2}))
+				await p["socket"].send(text_data=json.dumps({"waiting": self.waiting, "yp1": self.yp1, "yp2": self.yp2}))
 				# await p["socket"].send(text_data=f"youhou {self.id} et {p['matchId']}")
 			# time.sleep(1)
 			await asyncio.sleep(0.05)
