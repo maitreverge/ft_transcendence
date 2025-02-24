@@ -37,21 +37,29 @@ function initMatchWs() {
 	const p1 = document.getElementById("p1");
 	const p2 = document.getElementById("p2");
 	const waiting = document.getElementById("waiting");
-	let waitingState = true;
-	socket.onmessage = (event) => {
+	const end = document.getElementById("end");
 
+	let waitingState = "waiting";
+	socket.onmessage = (event) => {
 		const data = JSON.parse(event.data);
-		if (waitingState != data.waiting) 
+		console.log("Valeur reçue pour waiting:", data.state, typeof data.state, " ", data.winner, typeof data.winner);
+		if (data.state == "end")
 		{
-			console.log("Valeur reçue pour waiting:", data.waiting, typeof data.waiting);
-			waitingState = data.waiting;
-			if (data.waiting == true)
+			console.log("Valeur reçue pour waiting:", data.state, typeof data.state, "", data.winner, typeof data.winner);
+			end.innerText += data.winner;
+			end.classList.add("end");
+		}
+		if (waitingState != data.state) 
+		{
+			console.log("Valeur reçue pour waiting:", data.state, typeof data.state);
+			waitingState = data.state;
+			if (data.state == "waiting")
 			{
-				console.log("REMOVE:", data.waiting, typeof data.waiting);
+				console.log("REMOVE:", data.state, typeof data.state);
 				waiting.classList.remove("no-waiting");
 			}
 			else {
-				console.log("ADD:", data.waiting, typeof data.waiting);
+				console.log("ADD:", data.state, typeof data.state);
 				waiting.classList.add("no-waiting");
 			}
 		}

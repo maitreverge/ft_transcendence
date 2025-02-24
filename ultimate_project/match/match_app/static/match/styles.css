@@ -32,3 +32,9 @@
 .no-waiting {
 	display:none !important;
 }
+
+.end {
+	width:80%;
+	height:80%;
+	background-color: rgb(244, 118, 22);
+}

@@ -5,6 +5,7 @@ import match_app.services.consumer as consumer
 
 import asyncio
 import json
+from enum import Enum
 # class Pong:
 
 # 	id = 0
@@ -28,6 +29,11 @@ import json
 # 			print(f"send state {self.id}", flush=True)
 # 			p["socket"].send(text_data="youhou")
 
+class State(Enum):
+	waiting = "waiting"
+	running = "running"
+	end = "end"
+
 class Pong:
 
 	id = 0
@@ -38,40 +44,48 @@ class Pong:
 		self.idP2 = idP2
 		self.yp1 = 0
 		self.yp2 = 0
-		self.waiting = True
-		# self.players = players
+		self.winner = None
+
 		print("launch init", flush=True)
+
+		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
-	def end(self, winner):
-
+	# async def end(self):
+	# 	print("end un", flush=True)
+	# 	await self.two()
+	# 	print("end deux", flush=True)
+		
+	# async def two(self):
+	# 	print("two un", flush=True)
+	# 	await self.three()
+	# 	print("two deux", flush=True)
+		
+	# async def three(self):
+	# 	print("three un", flush=True)
+	# 	await asyncio.sleep(1)
+	# 	print("three deux", flush=True)
+		
 
 	def launchTask(self):
 		print("launch task", flush=True)
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)
 		self.myEventLoop.create_task(self.launch())
-		self.myEventLoop.run_forever()
+		# self.myEventLoop.run_forever()
 		# myEventLoop.run_until_complete(asyncio.Future())
-		# myEventLoop.run_until_complete(self.launch())
+		self.myEventLoop.run_until_complete(self.launch())
 
 	async def launch(self):
-		back = False
+		self.state = State.waiting
 		self.myEventLoop.create_task(self.sendState())
-		while (True):			
-			# print(f"game state {self.id}" , flush=True)
-			# self.y += -1 if back else 1 
-			# # back = True if self.y > 90 elif self.y <= 0 False
-			# if (self.y > 90):
-			# 	back = True
-			# elif (self.y <= 0):
-			# 	back = False
-			# await self.sendState()
+		while self.state in (State.running, State.waiting):		
+		
 			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
 			self.player1 = next((p for p in self.myplayers if self.idP1 == p["playerId"]), None)
 			self.player2 = next((p for p in self.myplayers if self.idP2 == p["playerId"]), None)
 			if None not in (self.player1, self.player2):
-				self.waiting = False
+				self.state = State.running
 				if self.player1.get("dir") is not None :
 					if self.player1["dir"] == 'up':
 						self.yp1 -= 1
@@ -85,57 +99,28 @@ class Pong:
 						self.yp2 += 1
 					self.player2["dir"] = None
 			else:
-				self.waiting = True
+				self.state = State.waiting
 			
-			if self.yp1 > 80:
-				self.end(self.player1)
+			if self.yp1 > 80:		
+				self.winner = self.idP1
+				self.state = State.end
+				await self.sendState()
+				print("TU DEVRAIS ME VOIR", flush=True)
 			elif self.yp2 > 80:
-				self.end(self.player2)
-			# pad = 0
-			# for p in self.myplayers:
-			# 	if p['dir'] != None:
-			# 		if p['dir'] == 'up':
-			# 			pad -= 1
-			# 		elif  p['dir'] == 'down':
-			# 			pad += 1
-			# 		if p['playerId'] == 1:
-			# 			self.yp1 += pad
-			# 		elif p['playerId'] == 2:
-			# 			self.yp2 += pad
-			# 		p['dir'] = None
-			# pad = 0
-			# for p in self.myplayers:
-			# 	if p['dir'] != None:
-			# 		if p['dir'] == 'up':
-			# 			pad -= 1
-			# 		elif  p['dir'] == 'down':
-			# 			pad += 1
-			# 		if p['playerId'] == 1:
-			# 			self.yp1 += pad
-			# 		elif p['playerId'] == 2:
-			# 			self.yp2 += pad
-			# 		p['dir'] = None
-				
-
-
+				self.winner = self.idP2
+				self.state = State.end
+				await self.sendState()
+				print("TU DEVRAIS ME VOIR", flush=True)
 					
 			await asyncio.sleep(0.05)
-
-	# async def sendState(self):
-	# 	while (True):
-	# 		time.sleep(5)
-	# 		print("SEND" , flush=True)
+		print("FIN DU WHIIIIILEEEEEEE", flush=True)
+	
 	async def sendState(self):		
-		while (True):
-			# print(consumer.players)
+		while (True):	
 			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
-			# print(self.myplayers)
+
 			for p in self.myplayers:	
-				# print(f"send state {self.id}", flush=True)
-				# await p["socket"].send(text_data=f"{self.y}")
-				await p["socket"].send(text_data=json.dumps({"waiting": self.waiting, "yp1": self.yp1, "yp2": self.yp2}))
-				# await p["socket"].send(text_data=f"youhou {self.id} et {p['matchId']}")
-			# time.sleep(1)
+				await p["socket"].send(text_data=json.dumps({"state": self.state.name, "yp1": self.yp1, "yp2": self.yp2, "winner": self.winner}))
 			await asyncio.sleep(0.05)
 
 
