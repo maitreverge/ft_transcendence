@@ -29,47 +29,73 @@ services:
     networks:
       - transcendence_network
     restart: on-failure
+  
+  database:
+    image: postgres:latest
+    container_name: ctn_database
+    environment:
+      name: database
+      pi_domain: $PI_DOMAIN
+      port: $POSTGRES_PORT # really usefull ?
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    env_file:
+      - .env
+    # HOST_PORT:CONTAINER_PORT
+    ports:
+      - "5433:5432"
+    healthcheck:
+      # Health check done in non root user
+      test: ["CMD-SHELL", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 2s
+      retries: 5
+      start_period: 60s
+    volumes:
+      # Bind mount for db in local
+      - database_volume:/var/lib/postgresql/data
+    networks:
+      - transcendence_network
+    restart: always
 
   # ========= TOURNAMENTS ==========
   tournament:
     extends:
       file: ./tournament/_docker/tournament_compose.yaml
       service: tournament
-  # tournament_db:
-  #   extends:
-  #     file: ./tournament/_docker/tournament_compose.yaml
-  #     service: tournament_db
 
   # ========= MATCHES ==========
   match:
     extends:
       file: ./match/_docker/match_compose.yaml
       service: match
-  # match_db:
-  #   extends:
-  #     file: ./match/_docker/match_compose.yaml
-  #     service: match_db
 
   # ========= USERS ==========
   user:
     extends:
       file: ./user/_docker/user_compose.yaml
       service: user
-  # user_db:
-  #   extends:
-  #     file: ./user/_docker/user_compose.yaml
-  #     service: user_db
+
 
   static_files:
+    depends_on:
+      database:
+        condition: service_healthy
     container_name: ctn_static_files
     build :
       context: ./static_files/
     environment:
-      - env=prod
-      - port=${static_files_port}
-      - name=static_files
-      - pi_domain=${PI_DOMAIN}
+      env: prod
+      port: ${static_files_port}
+      name: static_files
+      pi_domain: ${PI_DOMAIN}
+      DJANGO_SETTINGS_MODULE: static_files.settings
     image: img_static_files
+    env_file:
+      - .env
     networks:
       - transcendence_network
     volumes:
@@ -120,10 +146,10 @@ volumes:
   staticvol:
     driver: local
   
-  db_volume:
+  database_volume:
     # Use the local driver for the volume
     driver: local
-    name: db_volume
+    name: database_volume
     driver_opts:
       # Specify the type as 'none' to use a bind mount
       type: none
@@ -132,22 +158,6 @@ volumes:
       # Bind the specified host path to the volume
       o: bind
   
-  # tournament_db_volume:
-  #   driver: local
-  #   name: tournament_db_volume
-  #   driver_opts:
-  #     type: none
-  #     device: '/home/volumes_transcendence/postgres/tournament'
-  #     o: bind
-  
-  # match_db_volume:
-  #   driver: local
-  #   name: match_db_volume
-  #   driver_opts:
-  #     type: none
-  #     device: '/home/volumes_transcendence/postgres/match'
-  #     o: bind
-
 
 networks:
   transcendence_network:

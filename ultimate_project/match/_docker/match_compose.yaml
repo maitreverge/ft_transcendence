@@ -1,7 +1,7 @@
 services:
   match:
     depends_on:
-      match_db:
+      database:
         condition: service_healthy
     container_name: ctn_match
     build :
@@ -12,6 +12,7 @@ services:
       name: match
       port: $match_port
       pi_domain: $PI_DOMAIN # maybe not set up yet
+      DJANGO_SETTINGS_MODULE: match.settings
     env_file:
       - ../../.env
     image: img_match
@@ -26,34 +27,3 @@ services:
       retries: 5         # Number of consecutive failures needed to mark container as unhealthy
       start_period: 30s  # Initial grace period where failures don't count (container startup time)
     restart: always
-
-  # match_db:
-  #   image: postgres:latest
-  #   container_name: ctn_match_db
-  #   environment:
-  #     name: match_db
-  #     pi_domain: $PI_DOMAIN
-  #     port: $POSTGRES_PORT # really usefull ?
-  #     POSTGRES_DB: $MATCH_POSTGRES_DB
-  #     POSTGRES_USER: $MATCH_POSTGRES_USER
-  #     POSTGRES_PASSWORD: $MATCH_POSTGRES_PASSWORD
-  #   # HOST_PORT:CONTAINER_PORT
-  #   env_file:
-  #     - ../../.env
-  #   ports:
-  #     - "5436:5432" # TODO : Increment Host port for each db
-  #   healthcheck:
-  #     # Health check done in non root user
-  #     test: ["CMD-SHELL", "pg_isready -U ${MATCH_POSTGRES_USER} -d ${MATCH_POSTGRES_DB}"]
-  #     interval: 10s
-  #     timeout: 2s
-  #     retries: 5
-  #     start_period: 60s
-  #   volumes:
-  #     # Bind mount for db in local
-  #     - match_db_volume:/var/lib/postgresql/data
-  #     # Init script for init db and users
-  #     - ../../postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-  #   networks:
-  #     - transcendence_network
-  #   restart: always
