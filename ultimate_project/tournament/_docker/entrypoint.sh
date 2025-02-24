@@ -7,7 +7,7 @@ set -e
 # ! IMPORTANT : You need to create a new `makemigrations` rule for every app
 # ! You also need to pipe it in the 'yes' command to avoid prompting confirmation
 
-yes | python3 manage.py makemigrations tournament_app
+yes | python3 manage.py makemigrations
 python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \

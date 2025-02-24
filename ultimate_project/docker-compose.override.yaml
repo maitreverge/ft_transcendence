@@ -21,13 +21,13 @@ services:
       - "${tournament_port}:${tournament_port}"
     volumes:
       - ./tournament:/app/
-  tournament_db:
-    environment:
-      - env=dev
-    env_file:
-      - .env
-    volumes:
-      - ./tournament_db:/app/
+  # tournament_db:
+  #   environment:
+  #     - env=dev
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./tournament_db:/app/
 
   user:
     environment:
@@ -38,23 +38,23 @@ services:
       - "${user_port}:${user_port}"
     volumes:
       - ./user:/app/
-  user_db:
-    environment:
-      - env=dev
-    env_file:
-      - .env
-    volumes:
-      - ./user_db:/app/
+  # user_db:
+  #   environment:
+  #     - env=dev
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./user_db:/app/
 
-  admin:
-    environment:
-      - env=dev
-    env_file:
-      - .env
-    ports:
-      - "${admin_port}:${admin_port}"
-    volumes:
-      - ./admin:/app/
+  # admin:
+  #   environment:
+  #     - env=dev
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "${admin_port}:${admin_port}"
+  #   volumes:
+  #     - ./admin:/app/
 
   match:
     environment:
@@ -63,10 +63,11 @@ services:
       - "${match_port}:${match_port}"
     volumes:
       - ./match:/app/
-  match_db:
-    environment:
-      - env=dev
-    env_file:
-      - .env
-    volumes:
-      - ./match_db:/app/
+
+  # match_db:
+  #   environment:
+  #     - env=dev
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./match_db:/app/

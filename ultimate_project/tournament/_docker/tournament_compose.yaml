@@ -27,33 +27,33 @@ services:
       start_period: 30s  # Initial grace period where failures don't count (container startup time)
     restart: always
 
-  tournament_db:
-    image: postgres:latest
-    container_name: ctn_tournament_db
-    environment:
-      name: tournament_db
-      pi_domain: $PI_DOMAIN
-      port: $POSTGRES_PORT # really usefull ?
-      POSTGRES_DB: $TOURNAMENT_POSTGRES_DB
-      POSTGRES_USER: $TOURNAMENT_POSTGRES_USER
-      POSTGRES_PASSWORD: $TOURNAMENT_POSTGRES_PASSWORD
-    # HOST_PORT:CONTAINER_PORT
-    env_file:
-      - ../../.env
-    ports:
-      - "5435:5432" # TODO : Increment Host port for each db
-    healthcheck:
-      # Health check done in non root user
-      test: ["CMD-SHELL", "pg_isready -U ${TOURNAMENT_POSTGRES_USER} -d ${TOURNAMENT_POSTGRES_DB}"]
-      interval: 10s
-      timeout: 2s
-      retries: 5
-      start_period: 60s
-    volumes:
-      # Bind mount for db in local
-      - tournament_db_volume:/var/lib/postgresql/data
-      # Init script for init db and users
-      - ../../postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-    networks:
-      - transcendence_network
-    restart: always
+  # tournament_db:
+  #   image: postgres:latest
+  #   container_name: ctn_tournament_db
+  #   environment:
+  #     name: tournament_db
+  #     pi_domain: $PI_DOMAIN
+  #     port: $POSTGRES_PORT # really usefull ?
+  #     POSTGRES_DB: $TOURNAMENT_POSTGRES_DB
+  #     POSTGRES_USER: $TOURNAMENT_POSTGRES_USER
+  #     POSTGRES_PASSWORD: $TOURNAMENT_POSTGRES_PASSWORD
+  #   # HOST_PORT:CONTAINER_PORT
+  #   env_file:
+  #     - ../../.env
+  #   ports:
+  #     - "5435:5432" # TODO : Increment Host port for each db
+  #   healthcheck:
+  #     # Health check done in non root user
+  #     test: ["CMD-SHELL", "pg_isready -U ${TOURNAMENT_POSTGRES_USER} -d ${TOURNAMENT_POSTGRES_DB}"]
+  #     interval: 10s
+  #     timeout: 2s
+  #     retries: 5
+  #     start_period: 60s
+  #   volumes:
+  #     # Bind mount for db in local
+  #     - tournament_db_volume:/var/lib/postgresql/data
+  #     # Init script for init db and users
+  #     - ../../postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+  #   networks:
+  #     - transcendence_network
+  #   restart: always
