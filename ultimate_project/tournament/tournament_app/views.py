@@ -20,6 +20,10 @@ def start_tournament(request : HttpRequest):
 def receive_invit(request):
 	p1 = request.GET.get('select')
 
+async def match_result(request : HttpRequest):
+	print("match result", flush=True)
+	# request.GET.post
+
 async def start_match(request):
 	# p1 =consumer.players[''].id
 	matchId = request.GET.get('matchId', None)

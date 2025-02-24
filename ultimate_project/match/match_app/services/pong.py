@@ -49,6 +49,7 @@ class Pong:
 		print("launch init", flush=True)
 
 		# asyncio.run(self.end())
+		# print("YOOOOOOOOOOO", flush=True)
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
 	# async def end(self):
@@ -118,12 +119,17 @@ class Pong:
 	async def sendState(self):		
 		while (True):	
 			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
-
 			for p in self.myplayers:	
 				await p["socket"].send(text_data=json.dumps({"state": self.state.name, "yp1": self.yp1, "yp2": self.yp2, "winner": self.winner}))
 			await asyncio.sleep(0.05)
 
 
+	# async def sendFinalState(self):				
+	# 	self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
+	# 	for p in self.myplayers:	
+	# 		await p["socket"].send(text_data=json.dumps({"state": self.state.name, "yp1": self.yp1, "yp2": self.yp2, "winner": self.winner}))
+		
+		# await asyncio.sleep(0.05)
 
 # class Pong:
 #     id = 0
