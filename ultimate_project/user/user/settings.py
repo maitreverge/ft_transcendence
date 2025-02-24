@@ -71,7 +71,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-                # Needed for allauth 
+                # Needed for allauth
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -87,13 +87,17 @@ ASGI_APPLICATION = f"{NAME}.asgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'), # Name of the Database
-        'USER': os.getenv('POSTGRES_USER'), # Username for accessing the database
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'), # Password for the database user.
-        'HOST': os.getenv('POSTGRES_HOST'), # Hostname where the database server is running == compose service == Name of the db
-        'PORT': os.getenv('POSTGRES_PORT'), # Port number on which the database server is listening.
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB"),  # Name of the Database
+        "USER": os.getenv("POSTGRES_USER"),  # Username for accessing the database
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),  # Password for the database user.
+        "HOST": os.getenv(
+            "POSTGRES_HOST"
+        ),  # Hostname where the database server is running == compose service == Name of the db
+        "PORT": os.getenv(
+            "POSTGRES_PORT"
+        ),  # Port number on which the database server is listening.
     }
 }
 
@@ -124,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Paris"
 
 USE_I18N = True
 
@@ -145,8 +149,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
+    "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by email
-    'allauth.account.auth_backends.AuthenticationBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
