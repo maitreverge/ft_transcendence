@@ -1,9 +1,9 @@
 #!/bin/bash
+yes | python3 manage.py makemigrations
+python3 manage.py migrate
 
-if [ "${env}" = "prod" ]; then
-	python3 manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); \
-	if not User.objects.filter(username='admin').exists(): \
-		User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')"
+if [ "$(python3 manage.py shell -c 'from django.contrib.auth.models import User; print(User.objects.filter(is_superuser=True).exists())')" = "False" ]; then
+	python3 manage.py createsuperuser --noinput
 fi
 
 yes | python3 manage.py makemigrations
