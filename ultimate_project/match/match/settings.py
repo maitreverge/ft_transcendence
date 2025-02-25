@@ -69,7 +69,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'match_app.middleware.SchemaMiddleware',
+    # 'match_app.middleware.SchemaMiddleware',
 ]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -118,9 +118,9 @@ DATABASES = {
         "PORT": os.getenv(
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
-        # "OPTIONS": {
-        #     "options": "-c search_path=match_schema"
-        # },
+        "OPTIONS": {
+            "options": "-c search_path=match_schema"
+        },
     }
 }
 

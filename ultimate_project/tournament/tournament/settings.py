@@ -58,7 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'tournament_app.middleware.SchemaMiddleware',
+    # 'tournament_app.middleware.SchemaMiddleware',
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -97,9 +97,9 @@ DATABASES = {
         "PORT": os.getenv(
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
-        # "OPTIONS": {
-        #     "options": "-c search_path=tournament_schema"
-        # },
+        "OPTIONS": {
+            "options": "-c search_path=tournament_schema"
+        },
     }
 }
 
