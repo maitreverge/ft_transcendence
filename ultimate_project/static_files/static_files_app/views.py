@@ -60,3 +60,9 @@ def simple_match(request):
 
 def home(request):
     return render(request, "home.html")
+
+def profil(request):
+    return render(request, "profil.html")
+
+def stats(request):
+    return render(request, "stats.html")
