@@ -42,7 +42,7 @@ function initMatchWs() {
 	let waitingState = "waiting";
 	socket.onmessage = (event) => {
 		const data = JSON.parse(event.data);
-		console.log("Valeur reçue pour waiting:", data.state, typeof data.state, " ", data.winnerId, typeof data.winnerId);
+		// console.log("Valeur reçue pour waiting:", data.state, typeof data.state, " ", data.winnerId, typeof data.winnerId);
 		if (data.state == "end")
 		{
 			console.log("Valeur reçue pour waiting:", data.state, typeof data.state, "", data.winnerId, typeof data.winnerId);

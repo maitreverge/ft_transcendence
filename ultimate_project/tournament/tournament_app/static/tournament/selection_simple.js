@@ -75,89 +75,76 @@ function addToPlayers(socket, usersContainer, player) {
     usersContainer.appendChild(div);
 }
 
-function setSelfMatchId()
-{
+function setSelfMatchId() {
+
 	const matchsContainer = document.getElementById("matchs");
 	matchElements = [...matchsContainer.children];
 		
     matchElements.forEach( match => {	
-		console.log("here!: windowselfmatchid: " + window.selfMatchId + " et matchid: " + match.id);
+	
 		if (match.id == window.selfMatchId)
-		{
-			console.log("in uupdate selfmatchid: " + window.selfMatchId);
 			match.classList.add("self-match");
-			match.onclick = function() {
-				fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
-				.then( response => {
-					if (!response.ok) 
-						throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
-					return response.text();
-				})
-				.then( data => {
-					overlayMatch = document.getElementById("overlay-match");
-					overlayMatch.innerHTML = data;
-					let scripts = overlayMatch.getElementsByTagName("script");
-					for (let script of scripts) {
-                        let newScript = document.createElement("script");
-                        if (script.src) {
-                            // Si c'est un script externe, on le recharge
-                            newScript.src = script.src;
-                            newScript.async = true;  // Permet un chargement non bloquant
-							newScript.onload = script.onload;
-                        } else {
-                            // Si c'est un script inline, on copie son contenu
-                            newScript.textContent = script.textContent;
-                        }
-                        document.body.appendChild(newScript); // Exécuter le script
-                    }
-
-					// let scripts = overlayMatch.getElementsByTagName("script");
-                    // for (let script of scripts) {
-                    //     let newScript = document.createElement("script");
-                    //     newScript.textContent = script.textContent; // Recharger le script
-                    //     document.body.appendChild(newScript); // Exécuter le script
-                    // }
-					// console.log("data:" + data.matchId);
-					// window.selfMatchId = data.matchId;
-					// setSelfMatchId();
-					// console.log("in ask selfmatchid: " + window.selfMatchId);
-					// sendMatchId(socket, data.matchId, choosenId);
-				})
-				.catch( error => console.log(error))
-			};					
-		}
-		else
-		{
-			console.log("je suis ds else");
-			match.onclick = function() {
-				console.log("tu as bien clique man");
-				fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
-				.then( response => {
-					if (!response.ok) 
-						throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
-					return response.text();
-				})
-				.then( data => {
-					overlayMatch = document.getElementById("overlay-match");
-					overlayMatch.innerHTML = data;
-					let scripts = overlayMatch.getElementsByTagName("script");
-					for (let script of scripts) {
-                        let newScript = document.createElement("script");
-                        if (script.src) {                           
-                            newScript.src = script.src;
-                            newScript.async = true;  
-							newScript.onload = script.onload;
-                        } else {                      
-                            newScript.textContent = script.textContent;
-                        }
-                        document.body.appendChild(newScript);
-                    }
-				})
-				.catch( error => console.log(error))
-			};		
-		}
+					
+		match.onclick = function() {
+			fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
+			.then( response => {
+				if (!response.ok) 
+					throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
+				return response.text();
+			})
+			.then( data => {
+				overlayMatch = document.getElementById("overlay-match");
+				overlayMatch.innerHTML = data;
+				let scripts = overlayMatch.getElementsByTagName("script");
+				for (let script of scripts) {
+					let newScript = document.createElement("script");
+					if (script.src) {
+					
+						newScript.src = script.src;
+						newScript.async = true;  
+						newScript.onload = script.onload;
+					} else {
+						
+						newScript.textContent = script.textContent;
+					}
+					document.body.appendChild(newScript); 
+				}
+			})
+			.catch( error => console.log(error))
+		};					
 	});
 }
+		// else
+		// {
+			
+		// 	match.onclick = function() {
+				
+		// 		fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
+		// 		.then( response => {
+		// 			if (!response.ok) 
+		// 				throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
+		// 			return response.text();
+		// 		})
+		// 		.then( data => {
+		// 			overlayMatch = document.getElementById("overlay-match");
+		// 			overlayMatch.innerHTML = data;
+		// 			let scripts = overlayMatch.getElementsByTagName("script");
+		// 			for (let script of scripts) {
+        //                 let newScript = document.createElement("script");
+        //                 if (script.src) {                           
+        //                     newScript.src = script.src;
+        //                     newScript.async = true;  
+		// 					newScript.onload = script.onload;
+        //                 } else {                      
+        //                     newScript.textContent = script.textContent;
+        //                 }
+        //                 document.body.appendChild(newScript);
+        //             }
+		// 		})
+		// 		.catch( error => console.log(error))
+		// 	};		
+		// }
+
 
 function addToMatchs(socket, matchsContainer, match) {
   	
