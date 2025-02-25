@@ -17,9 +17,12 @@ set -e
 # ! IMPORTANT : You need to create a new `makemigrations` rule for every app
 # ! You also need to pipe it in the 'yes' command to avoid prompting confirmation
 
-yes | python3 manage.py makemigrations
-yes | python3 manage.py makemigrations auth_app
+# python3 manage.py migrate auth_app zero
+python3 manage.py migrate user_management_app zero
+
+# yes | python3 manage.py makemigrations auth_app
 yes | python3 manage.py makemigrations user_management_app
+# python3 manage.py migrate auth_app
 python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \

@@ -3,6 +3,10 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      user:
+        condition: service_healthy
+      tournament:
+        condition: service_healthy
     container_name: ctn_match
     build :
       context: ../ # ! FUCKING DO NOT TOUCH THIS, I LOST 5 LIFETIME YEARS ON THIS

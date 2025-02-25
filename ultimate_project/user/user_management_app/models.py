@@ -12,11 +12,6 @@ class CrossSchemaModel(models.Model):
 
 #  ================= MODEL MANAGED BY THIS MICROSERVICE (user) =================
 class Player(AbstractBaseUser):
-    """
-    The Player model represents a user in the system.
-    - This model is fully managed by the `user` microservice.
-    - It is stored in the `user_schema` schema in the PostgreSQL database.
-    """
     # Unique ID for each player
     id = models.AutoField(primary_key=True)
 
@@ -44,35 +39,39 @@ class Player(AbstractBaseUser):
 
 
 #  ================= MODEL MANAGED BY OTHER MICROSERVICES =================
-class Match(CrossSchemaModel):
-    """
-    This is a representation of the `Match` model from the `match` microservice.
-    
-    - The `Match` microservice manages this model, NOT the `user` microservice.
-    - We include it here only for Django ORM compatibility (ForeignKey relationships).
-    - This model is set to `managed = False`, so Django does NOT create/migrate this table.
-    """
+class Tournament(CrossSchemaModel):
+    # Unique ID for each tournament
+    id = models.AutoField(primary_key=True)
 
+    class Meta:
+        managed = False  # This microservice does NOT manage this model (tournament microservice does)
+        db_table = "tournament_schema.tournament"  # Explicitly set the schema and table name
+
+    def __str__(self):
+        return f"Tournament {self.id}"
+
+
+class Match(CrossSchemaModel):
     id = models.AutoField(primary_key=True)
 
     player1 = models.ForeignKey(
-        to="user_management_app.Player",  # Explicit reference to Player model in the `user` app
+        to=Player,  # Explicit reference to Player model in the `user` app
         on_delete=models.CASCADE,  # If a player is deleted, the match is also deleted
         related_name="player1",  # Allows querying Match objects where the player was player1
     )
     player2 = models.ForeignKey(
-        to="user_management_app.Player",
+        to=Player,
         on_delete=models.CASCADE,
         related_name="player2",
     )
     winner = models.ForeignKey(
-        to="user_management_app.Player",
+        to=Player,
         on_delete=models.CASCADE,
         related_name="winner",  # Allows querying Match objects where this player was the winner
     )
 
     tournament = models.ForeignKey(
-        to="tournament_app.Tournament",  # Explicit reference to Tournament model from tournament service
+        to=Tournament,  # Explicit reference to Tournament model from tournament service
         on_delete=models.SET_NULL,  # If the tournament is deleted, set this field to NULL
         null=True,
         blank=True,
@@ -87,21 +86,3 @@ class Match(CrossSchemaModel):
 
 
 #  ================= MODEL MANAGED BY OTHER MICROSERVICES =================
-class Tournament(CrossSchemaModel):
-    """
-    This is a representation of the `Tournament` model from the `tournament` microservice.
-    
-    - The `Tournament` microservice manages this model, NOT the `user` microservice.
-    - We include it here only for Django ORM compatibility (ForeignKey relationships).
-    - This model is set to `managed = False`, so Django does NOT create/migrate this table.
-    """
-
-    # Unique ID for each tournament
-    id = models.AutoField(primary_key=True)
-
-    class Meta:
-        managed = False  # This microservice does NOT manage this model (tournament microservice does)
-        db_table = "tournament_schema.tournament"  # Explicitly set the schema and table name
-
-    def __str__(self):
-        return f"Tournament {self.id}"
