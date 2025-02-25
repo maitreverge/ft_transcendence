@@ -59,6 +59,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'user_management_app.middleware.SchemaMiddleware',
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -98,9 +99,9 @@ DATABASES = {
         "PORT": os.getenv(
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
-        "OPTIONS": {
-            "options": "-c search_path=user_schema"
-        },
+        # "OPTIONS": {
+        #     "options": "-c search_path=user_schema"
+        # },
     }
 }
 

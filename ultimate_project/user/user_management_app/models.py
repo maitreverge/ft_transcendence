@@ -16,6 +16,7 @@ class Player(AbstractBaseUser):
 
     class Meta:
         # managed = False
+        # db_table = "user_schema.player" => original basic django sntax
         db_table = "user_schema.player"
 
     def __str__(self):
