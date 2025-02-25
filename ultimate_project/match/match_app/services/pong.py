@@ -6,6 +6,8 @@ import match_app.services.consumer as consumer
 import asyncio
 import json
 from enum import Enum
+
+import requests
 # class Pong:
 
 # 	id = 0
@@ -105,12 +107,12 @@ class Pong:
 			if self.yp1 > 80:		
 				self.winner = self.idP1
 				self.state = State.end
-				await self.sendState()
+				await self.sendFinalState()
 				print("TU DEVRAIS ME VOIR", flush=True)
 			elif self.yp2 > 80:
 				self.winner = self.idP2
 				self.state = State.end
-				await self.sendState()
+				await self.sendFinalState()
 				print("TU DEVRAIS ME VOIR", flush=True)
 					
 			await asyncio.sleep(0.05)
@@ -124,12 +126,12 @@ class Pong:
 			await asyncio.sleep(0.05)
 
 
-	# async def sendFinalState(self):				
-	# 	self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
-	# 	for p in self.myplayers:	
-	# 		await p["socket"].send(text_data=json.dumps({"state": self.state.name, "yp1": self.yp1, "yp2": self.yp2, "winner": self.winner}))
-		
-		# await asyncio.sleep(0.05)
+	async def sendFinalState(self):				
+		self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
+		for p in self.myplayers:	
+			await p["socket"].send(text_data=json.dumps({"state": self.state.name, "yp1": self.yp1, "yp2": self.yp2, "winnerId": self.winner}))
+		requests.post("http://tournament:8001/tournament/match-result/", json={"matchId": self.id, "winnerId": self.winner})
+		await asyncio.sleep(0.05)
 
 # class Pong:
 #     id = 0

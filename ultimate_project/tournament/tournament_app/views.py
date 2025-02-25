@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
 import requests
-# Create your views here.
+
 from django.http import JsonResponse
 import os
-
+import json
 import tournament_app.services.consumer as consumer
+from django.views.decorators.csrf import csrf_exempt
 
 class User:
 	def __init__(self, id):
@@ -20,9 +21,18 @@ def start_tournament(request : HttpRequest):
 def receive_invit(request):
 	p1 = request.GET.get('select')
 
+@csrf_exempt
 async def match_result(request : HttpRequest):
 	print("match result", flush=True)
-	# request.GET.post
+	result = json.loads(request.body.decode('utf-8'))
+	matchId = result.get('matchId')
+	winner = result.get('winnerId')
+	print(f"matchid = {matchId},  winner: {winner}", flush=True)
+
+	consumer.matchs[:] = [m for m in consumer.matchs if m.get("matchId") == matchId]
+	await consumer.MyConsumer.matchUpdate()
+	return JsonResponse({"status": "succes"})
+	
 
 async def start_match(request):
 	# p1 =consumer.players[''].id
