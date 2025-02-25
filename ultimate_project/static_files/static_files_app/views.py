@@ -11,6 +11,7 @@ def index(request):
 
 def login_form(request):
     csrf_token = csrf.get_token(request)
+    return render(request, "login.html")
     template = Template(
         """
         <form hx-post="/login/" hx-target="body">
