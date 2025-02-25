@@ -34,6 +34,7 @@
 }
 
 .end {
+	display:block !important;
 	width:80%;
 	height:80%;
 	background-color: rgb(244, 118, 22);

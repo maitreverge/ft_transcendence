@@ -16,6 +16,7 @@ function sendConfirmation(socket, applicantId, response) {
 		const applicantElement = document.getElementById(applicantId);
 		applicantElement.classList.add("invitation-confirmed");	
 		applicantElement.confirmed = 'yes';
+		window.choosenElement = applicantElement;
 	}
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({type: "confirmation", response: response, applicantId: applicantId}))
@@ -214,7 +215,16 @@ function updateMatchs(socket, matchs) {
 		
     matchElements.forEach( match => {	
 		if (matchs.every(el => el.matchId != match.id))		
+		{
+			if (match.id == window.selfMatchId)
+			{
+				window.choosenElement.classList.remove("invitation-confirmed");
+				choosenElement.confirmed = "no";
+				// window.choosenElement = null;
+			}
 			matchsContainer.removeChild(match);
+
+		}
 		// if (match.id == window.selfMatchId)
 		// {
 		// 	console.log("in uupdate selfmatchid: " + window.selfMatchId);
@@ -296,6 +306,7 @@ function receiveConfirmation(socket, choosenId, response) {
 		choosenElement.classList.remove("invitation-waiting");
 		choosenElement.classList.add("invitation-confirmed");
 		choosenElement.confirmed = "yes";
+		window.choosenElement = choosenElement;
 		askMatchId(socket, choosenId);		
 	}
 	else

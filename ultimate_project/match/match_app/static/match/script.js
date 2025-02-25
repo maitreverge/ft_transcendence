@@ -46,7 +46,7 @@ function initMatchWs() {
 		if (data.state == "end")
 		{
 			console.log("Valeur reçue pour waiting:", data.state, typeof data.state, "", data.winnerId, typeof data.winnerId);
-			end.innerText += data.winnerId;
+			end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
 			end.classList.add("end");
 		}
 		if (waitingState != data.state) 
