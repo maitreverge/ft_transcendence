@@ -1,7 +1,10 @@
 services:
+
   tournament:
     depends_on:
       database:
+        condition: service_healthy
+      user:
         condition: service_healthy
     container_name: ctn_tournament
     build :

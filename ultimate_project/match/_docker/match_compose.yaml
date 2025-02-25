@@ -1,11 +1,10 @@
 services:
+  
   match:
     depends_on:
       database:
         condition: service_healthy
       user:
-        condition: service_healthy
-      tournament:
         condition: service_healthy
     container_name: ctn_match
     build :

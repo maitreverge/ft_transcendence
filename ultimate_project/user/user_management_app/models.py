@@ -4,10 +4,10 @@ from django.contrib.auth.models import AbstractBaseUser
 
 # This is an abstract base model that other models can inherit from.
 # It does NOT create a table in the database but allows us to share common behavior.
-class CrossSchemaModel(models.Model):
+# class CrossSchemaModel(models.Model):
     
-    class Meta:
-        abstract = True  # This ensures Django does not create a table for this model.
+#     class Meta:
+#         abstract = True  # This ensures Django does not create a table for this model.
 
 
 #  ================= MODEL MANAGED BY THIS MICROSERVICE (user) =================
@@ -38,20 +38,19 @@ class Player(AbstractBaseUser):
         return f"{self.first_name} {self.last_name}"
 
 
-#  ================= MODEL MANAGED BY OTHER MICROSERVICES =================
-class Tournament(CrossSchemaModel):
+class Tournament(models.Model):
     # Unique ID for each tournament
     id = models.AutoField(primary_key=True)
 
     class Meta:
-        managed = False  # This microservice does NOT manage this model (tournament microservice does)
-        db_table = "tournament_schema.tournament"  # Explicitly set the schema and table name
+        managed = True  # This microservice does NOT manage this model (tournament microservice does)
+        db_table = "user_schema.tournament"  # Explicitly set the schema and table name
 
     def __str__(self):
         return f"Tournament {self.id}"
 
 
-class Match(CrossSchemaModel):
+class Match(models.Model):
     id = models.AutoField(primary_key=True)
 
     player1 = models.ForeignKey(
@@ -78,11 +77,8 @@ class Match(CrossSchemaModel):
     )
 
     class Meta:
-        managed = False  # This microservice does NOT manage this model (match microservice does)
-        db_table = "match_schema.match"  # Explicitly set the schema and table name
+        managed = True  # This microservice does NOT manage this model (match microservice does)
+        db_table = "user_schema.match"  # Explicitly set the schema and table name
 
     def __str__(self):
         return f"Match {self.id}"
-
-
-#  ================= MODEL MANAGED BY OTHER MICROSERVICES =================

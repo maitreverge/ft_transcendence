@@ -8,7 +8,7 @@ set -e
 # ! You also need to pipe it in the 'yes' command to avoid prompting confirmation
 
 # yes | python3 manage.py makemigrations
-python3 manage.py migrate match_app zero
+# python3 manage.py migrate match_app zero
 
 yes | python3 manage.py makemigrations match_app
 python3 manage.py migrate
