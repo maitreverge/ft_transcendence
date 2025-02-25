@@ -114,37 +114,6 @@ function setSelfMatchId() {
 		};					
 	});
 }
-		// else
-		// {
-			
-		// 	match.onclick = function() {
-				
-		// 		fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
-		// 		.then( response => {
-		// 			if (!response.ok) 
-		// 				throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
-		// 			return response.text();
-		// 		})
-		// 		.then( data => {
-		// 			overlayMatch = document.getElementById("overlay-match");
-		// 			overlayMatch.innerHTML = data;
-		// 			let scripts = overlayMatch.getElementsByTagName("script");
-		// 			for (let script of scripts) {
-        //                 let newScript = document.createElement("script");
-        //                 if (script.src) {                           
-        //                     newScript.src = script.src;
-        //                     newScript.async = true;  
-		// 					newScript.onload = script.onload;
-        //                 } else {                      
-        //                     newScript.textContent = script.textContent;
-        //                 }
-        //                 document.body.appendChild(newScript);
-        //             }
-		// 		})
-		// 		.catch( error => console.log(error))
-		// 	};		
-		// }
-
 
 function addToMatchs(socket, matchsContainer, match) {
   	
@@ -152,30 +121,6 @@ function addToMatchs(socket, matchsContainer, match) {
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
-
-	// if (match.matchId === window.selfId)
-	// {
-	// 	div.classList.add("self-match");
-	// 	div.onclick = function() {
-	// 		alert("you can't choose yourself");
-	// 	};
-	// }
-	// else
-	// {
-	// 	div.onclick = function() {
-
-	// 		console.log("user confirmed: " + div.confirmed + " id: " + div.id);
-	// 		if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
-	// 		{
-	// 			console.log(`my choice: ${match.matchId}`);
-	// 			window.select = match.matchId;//!
-	// 			this.classList.add("invitation-waiting");				
-	// 			sendInvitation(socket, window.select);
-	// 		}
-	// 		else				
-	// 			cancelInvitation(socket, match.matchId);				
-	// 	};
-	// }
     matchsContainer.appendChild(div);
 }
 
