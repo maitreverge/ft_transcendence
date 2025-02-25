@@ -56,3 +56,6 @@ def simple_match(request):
         </div>
     """
     )
+
+def home(request):
+    return render(request, "home.html")

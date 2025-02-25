@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="{% static 'static_files/styles.css' %}">
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
-<body>
+<!-- <body>
     <div id="main-content">
         {% if not username %}
             <div class="overlay" hx-get="/login-form/" hx-trigger="load" hx-target="#login-container">
@@ -20,4 +20,46 @@
             <div id="overlay-content"></div>
         {% endif %}
     </div>
-</body>
+</body> -->
+
+
+<!-- <!DOCTYPE html> -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </head>
+    
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" hx-trigger="click" hx-get="/home/" 
+                hx-target="#grosse_div">Home</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Ton cul</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Son cul</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Notre cul</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="grosse_div" hx-get="/home/" hx-trigger="load">  
+        
+    </body>
+</html>
