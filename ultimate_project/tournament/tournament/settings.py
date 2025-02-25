@@ -98,7 +98,7 @@ DATABASES = {
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
         "OPTIONS": {
-            "options": "-c search_path=tournament_schema"
+            "options": "-c search_path=user_schema"
         },
     }
 }

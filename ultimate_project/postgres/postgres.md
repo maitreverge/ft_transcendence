@@ -10,6 +10,17 @@ psql -h localhost -p 5432 -U user1 -d user_db
 psql -h localhost -p 5432 -U user2 -d tournament_db
 ```
 
+
+```python
+from match_app.models import Player, Match
+
+player = Player.objects.first()
+print(player)  # ✅ Should return a Player from user_schema.player
+
+match = Match.objects.first()
+print(match)  # ✅ Should return a Match from user_schema.match
+```
+
 > [!NOTE]
 > `user1` refers to the env `POSTGRES_USER` and `transc_db` to `POSTGRES_DB`
 

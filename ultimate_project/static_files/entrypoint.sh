@@ -3,8 +3,8 @@
 # yes | python3 manage.py makemigrations
 # python3 manage.py migrate static_file_app zero
 
-yes | python3 manage.py makemigrations static_file_app
-python3 manage.py migrate
+# yes | python3 manage.py makemigrations static_file_app
+# python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \

@@ -32,7 +32,7 @@ class Player(CrossSchemaModel):
 
     class Meta:
         managed = False  # This service is responsible for creating and managing this model
-        db_table = "user_schema.player"  # Explicitly set the schema and table name
+        db_table = "player"  # Explicitly set the schema and table name
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -45,7 +45,7 @@ class Tournament(CrossSchemaModel):
 
     class Meta:
         managed = False  # This microservice does NOT manage this model (tournament microservice does)
-        db_table = "user_schema.tournament"  # Explicitly set the schema and table name
+        db_table = "tournament"  # Explicitly set the schema and table name
 
     def __str__(self):
         return f"Tournament {self.id}"
@@ -79,7 +79,7 @@ class Match(CrossSchemaModel):
 
     class Meta:
         managed = False  # This microservice does NOT manage this model (match microservice does)
-        db_table = "user_schema.match"  # Explicitly set the schema and table name
+        db_table = "match"  # Explicitly set the schema and table name
 
     def __str__(self):
         return f"Match {self.id}"
