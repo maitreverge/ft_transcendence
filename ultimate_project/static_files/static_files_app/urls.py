@@ -8,5 +8,4 @@ urlpatterns = [
     path("home/", views.home),
     path("user/profil/", views.profil),
     path("user/stats/", views.stats),
-
 ]

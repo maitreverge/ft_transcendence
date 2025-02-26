@@ -3,27 +3,13 @@ from django.http import HttpResponse
 from django.middleware import csrf
 from django.template import Context, Template
 
-
 def index(request):
     username = request.session.get("username")
     return render(request, "index.html", {"username": username})
 
-
 def login_form(request):
     csrf_token = csrf.get_token(request)
     return render(request, "login.html")
-    template = Template(
-        """
-        <form hx-post="/login/" hx-target="body">
-            {% csrf_token %}
-            <input type="text" name="username" placeholder="Entrez votre nom">
-            <button type="submit">Connexion</button>
-        </form>
-    """
-    )
-    context = Context({"csrf_token": csrf_token})
-    return HttpResponse(template.render(context))
-
 
 def login(request):
     username = request.POST.get("username")
@@ -31,10 +17,10 @@ def login(request):
     return redirect("/")
 
 def home(request):
-    return render(request, "home.html")
+    return render(request, "partials/home.html")
 
 def profil(request):
-    return render(request, "profil.html")
+    return render(request, "partials/profil.html")
 
 def stats(request):
-    return render(request, "stats.html")
+    return render(request, "partials/stats.html")
