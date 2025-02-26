@@ -2,37 +2,24 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 
-# This is an abstract base model that other models can inherit from.
-# It does NOT create a table in the database but allows us to share common behavior.
-# class CrossSchemaModel(models.Model):
-    
-#     class Meta:
-#         abstract = True  # This ensures Django does not create a table for this model.
-
-
-#  ================= MODEL MANAGED BY THIS MICROSERVICE (user) =================
+#  ================= MODELS MANAGED BY THIS MICROSERVICE (user) =================
 class Player(AbstractBaseUser):
-    # Unique ID for each player
     id = models.AutoField(primary_key=True)
-
-    # User authentication fields
     email = models.EmailField(max_length=100, unique=True)
     password = models.CharField(max_length=100, blank=True)
-
-    # Personal details
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     username = models.CharField(max_length=100, unique=True, blank=True)
-
-    # Active status of the user
     is_active = models.BooleanField(default=True)
 
     # Tells Django to use "email" as the primary field for authentication
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]  # ✅ Ensures username is still required
+    REQUIRED_FIELDS = ["username"]
 
     class Meta:
-        managed = True  # This service is responsible for creating and managing this model
+        managed = (
+            True  # This service is responsible for creating and managing this model
+        )
         db_table = "player"  # Explicitly set the schema and table name
 
     def __str__(self):
@@ -40,12 +27,11 @@ class Player(AbstractBaseUser):
 
 
 class Tournament(models.Model):
-    # Unique ID for each tournament
     id = models.AutoField(primary_key=True)
 
     class Meta:
-        managed = True  # This microservice does NOT manage this model (tournament microservice does)
-        db_table = "tournament"  # Explicitly set the schema and table name
+        managed = True
+        db_table = "tournament"
 
     def __str__(self):
         return f"Tournament {self.id}"
@@ -55,7 +41,7 @@ class Match(models.Model):
     id = models.AutoField(primary_key=True)
 
     player1 = models.ForeignKey(
-        to=Player,  # Explicit reference to Player model in the `user` app
+        to=Player,  # Explicit reference to Player model
         on_delete=models.CASCADE,  # If a player is deleted, the match is also deleted
         related_name="player1",  # Allows querying Match objects where the player was player1
     )
@@ -67,19 +53,19 @@ class Match(models.Model):
     winner = models.ForeignKey(
         to=Player,
         on_delete=models.CASCADE,
-        related_name="winner",  # Allows querying Match objects where this player was the winner
+        related_name="winner",
     )
 
     tournament = models.ForeignKey(
-        to=Tournament,  # Explicit reference to Tournament model from tournament service
+        to=Tournament,
         on_delete=models.SET_NULL,  # If the tournament is deleted, set this field to NULL
         null=True,
         blank=True,
     )
 
     class Meta:
-        managed = True  # This microservice does NOT manage this model (match microservice does)
-        db_table = "match"  # Explicitly set the schema and table name
+        managed = True
+        db_table = "match"
 
     def __str__(self):
         return f"Match {self.id}"
