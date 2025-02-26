@@ -75,6 +75,8 @@ function addToPlayers(socket, usersContainer, player) {
     usersContainer.appendChild(div);
 }
 
+function setSelfMatchId2() {}
+
 function setSelfMatchId() {
 
 	const matchsContainer = document.getElementById("matchs");
@@ -152,16 +154,9 @@ function updateMatchs(socket, matchs) {
 			{
 				window.choosenElement.classList.remove("invitation-confirmed");
 				choosenElement.confirmed = "no";
-				// window.choosenElement = null;
 			}
 			matchsContainer.removeChild(match);
-
 		}
-		// if (match.id == window.selfMatchId)
-		// {
-		// 	console.log("in uupdate selfmatchid: " + window.selfMatchId);
-		// 	match.classList.add("self-match");					
-		// }
 	});
 	matchs.forEach( match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
@@ -203,13 +198,6 @@ function initSelfMatch() {
 }
 
 function askMatchId(socket, choosenId) {
-
-	// document.body.addEventListener("htmx:configRequest", function(evt) {
-
-	// 	if (evt.detail.elt.id === "startMatchButton" && window.select !== null){
-	// 		evt.detail.path = "/tournament/start-match/?selfid=" + window.selfId + "&select=" + choosenId;
-	// 	}
-	// });
 
 	fetch(`/tournament/start-match/?selfid=${window.selfId}&select=${choosenId}`)
 		.then( response => {
@@ -253,13 +241,39 @@ function receiveMatchId(matchId) {
 
 	console.log("i have had and matchId: " + matchId)
 
-	// document.body.addEventListener("htmx:configRequest", function(evt) {
-	// 	if (evt.detail.elt.id === "startMatchButton"){
-	// 		evt.detail.path = `/tournament/start-match/?matchId=${matchId}`;
-	// 	}
-	// });
 	window.selfMatchId = matchId;
 	setSelfMatchId();
+}
+
+function onTournamentWsMessage(event) {
+
+	console.log("Message reçu :", event.data);
+	const data = JSON.parse(event.data);
+	switch (data.type)
+	{
+		case "selfAssign":
+			setSelfId(data.selfId);
+			break;
+		case "playerList":
+			updatePlayers(window.tournamentSocket, data.players);
+			break;
+		case "matchList":
+			updateMatchs(window.tournamentSocket, data.matchs);
+			break;
+		case "invitation":
+			receiveInvitation(window.tournamentSocket, data.player);
+			break;
+		case "cancelInvitation":
+			invitationCancelled(data.player);
+			break;
+		case "confirmation":
+			receiveConfirmation(window.tournamentSocket, data.choosen, data.response);
+			break;
+		default:
+			if (data.matchId) 
+				receiveMatchId(data.matchId);			
+			break;
+	}
 }
 
 function initTournamentWs() {
@@ -275,52 +289,6 @@ function initTournamentWs() {
 	window.tournamentSocket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");	
 	};	
-	window.tournamentSocket.onmessage = (event) => {
-
-		console.log("Message reçu :", event.data);
-
-		const data = JSON.parse(event.data);
-
-		switch (data.type)
-		{
-			case "selfAssign":
-				setSelfId(data.selfId);
-				break;
-			case "playerList":
-				updatePlayers(window.tournamentSocket, data.players);
-				break;
-			case "matchList":
-				updateMatchs(window.tournamentSocket, data.matchs);
-				break;
-			case "invitation":
-				receiveInvitation(window.tournamentSocket, data.player);
-				break;
-			case "cancelInvitation":
-				invitationCancelled(data.player);
-				break;
-			case "confirmation":
-				receiveConfirmation(window.tournamentSocket, data.choosen, data.response);
-				break;
-			default:
-				if (data.matchId) 
-					receiveMatchId(data.matchId);			
-				break;
-		}
-
-		// const data = JSON.parse(event.data);
-		
-		// if (data.type == "selfAssign")			
-		// 	setSelfId(data.selfId);		
-		// else if (data.type == "playerList")
-		// 	updatePlayers(window.tournamentSocket, data.players);
-		// else if (data.type == "invitation")		
-		// 	receiveInvitation(window.tournamentSocket, data.player);
-		// else if (data.type == "cancelInvitation")		
-		// 	invitationCancelled(data.player);		
-		// else if (data.type == "confirmation")		
-		// 	receiveConfirmation(data.choosen, data.response);		
-		// else if (data.matchId)		
-		// 	receiveMatchId(data.matchId);
-	};	
+	window.tournamentSocket.onmessage = onTournamentWsMessage;
 }
 
