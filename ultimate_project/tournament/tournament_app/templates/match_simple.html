@@ -17,7 +17,7 @@
 	
 	<button
 		hx-get="/match/?matchId={{matchData.id}}&playerId={{playerId}}" 
-		hx-target="#overlay-startmatch">
+		hx-target="#overlay-startmatch" hx-push-url="true">
 		Connect to Match /match/?matchId={{matchData.id}}/ > .views.startMatch</button>
 	<div id="overlay-startmatch"></div>
 </div>

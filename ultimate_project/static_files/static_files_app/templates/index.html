@@ -8,7 +8,7 @@
     </head>
     <body>
     {% if not username %}
-        <div class="overlay" hx-get="/login-form/" hx-trigger="load" hx-target="#login-container">
+        <div class="overlay" hx-get="/login-form/" hx-trigger="load" hx-target="#login-container" hx-push-url="true">
             <div id="login-container" class="overlay-content">
                 <!-- Le formulaire de login sera chargé ici -->
             </div>
@@ -16,7 +16,7 @@
     {% else %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" hx-trigger="click" hx-get="/home/" 
+                <a class="navbar-brand" hx-trigger="click" hx-get="/home/" hx-push-url="true"  
                 hx-target="#grosse_div">Home</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -24,18 +24,18 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" hx-trigger="click" hx-get="/user/profil/" 
+                            <a class="nav-link active" hx-trigger="click" hx-get="/user/profil/" hx-push-url="true"
                             hx-target="#grosse_div">Profil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"  hx-trigger="click" hx-get="/user/stats/" 
+                            <a class="nav-link"  hx-trigger="click" hx-get="/user/stats/" hx-push-url="true"
                             hx-target="#grosse_div">Stats</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <div id="grosse_div" hx-get="/home/" hx-trigger="load">  
+        <div id="grosse_div" hx-get="/home/" hx-trigger="load" hx-push-url="true">  
     {% endif %}
     </body>
 </html>
