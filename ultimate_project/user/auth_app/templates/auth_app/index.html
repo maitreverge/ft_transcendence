@@ -4,5 +4,9 @@
 <h1>{{ title }}</h1>
 {% endblock %}
 
+Hello {{ request.user.username }}
+
+<a href="{% url 'logout' %}">Logout</a>
+
 {% block body %}
 {% endblock %}

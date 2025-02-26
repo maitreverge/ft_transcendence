@@ -6,15 +6,13 @@
 
 {% block body %}
 
-{{ request.POST.dict }}
-
-<form action="{% url 'login' %}" method="post">
+<form action="{% url 'signin' %}" method="post">
 	{% csrf_token %}
-	<input type="email" placeholder="email">
+	<input type="text" placeholder="email">
 	<input type="password" placeholder="password">
 	<input type="submit">
 </form>
 
-<a href="{% url 'signin' %}"> Not registered ? Sign In Here</a>
+<a href="{% url 'login' %}"> Already registered ? Login In Here</a>
 
 {% endblock %}
