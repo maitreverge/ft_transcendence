@@ -29,6 +29,7 @@ class Player(AbstractBaseUser):
 
     # Tells Django to use "email" as the primary field for authentication
     USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]  # ✅ Ensures username is still required
 
     class Meta:
         managed = True  # This service is responsible for creating and managing this model

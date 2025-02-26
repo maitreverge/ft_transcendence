@@ -3,26 +3,28 @@
 # Make the scripts fails if any command fails
 set -e
 
-# ! ============= TESTING STUFF, DO NOT COPY ====================
 
-# I need to make sure old migrations do not interact with db data stuff
+python3 manage.py migrate --noinput
 
+# Ensure a superuser exists (only run this AFTER migrations)
+python3 manage.py shell -c "
+from django.db import connection
+from django.contrib.auth import get_user_model;
 
-# find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-# find . -path "*/migrations/*.pyc"  -delete
+# Check if auth_user table exists before querying
+with connection.cursor() as cursor:
+    cursor.execute(\"SELECT to_regclass('auth_user')\")
+    exists = cursor.fetchone()[0]
 
-# ! ============= TESTING STUFF, DO NOT COPY ====================
-
-# Apply database migrations
-# ! IMPORTANT : You need to create a new `makemigrations` rule for every app
-# ! You also need to pipe it in the 'yes' command to avoid prompting confirmation
-
-# python3 manage.py migrate auth_app zero
-# python3 manage.py migrate user_management_app zero
+if exists:
+    User = get_user_model()
+    if not User.objects.filter(is_superuser=True).exists():
+        User.objects.create_superuser('admin@example.com', 'admin', 'adminpassword')
+"
 
 yes | python3 manage.py makemigrations auth_app
 yes | python3 manage.py makemigrations user_management_app
-# python3 manage.py migrate auth_app
+
 python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \

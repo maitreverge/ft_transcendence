@@ -29,7 +29,8 @@ class Player(CrossSchemaModel):
 
     # Tells Django to use "email" as the primary field for authentication
     USERNAME_FIELD = "email"
-
+    REQUIRED_FIELDS = ["username"]  # ✅ Ensures username is still required
+    
     class Meta:
         managed = False  # This service is responsible for creating and managing this model
         db_table = "player"  # Explicitly set the schema and table name

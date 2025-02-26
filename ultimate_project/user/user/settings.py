@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "auth_app",
     "user_management_app",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     # 'user_management_app.middleware.SchemaMiddleware',
 ]
 
