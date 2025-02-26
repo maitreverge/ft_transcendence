@@ -6,10 +6,14 @@
 <script>
     function router() {
         return {
+            currentPath: window.location.pathname,
             init() {
-                this.navigate(window.location.pathname, false);
+                this.navigate(this.currentPath, false);
             },
             navigate(url, pushState = true) {
+                if (this.currentPath === url) return; // Empêche de recharger la même page
+                this.currentPath = url;
+
                 if (pushState) {
                     history.pushState({}, "", url);
                 }
