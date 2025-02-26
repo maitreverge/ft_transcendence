@@ -17,12 +17,19 @@ def login(request):
     return redirect("/")
 
 def home(request):
-    return render(request, "partials/home.html")
+    if request.headers.get("HX-Request"):
+        return render(request, "partials/home.html")
+    username = request.session.get("username")
+    return render(request, "index.html", {"username": username, "page": "partials/home.html"})
 
 def profil(request):
     if request.headers.get("HX-Request"):
         return render(request, "partials/profil.html")
-    return render(request, "index.html", {"page": "partials/profil.html"})
+    username = request.session.get("username")
+    return render(request, "index.html", {"username": username, "page": "partials/profil.html"})
 
 def stats(request):
-    return render(request, "partials/stats.html")
+    if request.headers.get("HX-Request"):
+        return render(request, "partials/stats.html")
+    username = request.session.get("username")
+    return render(request, "index.html", {"username": username, "page": "partials/stats.html"})
