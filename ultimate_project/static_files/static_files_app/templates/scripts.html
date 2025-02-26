@@ -11,11 +11,13 @@
                 this.navigate(this.currentPath, false);
             },
             navigate(url, pushState = true) {
+                let absoluteUrl = new URL(url, window.location.origin).pathname;
+
                 if (this.currentPath === url) return; // Empêche de recharger la même page
                 this.currentPath = url;
 
                 if (pushState) {
-                    history.pushState({}, "", url);
+                    history.pushState({}, "", absoluteUrl);
                 }
 
                 htmx.ajax("GET", url, { target: "#grosse_div" });
