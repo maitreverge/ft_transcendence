@@ -5,14 +5,14 @@
     {% include "scripts.html" %} 
     </head>
 
-    <body>
+    <body x-data="router()" x-init="init()" @popstate.window="navigate(window.location.pathname, false)">
 
     {% if not username %}
         {% include "login_overlay.html" %}
     
     {% else %}
         {% include "navbar.html" %}
-        <div id="grosse_div" hx-get="/home/" hx-trigger="load">
+        <div id="grosse_div">
         {% if page %}
             {% include page %}
         {% else %}
