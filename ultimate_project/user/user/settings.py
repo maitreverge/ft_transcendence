@@ -102,31 +102,27 @@ DATABASES = {
         "PORT": os.getenv(
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
-        "OPTIONS": {
-            "options": "-c search_path=user_schema"
-        },
+        "OPTIONS": {"options": "-c search_path=user_schema"},
     }
 }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
+AUTH_PWD_MODULE = "django.contrib.auth.password_validation."
+
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.\
-            password_validation.UserAttributeSimilarityValidator",
+        "NAME": f"{AUTH_PWD_MODULE}UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.\
-            password_validation.MinimumLengthValidator",
+        "NAME": f"{AUTH_PWD_MODULE}MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.\
-            password_validation.CommonPasswordValidator",
+        "NAME": f"{AUTH_PWD_MODULE}CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.\
-            password_validation.NumericPasswordValidator",
+        "NAME": f"{AUTH_PWD_MODULE}NumericPasswordValidator",
     },
 ]
 
