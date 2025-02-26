@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# ! IMPORTANT : This scripts is not in use
+
+
 # Create a superuser
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
     CREATE USER superuser WITH SUPERUSER PASSWORD 'superuser_password';

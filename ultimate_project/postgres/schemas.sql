@@ -1,3 +1,4 @@
+-- ! This is the init script for postgres, do not delete
 CREATE SCHEMA static_files_schema;
 CREATE SCHEMA match_schema;
 CREATE SCHEMA tournament_schema;

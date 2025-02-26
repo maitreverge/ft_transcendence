@@ -4,10 +4,26 @@ Run the container in exec mode and run
 
 
 ```bash
-
+# Connect to database in the `database` container
 psql -h localhost -p 5432 -U user1 -d transc_db
-psql -h localhost -p 5432 -U user1 -d user_db
-psql -h localhost -p 5432 -U user2 -d tournament_db
+```
+> [!NOTE]
+> `user1` refers to the env `POSTGRES_USER` and `transc_db` to `POSTGRES_DB`
+
+```sql
+\l -- List databases
+```
+
+```sql
+\dt -- List tables
+```
+
+```sql
+\dt user_schema.* -- List tables inside a schema
+```
+
+```sql
+\d table_name -- Describe table databases
 ```
 
 
@@ -21,20 +37,6 @@ match = Match.objects.first()
 print(match)  # ✅ Should return a Match from user_schema.match
 ```
 
-> [!NOTE]
-> `user1` refers to the env `POSTGRES_USER` and `transc_db` to `POSTGRES_DB`
-
-```sql
-\l -- List databases
-```
-
-```sql
-\dt -- List tables
-```
-
-```sql
-\d table_name -- Describe table databases
-```
 
 ## TESTING POPULATE
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Function to recursively search and delete "migrations" directories
+# Ths script is used to delete all "migrations" directories in the project.
+
 delete_migrations() {
 	for dir in "$1"/*; do
 		if [ -d "$dir" ]; then
@@ -14,5 +15,4 @@ delete_migrations() {
 	done
 }
 
-# Start the deletion process from the current directory
 delete_migrations "$(pwd)"

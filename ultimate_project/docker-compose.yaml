@@ -62,20 +62,6 @@ services:
       - transcendence_network
     restart: always
   
-  pgadmin:
-    depends_on:
-      database:
-        condition: service_healthy
-    image: dpage/pgadmin4
-    container_name: pgadmin4
-    env_file:
-        - .env
-    ports:
-    - 8080:80
-    networks:
-      - transcendence_network
-    restart: on-failure
-
   # ========= TOURNAMENTS ==========
   tournament:
     extends:

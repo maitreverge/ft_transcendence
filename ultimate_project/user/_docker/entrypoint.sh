@@ -1,14 +1,15 @@
 #!/bin/bash
 
-# Make the scripts fails if any command fails
 set -e
+
+# ! IMPORTANT : You need to NOT migrate this container.
 
 python3 manage.py makemigrations auth_app
 python3 manage.py makemigrations user_management_app
 python3 manage.py makemigrations
 python3 manage.py migrate --noinput
 
-# Ensure a superuser exists AFTER migrations
+# Ensure a superuser exists AFTER migrations, and creates one if not here
 python3 manage.py shell -c "
 from django.db import connection
 from django.contrib.auth import get_user_model;
@@ -23,12 +24,6 @@ if exists:
     if not User.objects.filter(is_superuser=True).exists():
         User.objects.create_superuser('admin@example.com', 'admin', 'adminpassword')
 "
-
-
-# yes | python3 manage.py makemigrations auth_app
-# yes | python3 manage.py makemigrations user_management_app
-
-# python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \

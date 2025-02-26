@@ -32,16 +32,6 @@ services:
     volumes:
       - ./user:/app/
 
-  # admin:
-  #   environment:
-  #     - env=dev
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - "${admin_port}:${admin_port}"
-  #   volumes:
-  #     - ./admin:/app/
-
   match:
     environment:
       - env=dev

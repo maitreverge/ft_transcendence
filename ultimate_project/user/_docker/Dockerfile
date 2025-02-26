@@ -16,4 +16,3 @@ COPY . .
 RUN chmod +x _docker/entrypoint.sh
 
 ENTRYPOINT ["/bin/sh", "_docker/entrypoint.sh"]
-# ENTRYPOINT [ "tail", "-f", "/dev/null" ]

@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# yes | python3 manage.py makemigrations
-# python3 manage.py migrate static_file_app zero
-
-# yes | python3 manage.py makemigrations static_file_app
-# python3 manage.py migrate
+# ! IMPORTANT : You need to NOT migrate this container.
 
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
