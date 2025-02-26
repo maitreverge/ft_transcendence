@@ -6,12 +6,11 @@
 
 {% block body %}
 
-{{ request.POST.dict }}
+<!-- {{ request.POST.dict }} -->
 
 <form action="{% url 'login' %}" method="post">
 	{% csrf_token %}
-	<input type="email" placeholder="email">
-	<input type="password" placeholder="password">
+	{{ form }}
 	<input type="submit">
 </form>
 

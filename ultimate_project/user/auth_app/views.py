@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from .forms import LoginForm, SigninForm
 
 # Create your views here.
 def index(request):
@@ -11,17 +12,20 @@ def index(request):
 
 def login_view(request):
     if request.method == "POST":
-        pass
+        # pass
+        print(dict(request.POST.items()), flush=True)
         # print(list(request.POST.items()), flush=True)
     return render(request, "auth_app/login.html", {
-        "title": "LOGIN PAGE"
+        "title": "LOGIN PAGE",
+        "form": LoginForm(),
     })
 
 def signin_view(request):
     if request.method == "POST":
         pass
     return render(request, "auth_app/signin.html", {
-        "title": "SIGNIN PAGE"
+        "title": "SIGNIN PAGE",
+        "form": SigninForm(),
     })
 
 def logout_view(request):
