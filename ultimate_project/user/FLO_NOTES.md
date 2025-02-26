@@ -57,10 +57,6 @@ DATABASES = {
 									WIP
 --------------------------------------------------------------------------------
 
-⛔ Clean Repo from database trying
-⛔ Write basic doc about databases
-⛔
-⛔
 ⛔
 
 
@@ -68,6 +64,8 @@ DATABASES = {
 									TOUDOU LIST
 --------------------------------------------------------------------------------
 # TO FIX LATER :
+⛔ Health tests visible on the console, maybe put them in  `> /dev/null`
+ 
 
 
 # 🪡🪡🪡        WORK NEEDLE        🪡🪡🪡🪡🪡🪡
@@ -111,4 +109,9 @@ For data simplicity manipulation
 - ✅ Connect another container with another models
 - ✅ Connect another model to the DB, and with Django Admin again
 
-📅  ===== - =====
+
+Write basic doc about databases
+Clean Repo from database trying
+ Fix health test for postgres
+
+📅  ===== 27-02 =====

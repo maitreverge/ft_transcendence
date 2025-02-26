@@ -21,7 +21,7 @@ services:
     volumes:
       - staticvol:/app/staticfiles
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${user_port}/health/"]
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:${user_port}/health/"]
       interval: 1m30s    # How often to run the health check (every 90 seconds)
       timeout: 2s       # Maximum time to wait for the check to complete
       retries: 5         # Number of consecutive failures needed to mark container as unhealthy

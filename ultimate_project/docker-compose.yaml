@@ -37,6 +37,7 @@ services:
       name: database
       pi_domain: $PI_DOMAIN
       port: $POSTGRES_PORT # really usefull ?
+      PGUSER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -48,8 +49,7 @@ services:
     ports:
       - "5433:5432"
     healthcheck:
-      # Health check done in non root user
-      test: ["CMD-SHELL", "pg_isready", "-U", "${POSTGRES_USER}"]
+      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
       interval: 10s
       timeout: 2s
       retries: 5
@@ -102,7 +102,7 @@ services:
     volumes:
       - staticvol:/app/staticfiles
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${static_files_port}/health/"]
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:${static_files_port}/health/"]
       interval: 1m30s    # How often to run the health check (every 90 seconds)
       timeout: 2s       # Maximum time to wait for the check to complete
       retries: 5         # Number of consecutive failures needed to mark container as unhealthy
