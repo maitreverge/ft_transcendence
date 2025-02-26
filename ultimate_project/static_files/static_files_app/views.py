@@ -30,34 +30,6 @@ def login(request):
     request.session["username"] = username
     return redirect("/")
 
-
-def tournament(request):
-    return HttpResponse(
-        """
-        <div class="overlay">
-            <div class="overlay-content">
-                <h2>Tournament creation</h2>
-                <!-- Tournament content -->
-                <button hx-get="/" hx-target="body">Close</button>
-            </div>
-        </div>
-    """
-    )
-
-
-def simple_match(request):
-    return HttpResponse(
-        """
-        <div class="overlay">
-            <div class="overlay-content">
-                <h2>Simple Match</h2>
-                <!-- match content -->
-                <button hx-get="/" hx-target="body">Close</button>
-            </div>
-        </div>
-    """
-    )
-
 def home(request):
     return render(request, "home.html")
 
