@@ -3,17 +3,19 @@
 # Make the scripts fails if any command fails
 set -e
 
-
+python3 manage.py makemigrations auth_app
+python3 manage.py makemigrations user_management_app
+python3 manage.py makemigrations
 python3 manage.py migrate --noinput
 
-# Ensure a superuser exists (only run this AFTER migrations)
+# Ensure a superuser exists AFTER migrations
 python3 manage.py shell -c "
 from django.db import connection
 from django.contrib.auth import get_user_model;
 
 # Check if auth_user table exists before querying
 with connection.cursor() as cursor:
-    cursor.execute(\"SELECT to_regclass('auth_user')\")
+    cursor.execute(\"SELECT to_regclass('user_schema.player')\")
     exists = cursor.fetchone()[0]
 
 if exists:
@@ -22,10 +24,11 @@ if exists:
         User.objects.create_superuser('admin@example.com', 'admin', 'adminpassword')
 "
 
-yes | python3 manage.py makemigrations auth_app
-yes | python3 manage.py makemigrations user_management_app
 
-python3 manage.py migrate
+# yes | python3 manage.py makemigrations auth_app
+# yes | python3 manage.py makemigrations user_management_app
+
+# python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
