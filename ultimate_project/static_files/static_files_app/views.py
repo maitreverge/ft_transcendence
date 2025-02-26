@@ -5,6 +5,8 @@ from django.template import Context, Template
 
 def index(request):
     username = request.session.get("username")
+    if "HX-Request" not in request.headers:
+        return redirect("/home/")
     return render(request, "index.html", {"username": username})
 
 def login_form(request):
