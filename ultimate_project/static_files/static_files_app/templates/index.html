@@ -12,9 +12,14 @@
     
     {% else %}
         {% include "navbar.html" %}
-        <div id="grosse_div" hx-get="/home/" hx-trigger="load">  
+        <div id="grosse_div" hx-get="/home/" hx-trigger="load">
+        {% if page %}
+            {% include page %}
+        {% else %}
+            {% include "partials/home.html" %}
+        {% endif %}
     {% endif %} 
-
+        </div>
     </body>
 
 </html>

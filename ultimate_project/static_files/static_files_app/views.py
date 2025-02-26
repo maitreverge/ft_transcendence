@@ -20,7 +20,9 @@ def home(request):
     return render(request, "partials/home.html")
 
 def profil(request):
-    return render(request, "partials/profil.html")
+    if request.headers.get("HX-Request"):
+        return render(request, "partials/profil.html")
+    return render(request, "index.html", {"page": "partials/profil.html"})
 
 def stats(request):
     return render(request, "partials/stats.html")
