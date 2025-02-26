@@ -177,24 +177,25 @@ function receiveMatchId(matchId) {
 
 
 
-function cancelInvitation(socket, choosenId) {
+function cancelInvitation(socket, selected) {
 	
-	console.log("i will cancel invitation to choosenId: " + choosenId);
+	console.log("i will cancel invitation to selected: " + selected.id);
 	
-	const choosenElement = document.getElementById(choosenId);
-	choosenElement.classList.remove("invitation-confirmed");
-	choosenElement.confirmed = 'no';
-
+	selected.classList.remove("invitation-confirmed");
+	selected.confirmed = 'no';
 	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({type: "cancelInvitation", choosenId: choosenId}))
+		socket.send(JSON.stringify({type: "cancelInvitation",
+			choosenId: Number(selected.id)}))
 }
 
-function sendInvitation(socket, choosenId) {
+function sendInvitation(socket, selected) {
 	
-	console.log("i will send invitation to choosenId: " + choosenId);
+	console.log("i will send invitation to selected: " + selected.id);
 
+	selected.classList.add("invitation-waiting");
 	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({type: "invitation", choosenId: choosenId}))
+		socket.send(JSON.stringify({type: "invitation",
+			choosenId: Number(selected.id)}))
 }
 
 function addToPlayers(socket, usersContainer, player) {
@@ -212,18 +213,11 @@ function addToPlayers(socket, usersContainer, player) {
 	}
 	else
 	{
-		div.onclick = function() {
-
-			console.log("user confirmed: " + div.confirmed + " id: " + div.id);
-			if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')
-			{
-				console.log(`my choice: ${player.playerId}`);
-				window.select = player.playerId;//!
-				this.classList.add("invitation-waiting");				
-				sendInvitation(socket, window.select);
-			}
+		div.onclick = function() {		
+			if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')										
+				sendInvitation(socket, this);			
 			else				
-				cancelInvitation(socket, player.playerId);				
+				cancelInvitation(socket, this);				
 		};
 	}
     usersContainer.appendChild(div);
@@ -249,7 +243,7 @@ function setSelfId(selfId) {
 	document.getElementById("player").innerText = 
 	"Je suis le joueur " + window.selfId;
 	
-  	window.select = null;//!
+  	// window.select = null;//!
 }
 
 function onTournamentWsMessage(event) {
