@@ -1,73 +1,44 @@
 
+function loadScripts(data, target) {
 
-function sendConfirmation(socket, applicantId, response) {
+	overlay = document.getElementById(target);
+	overlay.innerHTML = data;
+	const scripts = overlay.getElementsByTagName("script");
 
-	console.log(`i will send ${response} to applicant: ${applicantId}`);
-
-	if (response === "yes") 
-	{
-		const applicantElement = document.getElementById(applicantId);
-		applicantElement.classList.add("invitation-confirmed");	
-		applicantElement.confirmed = 'yes';
-		window.choosenElement = applicantElement;
+	for (const script of scripts) {
+		const newScript = document.createElement("script");
+		if (script.src) {		
+			newScript.src = script.src;
+			newScript.async = true;  
+			newScript.onload = script.onload;
+		} else 			
+			newScript.textContent = script.textContent;		
+		document.body.appendChild(newScript); 
 	}
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({type: "confirmation", response: response, applicantId: applicantId}))
 }
-
-function invitationCancelled(applicantId) {
-
-	console.log("invitation is cancelled from: " + applicantId);
-
-	const applicantElement = document.getElementById(applicantId);
-	applicantElement.classList.remove("invitation-confirmed");
-	applicantElement.confirmed = 'no';
-}
-
-
-
 
 function setSelfMatchId() {
 
 	const matchsContainer = document.getElementById("matchs");
 	matchElements = [...matchsContainer.children];
 		
-    matchElements.forEach( match => {	
-	
+    matchElements.forEach( match => {		
 		if (match.id == window.selfMatchId)
-			match.classList.add("self-match");
-					
+			match.classList.add("self-match");					
 		match.onclick = function() {
 			fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
 			.then( response => {
 				if (!response.ok) 
-					throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
+					throw new Error(`Error HTTP! Status: ${response.status}`);		  
 				return response.text();
 			})
-			.then( data => {
-				overlayMatch = document.getElementById("overlay-match");
-				overlayMatch.innerHTML = data;
-				let scripts = overlayMatch.getElementsByTagName("script");
-				for (let script of scripts) {
-					let newScript = document.createElement("script");
-					if (script.src) {
-					
-						newScript.src = script.src;
-						newScript.async = true;  
-						newScript.onload = script.onload;
-					} else {
-						
-						newScript.textContent = script.textContent;
-					}
-					document.body.appendChild(newScript); 
-				}
-			})
+			.then(data => loadScripts(data, "overlay-match"))
 			.catch( error => console.log(error))
 		};					
 	});
 }
 
-function addToMatchs(socket, matchsContainer, match) {
+function addToMatchs(matchsContainer, match) {
   	
 	const div = document.createElement("div");
 	div.className = "match";
@@ -76,10 +47,8 @@ function addToMatchs(socket, matchsContainer, match) {
     matchsContainer.appendChild(div);
 }
 
+function updateMatchs(matchs) {
 
-
-
-function updateMatchs(socket, matchs) {
 	console.log("new udate " + matchs);
     const matchsContainer = document.getElementById("matchs");
 	matchElements = [...matchsContainer.children];
@@ -89,80 +58,29 @@ function updateMatchs(socket, matchs) {
 		{
 			if (match.id == window.selfMatchId)
 			{
-				window.choosenElement.classList.remove("invitation-confirmed");
-				choosenElement.confirmed = "no";
+				window.selectedElement.classList.remove("invitation-confirmed");
+				window.selectedElement = null;
 			}
 			matchsContainer.removeChild(match);
 		}
 	});
 	matchs.forEach( match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
-			addToMatchs(socket, matchsContainer, match);		
+			addToMatchs(matchsContainer, match);		
 	});
 	setSelfMatchId();	
 }
 
-function receiveInvitation(socket, applicantId) {
+function sendMatchId(socket, matchId, selectedId) {
 
-	console.log("i have had and invitation from: " + applicantId)
-
-	if (confirm(`you have an invitation from ${applicantId}`))
-		sendConfirmation(socket, applicantId, "yes");
-	else
-		sendConfirmation(socket, applicantId, "no");
-}
-
-function sendMatchId(socket, matchId, choosenId) {
-
-	console.log("i will send matchId: " + matchId + " to choosen: " + choosenId);
+	console.log("i will send matchId: " + matchId + " to selected: "
+		+ selectedId);
 
 	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({matchId: matchId, choosenId: choosenId}))
-}
-
-function initSelfMatch() {
-	const matchsContainer = document.getElementsById("matchs");
-	matchElements = [...matchsContainer.children];
-}
-
-function askMatchId(socket, choosenId) {
-
-	fetch(`/tournament/start-match/?selfid=${window.selfId}&select=${choosenId}`)
-		.then( response => {
-			if (!response.ok) 
-				throw new Error(`Erreur HTTP! Statut: ${response.status}`);		  
-			return response.json();
-		})
-		.then( data => {
-			console.log("data:" + data.matchId);
-			window.selfMatchId = data.matchId;
-			setSelfMatchId();
-			console.log("in ask selfmatchid: " + window.selfMatchId);
-			sendMatchId(socket, data.matchId, choosenId);
-		})
-		.catch( error => console.log(error))	
-}
-
-function receiveConfirmation(socket, choosenId, response) {
-
-	console.log("i have had and confirmation from: " + choosenId
-		+ ", the answer is :" + response);
-	
-	const choosenElement = document.getElementById(choosenId); 
-	if (response === "yes")
-	{
-		choosenElement.classList.remove("invitation-waiting");
-		choosenElement.classList.add("invitation-confirmed");
-		choosenElement.confirmed = "yes";
-		window.choosenElement = choosenElement;
-		askMatchId(socket, choosenId);		
-	}
-	else
-	{
-		choosenElement.classList.remove("invitation-waiting");
-		choosenElement.classList.remove("invitation-confirmed");
-		alert(`${choosenId} says: fuck you`);
-	}
+		socket.send(JSON.stringify({
+			matchId: matchId,
+			selectedId: selectedId
+		}));
 }
 
 function receiveMatchId(matchId) {
@@ -173,37 +91,122 @@ function receiveMatchId(matchId) {
 	setSelfMatchId();
 }
 
+function askMatchId(socket, selectedId) {
 
+	fetch(
+		"/tournament/start-match?" +
+		`selfId=${window.selfId}&` +
+		`selectedId=${selectedId}`
+	)
+		.then( response => {
+			if (!response.ok) 
+				throw new Error(`Error HTTP! Status: ${response.status}`);		  
+			return response.json();
+		})
+		.then( data => {		
+			window.selfMatchId = data.matchId;
+			setSelfMatchId();
+			sendMatchId(socket, data.matchId, selectedId);
+		})
+		.catch( error => console.log(error))	
+}
 
+function receiveConfirmation(socket, selectedId, response) {
 
+	console.log("i have had and confirmation from: " + selectedId
+		+ ", the answer is :" + response);
+	
+	const selectedElement = document.getElementById("players")
+		.querySelector(`[id='${selectedId}']`); 
+	if (selectedElement)
+	{
+		if (response === "yes")
+		{
+			window.selectedElement = selectedElement;
+			selectedElement.classList.remove("invitation-waiting");
+			selectedElement.classList.add("invitation-confirmed");
+			askMatchId(socket, selectedId);		
+		}
+		else
+		{
+			selectedElement.classList.remove("invitation-waiting");
+			selectedElement.classList.remove("invitation-confirmed");
+			alert(`${selectedId} says: fuck you`);
+		}
+	}
+}
+//!
+function sendConfirmation(socket, applicantId, response) {
 
+	console.log(`i will send ${response} to applicant: ${applicantId}`);
+
+	if (response === "yes") 
+	{		
+		const applicantElement = document.getElementById("players")
+			.querySelector(`[id='${applicantId}']`);
+		if (applicantElement)
+		{
+			window.selectedElement = applicantElement;
+			applicantElement.classList.add("invitation-confirmed");	
+		}
+	}	
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "confirmation",
+			response: response,
+			applicantId: applicantId
+		}));
+}
+
+function receiveInvitation(socket, applicantId) {
+
+	console.log("i have had and invitation from: " + applicantId)
+
+	confirm(`you have an invitation from ${applicantId}`)
+		? sendConfirmation(socket, applicantId, "yes")	
+		: sendConfirmation(socket, applicantId, "no");
+}
+//!
+function invitationCancelled(applicantId) {
+
+	console.log("invitation is cancelled from: " + applicantId);
+
+	window.selectedElement = null;
+	window.selectedElement.classList.remove("invitation-confirmed");
+}
+//!
 function cancelInvitation(socket, selected) {
 	
 	console.log("i will cancel invitation to selected: " + selected.id);
 	
-	selected.classList.remove("invitation-confirmed");
-	selected.confirmed = 'no';
+	window.selectedElement = null;
+	selected.classList.remove("invitation-confirmed");	
+
 	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({type: "cancelInvitation",
-			choosenId: Number(selected.id)}))
+		socket.send(JSON.stringify({
+			type: "cancelInvitation",
+			selectedId: Number(selected.id)
+		}));
 }
 
 function sendInvitation(socket, selected) {
 	
 	console.log("i will send invitation to selected: " + selected.id);
-
 	selected.classList.add("invitation-waiting");
+
 	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({type: "invitation",
-			choosenId: Number(selected.id)}))
+		socket.send(JSON.stringify({
+			type: "invitation",
+			selectedId: Number(selected.id)
+		}));
 }
 
-function addToPlayers(socket, usersContainer, player) {
+function addToPlayers(socket, playersContainer, player) {
   	
 	const div = document.createElement("div");
 	div.className = "user";
 	div.textContent = `user: ${player.playerId}`;
-	div.id = player.playerId;
+	div.id = player.playerId;	
 	if (player.playerId === window.selfId)
 	{
 		div.classList.add("self-player");
@@ -213,37 +216,35 @@ function addToPlayers(socket, usersContainer, player) {
 	}
 	else
 	{
-		div.onclick = function() {		
-			if (typeof div.confirmed === 'undefined' || div.confirmed === 'no')										
-				sendInvitation(socket, this);			
-			else				
-				cancelInvitation(socket, this);				
+		div.onclick = function() {			
+			!window.selectedElement
+				? sendInvitation(socket, this)
+				: cancelInvitation(socket, this);				
 		};
 	}
-    usersContainer.appendChild(div);
+    playersContainer.appendChild(div);
 }
 
 function updatePlayers(socket, players) {
 
-    const usersContainer = document.getElementById("users");
-	userElements = [...usersContainer.children];
-		
-    userElements.forEach( player => {	
+    const playersContainer = document.getElementById("players");
+	playerElements = [...playersContainer.children];	
+
+    playerElements.forEach( player => {	
 		if (players.every(el => el.playerId != player.id))		
-			usersContainer.removeChild(player);					
+			playersContainer.removeChild(player);					
 	});
 	players.forEach( player => {	
-		if (userElements.every(el => el.id != player.playerId))		
-			addToPlayers(socket, usersContainer, player);		
+		if (playerElements.every(el => el.id != player.playerId))		
+			addToPlayers(socket, playersContainer, player);		
 	});	
 }
 
 function setSelfId(selfId) {
+
 	window.selfId = selfId;
 	document.getElementById("player").innerText = 
-	"Je suis le joueur " + window.selfId;
-	
-  	// window.select = null;//!
+		"Je suis le joueur " + window.selfId;	
 }
 
 function onTournamentWsMessage(event) {
@@ -256,10 +257,13 @@ function onTournamentWsMessage(event) {
 			setSelfId(data.selfId);
 			break;
 		case "playerList":
-			updatePlayers(window.tournamentSocket, data.players);
+			updatePlayers(
+				window.tournamentSocket,
+				data.players
+			);
 			break;
 		case "matchList":
-			updateMatchs(window.tournamentSocket, data.matchs);
+			updateMatchs(data.matchs);
 			break;
 		case "invitation":
 			receiveInvitation(window.tournamentSocket, data.player);
@@ -268,7 +272,11 @@ function onTournamentWsMessage(event) {
 			invitationCancelled(data.player);
 			break;
 		case "confirmation":
-			receiveConfirmation(window.tournamentSocket, data.choosen, data.response);
+			receiveConfirmation(
+				window.tournamentSocket,
+				data.selectedId,
+				data.response
+			);
 			break;
 		default:
 			if (data.matchId) 
@@ -280,10 +288,13 @@ function onTournamentWsMessage(event) {
 function initTournamentWs() {
 
 	if (window.rasp == "true")
-		window.tournamentSocket = new WebSocket(`wss://${window.pidom}/ws/tournament/`);
+		window.tournamentSocket = new WebSocket(
+			`wss://${window.pidom}/ws/tournament/`
+		);
 	else
-		window.tournamentSocket = new WebSocket(`ws://localhost:8000/ws/tournament/`);
-
+		window.tournamentSocket = new WebSocket(
+			`ws://localhost:8000/ws/tournament/`
+		);
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
 	}

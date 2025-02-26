@@ -17,8 +17,8 @@ def simple_match(request : HttpRequest):
 	)
 	
 async def start_match(request):
-	p1 = request.GET.get('selfid')
-	p2 = request.GET.get('select')
+	p1 = request.GET.get('selfId')
+	p2 = request.GET.get('selectedId')
 	newMatchId = requests.get(
 		f"http://match:8002/match/new-match/?p1={p1}&p2={p2}"
 	).json()['matchId']
