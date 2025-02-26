@@ -13,19 +13,20 @@
             navigate(url, pushState = true) {
                 let absoluteUrl = new URL(url, window.location.origin).pathname;
 
-                if (this.currentPath === url) return; // Empêche de recharger la même page
+                if (this.currentPath === url) return; // avoids double entry
+
                 this.currentPath = url;
 
                 if (pushState) {
                     history.pushState({}, "", absoluteUrl);
                 }
 
-                htmx.ajax("GET", url, { target: "#grosse_div" });
+                htmx.ajax("GET", url, { target: "#main_div" });
             }
         };
     }
 
     window.addEventListener("popstate", function () {
-        htmx.ajax("GET", window.location.pathname, { target: "#grosse_div" });
+        htmx.ajax("GET", window.location.pathname, { target: "#main_div" });
     });
 </script>  
