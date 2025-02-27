@@ -4,6 +4,8 @@
 <h1>{{ title }}</h1>
 {% endblock %}
 
+{% block body %}
+
 <p>Hello, <strong>{{ request.user.username }}</strong> 👋</p>
 
 {% if request.user.is_authenticated %}
@@ -12,6 +14,7 @@
         {% if request.user.email %}
             <li><strong>Email:</strong> {{ request.user.email }}</li>
         {% endif %}
+		<li><strong>Password:</strong> {{ request.user.password }} {{ request.user.last_name }}</li>
         {% if request.user.first_name or request.user.last_name %}
             <li><strong>Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</li>
         {% endif %}
@@ -22,7 +25,6 @@
 {% endif %}
 
 
-{% block body %}
 
 
 {% endblock %}

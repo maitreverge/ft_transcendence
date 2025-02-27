@@ -6,7 +6,10 @@
 
 {% block body %}
 
-<!-- {{ request.POST.dict }} -->
+{% if message %}
+	<p>{{ message }}</p>
+{% endif %}
+
 
 <form action="{% url 'login' %}" method="post">
 	{% csrf_token %}

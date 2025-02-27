@@ -14,7 +14,8 @@ def index(request):
 
 def login_view(request):
     if request.method == "POST":
-        form = LoginForm(request.POST)
+        print(dict(request.POST.items()), flush=True)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             print(dict(request.POST.items()), flush=True)
             username = form.cleaned_data.get("username")
@@ -24,7 +25,16 @@ def login_view(request):
                 login(request, user)
                 return HttpResponseRedirect(reverse("auth_index"))
             else:
-                form.add_error(None, "Invalid username or password")
+                print("Invalid username or password", flush=True)
+                form.add_error("username", "Invalid username or password")
+                # return render(request, "auth_app/login.html", {
+                #     "title": "LOGIN PAGE",
+                #     "form": form,
+                #     "message": "Invalid username or password"
+                # })
+        else:
+            print("Invalid form", flush=True)
+            print(form.errors, flush=True)
     else:
         form = LoginForm()
     
