@@ -23,10 +23,7 @@ class Pong:
 		self.yp2 = 0
 		self.winner = None
 
-		print("launch init", flush=True)
-
 		# asyncio.run(self.end())
-		# print("YOOOOOOOOOOO", flush=True)
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
 	# async def end(self):
@@ -46,7 +43,6 @@ class Pong:
 		
 
 	def launchTask(self):
-		print("launch task", flush=True)
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)
 		self.myEventLoop.create_task(self.launch())
@@ -59,9 +55,13 @@ class Pong:
 		self.myEventLoop.create_task(self.sendState())
 		while self.state in (State.running, State.waiting):		
 		
-			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
-			self.player1 = next((p for p in self.myplayers if self.idP1 == p["playerId"]), None)
-			self.player2 = next((p for p in self.myplayers if self.idP2 == p["playerId"]), None)
+			self.myplayers = [p for p in consumer.players
+				if self.id == p["matchId"]]
+			self.player1 = next(
+				(p for p in self.myplayers if self.idP1 == p["playerId"]), None)
+			self.player2 = next(
+				(p for p in self.myplayers if self.idP2 == p["playerId"]), None)
+
 			if None not in (self.player1, self.player2):
 				self.state = State.running
 				if self.player1.get("dir") is not None :
@@ -83,26 +83,35 @@ class Pong:
 				self.winner = self.idP1
 				self.state = State.end
 				await self.sendFinalState()
-				print("TU DEVRAIS ME VOIR", flush=True)
 			elif self.yp2 > 80:
 				self.winner = self.idP2
 				self.state = State.end
-				await self.sendFinalState()
-				print("TU DEVRAIS ME VOIR", flush=True)
-					
+				await self.sendFinalState()	
+
 			await asyncio.sleep(0.05)
-		print("FIN DU WHIIIIILEEEEEEE", flush=True)
 	
 	async def sendState(self):		
 		while (True):	
-			self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
+			self.myplayers = [p for p in consumer.players
+				if self.id == p["matchId"]]
 			for p in self.myplayers:	
-				await p["socket"].send(text_data=json.dumps({"state": self.state.name, "yp1": self.yp1, "yp2": self.yp2, "winner": self.winner}))
+				await p["socket"].send(text_data=json.dumps({
+					"state": self.state.name,
+					"yp1": self.yp1,
+					"yp2": self.yp2
+				}))
 			await asyncio.sleep(0.05)
 
 	async def sendFinalState(self):				
-		self.myplayers = [p for p in consumer.players if self.id == p["matchId"]]
+		self.myplayers = [p for p in consumer.players
+			if self.id == p["matchId"]]
 		for p in self.myplayers:	
-			await p["socket"].send(text_data=json.dumps({"state": self.state.name, "winnerId": self.winner}))
-		requests.post("http://tournament:8001/tournament/match-result/", json={"matchId": self.id, "winnerId": self.winner})
+			await p["socket"].send(text_data=json.dumps({
+				"state": self.state.name,
+				"winnerId": self.winner
+			}))
+		requests.post("http://tournament:8001/tournament/match-result/", json={
+			"matchId": self.id,
+			"winnerId": self.winner
+		})
 	

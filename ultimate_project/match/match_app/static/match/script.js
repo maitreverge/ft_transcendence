@@ -1,8 +1,7 @@
 
 function setCommands(socket) {
 
-	document.addEventListener("keydown", function(event) {
-	
+	document.addEventListener("keydown", function(event) {	
 		if (socket.readyState === WebSocket.OPEN)
 		{		
 			if (event.key === "ArrowUp") 
@@ -16,57 +15,57 @@ function setCommands(socket) {
 			}
 		} 
 		else 
-			console.log("WebSocket non connecté !");		
+			console.log("WebSocket not connected!");		
 	});
+}
+
+function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
+
+	const data = JSON.parse(event.data);
+	if (data.state == "end")
+	{	
+		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
+		end.classList.add("end");
+	}
+	if (waitingState != data.state) 
+	{
+		waitingState = data.state;
+		if (data.state == "waiting")			
+			waiting.classList.remove("no-waiting");			
+		else			
+			waiting.classList.add("no-waiting");			
+	}
+	pads[0].style.top = data.yp1 + "vh";
+	pads[1].style.top = data.yp2 + "vh";
 }
 
 function initMatchWs() {
 
 	if (window.rasp == "true")
-		socket = new WebSocket(`wss://${window.pidom}/ws/match/${window.matchId}/`);
+		var socket = new WebSocket(
+			`wss://${window.pidom}/ws/match/${window.matchId}/` +
+			`?playerId=${window.playerId}`
+		);
 	else	
-		socket = new WebSocket(`ws://localhost:8000/ws/match/${window.matchId}/?playerId=${window.playerId}`);
-	
+		var socket = new WebSocket(
+			`ws://localhost:8000/ws/match/${window.matchId}/` +
+			`?playerId=${window.playerId}`
+		);	
 	socket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};
 	socket.onclose = () => {
 		console.log("Connexion Match disconnected 😈");	
-	};
-
-	const p1 = document.getElementById("p1");
-	const p2 = document.getElementById("p2");
-	const waiting = document.getElementById("waiting");
-	const end = document.getElementById("end");
-
+	};	
+	const pads = [
+		document.getElementById("p1"), document.getElementById("p2")
+	];
+	const [waiting, end] = [		
+		document.getElementById("waiting"),	document.getElementById("end")
+	];	
 	let waitingState = "waiting";
-	socket.onmessage = (event) => {
-		const data = JSON.parse(event.data);
-		// console.log("Valeur reçue pour waiting:", data.state, typeof data.state, " ", data.winnerId, typeof data.winnerId);
-		if (data.state == "end")
-		{
-			console.log("Valeur reçue pour waiting:", data.state, typeof data.state, "", data.winnerId, typeof data.winnerId);
-			end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
-			end.classList.add("end");
-		}
-		if (waitingState != data.state) 
-		{
-			console.log("Valeur reçue pour waiting:", data.state, typeof data.state);
-			waitingState = data.state;
-			if (data.state == "waiting")
-			{
-				console.log("REMOVE:", data.state, typeof data.state);
-				waiting.classList.remove("no-waiting");
-			}
-			else {
-				console.log("ADD:", data.state, typeof data.state);
-				waiting.classList.add("no-waiting");
-			}
-		}
-		p1.style.top = data.yp1 + "vh";
-		p2.style.top = data.yp2 + "vh";
-	};
-
+	socket.onmessage = event => onMatchWsMessage(
+		event, pads, [waiting, end], waitingState
+	);
 	setCommands(socket);
 }
-

@@ -1,16 +1,14 @@
-from django.shortcuts import render
 import os
+from django.shortcuts import render
 from match_app.services.pong import Pong
 from django.http import JsonResponse
 from django.http import HttpRequest, HttpResponse, JsonResponse
 
 def newMatch(request):
-    pong = Pong(request.GET.get("p1"), request.GET.get("p2") )
+    pong = Pong(request.GET.get("p1"), request.GET.get("p2"))
     return JsonResponse({"matchId":f"{pong.id}"}, status=201)
 
 def startMatch(request : HttpRequest):
-    # return HttpResponse("<h1>TEST</h1>")
-    print(f"in start match playerId : {request.GET.get('playerId')}")
     return render(
         request,
         "pong.html",

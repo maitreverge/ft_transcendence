@@ -29,8 +29,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 	async def disconnect(self, close_code):
 		global selfPlayers
 		global players				
-		selfPlayers = [p for p in selfPlayers if p['socket'] != self]
-		players = [p for p in players if p['playerId'] != self.id]
+		selfPlayers[:] = [p for p in selfPlayers if p['socket'] != self]
+		players[:] = [p for p in players if p['playerId'] != self.id]
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": "playerList",
