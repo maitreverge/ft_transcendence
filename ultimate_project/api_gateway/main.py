@@ -45,9 +45,9 @@ app = FastAPI()
 
 # Définition des containers
 services = {
+    "static_files": "http://static_files:8003",
     "tournament": "http://tournament:8001",
     "match": "http://match:8002",
-    "user": "http://user:8004",
 }
 
 # Fonction pour proxy une requête
@@ -62,6 +62,10 @@ async def proxy_request(service_name: str, path: str):
 @app.get("/tournament/{path:path}")
 async def tournament_proxy(path: str):
     return await proxy_request("tournament", f"/tournament/{path}")
+
+@app.get("/{path:path}")
+async def tournament_proxy(path: str):
+    return await proxy_request("static_files", f"/{path}")
 
 @app.get("/match/{path:path}")
 async def match_proxy(path: str):
