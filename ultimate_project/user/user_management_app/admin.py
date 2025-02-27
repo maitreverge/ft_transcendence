@@ -9,6 +9,13 @@ class PlayerAdmin(admin.ModelAdmin):
     ordering = ("email",)
 
 
+    # Ensure passwords are hashed when saving a Player in the admin.
+    def save_model(self, request, obj, form, change):
+        if "password" in form.changed_data:  # Only hash if password was changed
+            obj.set_password(obj.password)   # Hash the password before saving
+        super().save_model(request, obj, form, change)
+
+
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
     list_display = ("id",)
