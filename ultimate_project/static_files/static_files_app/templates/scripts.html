@@ -21,7 +21,7 @@
                     history.pushState({}, "", absoluteUrl);
                 }
 
-                htmx.ajax("GET", url, { target: "#main_div" });
+                htmx.ajax("GET", absoluteUrl, { target: "#main_div" });
             }
         };
     }
