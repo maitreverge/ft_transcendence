@@ -40,6 +40,7 @@
 from fastapi import FastAPI
 import httpx
 from fastapi.responses import HTMLResponse
+from fastapi import Request
 
 app = FastAPI()
 
@@ -51,11 +52,19 @@ services = {
 }
 
 # Fonction pour proxy une requête
-async def proxy_request(service_name: str, path: str):
+async def proxy_request(service_name: str, path: str, request: Request):
     async with httpx.AsyncClient(follow_redirects=True) as client:
         url = f"{services[service_name]}{path}"
         headers = {"Host": "localhost"}
-        response = await client.get(url, headers=headers)
+        
+        headers = dict(request.headers)
+        headers.pop("host", None)  # Retire l'en-tête 'Host' (insensible à la casse)
+        headers["Host"] = "localhost"  # Ajoute le bon Host
+
+        method = request.method
+        data = await request.body()
+        
+        response = await client.request(method, url, headers=headers, content=data)
         if response.headers.get("Content-Type", "").startswith("text/html"):
             return HTMLResponse(content=response.text)
         return response.text
@@ -64,9 +73,9 @@ async def proxy_request(service_name: str, path: str):
 async def tournament_proxy(path: str):
     return await proxy_request("tournament", f"/tournament/{path}")
 
-@app.get("/{path:path}")
-async def static_files_proxy(path: str):
-    return await proxy_request("static_files", f"/{path}")
+@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def static_files_proxy(path: str, request: Request):
+    return await proxy_request("static_files", f"/{path}", request)
 
 @app.get("/match/{path:path}")
 async def match_proxy(path: str):
