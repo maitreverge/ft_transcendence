@@ -8,30 +8,38 @@ matchs = []
 class MyConsumer(AsyncWebsocketConsumer):
 
 	id = 0
-	async def connect(self):
-		print(f"new user connection for match", flush=True)
+	async def connect(self):				
 		await self.accept() 
 		MyConsumer.id += 1
 		self.id = MyConsumer.id
 		players.append({'playerId': self.id})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
-		await self.send(text_data=json.dumps({"type": "selfAssign", "selfId": self.id})) 
+		await self.send(text_data=json.dumps({
+			"type": "selfAssign", "selfId": self.id})) 
 		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({"type": "playerList", "players": players}))
-			await selfplay['socket'].send(text_data=json.dumps({"type": "matchList", "matchs": matchs}))
+			await selfplay['socket'].send(text_data=json.dumps({
+				"type": "playerList",
+				"players": players
+			}))
+			await selfplay['socket'].send(text_data=json.dumps({
+				"type": "matchList",
+	 			"matchs": matchs
+			}))
 
 	async def disconnect(self, close_code):
 		global selfPlayers
-		global players
-		print(f"tournament disconnected id:{self.id}", flush=True)
-		for p in selfPlayers: 
-			if p['socket'] == self:
-				print(p['playerId'], flush=True)
+		global players				
 		selfPlayers = [p for p in selfPlayers if p['socket'] != self]
 		players = [p for p in players if p['playerId'] != self.id]
 		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({"type": "playerList", "players": players}))
-			await selfplay['socket'].send(text_data=json.dumps({"type": "matchList", "matchs": matchs}))
+			await selfplay['socket'].send(text_data=json.dumps({
+				"type": "playerList",
+				"players": players
+			}))
+			await selfplay['socket'].send(text_data=json.dumps({
+				"type": "matchList",
+				"matchs": matchs
+			}))
 
 	@staticmethod
 	async def matchUpdate():

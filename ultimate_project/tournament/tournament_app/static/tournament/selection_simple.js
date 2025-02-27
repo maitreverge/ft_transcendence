@@ -292,4 +292,3 @@ function initTournamentWs() {
 	};	
 	socket.onmessage = event => onTournamentWsMessage(event, socket);
 }
-
