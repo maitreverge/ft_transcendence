@@ -52,9 +52,10 @@ services = {
 
 # Fonction pour proxy une requête
 async def proxy_request(service_name: str, path: str):
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(follow_redirects=True) as client:
         url = f"{services[service_name]}{path}"
-        response = await client.get(url)
+        headers = {"Host": "localhost"}
+        response = await client.get(url, headers=headers)
         if response.headers.get("Content-Type", "").startswith("text/html"):
             return HTMLResponse(content=response.text)
         return response.text
@@ -64,7 +65,7 @@ async def tournament_proxy(path: str):
     return await proxy_request("tournament", f"/tournament/{path}")
 
 @app.get("/{path:path}")
-async def tournament_proxy(path: str):
+async def static_files_proxy(path: str):
     return await proxy_request("static_files", f"/{path}")
 
 @app.get("/match/{path:path}")
