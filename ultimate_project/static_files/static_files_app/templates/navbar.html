@@ -1,8 +1,11 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <script>
+            console.log("Navbar loaded");
+        </script>
         <div class="container">
             <a class="navbar-brand cursor-pointer" href="" hx-trigger="click" hx-get="/home/" 
-            hx-target="#main_div" @click.prevent="navigate('/home/')">Home</a>
+            hx-target="#main_div" hx-select="#main_div > *" @click.prevent="navigate('/home/')">Home</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>

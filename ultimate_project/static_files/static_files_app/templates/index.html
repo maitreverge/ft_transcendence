@@ -7,10 +7,6 @@
 
     <body x-data="router()" x-init="init()" @popstate.window="navigate(window.location.pathname, false)">
 
-    {% if not username %}
-        {% include "login_overlay.html" %}
-    
-    {% else %}
         {% include "navbar.html" %}
         <div id="main_div">
         {% if page %}
@@ -18,7 +14,6 @@
         {% else %}
             {% include "partials/home.html" %}
         {% endif %}
-    {% endif %} 
         </div>
     </body>
 
