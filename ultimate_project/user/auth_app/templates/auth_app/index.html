@@ -4,9 +4,27 @@
 <h1>{{ title }}</h1>
 {% endblock %}
 
-Hello {{ request.user.username }}
+<p>Hello, <strong>{{ request.user.username }}</strong> 👋</p>
 
-<a href="{% url 'logout' %}">Logout</a>
+{% if request.user.is_authenticated %}
+    <ul>
+        <li><strong>Username:</strong> {{ request.user.username }}</li>
+        {% if request.user.email %}
+            <li><strong>Email:</strong> {{ request.user.email }}</li>
+        {% endif %}
+        {% if request.user.first_name or request.user.last_name %}
+            <li><strong>Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</li>
+        {% endif %}
+    </ul>
+    <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+    <p>You are not logged in. <a href="{% url 'login' %}">Login here</a></p>
+{% endif %}
+
 
 {% block body %}
+
+
 {% endblock %}
+
+
