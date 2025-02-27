@@ -49,7 +49,7 @@ function addToMatchs(matchsContainer, match) {
 
 function updateMatchs(matchs) {
 
-	console.log("new udate " + matchs);
+	console.log("new update " + matchs);
     const matchsContainer = document.getElementById("matchs");
 	const matchElements = [...matchsContainer.children];
 		
@@ -171,15 +171,24 @@ function invitationCancelled(applicantId) {
 
 	console.log("invitation is cancelled from: " + applicantId);
 
-	window.selectedElement = null;
 	window.selectedElement.classList.remove("invitation-confirmed");
+	fetch(`/tournament/stop-match/${window.selfMatchId}/`)
+	.then(response => {
+		if (!response.ok) 
+			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+		return response.text();
+	})
+	.then(data => console.log(data))
+	.catch(error => console.log(error))
+	// window.selectedElement = null;
+	// window.selfMatchId = null;
 }
 //!
 function cancelInvitation(socket, selected) {
 	
 	console.log("i will cancel invitation to selected: " + selected.id);
 	
-	window.selectedElement = null;
+	// window.selectedElement = null;
 	selected.classList.remove("invitation-confirmed");	
 
 	if (socket.readyState === WebSocket.OPEN) 
@@ -263,10 +272,10 @@ function onTournamentWsMessage(event, socket) {
 			updateMatchs(data.matchs);
 			break;
 		case "invitation":
-			receiveInvitation(socket, data.player);
+			receiveInvitation(socket, data.playerId);
 			break;
 		case "cancelInvitation":
-			invitationCancelled(data.player);
+			invitationCancelled(data.playerId);
 			break;
 		case "confirmation":
 			receiveConfirmation(socket,	data.selectedId, data.response);

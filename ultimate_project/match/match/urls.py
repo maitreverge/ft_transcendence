@@ -19,6 +19,7 @@ from django.urls import path
 import match_app.views
 
 urlpatterns = [
-    path("match/", match_app.views.startMatch),
-	path("match/new-match/", match_app.views.newMatch),
+	path("match/new-match/", match_app.views.new_match),
+    path("match/", match_app.views.start_match),
+	path("match/stop-match/<int:matchId>/", match_app.views.stop_match),
 ]

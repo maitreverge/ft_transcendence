@@ -53,14 +53,14 @@ class MyConsumer(AsyncWebsocketConsumer):
 					if p['playerId'] == data['selectedId']:
 						await p['socket'].send(text_data=json.dumps({
 							"type": "invitation",
-							"player": self.id
+							"playerId": self.id
 						}))
 			case {"type": "cancelInvitation"}:
 				for p in selfPlayers:
 					if p['playerId'] == data['selectedId']:
 						await p['socket'].send(text_data=json.dumps({
 							"type": "cancelInvitation",
-							"player": self.id
+							"playerId": self.id
 						}))
 			case {"type": "confirmation", "response": response, **rest}:
 				for p in selfPlayers:

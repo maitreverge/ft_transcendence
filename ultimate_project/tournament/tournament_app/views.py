@@ -16,27 +16,37 @@ def simple_match(request : HttpRequest):
 		}
 	)
 	
-async def start_match(request):
+async def start_match(request : HttpRequest):
 	p1 = request.GET.get('selfId')
 	p2 = request.GET.get('selectedId')
-	newMatchId = requests.get(
+	new_matchId = requests.get(
 		f"http://match:8002/match/new-match/?p1={p1}&p2={p2}"
 	).json()['matchId']
 	consumer.matchs.append({
-		"matchId": newMatchId,
+		"matchId": new_matchId,
 		"playerId": p2, 
 		"otherId": p1
 	})
 	await consumer.MyConsumer.match_update()
-	return JsonResponse({"matchId": newMatchId}, status= 201)
+	return JsonResponse({"matchId": new_matchId}, status= 201)
+
+async def stop_match(request : HttpRequest, matchId):	
+	print(f"je suis ds tournament est le id est : {matchId}", flush=True)
+	requests.get(f"http://match:8002/match/stop-match/{matchId}/")
+	print(f"1 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
+	consumer.matchs[:] = [m for m in consumer.matchs
+		if m.get("matchId") != str(matchId)]
+	print(f"2 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
+	await consumer.MyConsumer.match_update()
+	return JsonResponse({"status": "succes"})
 
 @csrf_exempt
 async def match_result(request : HttpRequest):	
 	result = json.loads(request.body.decode('utf-8'))
-	matchId = result.get('matchId')
+	match_id = result.get('matchId')
 	winner = result.get('winnerId')
 	consumer.matchs[:] = [m for m in consumer.matchs
-		if m.get("matchId") == matchId]
+		if m.get("matchId") != str(match_id)]
 	await consumer.MyConsumer.match_update()
 	return JsonResponse({"status": "succes"})
 	

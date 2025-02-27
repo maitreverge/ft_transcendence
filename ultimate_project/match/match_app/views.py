@@ -4,11 +4,14 @@ from match_app.services.pong import Pong
 from django.http import JsonResponse
 from django.http import HttpRequest, HttpResponse, JsonResponse
 
-def newMatch(request):
+pongs = []
+
+def new_match(request : HttpRequest):
     pong = Pong(request.GET.get("p1"), request.GET.get("p2"))
+    pongs.append(pong)
     return JsonResponse({"matchId":f"{pong.id}"}, status=201)
 
-def startMatch(request : HttpRequest):
+def start_match(request : HttpRequest):
     return render(
         request,
         "pong.html",
@@ -20,4 +23,9 @@ def startMatch(request : HttpRequest):
         },
     )
 
-    
+def stop_match(request : HttpRequest, matchId): 
+    for p in pongs:
+        if p.id == matchId:
+            p.stop()   
+    print(f"je suis ds stop match et l'id est: {matchId}", flush=True)
+    return JsonResponse({"status": "succes"})

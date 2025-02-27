@@ -16,10 +16,11 @@ Including another URLconf
 """
 
 from django.urls import path
-import tournament_app.views
+import tournament_app.views as views
 
 urlpatterns = [
-	path("tournament/simple-match/", tournament_app.views.simple_match),  
-	path("tournament/start-match/", tournament_app.views.start_match),
-	path("tournament/match-result/", tournament_app.views.match_result),
+	path("tournament/simple-match/", views.simple_match),  
+	path("tournament/start-match/", views.start_match),
+	path("tournament/stop-match/<int:matchId>/", views.stop_match),
+	path("tournament/match-result/", views.match_result),
 ]

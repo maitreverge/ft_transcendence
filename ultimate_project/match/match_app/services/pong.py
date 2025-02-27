@@ -40,8 +40,9 @@ class Pong:
 	# 	print("three un", flush=True)
 	# 	await asyncio.sleep(1)
 	# 	print("three deux", flush=True)
-		
-
+	def stop(self):
+		print(f"in stop PONG my id is : {self.id}")	
+		self.state = State.end
 	def launchTask(self):
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)
@@ -49,6 +50,7 @@ class Pong:
 		# self.myEventLoop.run_forever()
 		# myEventLoop.run_until_complete(asyncio.Future())
 		self.myEventLoop.run_until_complete(self.launch())
+		print("in match after RUN", flush=True)
 
 	async def launch(self):
 		self.state = State.waiting
@@ -89,7 +91,8 @@ class Pong:
 				await self.sendFinalState()	
 
 			await asyncio.sleep(0.05)
-	
+		print(f"in match after WHILE id:{self.id}", flush=True)
+
 	async def sendState(self):		
 		while (True):	
 			self.myplayers = [p for p in consumer.players
