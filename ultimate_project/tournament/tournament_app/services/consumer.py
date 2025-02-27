@@ -35,39 +35,46 @@ class MyConsumer(AsyncWebsocketConsumer):
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": "playerList",
 				"players": players
-			}))
+			}))		
+
+	@staticmethod
+	async def match_update():
+		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": "matchList",
 				"matchs": matchs
 			}))
 
-	@staticmethod
-	async def matchUpdate():
-		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({"type": "matchList", "matchs": matchs}))
-
-	async def receive(self, text_data):
-		
+	async def receive(self, text_data):		
 		data = json.loads(text_data)
 		match data:			
 			case {"type": "invitation"}:
 				for p in selfPlayers:
 					if p['playerId'] == data['selectedId']:
-						await p['socket'].send(text_data=json.dumps({"type": "invitation", "player": self.id}))
-
+						await p['socket'].send(text_data=json.dumps({
+							"type": "invitation",
+							"player": self.id
+						}))
 			case {"type": "cancelInvitation"}:
 				for p in selfPlayers:
 					if p['playerId'] == data['selectedId']:
-						await p['socket'].send(text_data=json.dumps({"type": "cancelInvitation", "player": self.id}))
-
+						await p['socket'].send(text_data=json.dumps({
+							"type": "cancelInvitation",
+							"player": self.id
+						}))
 			case {"type": "confirmation", "response": response, **rest}:
 				for p in selfPlayers:
 					if p['playerId'] == data['applicantId']:
-						await p['socket'].send(text_data=json.dumps({"type": "confirmation", "response": response, "selectedId": self.id}))
-
+						await p['socket'].send(text_data=json.dumps({
+							"type": "confirmation",
+							"response": response,
+							"selectedId": self.id
+						}))
 			case _ if data.get("matchId") is not None:		
 				for p in selfPlayers:
 					if p['playerId'] == data['selectedId']:
-						await p['socket'].send(text_data=json.dumps({"matchId": data['matchId']}))
+						await p['socket'].send(text_data=json.dumps({
+							"matchId": data['matchId']
+						}))
 			case _:
 				pass  

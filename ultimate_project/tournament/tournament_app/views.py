@@ -27,7 +27,7 @@ async def start_match(request):
 		"playerId": p2, 
 		"otherId": p1
 	})
-	await consumer.MyConsumer.matchUpdate()
+	await consumer.MyConsumer.match_update()
 	return JsonResponse({"matchId": newMatchId}, status= 201)
 
 @csrf_exempt
@@ -37,6 +37,6 @@ async def match_result(request : HttpRequest):
 	winner = result.get('winnerId')
 	consumer.matchs[:] = [m for m in consumer.matchs
 		if m.get("matchId") == matchId]
-	await consumer.MyConsumer.matchUpdate()
+	await consumer.MyConsumer.match_update()
 	return JsonResponse({"status": "succes"})
 	
