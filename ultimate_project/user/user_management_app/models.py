@@ -1,20 +1,39 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+
+class PlayerManager(BaseUserManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        if not username:
+            raise ValueError("The Username field must be set")
+        
+        email = self.normalize_email(email) if email else None
+        user = self.model(username=username, email=email, **extra_fields)
+        user.set_password(password)  # Hash the password before saving
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_staff", True)
+        return self.create_user(username, email, password, **extra_fields)
 
 
 #  ================= MODELS MANAGED BY THIS MICROSERVICE (user) =================
-class Player(AbstractBaseUser):
+class Player(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
-    email = models.EmailField(max_length=100, unique=True)
-    password = models.CharField(max_length=100, blank=True)
+    username = models.CharField(max_length=100, unique=True, blank=True)
+
+    email = models.EmailField(max_length=100, unique=True, blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
-    username = models.CharField(max_length=100, unique=True, blank=True)
     is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False) # needed for admin access
 
     # Tells Django to use "email" as the primary field for authentication
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email"]
+
+    objects = PlayerManager()  # Custom manager
 
     class Meta:
         managed = (

@@ -12,15 +12,17 @@ class CrossSchemaModel(models.Model):
 #  ================= MODELS MANAGED BY OTHER MICROSERVICES =================
 class Player(CrossSchemaModel):
     id = models.AutoField(primary_key=True)
-    email = models.EmailField(max_length=100, unique=True)
-    password = models.CharField(max_length=100, blank=True)
+    username = models.CharField(max_length=100, unique=True, blank=True)
+
+    email = models.EmailField(max_length=100, unique=True, blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
-    username = models.CharField(max_length=100, unique=True, blank=True)
     is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False) # needed for admin access
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    # Tells Django to use "email" as the primary field for authentication
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email"]
 
     class Meta:
         managed = False  # This service is NOT responsible for creating and managing this model
