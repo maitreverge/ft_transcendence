@@ -1,7 +1,7 @@
 
 function loadScripts(data, target) {
 
-	overlay = document.getElementById(target);
+	const overlay = document.getElementById(target);
 	overlay.innerHTML = data;
 	const scripts = overlay.getElementsByTagName("script");
 
@@ -20,20 +20,20 @@ function loadScripts(data, target) {
 function setSelfMatchId() {
 
 	const matchsContainer = document.getElementById("matchs");
-	matchElements = [...matchsContainer.children];
+	const matchElements = [...matchsContainer.children];
 		
-    matchElements.forEach( match => {		
+    matchElements.forEach(match => {		
 		if (match.id == window.selfMatchId)
 			match.classList.add("self-match");					
 		match.onclick = function() {
 			fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
-			.then( response => {
+			.then(response => {
 				if (!response.ok) 
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
 				return response.text();
 			})
 			.then(data => loadScripts(data, "overlay-match"))
-			.catch( error => console.log(error))
+			.catch(error => console.log(error))
 		};					
 	});
 }
@@ -51,9 +51,9 @@ function updateMatchs(matchs) {
 
 	console.log("new udate " + matchs);
     const matchsContainer = document.getElementById("matchs");
-	matchElements = [...matchsContainer.children];
+	const matchElements = [...matchsContainer.children];
 		
-    matchElements.forEach( match => {	
+    matchElements.forEach(match => {	
 		if (matchs.every(el => el.matchId != match.id))		
 		{
 			if (match.id == window.selfMatchId)
@@ -64,7 +64,7 @@ function updateMatchs(matchs) {
 			matchsContainer.removeChild(match);
 		}
 	});
-	matchs.forEach( match => {	
+	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
 			addToMatchs(matchsContainer, match);		
 	});
@@ -98,17 +98,17 @@ function askMatchId(socket, selectedId) {
 		`selfId=${window.selfId}&` +
 		`selectedId=${selectedId}`
 	)
-		.then( response => {
+		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
 			return response.json();
 		})
-		.then( data => {		
+		.then(data => {		
 			window.selfMatchId = data.matchId;
 			setSelfMatchId();
 			sendMatchId(socket, data.matchId, selectedId);
 		})
-		.catch( error => console.log(error))	
+		.catch(error => console.log(error))	
 }
 
 function receiveConfirmation(socket, selectedId, response) {
@@ -228,7 +228,7 @@ function addToPlayers(socket, playersContainer, player) {
 function updatePlayers(socket, players) {
 
     const playersContainer = document.getElementById("players");
-	playerElements = [...playersContainer.children];	
+	const playerElements = [...playersContainer.children];	
 
     playerElements.forEach( player => {	
 		if (players.every(el => el.playerId != player.id))		
@@ -247,7 +247,7 @@ function setSelfId(selfId) {
 		"Je suis le joueur " + window.selfId;	
 }
 
-function onTournamentWsMessage(event) {
+function onTournamentWsMessage(event, socket) {
 
 	console.log("Message reçu :", event.data);
 	const data = JSON.parse(event.data);
@@ -257,26 +257,19 @@ function onTournamentWsMessage(event) {
 			setSelfId(data.selfId);
 			break;
 		case "playerList":
-			updatePlayers(
-				window.tournamentSocket,
-				data.players
-			);
+			updatePlayers(socket, data.players);
 			break;
 		case "matchList":
 			updateMatchs(data.matchs);
 			break;
 		case "invitation":
-			receiveInvitation(window.tournamentSocket, data.player);
+			receiveInvitation(socket, data.player);
 			break;
 		case "cancelInvitation":
 			invitationCancelled(data.player);
 			break;
 		case "confirmation":
-			receiveConfirmation(
-				window.tournamentSocket,
-				data.selectedId,
-				data.response
-			);
+			receiveConfirmation(socket,	data.selectedId, data.response);
 			break;
 		default:
 			if (data.matchId) 
@@ -286,21 +279,17 @@ function onTournamentWsMessage(event) {
 }
 
 function initTournamentWs() {
-
+	
 	if (window.rasp == "true")
-		window.tournamentSocket = new WebSocket(
-			`wss://${window.pidom}/ws/tournament/`
-		);
+		var socket = new WebSocket(`wss://${window.pidom}/ws/tournament/`);
 	else
-		window.tournamentSocket = new WebSocket(
-			`ws://localhost:8000/ws/tournament/`
-		);
-	window.tournamentSocket.onopen = () => {
+		var socket = new WebSocket(`ws://localhost:8000/ws/tournament/`);
+	socket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
 	}
-	window.tournamentSocket.onclose = () => {
+	socket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");	
 	};	
-	window.tournamentSocket.onmessage = onTournamentWsMessage;
+	socket.onmessage = event => onTournamentWsMessage(event, socket);
 }
 
