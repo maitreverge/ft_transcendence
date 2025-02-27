@@ -6,9 +6,9 @@
 
 {% block body %}
 
-<p>Hello, <strong>{{ request.user.username }}</strong> 👋</p>
-
 {% if request.user.is_authenticated %}
+
+	<p>Hello, <strong>{{ request.user.username }}</strong> 👋</p>
     <ul>
         <li><strong>Username:</strong> {{ request.user.username }}</li>
         {% if request.user.email %}

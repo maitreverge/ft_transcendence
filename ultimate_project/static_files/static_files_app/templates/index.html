@@ -4,6 +4,25 @@
     <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 </head>
 <body>
+
+	{% if request.user.is_authenticated %}
+
+	<p>Hello, <strong>{{ request.user.username }}</strong> 👋</p>
+    <ul>
+        <li><strong>Username:</strong> {{ request.user.username }}</li>
+        {% if request.user.email %}
+            <li><strong>Email:</strong> {{ request.user.email }}</li>
+        {% endif %}
+		<li><strong>Password:</strong> {{ request.user.password }} {{ request.user.last_name }}</li>
+        {% if request.user.first_name or request.user.last_name %}
+            <li><strong>Name:</strong> {{ request.user.first_name }} {{ request.user.last_name }}</li>
+        {% endif %}
+    </ul>
+    <a href="{% url 'logout' %}">Logout</a>
+	{% else %}
+		<p>You are not logged in. <a href="{% url 'login' %}">Login here</a></p>
+	{% endif %}
+
     <div id="main-content">
         {% if not username %}
             <div class="overlay" hx-get="/login-form/" hx-trigger="load" hx-target="#login-container">
