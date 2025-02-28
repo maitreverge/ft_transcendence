@@ -12,6 +12,8 @@ function stopMatch(matchId)
 		.then(data => console.log(data))
 		.catch(error => console.log(error))
 	}
+	else
+		document.getElementById('match').remove()
 }
 
 function setCommands(socket) {
@@ -29,8 +31,8 @@ function setCommands(socket) {
 				socket.send(JSON.stringify({action: 'move', dir: 'down'}));
 			}
 		} 
-		else 
-			console.log("WebSocket not connected!");		
+		// else 
+			// console.log("WebSocket not connected!");		
 	});
 }
 
@@ -89,4 +91,6 @@ function initMatchWs() {
 		event, pads, [waiting, end], waitingState
 	);
 	setCommands(socket);
+	if (window.selfMatchId != window.matchId)
+		document.getElementById("spec").style.display = "block"; 
 }

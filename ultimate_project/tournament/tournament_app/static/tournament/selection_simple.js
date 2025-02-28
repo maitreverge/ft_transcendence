@@ -1,5 +1,5 @@
 
-function loadScripts(data, target) {
+function loadHtml(data, target) {
 
 	const overlay = document.getElementById(target);
 	overlay.innerHTML = data;
@@ -32,7 +32,7 @@ function setSelfMatchId() {
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
 				return response.text();
 			})
-			.then(data => loadScripts(data, "overlay-match"))
+			.then(data => loadHtml(data, "overlay-match"))
 			.catch(error => console.log(error))
 		};					
 	});
