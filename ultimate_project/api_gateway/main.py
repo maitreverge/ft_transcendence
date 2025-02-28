@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request
 import httpx
 from fastapi.responses import HTMLResponse
 
@@ -17,7 +17,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
 
         url = f"{base_url}/{path}"
 
-        print("\n**************** \n**************** PROXY API GATEWAY \n****************", url, "\n****************")
+        # print("\n**************** \n**************** PROXY API GATEWAY \n****************", url, "\n****************")
         headers = dict(request.headers)
         headers.pop("host", None)
         headers["Host"] = "localhost"
@@ -31,11 +31,11 @@ async def proxy_request(service_name: str, path: str, request: Request):
         return response.text
 
 
-@app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-@app.api_route("/tournament", methods=["GET", "POST", "PUT", "DELETE"])
-async def tournament_proxy(request: Request, path: str = ""):
-    full_path = f"/tournament/{path}" if path else "/tournament"
-    return await proxy_request("tournament", full_path, request)
+# @app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+# @app.api_route("/tournament", methods=["GET", "POST", "PUT", "DELETE"])
+# async def tournament_proxy(request: Request, path: str = ""):
+#     full_path = f"/tournament/{path}" if path else "/tournament"
+#     return await proxy_request("tournament", full_path, request)
 
 @app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def tournament_proxy(path: str, request: Request):
