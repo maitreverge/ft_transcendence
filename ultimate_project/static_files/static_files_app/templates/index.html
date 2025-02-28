@@ -5,9 +5,10 @@
     {% include "scripts.html" %} 
     </head>
 
-    <body x-data="router()" x-init="init()" @popstate.window="navigate(window.location.pathname, false)">
-
-        {% include "navbar.html" %}
+    <body x-data="router()" x-init="init()"  hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
+        <div x-ignore>
+            {% include "navbar.html" %}
+        </div>
         <div id="main_div">
         {% if page %}
             {% include page %}

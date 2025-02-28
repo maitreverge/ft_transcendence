@@ -3,6 +3,47 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
+
+<script hx-preserve>
+    function router() {
+        if (window.routerInitialized) return window.routerInstance; // Évite les ré-exécutions multiples
+        
+        window.routerInitialized = true;
+        window.routerInstance = {
+            currentPath: window.location.pathname,
+            init() {
+                this.navigate(this.currentPath, false);
+            },
+            navigate(url, pushState = true) {
+                let absoluteUrl = new URL(url, window.location.origin).pathname;
+
+                if (this.currentPath === absoluteUrl) return; // Évite l'ajout inutile dans l'historique
+
+                this.currentPath = absoluteUrl;
+
+                if (pushState) {
+                    history.pushState({}, "", absoluteUrl);
+                }
+
+                htmx.ajax("GET", absoluteUrl, { target: "#main_div" });
+            }
+        };
+
+        return window.routerInstance;
+    }
+
+    window.addEventListener("popstate", function () {
+        htmx.ajax("GET", window.location.pathname, { target: "#main_div" });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        window.routerInstance = router(); // Initialise le router globalement
+        window.routerInstance.init();
+    });
+</script>
+
+
+<!-- 
 <script>
     function router() {
         return {
@@ -29,4 +70,4 @@
     window.addEventListener("popstate", function () {
         htmx.ajax("GET", window.location.pathname, { target: "#main_div" });
     });
-</script>  
+</script>   -->

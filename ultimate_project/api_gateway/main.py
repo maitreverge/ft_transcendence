@@ -57,9 +57,9 @@ async def proxy_request(service_name: str, path: str, request: Request):
         base_url = services[service_name].rstrip("/")  # S'assurer que pas de double "/"
         path = path.lstrip("/")  # Supprime "/" initial pour éviter "//" dans l’URL
 
-        print(f"\n&&&&& before: Proxying request to: {base_url} &&&&&\n")  # <---- AJOUTE CE LOG
+        # print(f"\n&&&&& before: Proxying request to: {base_url} &&&&&\n")  # <---- AJOUTE CE LOG
         url = f"{base_url}/{path}"  # Construit proprement l’URL
-        print(f"\n&&&&& after: Proxying request to: {url} &&&&&\n")  # <---- AJOUTE CE LOG
+        # print(f"\n&&&&& after: Proxying request to: {url} &&&&&\n")  # <---- AJOUTE CE LOG
 
         headers = dict(request.headers)
         headers.pop("host", None)  # Retire "Host" en-tête
@@ -68,7 +68,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
         method = request.method
         data = await request.body()
 
-        print(f"\n*************🔎 Proxy request to: {url} *******************\n")  # Debugging
+        # print(f"\n*************🔎 Proxy request to: {url} *******************\n")  # Debugging
 
         response = await client.request(method, url, headers=headers, content=data)
         if response.headers.get("Content-Type", "").startswith("text/html"):
