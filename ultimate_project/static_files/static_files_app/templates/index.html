@@ -12,7 +12,7 @@
         </template>
         <div id="main_div">
         {% if page %}
-            {% include page %}
+            {{ page|safe }}
         {% else %}
             {% include "partials/home.html" %}
         {% endif %}

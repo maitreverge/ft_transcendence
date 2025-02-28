@@ -8,4 +8,6 @@ urlpatterns = [
     path("home/", views.home),
     path("user/profil/", views.profil),
     path("user/stats/", views.stats),
+    path("tournament-match-wrapper/", views.match_simple_template, name="tournament_match_wrapper"),
+
 ]
