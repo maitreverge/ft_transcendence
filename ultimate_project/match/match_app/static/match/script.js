@@ -35,18 +35,25 @@ function setCommands(socket) {
 }
 
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
+	
 
+	
 	const data = JSON.parse(event.data);
+	console.log("voila wststate et datastate: ", waitingState[0], typeof(waitingState), data.state, typeof(data.state));	
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
 		end.classList.add("end");
 	}
-	if (waitingState != data.state) 
+	if (waitingState[0] != data.state) 
 	{
-		waitingState = data.state;
-		if (data.state == "waiting")			
-			waiting.classList.remove("no-waiting");			
+		console.log("different!");
+		waitingState[0] = data.state;
+		if (data.state == "waiting")
+			{
+				console.log("remove no waiting");
+				waiting.classList.remove("no-waiting");			
+			}			
 		else			
 			waiting.classList.add("no-waiting");			
 	}
@@ -78,7 +85,7 @@ function initMatchWs() {
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")
 	];	
-	let waitingState = "waiting";
+	let waitingState = ["waiting"];
 	socket.onmessage = event => onMatchWsMessage(
 		event, pads, [waiting, end], waitingState
 	);

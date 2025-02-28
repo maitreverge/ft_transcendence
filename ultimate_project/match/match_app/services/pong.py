@@ -98,7 +98,7 @@ class Pong:
 					self.player2["dir"] = None
 			else:
 				self.state = State.waiting
-			
+				print(f"je suis en waiting", flush=True)
 			if self.yp1 > 80:		
 				self.winner = self.idP1
 				self.state = State.end
@@ -121,7 +121,7 @@ class Pong:
 					"yp1": self.yp1,
 					"yp2": self.yp2
 				}))
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(1.05)
 
 	async def sendFinalState(self):				
 		self.myplayers = [p for p in consumer.players
