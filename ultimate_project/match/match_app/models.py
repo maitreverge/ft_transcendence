@@ -20,6 +20,10 @@ class Player(CrossSchemaModel):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False) # needed for admin access
 
+    # 2FA fields    
+    two_fa_enabled = models.BooleanField(default=False)  # 2FA toggle
+    two_fa_verified = models.BooleanField(default=False)  # 2FA verification status
+
     # Tells Django to use "email" as the primary field for authentication
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]

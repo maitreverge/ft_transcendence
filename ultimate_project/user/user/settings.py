@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "django_otp", # 2FA
+    "django_otp.plugins.otp_totp",  # 2FA
 ]
 
 MIDDLEWARE = [

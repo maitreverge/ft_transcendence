@@ -57,7 +57,13 @@ DATABASES = {
 									WIP
 --------------------------------------------------------------------------------
 
-⛔
+2FA :
+- Implement necessary libraries
+- Create interface with Google Authenticator with big ass QR Code
+- Make 2FA optional during registering to website (possibily enable it later ?)
+- Create a one time password interface when login-in.
+- Store + encrypt securely codes ==> `cryptography` module
+- LogOut users on 2FA failure.
 
 
 --------------------------------------------------------------------------------
