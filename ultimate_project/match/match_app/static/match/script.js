@@ -63,20 +63,31 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 
 function initMatchWs() {
 
+	if (window.matchSocket && window.exMatchSocket && window.matchSocket.url !== window.exMatchSocket.url)
+	{
+		window.exMatchSocket = window.matchSocket;
+		window.matchSocket.close();
+		return;
+	}
+	// if (window.matchSocket)
+	// 	window.matchSocket.close();
 	if (window.rasp == "true")
-		var socket = new WebSocket(
+		window.matchSocket = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`
 		);
 	else	
-		var socket = new WebSocket(
+		window.matchSocket = new WebSocket(
 			`ws://localhost:8000/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`
-		);	
+		);
+	window.exMatchSocket = window.matchSocket;
+	var socket = window.matchSocket;
 	socket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};
 	socket.onclose = () => {
+		// window.exMatchSocket = window.matchSocket;
 		console.log("Connexion Match disconnected 😈");
 		initMatchWs();	
 	};	
