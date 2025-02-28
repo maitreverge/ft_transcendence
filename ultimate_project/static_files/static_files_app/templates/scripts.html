@@ -4,7 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 
-<script hx-preserve>
+<!-- <script>
     function router() {
         if (window.routerInitialized) return window.routerInstance; // Évite les ré-exécutions multiples
         
@@ -40,11 +40,11 @@
         window.routerInstance = router(); // Initialise le router globalement
         window.routerInstance.init();
     });
-</script>
+</script> -->
 
 
-<!-- 
-<script>
+
+<script hx-preserve>
     function router() {
         return {
             currentPath: window.location.pathname,
@@ -70,4 +70,4 @@
     window.addEventListener("popstate", function () {
         htmx.ajax("GET", window.location.pathname, { target: "#main_div" });
     });
-</script>   -->
+</script>  

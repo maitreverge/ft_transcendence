@@ -6,9 +6,10 @@
     </head>
 
     <body x-data="router()" x-init="init()"  hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
-        <div x-ignore>
+        
+        <template x-if="!document.querySelector('.navbar')">
             {% include "navbar.html" %}
-        </div>
+        </template>
         <div id="main_div">
         {% if page %}
             {% include page %}
