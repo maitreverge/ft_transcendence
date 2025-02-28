@@ -43,10 +43,11 @@ def setup_2fa(request):
         {
             "title": "Set Up Two-Factor Authentication",
             "secret": secret,
-            "qr_code": qr_code,
+            "qr_code": img_io.getvalue().decode("latin1"),
 
         },
     )
+
 
 
 
