@@ -20,7 +20,6 @@
 	<div id="p1"></div>
 	<div id="p2"></div>
 	<div id="waiting">Waiting</div>
-	<div id="end" style="display:none">
-		<button onclick="document.getElementById('match').remove()">Close</button>
-	</div>	
+	<div id="end" style="display:none"></div>
+	<button onclick="document.getElementById('match').remove(); stopMatch('{{matchId}}')">Close</button>
 </div>

@@ -40,9 +40,27 @@ class Pong:
 	# 	print("three un", flush=True)
 	# 	await asyncio.sleep(1)
 	# 	print("three deux", flush=True)
-	def stop(self):
-		print(f"in stop PONG my id is : {self.id}")	
-		self.state = State.end
+
+	def stop(self, playerId):
+		print(f"in stop PONG my id is : {self.id}", flush=True)
+		if str(playerId) in (self.idP1, self.idP2): 	
+			self.state = State.end
+			return True
+		return False
+
+	# def stop(self, playerId):
+	# 	print(f"in stop PONG my id is : {self.id}", flush=True)
+	# 	print(f"self.idP1: {self.idP1}, self.idP2: {self.idP2}, playerId: {playerId}", flush=True)
+
+	# 	if playerId in (self.idP1, self.idP2):
+	# 		print("Player is authorized to stop the match", flush=True)
+	# 		self.state = State.end
+	# 		print(f"Match {self.id} state updated to {self.state}", flush=True)
+	# 		return True
+
+	# 	print("Player not authorized to stop the match", flush=True)
+	# 	return False
+
 	def launchTask(self):
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)

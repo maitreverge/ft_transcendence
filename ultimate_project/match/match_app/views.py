@@ -23,9 +23,29 @@ def start_match(request : HttpRequest):
         },
     )
 
-def stop_match(request : HttpRequest, matchId): 
-    for p in pongs:
-        if p.id == matchId:
-            p.stop()   
-    print(f"je suis ds stop match et l'id est: {matchId}", flush=True)
-    return JsonResponse({"status": "succes"})
+def stop_match(request : HttpRequest, playerId, matchId): 
+	print(f"je suis ds stop match et l'id est: {matchId} typ: {type(matchId)} et playerId est : {playerId} typ: {type(playerId)}", flush=True)
+	for p in pongs:
+		if p.id == matchId:
+			if p.stop(playerId):  
+				return JsonResponse({"status": "succes"})
+			else:
+				return JsonResponse({"status": "fail"}, status=500) 
+	print(f"je suis ds stop match et l'id est: {matchId}", flush=True)
+	return JsonResponse({"status": "not authorized"}, status=504)
+
+# def stop_match(request: HttpRequest, playerId, matchId): 
+#     print(f"je suis ds stop match et l'id est: {matchId} typ: {type(matchId)} et playerId est : {playerId} typ: {type(playerId)}", flush=True)
+    
+#     for p in pongs:
+#         print(f"Checking p.id: {p.id} typ: {type(p.id)}", flush=True)  # Debug
+
+#         if p.id == matchId:
+#             print(f"Match trouvé ! ID: {p.id}", flush=True)
+#             if p.stop(playerId):  
+#                 return JsonResponse({"status": "succes"})
+#             else:
+#                 return JsonResponse({"status": "fail"}, status=500) 
+    
+#     print(f"Aucun match trouvé pour matchId: {matchId}", flush=True)
+#     return JsonResponse({"status": "not authorized"}, status=504)

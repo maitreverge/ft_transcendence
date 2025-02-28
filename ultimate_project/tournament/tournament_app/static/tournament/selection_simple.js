@@ -60,6 +60,7 @@ function updateMatchs(matchs) {
 			{
 				window.selectedElement.classList.remove("invitation-confirmed");
 				window.selectedElement = null;
+				window.selfMatchId = null;
 			}
 			matchsContainer.removeChild(match);
 		}
@@ -172,7 +173,7 @@ function invitationCancelled(applicantId) {
 	console.log("invitation is cancelled from: " + applicantId);
 
 	window.selectedElement.classList.remove("invitation-confirmed");
-	fetch(`/tournament/stop-match/${window.selfMatchId}/`)
+	fetch(`/tournament/stop-match/${window.selfId}/${window.selfMatchId}/`)
 	.then(response => {
 		if (!response.ok) 
 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
@@ -180,15 +181,12 @@ function invitationCancelled(applicantId) {
 	})
 	.then(data => console.log(data))
 	.catch(error => console.log(error))
-	// window.selectedElement = null;
-	// window.selfMatchId = null;
 }
 //!
 function cancelInvitation(socket, selected) {
 	
 	console.log("i will cancel invitation to selected: " + selected.id);
-	
-	// window.selectedElement = null;
+
 	selected.classList.remove("invitation-confirmed");	
 
 	if (socket.readyState === WebSocket.OPEN) 

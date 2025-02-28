@@ -30,15 +30,19 @@ async def start_match(request : HttpRequest):
 	await consumer.MyConsumer.match_update()
 	return JsonResponse({"matchId": new_matchId}, status= 201)
 
-async def stop_match(request : HttpRequest, matchId):	
-	print(f"je suis ds tournament est le id est : {matchId}", flush=True)
-	requests.get(f"http://match:8002/match/stop-match/{matchId}/")
-	print(f"1 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
-	consumer.matchs[:] = [m for m in consumer.matchs
-		if m.get("matchId") != str(matchId)]
-	print(f"2 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
-	await consumer.MyConsumer.match_update()
-	return JsonResponse({"status": "succes"})
+async def stop_match(request : HttpRequest, playerId,  matchId):	
+	print(f"je suis ds tournament est le id est : {matchId}, playerId: {playerId}", flush=True)
+	response = requests.get(
+		f"http://match:8002/match/stop-match/{playerId}/{matchId}/"
+	)
+	print(f"response: {response}", flush=True)
+	if response.status_code == 200:
+		print(f"1 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
+		consumer.matchs[:] = [m for m in consumer.matchs
+			if m.get("matchId") != str(matchId)]
+		print(f"2 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
+		await consumer.MyConsumer.match_update()
+	return JsonResponse(response.json(), status=response.status_code)
 
 @csrf_exempt
 async def match_result(request : HttpRequest):	

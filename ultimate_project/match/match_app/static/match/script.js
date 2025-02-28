@@ -1,4 +1,19 @@
 
+function stopMatch(matchId)
+{
+	if (window.selfMatchId == matchId)
+	{
+		fetch(`/tournament/stop-match/${window.selfId}/${matchId}/`)
+		.then(response => {
+			if (!response.ok) 
+				throw new Error(`Error HTTP! Status: ${response.status}`);		  
+			return response.text();
+		})
+		.then(data => console.log(data))
+		.catch(error => console.log(error))
+	}
+}
+
 function setCommands(socket) {
 
 	document.addEventListener("keydown", function(event) {	
