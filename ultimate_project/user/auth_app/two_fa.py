@@ -1,6 +1,7 @@
 import pyotp
 import qrcode
 import io
+import base64
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from user_management_app.models import Player
@@ -20,7 +21,7 @@ def setup_2fa(request):
     secret = pyotp.random_base32()
 
     # Save secret in database (this prevents overwriting an existing one)
-    if not user.two_fa_enabled:
+    if user.two_fa_enabled:
         user.two_fa_secret = secret
         user.save()
     
@@ -30,12 +31,13 @@ def setup_2fa(request):
     )
 
     # Generate QR code image
-    qr_code = qrcode.make(otp_uri)
+    temp_qr_code = qrcode.make(otp_uri)
     img_io = io.BytesIO()
-    qr_code.save(img_io, format="PNG")
+    temp_qr_code.save(img_io, format="PNG")
     img_io.seek(0)
     
-    
+    # Convert QR Code to Base64
+    qr_code = base64.b64encode(img_io.getvalue()).decode("utf-8")
     
     return render(
         request,
@@ -43,7 +45,7 @@ def setup_2fa(request):
         {
             "title": "Set Up Two-Factor Authentication",
             "secret": secret,
-            "qr_code": img_io.getvalue().decode("latin1"),
+            "qr_code": qr_code,
 
         },
     )
