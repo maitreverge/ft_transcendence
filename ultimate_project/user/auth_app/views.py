@@ -50,11 +50,17 @@ def signin_view(request):
             username = form.cleaned_data["username"]
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
+            two_fa_enabled = form.cleaned_data["two_fa_enabled"]
 
             # Create user
             if not Player.objects.filter(username=username).exists():
-                user = Player.objects.create_user(username=username, email=email, password=password)
+                user = Player.objects.create_user(username=username, email=email, password=password, two_fa_enabled=two_fa_enabled)
                 login(request, user)  # Auto-login after registration
+
+                # Redirect to 2FA setup if enabled
+                if two_fa_enabled:
+                    return redirect("enable_2fa")
+
                 return redirect("auth_index")
             else:
                 form.add_error("username", "Username already taken")

@@ -11,10 +11,11 @@ class LoginForm(AuthenticationForm):
 class SigninForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
     password_confirm = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"}))
+    two_fa_enabled = forms.BooleanField(required=False, initial=False, label="Enable Two-Factor Authentication")
 
     class Meta:
         model = Player
-        fields = ["username", "email"]
+        fields = ["username", "email", "two_fa_enabled"]
 
     # Validate that passwords match.
     def clean(self):
