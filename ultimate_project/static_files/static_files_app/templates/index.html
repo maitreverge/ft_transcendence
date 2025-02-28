@@ -12,10 +12,15 @@
         </template>
         <div id="main_div">
         {% if page %}
-            {{ page|safe }}
+            {% if page|slice:"-5:" == ".html" %}
+                {% include page %}
+            {% else %}
+                {{ page|safe }}
+            {% endif %}
         {% else %}
             {% include "partials/home.html" %}
         {% endif %}
+        
         </div>
     </body>
 
