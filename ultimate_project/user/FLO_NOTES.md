@@ -71,7 +71,9 @@ DATABASES = {
 --------------------------------------------------------------------------------
 # TO FIX LATER :
 ⛔ Health tests visible on the console, maybe put them in  `> /dev/null`
- 
+
+⛔ When refreshing AUTH forms, there is a CSRF verification failed.
+When
 
 
 # 🪡🪡🪡        WORK NEEDLE        🪡🪡🪡🪡🪡🪡

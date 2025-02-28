@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from auth_app.two_fa import encrypt_2fa_secret, decrypt_2fa_secret
+
 
 class PlayerManager(BaseUserManager):
     def create_user(self, username, email=None, password=None, **extra_fields):
@@ -34,6 +36,15 @@ class Player(AbstractBaseUser, PermissionsMixin):
     two_fa_verified = models.BooleanField(default=False)  # 2FA verification status
     two_fa_secret = models.CharField(max_length=32, blank=True, null=True)  # ✅ Store 2FA secret
 
+    # Encrypt and decrypt 2FA secrets
+    @property
+    def two_fa_secret(self):
+        return decrypt_2fa_secret(self.two_fa_secret) if self._two_fa_secret else None
+
+    @two_fa_secret.setter
+    def two_fa_secret(self, value):
+        self._two_fa_secret = encrypt_2fa_secret(value) if value else None
+    
     # Tells Django to use "email" as the primary field for authentication
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]

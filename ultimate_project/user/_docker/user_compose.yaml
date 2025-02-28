@@ -12,6 +12,7 @@ services:
       name: user
       port: $user_port
       pi_domain: $PI_DOMAIN
+      2FA_KEY: $2FA_KEY
       DJANGO_SETTINGS_MODULE: user.settings
     env_file:
       - ../../.env

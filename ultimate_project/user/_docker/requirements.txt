@@ -7,3 +7,4 @@ django-otp
 qrcode
 pyotp
 pillow
+cryptography
