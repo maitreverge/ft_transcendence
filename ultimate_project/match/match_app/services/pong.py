@@ -41,10 +41,14 @@ class Pong:
 	# 	await asyncio.sleep(1)
 	# 	print("three deux", flush=True)
 
-	def stop(self, playerId):
+	async def stop(self, playerId):
 		print(f"in stop PONG my id is : {self.id}", flush=True)
 		if str(playerId) in (self.idP1, self.idP2): 	
 			self.state = State.end
+			if self.winner is None and self.start_flag:
+				self.winner = self.idP1	if str(playerId) == self.idP2 \
+					else self.idP2 
+			await self.sendFinalState()
 			return True
 		return False
 
@@ -62,6 +66,7 @@ class Pong:
 	# 	return False
 
 	def launchTask(self):
+		self.start_flag = False
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)
 		self.myEventLoop.create_task(self.launch())
@@ -83,6 +88,8 @@ class Pong:
 				(p for p in self.myplayers if self.idP2 == p["playerId"]), None)
 
 			if None not in (self.player1, self.player2):
+				self.winner = None
+				self.start_flag = True
 				self.state = State.running
 				if self.player1.get("dir") is not None :
 					if self.player1["dir"] == 'up':
@@ -97,8 +104,14 @@ class Pong:
 						self.yp2 += 1
 					self.player2["dir"] = None
 			else:
+				if self.start_flag:
+					if self.player1:
+						self.winner = self.idP1 
+					elif self.player2:
+						self.winner = self.idP2
 				self.state = State.waiting
-				print(f"je suis en waiting", flush=True)
+				# print(f"je suis en waiting", flush=True)
+
 			if self.yp1 > 80:		
 				self.winner = self.idP1
 				self.state = State.end
@@ -107,7 +120,7 @@ class Pong:
 				self.winner = self.idP2
 				self.state = State.end
 				await self.sendFinalState()	
-
+			# print(f"ACTUAL WINNER:{self.winner}", flush=True)
 			await asyncio.sleep(0.05)
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
@@ -121,7 +134,7 @@ class Pong:
 					"yp1": self.yp1,
 					"yp2": self.yp2
 				}))
-			await asyncio.sleep(1.05)
+			await asyncio.sleep(0.05)
 
 	async def sendFinalState(self):				
 		self.myplayers = [p for p in consumer.players

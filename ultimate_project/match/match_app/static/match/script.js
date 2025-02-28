@@ -35,11 +35,9 @@ function setCommands(socket) {
 }
 
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
-	
-
-	
+		
 	const data = JSON.parse(event.data);
-	console.log("voila wststate et datastate: ", waitingState[0], typeof(waitingState), data.state, typeof(data.state));	
+	// console.log("voila wststate et datastate: ", waitingState[0], typeof(waitingState), data.state, typeof(data.state));	
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
@@ -77,7 +75,8 @@ function initMatchWs() {
 		console.log("Connexion Match établie 😊");
 	};
 	socket.onclose = () => {
-		console.log("Connexion Match disconnected 😈");	
+		console.log("Connexion Match disconnected 😈");
+		initMatchWs();	
 	};	
 	const pads = [
 		document.getElementById("p1"), document.getElementById("p2")

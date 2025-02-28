@@ -5,6 +5,7 @@ import tournament_app.services.consumer as consumer
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import aiohttp
 
 def simple_match(request : HttpRequest):	
 	return render(
@@ -32,23 +33,31 @@ async def start_match(request : HttpRequest):
 
 async def stop_match(request : HttpRequest, playerId,  matchId):	
 	print(f"je suis ds tournament est le id est : {matchId}, playerId: {playerId}", flush=True)
-	response = requests.get(
-		f"http://match:8002/match/stop-match/{playerId}/{matchId}/"
-	)
+
+	url = f"http://match:8002/match/stop-match/{playerId}/{matchId}/"
+
+	async with aiohttp.ClientSession() as session:
+		async with session.get(url) as response:
+			status = response.status
+			data = await response.json()
+	# response = requests.get(
+	# 	f"http://match:8002/match/stop-match/{playerId}/{matchId}/"
+	# )
 	print(f"response: {response}", flush=True)
-	if response.status_code == 200:
+	if response.status == 200:
 		print(f"1 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
 		consumer.matchs[:] = [m for m in consumer.matchs
 			if m.get("matchId") != str(matchId)]
 		print(f"2 match: {matchId} matchs ICIII: {consumer.matchs}", flush=True)
 		await consumer.MyConsumer.match_update()
-	return JsonResponse(response.json(), status=response.status_code)
+	return JsonResponse(data, status=response.status)
 
 @csrf_exempt
 async def match_result(request : HttpRequest):	
 	result = json.loads(request.body.decode('utf-8'))
 	match_id = result.get('matchId')
 	winner = result.get('winnerId')
+	print(f"IAM THE FINAL WINNER:{winner}", flush=True)
 	consumer.matchs[:] = [m for m in consumer.matchs
 		if m.get("matchId") != str(match_id)]
 	await consumer.MyConsumer.match_update()

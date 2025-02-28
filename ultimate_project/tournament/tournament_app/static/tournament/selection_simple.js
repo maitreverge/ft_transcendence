@@ -295,7 +295,8 @@ function initTournamentWs() {
 		console.log("Connexion Tournament établie 😊");	
 	}
 	socket.onclose = () => {
-		console.log("Connexion Tournament disconnected 😈");	
+		console.log("Connexion Tournament disconnected 😈");
+		initTournamentWs();	
 	};	
 	socket.onmessage = event => onTournamentWsMessage(event, socket);
 }

@@ -23,11 +23,11 @@ def start_match(request : HttpRequest):
         },
     )
 
-def stop_match(request : HttpRequest, playerId, matchId): 
+async def stop_match(request : HttpRequest, playerId, matchId): 
 	print(f"je suis ds stop match et l'id est: {matchId} typ: {type(matchId)} et playerId est : {playerId} typ: {type(playerId)}", flush=True)
 	for p in pongs:
 		if p.id == matchId:
-			if p.stop(playerId):  
+			if await p.stop(playerId):  
 				return JsonResponse({"status": "succes"})
 			else:
 				return JsonResponse({"status": "fail"}, status=500) 
