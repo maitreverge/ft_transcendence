@@ -8,6 +8,7 @@ services = {
     "static_files": "http://static_files:8003",
     "tournament": "http://tournament:8001",
     "match": "http://match:8002",
+    "static_tournament": "http://tournament:8001/static/tournament",
 }
 
 async def proxy_request(service_name: str, path: str, request: Request):
@@ -40,6 +41,10 @@ async def proxy_request(service_name: str, path: str, request: Request):
 @app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def tournament_proxy(path: str, request: Request):
     return await proxy_request("tournament", path, request)
+
+@app.api_route("/static/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def tournament_proxy(path: str, request: Request):
+    return await proxy_request("static_tournament", path, request)
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def static_files_proxy(path: str, request: Request):
