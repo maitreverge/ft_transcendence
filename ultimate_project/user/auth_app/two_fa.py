@@ -12,14 +12,41 @@ def verify_2fa(request):
 
 
 @login_required
-def enable_2fa(request):
-    
+def setup_2fa(request):
+
+    user = request.user
+
     # Generate a new secret key
     secret = pyotp.random_base32()
 
+    # Save secret in database (this prevents overwriting an existing one)
+    if not user.two_fa_enabled:
+        user.two_fa_secret = secret
+        user.save()
     
+        # Generate QR Code URI
+    otp_uri = pyotp.totp.TOTP(secret).provisioning_uri(
+        name=user.username, issuer_name="TryHardTeam Inc."
+    )
 
-    return render(request, "auth_app/enable_2fa.html", {
-        "title": "This is 2FA setup",
-        "secret": secret,
-    })
+    # Generate QR code image
+    qr_code = qrcode.make(otp_uri)
+    img_io = io.BytesIO()
+    qr_code.save(img_io, format="PNG")
+    img_io.seek(0)
+    
+    
+    
+    return render(
+        request,
+        "auth_app/setup_2fa.html",
+        {
+            "title": "Set Up Two-Factor Authentication",
+            "secret": secret,
+            "qr_code": qr_code,
+
+        },
+    )
+
+
+

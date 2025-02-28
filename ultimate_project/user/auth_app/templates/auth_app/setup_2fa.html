@@ -1,0 +1,19 @@
+{% extends "auth_app/layout.html" %}
+
+{% block head %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block body %}
+
+<p>Scan this QR code with Google Authenticator or Authy:</p>
+
+{{ qr_code }}
+
+<p> Or manually enter the following key in your app </p>
+
+<p><b> {{secret}} </b> </p>
+
+{% endblock %}
+
+
