@@ -163,9 +163,12 @@ function receiveInvitation(socket, applicantId) {
 
 	console.log("i have had and invitation from: " + applicantId)
 
-	confirm(`you have an invitation from ${applicantId}`)
-		? sendConfirmation(socket, applicantId, "yes")	
-		: sendConfirmation(socket, applicantId, "no");
+	// if (window.selectedElement)
+	// 	sendConfirmation(socket, applicantId, "no");
+	// else
+		confirm(`you have an invitation from ${applicantId}`)
+			? sendConfirmation(socket, applicantId, "yes")	
+			: sendConfirmation(socket, applicantId, "no");
 }
 //!
 function invitationCancelled(applicantId) {
@@ -199,13 +202,18 @@ function cancelInvitation(socket, selected) {
 function sendInvitation(socket, selected) {
 	
 	console.log("i will send invitation to selected: " + selected.id);
-	selected.classList.add("invitation-waiting");
-
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({
-			type: "invitation",
-			selectedId: Number(selected.id)
-		}));
+	
+	if (!window.selectedElement)
+	{		
+		selected.classList.add("invitation-waiting");
+		if (socket.readyState === WebSocket.OPEN) 
+			socket.send(JSON.stringify({
+				type: "invitation",
+				selectedId: Number(selected.id)
+			}));	
+	}
+	else
+		alert("cancel your actual invitation before");
 }
 
 function addToPlayers(socket, playersContainer, player) {
@@ -223,10 +231,13 @@ function addToPlayers(socket, playersContainer, player) {
 	}
 	else
 	{
-		div.onclick = function() {			
-			!window.selectedElement
-				? sendInvitation(socket, this)
-				: cancelInvitation(socket, this);				
+		div.onclick = function() {	//!
+			console.log("1select et id et player id: ", window.selectedElement, player.playerId);	
+			if (window.selectedElement)
+				console.log("2select et id et player id: ", window.selectedElement, window.selectedElement.id, player.playerId);	
+			window.selectedElement && window.selectedElement.id == player.playerId
+				? cancelInvitation(socket, this)	//!	
+				: sendInvitation(socket, this);		//!
 		};
 	}
     playersContainer.appendChild(div);
