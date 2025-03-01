@@ -12,7 +12,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		await self.accept() 
 		MyConsumer.id += 1
 		self.id = MyConsumer.id
-		players.append({'playerId': self.id})
+		players.append({'playerId': self.id, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
 		await self.send(text_data=json.dumps({
 			"type": "selfAssign", "selfId": self.id})) 
@@ -45,9 +45,49 @@ class MyConsumer(AsyncWebsocketConsumer):
 				"matchs": matchs
 			}))
 
+	async def invitation(self, selectedId):
+		print(f"2serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+		selectedPlayer = next((p for p in players if p['playerId'] == selectedId), None)	
+		selfPlayer = next((p for p in players if p['playerId'] == self.id), None)
+		if None in (selectedPlayer, selfPlayer):
+			return;	
+		if selfPlayer and selfPlayer.get('busy'):
+			await self.send(text_data=json.dumps({
+				"type": "invitation",
+				"subtype": "back",
+				"applicantId": self.id,
+				"response": "selfBusy"
+			}))
+			return
+		print(f"3serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+	
+		for p in selfPlayers:
+			if p['playerId'] == selectedId:				
+				print(f"4serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+				if p.get('busy'):
+					print(f"XXXserveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+					await self.send(text_data=json.dumps({
+						"type": "invitation",
+						"subtype": "back",
+						"applicantId": self.id,
+						"response": "applicantBusy"
+					}))
+					break
+				print(f"5serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+				await p['socket'].send(text_data=json.dumps({
+					"type": "invitation",
+					"subtype": "demand",
+					"applicantId": self.id
+				}))
+				selectedPlayer['busy'], selfPlayer['busy'] = True, True				
+
 	async def receive(self, text_data):		
 		data = json.loads(text_data)
-		match data:			
+		match data:
+			case {"type": "playerClick", "selectedId": selectedId}:
+				print(f"serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+				await self.invitation(selectedId)				
+
 			case {"type": "invitation"}:
 				for p in selfPlayers:
 					if p['playerId'] == data['selectedId']:

@@ -216,6 +216,15 @@ function sendInvitation(socket, selected) {
 		alert("cancel your actual invitation before");
 }
 
+function sendPlayerClick(socket, selected)
+{
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "playerClick",
+			selectedId: Number(selected.id)
+		}));
+}
+
 function addToPlayers(socket, playersContainer, player) {
   	
 	const div = document.createElement("div");
@@ -226,18 +235,19 @@ function addToPlayers(socket, playersContainer, player) {
 	{
 		div.classList.add("self-player");
 		div.onclick = function() {
-			alert("you can't choose yourself");
+			alert("you can't choose yourself");//? serveur or client ?
 		};
 	}
 	else
 	{
 		div.onclick = function() {	//!
-			console.log("1select et id et player id: ", window.selectedElement, player.playerId);	
-			if (window.selectedElement)
-				console.log("2select et id et player id: ", window.selectedElement, window.selectedElement.id, player.playerId);	
-			window.selectedElement && window.selectedElement.id == player.playerId
-				? cancelInvitation(socket, this)	//!	
-				: sendInvitation(socket, this);		//!
+			sendPlayerClick(socket, this);
+			// console.log("1select et id et player id: ", window.selectedElement, player.playerId);	
+			// if (window.selectedElement)
+			// 	console.log("2select et id et player id: ", window.selectedElement, window.selectedElement.id, player.playerId);	
+			// window.selectedElement && window.selectedElement.id == player.playerId
+			// 	? cancelInvitation(socket, this)	//!	
+			// 	: sendInvitation(socket, this);		//!
 		};
 	}
     playersContainer.appendChild(div);
@@ -265,6 +275,19 @@ function setSelfId(selfId) {
 		"Je suis le joueur " + window.selfId;	
 }
 
+function invitation(socket, data) {
+
+	if (data.subtype === "back")
+	{
+		if (data.response === "selfBusy")
+			alert("selfBusy");
+		else if (data.response === "applicantBusy")
+			alert("applicantBusy");	
+	}	
+	else if (data.subtype === "demand")
+		receiveInvitation(socket, data.applicantId);
+}
+
 function onTournamentWsMessage(event, socket) {
 
 	console.log("Message reçu :", event.data);
@@ -281,7 +304,8 @@ function onTournamentWsMessage(event, socket) {
 			updateMatchs(data.matchs);
 			break;
 		case "invitation":
-			receiveInvitation(socket, data.playerId);
+			invitation(socket, data)
+			// receiveInvitation(socket, data.applicantId);
 			break;
 		case "cancelInvitation":
 			invitationCancelled(data.playerId);
