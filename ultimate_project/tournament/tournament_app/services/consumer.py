@@ -37,43 +37,22 @@ class MyConsumer(AsyncWebsocketConsumer):
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": "playerList",
 				"players": players
-			}))		
+			}))	
 
-	@staticmethod
-	async def match_update():
-		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({
-				"type": "matchList",
-				"matchs": matchs
-			}))
-
-	async def cancel_invitation(self,
-		applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):
-
-		if applicantPlayer \
-			and applicantPlayer.get('busy') \
-			and applicantPlayer.get('pair') \
-			and applicantPlayer.get('pair') == selectedId:
-			await self.send(text_data=json.dumps({
-				"type": "invitation",
-				"subtype": "cancel",
-				"targetId": selectedId,				
-			}))
-			await selfSelectedPlayer['socket'].send(text_data=json.dumps({
-				"type": "invitation",
-				"subtype": "cancel",
-				"targetId": self.id,				
-			}))
-			selectedPlayer['busy'] = None				
-			selectedPlayer['pair'] = None
-			applicantPlayer['busy'] = None
-			applicantPlayer['pair'] = None
-			match = next((m for m in matchs if self.id in (m.get('playerId'), m.get('otherId'))), None)
-			if match:
-				await self.stop_match(self.id, match.get('matchId'))						
-			return True
-		return False
-	
+	async def receive(self, text_data):		
+		data = json.loads(text_data)
+		match data:
+			case {"type": "playerClick", "selectedId": selectedId}:
+				await self.invitation(selectedId)				
+			case {
+				"type": "confirmation",
+				"response": response,
+				"applicantId": applicantId
+			}:
+				await self.confirmation(response, applicantId)		
+			case _:
+				pass
+			
 	async def invitation(self, selectedId):
 
 		selectedPlayer = next(
@@ -82,38 +61,88 @@ class MyConsumer(AsyncWebsocketConsumer):
 			(p for p in selfPlayers if p['playerId'] == selectedId), None)	
 		applicantPlayer = next(
 			(p for p in players if p['playerId'] == self.id), None)
-
+		applicantPlayer = next(
+			(p for p in players if p['playerId'] == self.id), None)
 		if await self.cancel_invitation(
 			applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):		
 			return
-
 		if applicantPlayer and applicantPlayer.get('busy'):
-			await self.send(text_data=json.dumps({
-				"type": "invitation",
-				"subtype": "back",
-				"applicantId": self.id,
-				"response": "selfBusy"
-			}))
-			return			
-		for p in selfPlayers:
-			if p['playerId'] == selectedId:
-				if selectedPlayer.get('busy'):
-					await self.send(text_data=json.dumps({
-						"type": "invitation",
-						"subtype": "back",
-						"applicantId": self.id,
-						"response": "selectedBusy"
-					}))
-					break			
-				await p['socket'].send(text_data=json.dumps({
-					"type": "invitation",
-					"subtype": "demand",
-					"applicantId": self.id
-				}))			
-				selectedPlayer['busy'] = True				
-				selectedPlayer['pair'] = applicantPlayer.get('playerId')
-				applicantPlayer['busy'] = True
-				applicantPlayer['pair'] = selectedPlayer.get('playerId')
+			await self.send_back("selfBusy")
+			return
+		if selectedPlayer and selectedPlayer.get('busy'):
+			await self.send_back("selectedBusy")
+			return	
+		await self.send_demand(
+			selfSelectedPlayer, selectedPlayer,	applicantPlayer)
+		
+	async def send_back(self, response):		
+		await self.send(text_data=json.dumps({
+			"type": "invitation",
+			"subtype": "back",
+			"applicantId": self.id,
+			"response": response
+		}))
+		
+	async def cancel_invitation(self,
+		applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):
+
+		if applicantPlayer \
+			and applicantPlayer.get('busy') \
+			and applicantPlayer.get('busy') == selectedId:
+			await self.send_cancel(selectedId, self)		
+			await self.send_cancel(self.id, selfSelectedPlayer['socket'])		
+			selectedPlayer['busy'], applicantPlayer['busy'] = None, None					
+			match = next(
+				(m for m in matchs 
+	 				if self.id in (m.get('playerId'), m.get('otherId'))),
+				None)
+			if match:
+				await self.stop_match(self.id, match.get('matchId'))						
+			return True
+		return False
+
+	async def send_cancel(self, targetId, target):		
+		await target.send(text_data=json.dumps({
+			"type": "invitation",
+			"subtype": "cancel",
+			"targetId": targetId,			
+		}))
+		
+	async def send_demand(self, 
+		selfSelectedPlayer, selectedPlayer, applicantPlayer):
+
+		await selfSelectedPlayer['socket'].send(text_data=json.dumps({
+			"type": "invitation",
+			"subtype": "demand",
+			"applicantId": self.id
+		}))				
+		selectedPlayer['busy'] = applicantPlayer.get('playerId')
+		applicantPlayer['busy'] = selectedPlayer.get('playerId')
+			
+	async def confirmation(self, response, applicantId):
+
+		match_id = None
+		selfApplicantPlayer = next(
+			(p for p in selfPlayers if p['playerId'] == applicantId), None)
+		selected_player = next(
+			(p for p in players if p['playerId'] == self.id), None)
+		applicant_player = next(
+			(p for p in players if p['playerId'] == applicantId), None)
+		if response:
+			match_id = await self.start_match(applicantId)
+		else:
+			applicant_player['busy'], selected_player['busy'] = None, None			
+		data = {
+			"type": "invitation",
+			"subtype": "confirmation",
+			"response": response,
+			"applicantId": applicantId,
+			"selectedId": self.id,
+			"matchId": match_id			
+		}
+		await selfApplicantPlayer['socket'].send(text_data=json.dumps(data))
+		await self.send(text_data=json.dumps(data))
+		await MyConsumer.match_update()
 
 	async def start_match(self, applicantId):
 
@@ -139,71 +168,11 @@ class MyConsumer(AsyncWebsocketConsumer):
 			matchs[:] = [m for m in matchs
 				if m.get("matchId") != str(match_id)]			
 			await MyConsumer.match_update()
-			
-	async def confirmation(self, response, applicantId):
 
-		match_id = None
-		selfApplicantPlayer = next(
-			(p for p in selfPlayers if p['playerId'] == applicantId), None)
-		selected_player = next(
-			(p for p in players if p['playerId'] == self.id), None)
-		# selfSelectedPlayer = next(
-		# 	(p for p in selfPlayers if p['playerId'] == selectedId), None)	
-		applicant_player = next(
-			(p for p in players if p['playerId'] == applicantId), None)
-		if response:
-			match_id = await self.start_match(applicantId)
-		else:
-			applicant_player['busy'] = None
-			applicant_player['pair'] = None
-			selected_player['busy'] = None
-			selected_player['pair'] = None
-		data = {
-			"type": "invitation",
-			"subtype": "confirmation",
-			"response": response,
-			"applicantId": applicantId,
-			"selectedId": self.id,
-			"matchId": match_id			
-		}
-		await selfApplicantPlayer['socket'].send(text_data=json.dumps(data))
-		await self.send(text_data=json.dumps(data))
-		await MyConsumer.match_update()
-
-	async def receive(self, text_data):		
-		data = json.loads(text_data)
-		match data:
-			case {"type": "playerClick", "selectedId": selectedId}:
-				await self.invitation(selectedId)				
-
-			# case {"type": "invitation"}:
-			# 	for p in selfPlayers:
-			# 		if p['playerId'] == data['selectedId']:
-			# 			await p['socket'].send(text_data=json.dumps({
-			# 				"type": "invitation",
-			# 				"playerId": self.id
-			# 			}))
-			# case {"type": "cancelInvitation"}:
-			# 	for p in selfPlayers:
-			# 		if p['playerId'] == data['selectedId']:
-			# 			await p['socket'].send(text_data=json.dumps({
-			# 				"type": "cancelInvitation",
-			# 				"playerId": self.id
-			# 			}))
-			case {"type": "confirmation", "response": response, "applicantId": applicantId}:
-				await self.confirmation(response, applicantId)
-				# for p in selfPlayers:
-				# 	if p['playerId'] == data['applicantId']:
-				# 		await p['socket'].send(text_data=json.dumps({
-				# 			"type": "confirmation",
-				# 			"response": response,
-				# 			"selectedId": self.id
-				# 		}))
-			case _ if data.get("matchId") is not None:		
-				for p in selfPlayers:
-					if p['playerId'] == data['selectedId']:
-						await p['socket'].send(text_data=json.dumps({
-							"matchId": data['matchId']
-						}))
-			case _:
-				pass  
+	@staticmethod
+	async def match_update():
+		for selfplay in selfPlayers:
+			await selfplay['socket'].send(text_data=json.dumps({
+				"type": "matchList",
+				"matchs": matchs
+			}))
