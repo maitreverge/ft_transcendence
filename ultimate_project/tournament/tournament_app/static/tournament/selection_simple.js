@@ -186,35 +186,35 @@ function invitationCancelled(applicantId) {
 	.catch(error => console.log(error))
 }
 //!
-function cancelInvitation(socket, selected) {
+// function cancelInvitation(socket, selected) {
 	
-	console.log("i will cancel invitation to selected: " + selected.id);
+// 	console.log("i will cancel invitation to selected: " + selected.id);
 
-	selected.classList.remove("invitation-confirmed");	
+// 	selected.classList.remove("invitation-confirmed");	
 
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({
-			type: "cancelInvitation",
-			selectedId: Number(selected.id)
-		}));
-}
+// 	if (socket.readyState === WebSocket.OPEN) 
+// 		socket.send(JSON.stringify({
+// 			type: "cancelInvitation",
+// 			selectedId: Number(selected.id)
+// 		}));
+// }
 
-function sendInvitation(socket, selected) {
+// function sendInvitation(socket, selected) {
 	
-	console.log("i will send invitation to selected: " + selected.id);
+// 	console.log("i will send invitation to selected: " + selected.id);
 	
-	if (!window.selectedElement)
-	{		
-		selected.classList.add("invitation-waiting");
-		if (socket.readyState === WebSocket.OPEN) 
-			socket.send(JSON.stringify({
-				type: "invitation",
-				selectedId: Number(selected.id)
-			}));	
-	}
-	else
-		alert("cancel your actual invitation before");
-}
+// 	if (!window.selectedElement)
+// 	{		
+// 		selected.classList.add("invitation-waiting");
+// 		if (socket.readyState === WebSocket.OPEN) 
+// 			socket.send(JSON.stringify({
+// 				type: "invitation",
+// 				selectedId: Number(selected.id)
+// 			}));	
+// 	}
+// 	else
+// 		alert("cancel your actual invitation before");
+// }
 
 function sendPlayerClick(socket, selected)
 {
@@ -281,11 +281,17 @@ function invitation(socket, data) {
 	{
 		if (data.response === "selfBusy")
 			alert("selfBusy");
-		else if (data.response === "applicantBusy")
-			alert("applicantBusy");	
+		else if (data.response === "selectedBusy")
+			alert("selectedBusy");	
 	}	
 	else if (data.subtype === "demand")
 		receiveInvitation(socket, data.applicantId);
+	else if (data.subtype === "cancel")
+	{
+		window.selectedElement.classList.remove("invitation-confirmed");//!
+		alert("cancel target: "+ data.targetId);
+	}
+
 }
 
 function onTournamentWsMessage(event, socket) {

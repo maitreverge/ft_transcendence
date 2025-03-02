@@ -45,63 +45,91 @@ class MyConsumer(AsyncWebsocketConsumer):
 				"matchs": matchs
 			}))
 
+	async def cancelInvitation(self,
+		applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):
+
+		if applicantPlayer \
+			and applicantPlayer.get('busy') \
+			and applicantPlayer.get('pair') \
+			and applicantPlayer.get('pair') == selectedPlayer:
+			await self.send(text_data=json.dumps({
+				"type": "invitation",
+				"subtype": "cancel",
+				"targetId": selectedId,				
+			}))
+			await selfSelectedPlayer['socket'].send(text_data=json.dumps({
+				"type": "invitation",
+				"subtype": "cancel",
+				"targetId": self.id,				
+			}))
+			selectedPlayer['busy'] = None				
+			selectedPlayer['pair'] = None
+			applicantPlayer['busy'] = None
+			applicantPlayer['pair'] = None
+			return True
+		return False
+	
 	async def invitation(self, selectedId):
-		print(f"2serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
-		selectedPlayer = next((p for p in players if p['playerId'] == selectedId), None)	
-		selfPlayer = next((p for p in players if p['playerId'] == self.id), None)
-		if None in (selectedPlayer, selfPlayer):
-			return;	
-		if selfPlayer and selfPlayer.get('busy'):
+
+		selectedPlayer = next(
+			(p for p in players if p['playerId'] == selectedId), None)
+		selfSelectedPlayer = next(
+			(p for p in selfPlayers if p['playerId'] == selectedId), None)	
+		applicantPlayer = next(
+			(p for p in players if p['playerId'] == self.id), None)
+
+		if await self.cancelInvitation(
+			applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):		
+			return
+
+		if applicantPlayer and applicantPlayer.get('busy'):
 			await self.send(text_data=json.dumps({
 				"type": "invitation",
 				"subtype": "back",
 				"applicantId": self.id,
 				"response": "selfBusy"
 			}))
-			return
-		print(f"3serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
-	
+			return			
 		for p in selfPlayers:
-			if p['playerId'] == selectedId:				
-				print(f"4serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
-				if p.get('busy'):
-					print(f"XXXserveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+			if p['playerId'] == selectedId:
+				if selectedPlayer.get('busy'):
 					await self.send(text_data=json.dumps({
 						"type": "invitation",
 						"subtype": "back",
 						"applicantId": self.id,
-						"response": "applicantBusy"
+						"response": "selectedBusy"
 					}))
-					break
-				print(f"5serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
+					break			
 				await p['socket'].send(text_data=json.dumps({
 					"type": "invitation",
 					"subtype": "demand",
 					"applicantId": self.id
-				}))
-				selectedPlayer['busy'], selfPlayer['busy'] = True, True				
+				}))			
+				selectedPlayer['busy'] = True				
+				selectedPlayer['pair'] = applicantPlayer
+				applicantPlayer['busy'] = True
+				applicantPlayer['pair'] = selectedPlayer
 
 	async def receive(self, text_data):		
 		data = json.loads(text_data)
 		match data:
 			case {"type": "playerClick", "selectedId": selectedId}:
-				print(f"serveur player Click selectedid:{selectedId} from {self.id}", flush=True)
 				await self.invitation(selectedId)				
 
-			case {"type": "invitation"}:
-				for p in selfPlayers:
-					if p['playerId'] == data['selectedId']:
-						await p['socket'].send(text_data=json.dumps({
-							"type": "invitation",
-							"playerId": self.id
-						}))
-			case {"type": "cancelInvitation"}:
-				for p in selfPlayers:
-					if p['playerId'] == data['selectedId']:
-						await p['socket'].send(text_data=json.dumps({
-							"type": "cancelInvitation",
-							"playerId": self.id
-						}))
+			# case {"type": "invitation"}:
+			# 	for p in selfPlayers:
+			# 		if p['playerId'] == data['selectedId']:
+			# 			await p['socket'].send(text_data=json.dumps({
+			# 				"type": "invitation",
+			# 				"playerId": self.id
+			# 			}))
+			# case {"type": "cancelInvitation"}:
+			# 	for p in selfPlayers:
+			# 		if p['playerId'] == data['selectedId']:
+			# 			await p['socket'].send(text_data=json.dumps({
+			# 				"type": "cancelInvitation",
+			# 				"playerId": self.id
+			# 			}))
 			case {"type": "confirmation", "response": response, **rest}:
 				for p in selfPlayers:
 					if p['playerId'] == data['applicantId']:
