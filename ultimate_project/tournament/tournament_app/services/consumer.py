@@ -53,7 +53,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		if applicantPlayer \
 			and applicantPlayer.get('busy') \
 			and applicantPlayer.get('pair') \
-			and applicantPlayer.get('pair') == selectedPlayer:
+			and applicantPlayer.get('pair') == selectedId:
 			await self.send(text_data=json.dumps({
 				"type": "invitation",
 				"subtype": "cancel",
@@ -68,8 +68,9 @@ class MyConsumer(AsyncWebsocketConsumer):
 			selectedPlayer['pair'] = None
 			applicantPlayer['busy'] = None
 			applicantPlayer['pair'] = None
-			match = next((m for m in matchs if self.id in (m.get('playerId'), m.get('otherId'))))
-			await self.stop_match(self.id, match.get('matchId'))						
+			match = next((m for m in matchs if self.id in (m.get('playerId'), m.get('otherId'))), None)
+			if match:
+				await self.stop_match(self.id, match.get('matchId'))						
 			return True
 		return False
 	
@@ -110,9 +111,9 @@ class MyConsumer(AsyncWebsocketConsumer):
 					"applicantId": self.id
 				}))			
 				selectedPlayer['busy'] = True				
-				selectedPlayer['pair'] = applicantPlayer
+				selectedPlayer['pair'] = applicantPlayer.get('playerId')
 				applicantPlayer['busy'] = True
-				applicantPlayer['pair'] = selectedPlayer
+				applicantPlayer['pair'] = selectedPlayer.get('playerId')
 
 	async def start_match(self, applicantId):
 
@@ -144,10 +145,19 @@ class MyConsumer(AsyncWebsocketConsumer):
 		match_id = None
 		selfApplicantPlayer = next(
 			(p for p in selfPlayers if p['playerId'] == applicantId), None)
-
+		selected_player = next(
+			(p for p in players if p['playerId'] == self.id), None)
+		# selfSelectedPlayer = next(
+		# 	(p for p in selfPlayers if p['playerId'] == selectedId), None)	
+		applicant_player = next(
+			(p for p in players if p['playerId'] == applicantId), None)
 		if response:
 			match_id = await self.start_match(applicantId)
-
+		else:
+			applicant_player['busy'] = None
+			applicant_player['pair'] = None
+			selected_player['busy'] = None
+			selected_player['pair'] = None
 		data = {
 			"type": "invitation",
 			"subtype": "confirmation",

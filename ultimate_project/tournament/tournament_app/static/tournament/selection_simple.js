@@ -307,8 +307,11 @@ function invitation(socket, data) {
 	{
 		if (data.response)
 			invitationConfirmed(data.matchId)
-		else if (data.applicantId == window.selfId)		
+		else if (data.applicantId == window.selfId)
+		{
+			window.selectedElement = null;
 			alert("refuse from target: "+ data.selectedId);		
+		}		
 	}	
 }
 
@@ -355,7 +358,7 @@ function initTournamentWs() {
 	}
 	socket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");
-		initTournamentWs();	
+		// initTournamentWs();	
 	};	
 	socket.onmessage = event => onTournamentWsMessage(event, socket);
 }
