@@ -56,7 +56,7 @@ function updateMatchs(matchs) {
     matchElements.forEach(match => {	
 		if (matchs.every(el => el.matchId != match.id))		
 		{
-			if (match.id == window.selfMatchId)
+			if (match.id === window.selfMatchId)
 			{
 				window.selectedElement.classList.remove("invitation-confirmed");
 				window.selectedElement = null;
@@ -72,76 +72,76 @@ function updateMatchs(matchs) {
 	setSelfMatchId();	
 }
 
-function sendMatchId(socket, matchId, selectedId) {
+// function sendMatchId(socket, matchId, selectedId) {
 
-	console.log("i will send matchId: " + matchId + " to selected: "
-		+ selectedId);
+// 	console.log("i will send matchId: " + matchId + " to selected: "
+// 		+ selectedId);
 
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({
-			matchId: matchId,
-			selectedId: selectedId
-		}));
-}
+// 	if (socket.readyState === WebSocket.OPEN) 
+// 		socket.send(JSON.stringify({
+// 			matchId: matchId,
+// 			selectedId: selectedId
+// 		}));
+// }
 
-function receiveMatchId(matchId) {
+// function receiveMatchId(matchId) {
 
-	console.log("i have had and matchId: " + matchId)
+// 	console.log("i have had and matchId: " + matchId)
 
-	window.selfMatchId = matchId;
-	setSelfMatchId();
-}
+// 	window.selfMatchId = matchId;
+// 	setSelfMatchId();
+// }
 
-function askMatchId(socket, selectedId) {
+// function askMatchId(socket, selectedId) {
 
-	fetch(
-		"/tournament/start-match?" +
-		`selfId=${window.selfId}&` +
-		`selectedId=${selectedId}`
-	)
-		.then(response => {
-			if (!response.ok) 
-				throw new Error(`Error HTTP! Status: ${response.status}`);		  
-			return response.json();
-		})
-		.then(data => {		
-			window.selfMatchId = data.matchId;
-			setSelfMatchId();
-			sendMatchId(socket, data.matchId, selectedId);
-		})
-		.catch(error => console.log(error))	
-}
+// 	fetch(
+// 		"/tournament/start-match?" +
+// 		`selfId=${window.selfId}&` +
+// 		`selectedId=${selectedId}`
+// 	)
+// 		.then(response => {
+// 			if (!response.ok) 
+// 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
+// 			return response.json();
+// 		})
+// 		.then(data => {		
+// 			window.selfMatchId = data.matchId;
+// 			setSelfMatchId();
+// 			sendMatchId(socket, data.matchId, selectedId);
+// 		})
+// 		.catch(error => console.log(error))	
+// }
 
-function receiveConfirmation(socket, selectedId, response) {
+// function receiveConfirmation(socket, selectedId, response) {
 
-	console.log("i have had and confirmation from: " + selectedId
-		+ ", the answer is :" + response);
+// 	console.log("i have had and confirmation from: " + selectedId
+// 		+ ", the answer is :" + response);
 	
-	const selectedElement = document.getElementById("players")
-		.querySelector(`[id='${selectedId}']`); 
-	if (selectedElement)
-	{
-		if (response === "yes")
-		{
-			window.selectedElement = selectedElement;
-			selectedElement.classList.remove("invitation-waiting");
-			selectedElement.classList.add("invitation-confirmed");
-			askMatchId(socket, selectedId);		
-		}
-		else
-		{
-			selectedElement.classList.remove("invitation-waiting");
-			selectedElement.classList.remove("invitation-confirmed");
-			alert(`${selectedId} says: fuck you`);
-		}
-	}
-}
+// 	const selectedElement = document.getElementById("players")
+// 		.querySelector(`[id='${selectedId}']`); 
+// 	if (selectedElement)
+// 	{
+// 		if (response === "yes")
+// 		{
+// 			window.selectedElement = selectedElement;
+// 			selectedElement.classList.remove("invitation-waiting");
+// 			selectedElement.classList.add("invitation-confirmed");
+// 			askMatchId(socket, selectedId);		
+// 		}
+// 		else
+// 		{
+// 			selectedElement.classList.remove("invitation-waiting");
+// 			selectedElement.classList.remove("invitation-confirmed");
+// 			alert(`${selectedId} says: fuck you`);
+// 		}
+// 	}
+// }
 //!
 function sendConfirmation(socket, applicantId, response) {
 
 	console.log(`i will send ${response} to applicant: ${applicantId}`);
 
-	if (response === "yes") 
+	if (response) 
 	{		
 		const applicantElement = document.getElementById("players")
 			.querySelector(`[id='${applicantId}']`);
@@ -167,23 +167,36 @@ function receiveInvitation(socket, applicantId) {
 	// 	sendConfirmation(socket, applicantId, "no");
 	// else
 		confirm(`you have an invitation from ${applicantId}`)
-			? sendConfirmation(socket, applicantId, "yes")	
-			: sendConfirmation(socket, applicantId, "no");
+			? sendConfirmation(socket, applicantId, true)	
+			: sendConfirmation(socket, applicantId, false);
 }
 //!
-function invitationCancelled(applicantId) {
+function invitationCancelled(targetId) {
 
-	console.log("invitation is cancelled from: " + applicantId);
+	console.log(`invitation with ${targetId} is cancelled`);
 
-	window.selectedElement.classList.remove("invitation-confirmed");
-	fetch(`/tournament/stop-match/${window.selfId}/${window.selfMatchId}/`)
-	.then(response => {
-		if (!response.ok) 
-			throw new Error(`Error HTTP! Status: ${response.status}`);		  
-		return response.text();
-	})
-	.then(data => console.log(data))
-	.catch(error => console.log(error))
+	// window.selectedElement.classList.remove("invitation-confirmed");//!
+	// window.selectedElement = null;
+	// window.selfMatchId = null;
+
+
+	// alert("cancel target: "+ data.targetId);
+	// window.selectedElement.classList.remove("invitation-confirmed");
+	// fetch(`/tournament/stop-match/${window.selfId}/${window.selfMatchId}/`)
+	// .then(response => {
+	// 	if (!response.ok) 
+	// 		throw new Error(`Error HTTP! Status: ${response.status}`);		  
+	// 	return response.text();
+	// })
+	// .then(data => console.log(data))
+	// .catch(error => console.log(error))
+}
+
+function invitationConfirmed(matchId) {
+
+	console.log("datamatchid: ", matchId);
+	window.selfMatchId = matchId;
+	window.selectedElement.classList.add("invitation-confirmed")
 }
 //!
 // function cancelInvitation(socket, selected) {
@@ -218,6 +231,8 @@ function invitationCancelled(applicantId) {
 
 function sendPlayerClick(socket, selected)
 {
+	window.selectedElement = selected;
+
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
@@ -270,7 +285,7 @@ function updatePlayers(socket, players) {
 
 function setSelfId(selfId) {
 
-	window.selfId = selfId;
+	window.selfId = selfId;	
 	document.getElementById("player").innerText = 
 		"Je suis le joueur " + window.selfId;	
 }
@@ -287,11 +302,14 @@ function invitation(socket, data) {
 	else if (data.subtype === "demand")
 		receiveInvitation(socket, data.applicantId);
 	else if (data.subtype === "cancel")
+		invitationCancelled(data.targetId);
+	else if (data.subtype === "confirmation")
 	{
-		window.selectedElement.classList.remove("invitation-confirmed");//!
-		alert("cancel target: "+ data.targetId);
-	}
-
+		if (data.response)
+			invitationConfirmed(data.matchId)
+		else if (data.applicantId == window.selfId)		
+			alert("refuse from target: "+ data.selectedId);		
+	}	
 }
 
 function onTournamentWsMessage(event, socket) {
@@ -313,12 +331,12 @@ function onTournamentWsMessage(event, socket) {
 			invitation(socket, data)
 			// receiveInvitation(socket, data.applicantId);
 			break;
-		case "cancelInvitation":
-			invitationCancelled(data.playerId);
-			break;
-		case "confirmation":
-			receiveConfirmation(socket,	data.selectedId, data.response);
-			break;
+		// case "cancelInvitation":
+		// 	invitationCancelled(data.playerId);
+		// 	break;
+		// case "confirmation":
+		// 	receiveConfirmation(socket,	data.selectedId, data.response);
+		// 	break;
 		default:
 			if (data.matchId) 
 				receiveMatchId(data.matchId);			
