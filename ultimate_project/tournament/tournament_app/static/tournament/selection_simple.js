@@ -139,7 +139,7 @@ function addToPlayers(socket, playersContainer, player) {
 	if (player.playerId === window.selfId)
 	{
 		div.classList.add("self-player");
-		div.onclick = ()=> alert("you can't choose yourself"); //? serveur or client ?		
+		div.onclick = ()=> alert("you can't choose yourself");		
 	}
 	else	
 		div.onclick = () =>	sendPlayerClick(socket, div);	
@@ -232,7 +232,7 @@ function initTournamentWs() {
 	}
 	socket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");
-		// initTournamentWs();	
+		initTournamentWs();	
 	};	
 	socket.onmessage = event => onTournamentWsMessage(event, socket);
 }
