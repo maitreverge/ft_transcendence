@@ -9,7 +9,7 @@ services = {
     "tournament": "http://tournament:8001",
     "ws_tournament": "http://tournament:8001/ws/tournament",
     "ws_match": "http://match:8002/ws/match",
-    
+    "match": "http://match:8002",
 }
 
 async def proxy_request(service_name: str, path: str, request: Request):
@@ -56,32 +56,36 @@ async def proxy_request(service_name: str, path: str, request: Request):
 @app.websocket("/ws/tournament/")
 async def tournament_websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
+    try:
+        while True:
+            data = await websocket.receive_text()
+            print("message received: {data}")
+            await websocket.send_text(f"Message text was: {data}")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        await websocket.close()
 
 @app.websocket("/ws/match/")
 async def match_websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
-
-# @app.api_route("/ws/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-# async def tournament_proxy(path: str, request: Request):
-#     return await proxy_request("ws_tournament", path, request)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            print("message received: {data}")
+            await websocket.send_text(f"Message text was: {data}")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        await websocket.close()
 
 @app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def tournament_proxy(path: str, request: Request):
     return await proxy_request("tournament", path, request)
 
-# @app.api_route("/match/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-# async def match_proxy(path: str, request: Request):
-#     return await proxy_request("match", path, request)
-
-    # @app.api_route("/user/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-    # async def user_proxy(path: str, request: Request):
-    #     return await proxy_request("user", path, request)
+@app.api_route("/match/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def match_proxy(path: str, request: Request):
+    return await proxy_request("match", path, request)
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def static_files_proxy(path: str, request: Request):
