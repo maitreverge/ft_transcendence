@@ -29,3 +29,11 @@ services:
       - "${match_port}:${match_port}"
     volumes:
       - ./match:/app/
+
+  api_gateway:
+    environment:
+      - env=dev
+    ports:
+      - "${api_gateway_port}:${api_gateway_port}"
+    volumes:
+      - ./api_gateway:/app/
