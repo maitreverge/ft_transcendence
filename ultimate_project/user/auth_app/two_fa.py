@@ -7,27 +7,42 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import TwoFaForm
 from user_management_app.models import Player
+from django.contrib.auth import login
 
 
-@login_required
+# @login_required
 def check_2fa(request):
+    # Get user from session
+    user_id = request.session.get('user_id_for_2fa')
+    
+    if not user_id:
+        return redirect('login')
+    
+    # Get user from database
+    try:
+        user = Player.objects.get(id=user_id)
+    except Player.DoesNotExist:
+        return redirect('login') # this blocks redirects when trying to register a new player
+    
     if request.method == "POST":
         form = TwoFaForm(request.POST)
         if form.is_valid():
             token = form.cleaned_data['token']
-            user = request.user
             
             # Get the user's secret and verify the token
             secret = user._two_fa_secret
             totp = pyotp.TOTP(secret)
             
             if totp.verify(str(token)):
+                # Clear the 2FA session and log in the user
+                if 'user_id_for_2fa' in request.session:
+                    del request.session['user_id_for_2fa']
+                login(request, user)
                 return redirect('auth_index')
             else:
                 form.add_error('token', 'Invalid token. Please try again.')
     else:
         form = TwoFaForm()
-    
     
     return render(
         request,

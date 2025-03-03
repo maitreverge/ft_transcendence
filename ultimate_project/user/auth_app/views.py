@@ -24,16 +24,21 @@ def login_view(request):
             password = form.cleaned_data.get("password")
             user = authenticate(request, username=username, password=password)
             if user is not None:
+
+                # Check if user has 2FA enabled
+                # if user.two_fa_enabled and not user.two_fa_verified:
+                if user.two_fa_enabled:
+                    print("2FA called on login", flush=True)
+                    # Store user ID in session without logging them in
+                    request.session['user_id_for_2fa'] = user.id
+                    return redirect(reverse("check_2fa"))
+                
+                # If 2FA is not enabled, proceed with regular login
                 login(request, user)
                 return HttpResponseRedirect(reverse("auth_index"))
             else:
                 print("Invalid username or password", flush=True)
                 form.add_error("username", "Invalid username or password")
-                # return render(request, "auth_app/login.html", {
-                #     "title": "LOGIN PAGE",
-                #     "form": form,
-                #     "message": "Invalid username or password"
-                # })
         else:
             print("Invalid form", flush=True)
             print(form.errors, flush=True)

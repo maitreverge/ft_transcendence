@@ -41,8 +41,9 @@ class SigninForm(forms.ModelForm):
         return cleaned_data
 
 class TwoFaForm(forms.Form):
-    token = forms.IntegerField(
+    token = forms.CharField(
         max_length=6,
-        widget=forms.TextInput(attrs={"placeholder": "Enter 2FA Token"}),
+        min_length=6,
+        widget=forms.TextInput(attrs={"placeholder": "Enter 6-digit 2FA Token"})
     )
 

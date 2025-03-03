@@ -9,7 +9,7 @@
 <form action="{% url 'check_2fa' %}" method="post">
 	{% csrf_token %}
 	{{ form.as_p }}
-	<input type="submit">
+	<input type="submit" value="Verify">
 
 {% endblock %}
 
