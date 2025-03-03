@@ -1,4 +1,7 @@
 django
-requests   
+requests
 uvicorn
+channels
+daphne
+whitenoise
 psycopg2-binary

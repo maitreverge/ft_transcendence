@@ -20,9 +20,6 @@ re: clean all
 prune:
 	docker system prune --all --volumes --force
 
-install_compose:
-	@sudo apt-get install docker-compose-plugin
-
 create_volume:
 	@echo "\n\033[1;33m***| Creating PostgreSQL Volume |***\033[0m\n"
 	@sudo mkdir -p /home/volumes_transcendence/postgres
@@ -36,19 +33,7 @@ delete_volume:
 
 rebuild: delete_volume clean prune all
 
+install_compose:
+	@sudo apt-get install docker-compose-plugin
+
 .PHONY: all prod clean re install_compose create_volume delete_volume prune rebuild
-
-# all:
-# 	docker-compose up
-
-# build:
-# 	docker-compose build
-
-# prod: clean 
-# 	docker-compose -f docker-compose.yml up
-
-# clean:
-# 	-docker-compose down -v
-# 	rm -rf staticfiles/*
-
-# re: clean build all
