@@ -97,9 +97,7 @@ DATABASES = {
         "PORT": os.getenv(
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
-        "OPTIONS": {
-            "options": "-c search_path=user_schema"
-        },
+        "OPTIONS": {"options": "-c search_path=user_schema"},
     }
 }
 

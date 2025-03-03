@@ -29,8 +29,9 @@ SECRET_KEY = "django-insecure-\
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # FERNET_SECRET_KEY = os.getenv("2FA_KEY")
-FERNET_SECRET_KEY = os.getenv("FERNET_SECRET_KEY", "2kXe3YL7r5_v69Gm4axlcNLWO4f2xAQqaqTTdLZST0A=")
-
+FERNET_SECRET_KEY = os.getenv(
+    "FERNET_SECRET_KEY", "2kXe3YL7r5_v69Gm4axlcNLWO4f2xAQqaqTTdLZST0A="
+)
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -58,7 +59,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "django_otp", # 2FA
+    "django_otp",  # 2FA
     "django_otp.plugins.otp_totp",  # 2FA
 ]
 
@@ -134,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'user_management_app.Player'
+AUTH_USER_MODEL = "user_management_app.Player"
 
 
 # Internationalization

@@ -12,8 +12,7 @@ class MyConsumer(AsyncWebsocketConsumer):
         await self.accept()
         id = len(players) + 1
         players.append(
-            {"playerId": id, "matchId": self.matchId
-             , "socket": self, "dir": None}
+            {"playerId": id, "matchId": self.matchId, "socket": self, "dir": None}
         )
 
     async def disconnect(self, close_code):

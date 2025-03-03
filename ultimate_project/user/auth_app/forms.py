@@ -2,16 +2,28 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from user_management_app.models import Player
 
+
 # Basic login form using Django's built-in authentication.
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Username"}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
+    username = forms.CharField(
+        max_length=100, widget=forms.TextInput(attrs={"placeholder": "Username"})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"})
+    )
+
 
 # User registration form for new players.
 class SigninForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
-    password_confirm = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"}))
-    two_fa_enabled = forms.BooleanField(required=False, initial=False, label="Enable Two-Factor Authentication")
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"})
+    )
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"})
+    )
+    two_fa_enabled = forms.BooleanField(
+        required=False, initial=False, label="Enable Two-Factor Authentication"
+    )
 
     class Meta:
         model = Player

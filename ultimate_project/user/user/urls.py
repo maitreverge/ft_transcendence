@@ -14,18 +14,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 # USER MAIN PROJECT
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 
+
 # Compose health-check, do not remove
 def health_check(request):
     return HttpResponse(status=200)
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('health/', health_check, name='health_check'), # Compose health-check, do not remove
+    path(
+        "health/", health_check, name="health_check"
+    ),  # Compose health-check, do not remove
     path("auth/", include("auth_app.urls")),
     path("user/", include("user_management_app.urls")),
-]   
+]

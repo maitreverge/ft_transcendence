@@ -1,5 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from auth_app.two_fa import encrypt_2fa_secret, decrypt_2fa_secret
 
 
@@ -7,7 +11,7 @@ class PlayerManager(BaseUserManager):
     def create_user(self, username, email=None, password=None, **extra_fields):
         if not username:
             raise ValueError("The Username field must be set")
-        
+
         email = self.normalize_email(email) if email else None
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)  # Hash the password before saving
@@ -29,12 +33,14 @@ class Player(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False) # needed for admin access
+    is_staff = models.BooleanField(default=False)  # needed for admin access
 
-    # 2FA fields    
+    # 2FA fields
     two_fa_enabled = models.BooleanField(default=False)  # 2FA toggle
     two_fa_verified = models.BooleanField(default=False)  # 2FA verification status
-    _two_fa_secret = models.CharField(max_length=32, blank=True, null=True)  # ✅ Store 2FA secret
+    _two_fa_secret = models.CharField(
+        max_length=32, blank=True, null=True
+    )  # ✅ Store 2FA secret
 
     # Encrypt and decrypt 2FA secrets
     @property
@@ -44,7 +50,7 @@ class Player(AbstractBaseUser, PermissionsMixin):
     @two_fa_secret.setter
     def two_fa_secret(self, value):
         self._two_fa_secret = encrypt_2fa_secret(value) if value else None
-    
+
     # Tells Django to use "email" as the primary field for authentication
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]

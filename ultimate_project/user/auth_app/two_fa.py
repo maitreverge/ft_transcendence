@@ -2,12 +2,12 @@ import pyotp
 import qrcode
 import io
 import base64
-import os
+# import os
 from cryptography.fernet import Fernet
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+
 # from user_management_app.models import Player
-from django.http import HttpResponse
 from django.conf import settings
 
 # Generate a secret key (only do this once, then store it securely)
@@ -19,9 +19,11 @@ if not FERNET_KEY:
 
 cipher = Fernet(FERNET_KEY.encode())
 
+
 # Encrypts the 2FA secret key.
 def encrypt_2fa_secret(secret):
     return cipher.encrypt(secret.encode()).decode()
+
 
 # Decrypts the 2FA secret key.
 def decrypt_2fa_secret(encrypted_secret):
@@ -44,11 +46,11 @@ def setup_2fa(request):
     if not user._two_fa_secret:
         # Generate a new secret key
         secret = pyotp.random_base32()
-        user._two_fa_secret = secret # Encrypt the secret before saving
+        user._two_fa_secret = secret  # Encrypt the secret before saving
         user.save()
     else:
-        secret = user._two_fa_secret # Decrypt the secret before using
-    
+        secret = user._two_fa_secret  # Decrypt the secret before using
+
         # Generate QR Code URI
     otp_uri = pyotp.totp.TOTP(secret).provisioning_uri(
         name=user.username, issuer_name="TryHardTeam Inc."
@@ -59,10 +61,10 @@ def setup_2fa(request):
     img_io = io.BytesIO()
     temp_qr_code.save(img_io, format="PNG")
     img_io.seek(0)
-    
+
     # Convert QR Code to Base64
     qr_code = base64.b64encode(img_io.getvalue()).decode("utf-8")
-    
+
     return render(
         request,
         "auth_app/setup_2fa.html",
@@ -70,10 +72,5 @@ def setup_2fa(request):
             "title": "Set Up Two-Factor Authentication",
             "secret": secret,
             "qr_code": qr_code,
-
         },
     )
-
-
-
-
