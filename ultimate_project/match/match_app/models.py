@@ -23,7 +23,7 @@ class Player(CrossSchemaModel):
     # 2FA fields    
     two_fa_enabled = models.BooleanField(default=False)  # 2FA toggle
     two_fa_verified = models.BooleanField(default=False)  # 2FA verification status
-    two_fa_secret = models.CharField(max_length=32, blank=True, null=True)  # ✅ Store 2FA secret
+    _two_fa_secret = models.CharField(max_length=32, blank=True, null=True)  # ✅ Store 2FA secret
 
 
     # Tells Django to use "email" as the primary field for authentication

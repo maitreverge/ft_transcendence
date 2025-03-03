@@ -41,13 +41,13 @@ def setup_2fa(request):
     # secret = pyotp.random_base32()
 
     # Save secret in database (this prevents overwriting an existing one)
-    if not user.two_fa_secret:
+    if not user._two_fa_secret:
         # Generate a new secret key
         secret = pyotp.random_base32()
-        user.two_fa_secret = secret # Encrypt the secret before saving
+        user._two_fa_secret = secret # Encrypt the secret before saving
         user.save()
     else:
-        secret = user.two_fa_secret # Decrypt the secret before using
+        secret = user._two_fa_secret # Decrypt the secret before using
     
         # Generate QR Code URI
     otp_uri = pyotp.totp.TOTP(secret).provisioning_uri(

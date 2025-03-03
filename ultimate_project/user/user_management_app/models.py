@@ -34,12 +34,12 @@ class Player(AbstractBaseUser, PermissionsMixin):
     # 2FA fields    
     two_fa_enabled = models.BooleanField(default=False)  # 2FA toggle
     two_fa_verified = models.BooleanField(default=False)  # 2FA verification status
-    two_fa_secret = models.CharField(max_length=32, blank=True, null=True)  # ✅ Store 2FA secret
+    _two_fa_secret = models.CharField(max_length=32, blank=True, null=True)  # ✅ Store 2FA secret
 
     # Encrypt and decrypt 2FA secrets
     @property
     def two_fa_secret(self):
-        return decrypt_2fa_secret(self.two_fa_secret) if self._two_fa_secret else None
+        return decrypt_2fa_secret(self._two_fa_secret) if self._two_fa_secret else None
 
     @two_fa_secret.setter
     def two_fa_secret(self, value):
