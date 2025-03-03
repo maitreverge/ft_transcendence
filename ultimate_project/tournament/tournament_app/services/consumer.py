@@ -130,9 +130,18 @@ class MyConsumer(AsyncWebsocketConsumer):
 		applicant_player = next(
 			(p for p in players if p['playerId'] == applicantId), None)
 		if response:
-			match_id = await self.start_match(applicantId)
+			if applicant_player and applicant_player.get('busy') and applicant_player.get('busy') == self.id:
+				match_id = await self.start_match(applicantId)
+			else:
+				print(f"ANNULED", flush=True)
+				return
+			# if applicant_player \
+			# and applicant_player.get('busy') \
+			# and applicant_player.get('busy') == self.id:
+		elif applicant_player and applicant_player.get('busy') and applicant_player.get('busy') == self.id:
+			applicant_player['busy'], selected_player['busy'] = None, None			
 		else:
-			applicant_player['busy'], selected_player['busy'] = None, None		
+			return	
 		await self.send_confirmation_back(
 			response, applicantId, self.id, match_id,
 			selfApplicantPlayer['socket']
