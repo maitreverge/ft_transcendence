@@ -18,17 +18,17 @@ function stopMatch(matchId)
 
 function setCommands(socket) {
 
-	document.addEventListener("keydown", function(event) {	
+	document.addEventListener("keydown", function(event) {
 		if (socket.readyState === WebSocket.OPEN)
-		{		
+		{
 			if (event.key === "ArrowUp") 
 			{
-				event.preventDefault();				
+				event.preventDefault();
 				socket.send(JSON.stringify({
-					action: 'move', dir: 'up'}));				
+					action: 'move', dir: 'up'}));
 			} else if (event.key === "ArrowDown") 
 			{
-				event.preventDefault();				
+				event.preventDefault();
 				socket.send(JSON.stringify({
 					action: 'move', dir: 'down'}));
 			}
