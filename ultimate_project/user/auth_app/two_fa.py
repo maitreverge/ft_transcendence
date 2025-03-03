@@ -16,13 +16,24 @@ def check_2fa(request):
     user_id = request.session.get('user_id_for_2fa')
     
     if not user_id:
+        print("No user_id_for_2fa in session", flush=True)
         return redirect('login')
     
-    # Get user from database
+    # Get user from database - add debug output
     try:
-        user = Player.objects.get(id=user_id)
-    except Player.DoesNotExist:
-        return redirect('login') # this blocks redirects when trying to register a new player
+        print(f"Looking for user with ID: {user_id}", flush=True)
+        user = Player.objects.filter(id=user_id).first()
+        
+        if not user:
+            print(f"User with ID {user_id} not found", flush=True)
+            return redirect('login')
+            
+        print(f"Found user: {user.username}", flush=True)
+    except Exception as e:
+        print(f"Error retrieving user: {str(e)}", flush=True)
+        return redirect('login')
+    
+    # Rest of the code remains the same... # this blocks redirects when trying to register a new player
     
     if request.method == "POST":
         form = TwoFaForm(request.POST)
@@ -53,21 +64,15 @@ def check_2fa(request):
 
 @login_required
 def setup_2fa(request):
-
     user = request.user
-
-    # secret = pyotp.random_base32()
-
-    # Save secret in database (this prevents overwriting an existing one)
-    if not user._two_fa_secret:
-        # Generate a new secret key
-        secret = pyotp.random_base32()
-        user._two_fa_secret = secret  # Encrypt the secret before saving
-        user.save()
-    else:
-        secret = user._two_fa_secret  # Decrypt the secret before using
-
-        # Generate QR Code URI
+    
+    # Always generate a new secret when setting up 2FA
+    secret = pyotp.random_base32()
+    user._two_fa_secret = secret
+    user.two_fa_enabled = True  # Make sure 2FA is enabled
+    user.save()
+    
+    # Generate QR Code URI
     otp_uri = pyotp.totp.TOTP(secret).provisioning_uri(
         name=user.username, issuer_name="TryHardTeam Inc."
     )

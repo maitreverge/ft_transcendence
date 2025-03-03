@@ -72,13 +72,16 @@ def signin_view(request):
                     password=password,
                     two_fa_enabled=two_fa_enabled,
                 )
-                login(request, user)  # Auto-login after registration
-
-                # Redirect to 2FA setup if enabled
+                
+                # If 2FA is enabled, we need to set up 2FA first
                 if two_fa_enabled:
+                    # Log the user in first so they can access setup_2fa
+                    login(request, user)
                     return redirect("setup_2fa")
-
-                return redirect("auth_index")
+                else:
+                    # If no 2FA, just log them in and redirect
+                    login(request, user)
+                    return redirect("auth_index")
             else:
                 form.add_error("username", "Username already taken")
     else:
