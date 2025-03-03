@@ -120,7 +120,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		applicantPlayer['busy'] = selectedPlayer.get('playerId')
 			
 	async def confirmation(self, response, applicantId):
-
+		print(f"confirmation applicant: {applicantId}", flush=True)
 		match_id = None
 		selfApplicantPlayer = next(
 			(p for p in selfPlayers if p['playerId'] == applicantId), None)
@@ -132,17 +132,31 @@ class MyConsumer(AsyncWebsocketConsumer):
 			match_id = await self.start_match(applicantId)
 		else:
 			applicant_player['busy'], selected_player['busy'] = None, None			
-		data = {
+		# data = {
+		# 	"type": "invitation",
+		# 	"subtype": "confirmation",
+		# 	"response": response,
+		# 	"applicantId": applicantId,
+		# 	"selectedId": self.id,
+		# 	"matchId": match_id			
+		# }
+		await self.send_confirmation_back(response, applicantId, self.id, match_id, selfApplicantPlayer['socket'])
+		await self.send_confirmation_back(response, applicantId, applicantId, match_id, self)
+		# await self.send(text_data=json.dumps(data))
+		# await selfApplicantPlayer['socket'].send(text_data=json.dumps(data))
+		# await self.send(text_data=json.dumps(data))
+		await MyConsumer.match_update()
+
+	async def send_confirmation_back(self,
+		response, applicant_id, target_id, match_id, target):
+		await target.send(text_data=json.dumps({
 			"type": "invitation",
 			"subtype": "confirmation",
 			"response": response,
-			"applicantId": applicantId,
-			"selectedId": self.id,
-			"matchId": match_id			
-		}
-		await selfApplicantPlayer['socket'].send(text_data=json.dumps(data))
-		await self.send(text_data=json.dumps(data))
-		await MyConsumer.match_update()
+			"applicantId": applicant_id,
+			"targetId": target_id,			
+			"matchId": match_id	
+		}))
 
 	async def start_match(self, applicantId):
 

@@ -112,16 +112,24 @@ function invitationCancelled(targetId) {
 	window.selfMatchId = null;	
 }
 
-function invitationConfirmed(matchId) {
+function invitationConfirmed(matchId, targetId) {
 
-	console.log("datamatchid: ", matchId);
+	window.selectedElement = document.getElementById("players")
+		.querySelector(`[id='${targetId}']`);
+	if (window.selectedElement)
+	{
+		console.log("datamatchid: ", matchId);	
+		window.selectedElement.classList.add("invitation-confirmed")
+		// window.selectedElement = applicantElement;
+		// window.selectedElement.classList.add("invitation-confirmed");	
+	}
+	// window.selectedElement = document.getElementById("targetId")
 	window.selfMatchId = matchId;
-	window.selectedElement.classList.add("invitation-confirmed")
 }
 
 function sendPlayerClick(socket, selected)
 {
-	window.selectedElement = selected;//!
+	// window.selectedElement = selected;//!
 
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
@@ -184,13 +192,14 @@ function invitation(socket, data) {
 		case "cancel":
 			invitationCancelled(data.targetId);
 			break;
-		case "confirmation":		
+		case "confirmation":
+			console.log(`data targetid ${data.targetId} et applicant id ${data.applicantId}`)		
 			if (data.response)
-				invitationConfirmed(data.matchId)
+				invitationConfirmed(data.matchId, data.targetId)
 			else if (data.applicantId == window.selfId)
 			{
-				window.selectedElement = null;//!
-				alert("refuse from target: "+ data.selectedId);		
+				// window.selectedElement = null;//!
+				alert("refuse from target: "+ data.targetId);		
 			}
 			break;	
 		default:
