@@ -18,7 +18,6 @@ async def proxy_request(service_name: str, path: str, request: Request):
         path = path.lstrip("/")
         url = f"{base_url}/{path}"
 
-        print("\n************************\n** request at: ", url, "**\n************************")
         headers = dict(request.headers)
         headers.pop("host", None)
         headers["Host"] = "localhost"
@@ -30,29 +29,6 @@ async def proxy_request(service_name: str, path: str, request: Request):
         if response.headers.get("Content-Type", "").startswith("text/html"):
             return HTMLResponse(content=response.text)
         return response.text
-
-
-# 	location /ws/tournament/ {
-# 		proxy_pass http://ctn_tournament:8001/ws/tournament/; 
-# 		proxy_http_version 1.1;                 # ✅ WebSocket nécessite HTTP 1.1
-#         proxy_set_header Upgrade $http_upgrade; # ✅ Indique que c'est un WebSocket
-#         proxy_set_header Connection "Upgrade";  # ✅ Autorise la montée en protocole
-#         proxy_set_header Host $host;
-#         proxy_set_header X-Real-IP $remote_addr;
-#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#         proxy_set_header X-Forwarded-Proto $scheme;
-# 	}
-
-# 	location /ws/match/ {
-# 		proxy_pass http://ctn_match:8002/ws/match/; 
-# 		proxy_http_version 1.1;                 # ✅ WebSocket nécessite HTTP 1.1
-#         proxy_set_header Upgrade $http_upgrade; # ✅ Indique que c'est un WebSocket
-#         proxy_set_header Connection "Upgrade";  # ✅ Autorise la montée en protocole
-#         proxy_set_header Host $host;
-#         proxy_set_header X-Real-IP $remote_addr;
-#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#         proxy_set_header X-Forwarded-Proto $scheme;
-# 	}
 
 @app.websocket("/ws/tournament/")
 async def tournament_websocket_endpoint(websocket: WebSocket):
@@ -80,9 +56,11 @@ async def match_websocket_endpoint(websocket: WebSocket):
     finally:
         await websocket.close()
 
+# Probleme a regler:
+# cliquer pour requete a "http://localhost:8000/tournament/simple-match/"
+# ne passe pas par l'api_gateway!!!
 @app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def tournament_proxy(path: str, request: Request):
-    print("\n************************\n** path: ", path, "**\n************************")
     return await proxy_request("tournament", "tournament/" + path, request)
 
 @app.api_route("/match/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
@@ -91,9 +69,7 @@ async def match_proxy(path: str, request: Request):
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def static_files_proxy(path: str, request: Request):
-    print("\n************************\n** moncul: ", path, "**\n************************")
     return await proxy_request("static_files", path, request)
-
 
 if __name__ == "__main__":
     import uvicorn
