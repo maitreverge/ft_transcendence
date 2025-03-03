@@ -106,7 +106,8 @@ function receiveInvitation(socket, applicantId) {
 function invitationCancelled(targetId) {
 
 	console.log(`invitation with ${targetId} is cancelled`);
-
+	
+	alert(`invitation with ${targetId} is cancelled`);
 	if (window.selectedElement)
 		window.selectedElement.classList.remove("invitation-confirmed");//!
 	window.selectedElement = null;

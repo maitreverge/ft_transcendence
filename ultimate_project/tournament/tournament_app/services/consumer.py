@@ -134,13 +134,14 @@ class MyConsumer(AsyncWebsocketConsumer):
 				match_id = await self.start_match(applicantId)
 			else:
 				print(f"ANNULED", flush=True)
+				# await self.send_cancel(self.id, self)
 				return
 			# if applicant_player \
 			# and applicant_player.get('busy') \
 			# and applicant_player.get('busy') == self.id:
 		elif applicant_player and applicant_player.get('busy') and applicant_player.get('busy') == self.id:
 			applicant_player['busy'], selected_player['busy'] = None, None			
-		else:
+		else:			
 			return	
 		await self.send_confirmation_back(
 			response, applicantId, self.id, match_id,
