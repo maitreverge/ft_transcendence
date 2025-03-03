@@ -56,7 +56,7 @@ function updateMatchs(matchs) {
     matchElements.forEach(match => {	
 		if (matchs.every(el => el.matchId != match.id))		
 		{
-			if (match.id === window.selfMatchId)
+			if (match.id == window.selfMatchId)
 			{
 				window.selectedElement.classList.remove("invitation-confirmed");
 				window.selectedElement = null;

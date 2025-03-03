@@ -15,6 +15,7 @@ class Pong:
 
 	id = 0
 	def __init__(self, idP1, idP2):
+		
 		Pong.id += 1
 		self.id = Pong.id
 		self.idP1 = idP1
@@ -42,12 +43,17 @@ class Pong:
 	# 	print("three deux", flush=True)
 
 	async def stop(self, playerId):
-		print(f"in stop PONG my id is : {self.id}", flush=True)
-		if str(playerId) in (self.idP1, self.idP2): 	
+
+		if playerId in (self.idP1, self.idP2): 	
+			self.sendTask.cancel()
+			try:
+				await self.sendTask  # Attendre que l'annulation soit complète
+			except asyncio.CancelledError:
+				print("Tâche annulée avec succès")	 
 			self.state = State.end
 			if self.winner is None and self.start_flag:
-				self.winner = self.idP1	if str(playerId) == self.idP2 \
-					else self.idP2 
+				self.winner = self.idP1	if playerId == self.idP2 \
+					else self.idP2
 			await self.sendFinalState()
 			return True
 		return False
@@ -77,7 +83,7 @@ class Pong:
 
 	async def launch(self):
 		self.state = State.waiting
-		self.myEventLoop.create_task(self.sendState())
+		self.sendTask = self.myEventLoop.create_task(self.sendState())
 		while self.state in (State.running, State.waiting):		
 		
 			self.myplayers = [p for p in consumer.players
@@ -112,11 +118,21 @@ class Pong:
 				self.state = State.waiting
 				# print(f"je suis en waiting", flush=True)
 
-			if self.yp1 > 80:		
+			if self.yp1 > 80:
+				self.sendTask.cancel()
+				try:
+					await self.sendTask  # Attendre que l'annulation soit complète
+				except asyncio.CancelledError:
+					print("Tâche annulée avec succès")		
 				self.winner = self.idP1
 				self.state = State.end
 				await self.sendFinalState()
 			elif self.yp2 > 80:
+				self.sendTask.cancel()
+				try:
+					await self.sendTask  # Attendre que l'annulation soit complète
+				except asyncio.CancelledError:
+					print("Tâche annulée avec succès")
 				self.winner = self.idP2
 				self.state = State.end
 				await self.sendFinalState()	
@@ -146,6 +162,7 @@ class Pong:
 			}))
 		requests.post("http://tournament:8001/tournament/match-result/", json={
 			"matchId": self.id,
-			"winnerId": self.winner
+			"winnerId": self.winner,
+			"looserId": self.idP1 if self.winner == self.idP2 else self.idP2
 		})
 	

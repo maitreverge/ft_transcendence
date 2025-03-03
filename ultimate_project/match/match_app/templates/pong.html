@@ -9,7 +9,8 @@
 			window.matchId = "{{ matchId }}"
 			window.playerId = "{{ playerId }}";
 		</script>
-		<script src="{% static 'match/script.js' %}" onload="initMatchWs()"></script>
+		<script	src="{% static 'match/script.js' %}"
+				onload="initMatchWs()"></script>
 	</head>
 </div>		
 <div id="match">
@@ -17,13 +18,16 @@
 	<h1 id="spec" style="display: none">Je suis spectateur</h1>
 
 	<h2>j'ai recu l'identifiant du match par query string</h2>
-	<h2>match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }} et {{ playerId }}</h2>
+	<h2>match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}
+		et {{ playerId }}</h2>
 	
 	<div id="p1"></div>
 	<div id="p2"></div>
 	<div id="waiting">Waiting</div>
 	<div id="end" style="display:none">
-		<button onclick="document.getElementById('match').remove()">Close</button>
+		<button
+			onclick="document.getElementById('match').remove()">Close
+		</button>
 	</div>
 	<button onclick="stopMatch('{{matchId}}')">Quit Match</button>
 </div>

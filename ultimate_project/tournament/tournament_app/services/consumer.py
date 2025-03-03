@@ -150,6 +150,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 
 	async def send_confirmation_back(self,
 		response, applicant_id, target_id, match_id, target):
+
 		await target.send(text_data=json.dumps({
 			"type": "invitation",
 			"subtype": "confirmation",
@@ -181,7 +182,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 				data = await response.json()		
 		if response.status == 200:			
 			matchs[:] = [m for m in matchs
-				if m.get("matchId") != str(match_id)]			
+				if m.get("matchId") != match_id]
 			await MyConsumer.match_update()
 
 	@staticmethod

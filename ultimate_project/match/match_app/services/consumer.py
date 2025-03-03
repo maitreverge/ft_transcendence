@@ -10,7 +10,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		self.matchId = self.scope["url_route"]["kwargs"]["matchId"]    
 		query_string = self.scope["query_string"].decode() 	
 		params = urllib.parse.parse_qs(query_string)
-		self.playerId = params.get("playerId", [None])[0]
+		self.playerId = int(params.get("playerId", [None])[0])
 		await self.accept()
 		players.append({
 			'playerId': self.playerId,
