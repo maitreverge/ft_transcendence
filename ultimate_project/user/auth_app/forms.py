@@ -39,3 +39,10 @@ class SigninForm(forms.ModelForm):
             self.add_error("password_confirm", "Passwords do not match")
 
         return cleaned_data
+
+class TwoFaForm(forms.Form):
+    token = forms.IntegerField(
+        max_length=6,
+        widget=forms.TextInput(attrs={"placeholder": "Enter 2FA Token"}),
+    )
+

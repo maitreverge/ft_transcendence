@@ -6,6 +6,7 @@ import base64
 from cryptography.fernet import Fernet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .forms import TwoFaForm
 
 # from user_management_app.models import Player
 from django.conf import settings
@@ -31,8 +32,17 @@ def decrypt_2fa_secret(encrypted_secret):
 
 
 @login_required
-def verify_2fa(request):
-    pass
+def check_2fa(request):
+    form = TwoFaForm(request.POST)
+    if request.method == "POST":
+        token = request.POST.get("token")
+        user = request.user
+    else:
+        return render(
+            request,
+            "auth_app/check_2fa.html",
+            {"title": "Check Two-Factor Authentication"},
+        )
 
 
 @login_required
