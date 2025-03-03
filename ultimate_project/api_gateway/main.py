@@ -7,8 +7,9 @@ app = FastAPI()
 services = {
     "static_files": "http://static_files:8003",
     "tournament": "http://tournament:8001",
-    "match": "http://match:8002",
     "ws_tournament": "http://tournament:8001/ws/tournament",
+    "ws_match": "http://match:8002/ws/match",
+    
 }
 
 async def proxy_request(service_name: str, path: str, request: Request):
@@ -41,24 +42,42 @@ async def proxy_request(service_name: str, path: str, request: Request):
 #         proxy_set_header X-Forwarded-Proto $scheme;
 # 	}
 
+# 	location /ws/match/ {
+# 		proxy_pass http://ctn_match:8002/ws/match/; 
+# 		proxy_http_version 1.1;                 # ✅ WebSocket nécessite HTTP 1.1
+#         proxy_set_header Upgrade $http_upgrade; # ✅ Indique que c'est un WebSocket
+#         proxy_set_header Connection "Upgrade";  # ✅ Autorise la montée en protocole
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+# 	}
+
 @app.websocket("/ws/tournament/")
-async def websocket_endpoint(websocket: WebSocket):
+async def tournament_websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_text()
         await websocket.send_text(f"Message text was: {data}")
 
-@app.api_route("/ws/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-async def tournament_proxy(path: str, request: Request):
-    return await proxy_request("ws_tournament", path, request)
+@app.websocket("/ws/match/")
+async def match_websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message text was: {data}")
+
+# @app.api_route("/ws/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+# async def tournament_proxy(path: str, request: Request):
+#     return await proxy_request("ws_tournament", path, request)
 
 @app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def tournament_proxy(path: str, request: Request):
     return await proxy_request("tournament", path, request)
 
-@app.api_route("/match/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-async def match_proxy(path: str, request: Request):
-    return await proxy_request("match", path, request)
+# @app.api_route("/match/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+# async def match_proxy(path: str, request: Request):
+#     return await proxy_request("match", path, request)
 
     # @app.api_route("/user/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
     # async def user_proxy(path: str, request: Request):
