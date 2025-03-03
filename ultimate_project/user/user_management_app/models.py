@@ -4,7 +4,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
-from auth_app.two_fa import encrypt_2fa_secret, decrypt_2fa_secret
+from utils.crypto import encrypt_2fa_secret, decrypt_2fa_secret
 
 
 class PlayerManager(BaseUserManager):

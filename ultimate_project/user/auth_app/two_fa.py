@@ -3,46 +3,37 @@ import qrcode
 import io
 import base64
 # import os
-from cryptography.fernet import Fernet
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import TwoFaForm
-
-# from user_management_app.models import Player
-from django.conf import settings
-
-# Generate a secret key (only do this once, then store it securely)
-# FERNET_KEY = os.getenv("2FA_KEY")
-FERNET_KEY = getattr(settings, "FERNET_SECRET_KEY", None)
-
-if not FERNET_KEY:
-    raise ValueError("FERNET_SECRET_KEY is missing from settings!")
-
-cipher = Fernet(FERNET_KEY.encode())
-
-
-# Encrypts the 2FA secret key.
-def encrypt_2fa_secret(secret):
-    return cipher.encrypt(secret.encode()).decode()
-
-
-# Decrypts the 2FA secret key.
-def decrypt_2fa_secret(encrypted_secret):
-    return cipher.decrypt(encrypted_secret.encode()).decode()
+from user_management_app.models import Player
 
 
 @login_required
 def check_2fa(request):
-    form = TwoFaForm(request.POST)
     if request.method == "POST":
-        token = request.POST.get("token")
-        user = request.user
+        form = TwoFaForm(request.POST)
+        if form.is_valid():
+            token = form.cleaned_data['token']
+            user = request.user
+            
+            # Get the user's secret and verify the token
+            secret = user._two_fa_secret
+            totp = pyotp.TOTP(secret)
+            
+            if totp.verify(str(token)):
+                return redirect('auth_index')
+            else:
+                form.add_error('token', 'Invalid token. Please try again.')
     else:
-        return render(
-            request,
-            "auth_app/check_2fa.html",
-            {"title": "Check Two-Factor Authentication"},
-        )
+        form = TwoFaForm()
+    
+    
+    return render(
+        request,
+        "auth_app/check_2fa.html",
+        {"title": "Check Two-Factor Authentication", "form": form},
+    )
 
 
 @login_required
