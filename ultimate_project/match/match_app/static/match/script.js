@@ -24,22 +24,22 @@ function setCommands(socket) {
 			if (event.key === "ArrowUp") 
 			{
 				event.preventDefault();				
-				socket.send(JSON.stringify({action: 'move', dir: 'up'}));				
+				socket.send(JSON.stringify({
+					action: 'move', dir: 'up'}));				
 			} else if (event.key === "ArrowDown") 
 			{
 				event.preventDefault();				
-				socket.send(JSON.stringify({action: 'move', dir: 'down'}));
+				socket.send(JSON.stringify({
+					action: 'move', dir: 'down'}));
 			}
 		} 
-		// else 
-			// console.log("WebSocket not connected!");		
 	});
 }
 
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 		
 	const data = JSON.parse(event.data);
-	// console.log("voila wststate et datastate: ", waitingState[0], typeof(waitingState), data.state, typeof(data.state));	
+
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
@@ -47,13 +47,9 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	}
 	if (waitingState[0] != data.state) 
 	{
-		console.log("different!");
-		waitingState[0] = data.state;
+		waitingState[0] = data.state;				
 		if (data.state == "waiting")
-			{
-				console.log("remove no waiting");
-				waiting.classList.remove("no-waiting");			
-			}			
+			waiting.classList.remove("no-waiting");
 		else			
 			waiting.classList.add("no-waiting");			
 	}
@@ -61,49 +57,40 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	pads[1].style.top = data.yp2 + "vh";
 }
 
+function sequelInitMatchWs(socket) {
+
+	const pads = [
+		document.getElementById("p1"), document.getElementById("p2")];
+	const [waiting, end] = [		
+		document.getElementById("waiting"),	document.getElementById("end")];	
+	let waitingState = ["waiting"];
+	socket.onmessage = event => onMatchWsMessage(
+		event, pads, [waiting, end], waitingState);
+	setCommands(socket);
+	if (window.selfMatchId != window.matchId)
+		document.getElementById("spec").style.display = "block";
+}
+
 function initMatchWs() {
 
-	console.log("init MATCH");
-	if (window.matchSocket && window.exMatchSocket)
-	{
-		// window.exMatchSocket = true;
-		window.matchSocket.close();
-		return;
-	}
-	window.exMatchSocket = true;
+	if (window.matchSocket && window.antiLoop)
+		return window.matchSocket.close();
+	window.antiLoop = true;
 	if (window.rasp == "true")
 		window.matchSocket = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
-			`?playerId=${window.playerId}`
-		);
+			`?playerId=${window.playerId}`);
 	else	
 		window.matchSocket = new WebSocket(
 			`ws://localhost:8000/ws/match/${window.matchId}/` +
-			`?playerId=${window.playerId}`
-		);
-	// window.exMatchSocket = window.matchSocket;
-	var socket = window.matchSocket;
-	socket.onopen = () => {
+			`?playerId=${window.playerId}`);
+	window.matchSocket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};
-	socket.onclose = () => {
-	
-		console.log("Connexion Match disconnected 😈");
-		// if (window.exMatchSocket)
-		window.exMatchSocket = false;
+	window.matchSocket.onclose = () => {	
+		console.log("Connexion Match disconnected 😈");		
+		window.antiLoop = false;
 		initMatchWs();	
-	};	
-	const pads = [
-		document.getElementById("p1"), document.getElementById("p2")
-	];
-	const [waiting, end] = [		
-		document.getElementById("waiting"),	document.getElementById("end")
-	];	
-	let waitingState = ["waiting"];
-	socket.onmessage = event => onMatchWsMessage(
-		event, pads, [waiting, end], waitingState
-	);
-	setCommands(socket);
-	if (window.selfMatchId != window.matchId)
-		document.getElementById("spec").style.display = "block"; 
+	};
+	sequelInitMatchWs(window.matchSocket);
 }

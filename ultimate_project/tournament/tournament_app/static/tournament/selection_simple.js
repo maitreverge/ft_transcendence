@@ -76,16 +76,6 @@ function sendConfirmation(socket, applicantId, response) {
 
 	console.log(`i will send ${response} to applicant: ${applicantId}`);
 
-	// if (response) 
-	// {		
-	// 	const applicantElement = document.getElementById("players")
-	// 		.querySelector(`[id='${applicantId}']`);
-	// 	if (applicantElement)
-	// 	{
-	// 		window.selectedElement = applicantElement;
-	// 		applicantElement.classList.add("invitation-confirmed");	
-	// 	}
-	// }	
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "confirmation",
@@ -106,10 +96,10 @@ function receiveInvitation(socket, applicantId) {
 function invitationCancelled(targetId) {
 
 	console.log(`invitation with ${targetId} is cancelled`);
-	
+
 	alert(`invitation with ${targetId} is cancelled`);
 	if (window.selectedElement)
-		window.selectedElement.classList.remove("invitation-confirmed");//!
+		window.selectedElement.classList.remove("invitation-confirmed");
 	window.selectedElement = null;
 	window.selfMatchId = null;	
 }
@@ -119,20 +109,12 @@ function invitationConfirmed(matchId, targetId) {
 	window.selectedElement = document.getElementById("players")
 		.querySelector(`[id='${targetId}']`);
 	if (window.selectedElement)
-	{
-		console.log("datamatchid: ", matchId);	
-		window.selectedElement.classList.add("invitation-confirmed")
-		// window.selectedElement = applicantElement;
-		// window.selectedElement.classList.add("invitation-confirmed");	
-	}
-	// window.selectedElement = document.getElementById("targetId")
+		window.selectedElement.classList.add("invitation-confirmed")	
 	window.selfMatchId = matchId;
 }
 
 function sendPlayerClick(socket, selected)
 {
-	// window.selectedElement = selected;//!
-
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
@@ -194,15 +176,11 @@ function invitation(socket, data) {
 		case "cancel":
 			invitationCancelled(data.targetId);
 			break;
-		case "confirmation":
-			console.log(`data targetid ${data.targetId} et applicant id ${data.applicantId}`)		
+		case "confirmation":		
 			if (data.response)
 				invitationConfirmed(data.matchId, data.targetId)
-			else if (data.applicantId == window.selfId)
-			{
-				// window.selectedElement = null;//!
-				alert("refuse from target: "+ data.targetId);		
-			}
+			else if (data.applicantId == window.selfId)		
+				alert("refuse from target: "+ data.targetId);
 			break;	
 		default:
 			break;	

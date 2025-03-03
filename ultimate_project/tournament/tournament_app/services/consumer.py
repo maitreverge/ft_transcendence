@@ -73,8 +73,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 			await self.send_back("selectedBusy")
 			return	
 		await self.send_demand(
-			selfSelectedPlayer, selectedPlayer,	applicantPlayer
-		)
+			selfSelectedPlayer, selectedPlayer,	applicantPlayer)
 		
 	async def send_back(self, response):		
 		await self.send(text_data=json.dumps({
@@ -86,10 +85,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 		
 	async def cancel_invitation(self,
 		applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):
-
-		if applicantPlayer \
-			and applicantPlayer.get('busy') \
-			and applicantPlayer.get('busy') == selectedId:
+	
+		if self.is_busy_with(applicantPlayer, selectedId):
 			await self.send_cancel(selectedId, self)		
 			await self.send_cancel(self.id, selfSelectedPlayer['socket'])		
 			selectedPlayer['busy'], applicantPlayer['busy'] = None, None					
@@ -99,6 +96,12 @@ class MyConsumer(AsyncWebsocketConsumer):
 				None)
 			if match:
 				await self.stop_match(self.id, match.get('matchId'))						
+			return True
+		return False
+
+	def is_busy_with(self, player1, player2_id):
+		if player1 and player1.get('busy') \
+			and player1.get('busy') == player2_id:
 			return True
 		return False
 
@@ -121,7 +124,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		applicantPlayer['busy'] = selectedPlayer.get('playerId')
 			
 	async def confirmation(self, response, applicantId):
-		print(f"confirmation applicant: {applicantId}", flush=True)
+
 		match_id = None
 		selfApplicantPlayer = next(
 			(p for p in selfPlayers if p['playerId'] == applicantId), None)
@@ -130,26 +133,19 @@ class MyConsumer(AsyncWebsocketConsumer):
 		applicant_player = next(
 			(p for p in players if p['playerId'] == applicantId), None)
 		if response:
-			if applicant_player and applicant_player.get('busy') and applicant_player.get('busy') == self.id:
+			if self.is_busy_with(applicant_player, self.id):			
 				match_id = await self.start_match(applicantId)
-			else:
-				print(f"ANNULED", flush=True)
-				# await self.send_cancel(self.id, self)
+			else:		
 				return
-			# if applicant_player \
-			# and applicant_player.get('busy') \
-			# and applicant_player.get('busy') == self.id:
-		elif applicant_player and applicant_player.get('busy') and applicant_player.get('busy') == self.id:
+		elif self.is_busy_with(applicant_player, self.id):
 			applicant_player['busy'], selected_player['busy'] = None, None			
 		else:			
 			return	
 		await self.send_confirmation_back(
 			response, applicantId, self.id, match_id,
-			selfApplicantPlayer['socket']
-		)
+			selfApplicantPlayer['socket'])
 		await self.send_confirmation_back(
-			response, applicantId, applicantId, match_id, self
-		)
+			response, applicantId, applicantId, match_id, self)
 		await MyConsumer.match_update()
 
 	async def send_confirmation_back(self,
