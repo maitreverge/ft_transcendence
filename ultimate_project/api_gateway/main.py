@@ -18,6 +18,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
         path = path.lstrip("/")
         url = f"{base_url}/{path}"
 
+        print("\n************************\n** request at: ", url, "**\n************************")
         headers = dict(request.headers)
         headers.pop("host", None)
         headers["Host"] = "localhost"
@@ -81,7 +82,8 @@ async def match_websocket_endpoint(websocket: WebSocket):
 
 @app.api_route("/tournament/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def tournament_proxy(path: str, request: Request):
-    return await proxy_request("tournament", path, request)
+    print("\n************************\n** path: ", path, "**\n************************")
+    return await proxy_request("tournament", "tournament/" + path, request)
 
 @app.api_route("/match/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def match_proxy(path: str, request: Request):
@@ -89,6 +91,7 @@ async def match_proxy(path: str, request: Request):
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def static_files_proxy(path: str, request: Request):
+    print("\n************************\n** moncul: ", path, "**\n************************")
     return await proxy_request("static_files", path, request)
 
 
