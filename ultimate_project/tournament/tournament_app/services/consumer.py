@@ -73,7 +73,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 			await self.send_back("selectedBusy")
 			return	
 		await self.send_demand(
-			selfSelectedPlayer, selectedPlayer,	applicantPlayer)
+			selfSelectedPlayer, selectedPlayer,	applicantPlayer
+		)
 		
 	async def send_back(self, response):		
 		await self.send(text_data=json.dumps({
@@ -131,20 +132,14 @@ class MyConsumer(AsyncWebsocketConsumer):
 		if response:
 			match_id = await self.start_match(applicantId)
 		else:
-			applicant_player['busy'], selected_player['busy'] = None, None			
-		# data = {
-		# 	"type": "invitation",
-		# 	"subtype": "confirmation",
-		# 	"response": response,
-		# 	"applicantId": applicantId,
-		# 	"selectedId": self.id,
-		# 	"matchId": match_id			
-		# }
-		await self.send_confirmation_back(response, applicantId, self.id, match_id, selfApplicantPlayer['socket'])
-		await self.send_confirmation_back(response, applicantId, applicantId, match_id, self)
-		# await self.send(text_data=json.dumps(data))
-		# await selfApplicantPlayer['socket'].send(text_data=json.dumps(data))
-		# await self.send(text_data=json.dumps(data))
+			applicant_player['busy'], selected_player['busy'] = None, None		
+		await self.send_confirmation_back(
+			response, applicantId, self.id, match_id,
+			selfApplicantPlayer['socket']
+		)
+		await self.send_confirmation_back(
+			response, applicantId, applicantId, match_id, self
+		)
 		await MyConsumer.match_update()
 
 	async def send_confirmation_back(self,

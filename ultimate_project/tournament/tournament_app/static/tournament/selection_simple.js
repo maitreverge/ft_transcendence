@@ -76,16 +76,16 @@ function sendConfirmation(socket, applicantId, response) {
 
 	console.log(`i will send ${response} to applicant: ${applicantId}`);
 
-	if (response) 
-	{		
-		const applicantElement = document.getElementById("players")
-			.querySelector(`[id='${applicantId}']`);
-		if (applicantElement)
-		{
-			window.selectedElement = applicantElement;
-			applicantElement.classList.add("invitation-confirmed");	
-		}
-	}	
+	// if (response) 
+	// {		
+	// 	const applicantElement = document.getElementById("players")
+	// 		.querySelector(`[id='${applicantId}']`);
+	// 	if (applicantElement)
+	// 	{
+	// 		window.selectedElement = applicantElement;
+	// 		applicantElement.classList.add("invitation-confirmed");	
+	// 	}
+	// }	
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "confirmation",
@@ -107,7 +107,8 @@ function invitationCancelled(targetId) {
 
 	console.log(`invitation with ${targetId} is cancelled`);
 
-	window.selectedElement.classList.remove("invitation-confirmed");//!
+	if (window.selectedElement)
+		window.selectedElement.classList.remove("invitation-confirmed");//!
 	window.selectedElement = null;
 	window.selfMatchId = null;	
 }
