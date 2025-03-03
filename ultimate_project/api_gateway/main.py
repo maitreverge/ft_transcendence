@@ -87,7 +87,7 @@ async def tournament_proxy(path: str, request: Request):
 
 @app.api_route("/match/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def match_proxy(path: str, request: Request):
-    return await proxy_request("match", path, request)
+    return await proxy_request("match", "match/" + path, request)
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def static_files_proxy(path: str, request: Request):
