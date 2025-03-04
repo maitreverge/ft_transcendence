@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Query  
 import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 import logging
@@ -12,6 +12,7 @@ app = FastAPI(
 services = {
     "tournament": "http://tournament:8001",
     "static_files": "http://static_files:8003",
+    "match": "http://match:8002",
 }
 
 # logging configuration
@@ -57,8 +58,13 @@ async def tournament_proxy(path: str, request: Request):
     elif path == "simple-match/":
         return await proxy_request("static_files", "/tournament-match-wrapper/", request)
 
-        return RedirectResponse(url="/tournament/simple-match/")
-        
+@app.api_route("/match/{path:path}", methods=["GET"])
+async def match_proxy(path: str, request: Request, matchId: int = Query(None), playerId: int = Query(None)):
+    path = f"match/?matchId={matchId}&playerId={playerId}" if matchId is not None and playerId is not None else "match/"
+
+    return await proxy_request("match", path, request)
+    # elif path == "simple-match/":
+    #     return await proxy_request("static_files", "/home/", request)     
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def static_files_proxy(path: str, request: Request):

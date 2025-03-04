@@ -7,11 +7,17 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 pongs = []
 
 def new_match(request : HttpRequest):
+    print("********************* NEW MATCH *********************", flush=True)
     pong = Pong(request.GET.get("p1"), request.GET.get("p2"))
     pongs.append(pong)
     return JsonResponse({"matchId":f"{pong.id}"}, status=201)
 
 def start_match(request : HttpRequest):
+    print("********************* START MATCH *********************", flush=True)
+    matchId = request.GET.get("matchId", "0")
+    playerId = request.GET.get("playerId", "0")
+    print("matchId: ", matchId, flush=True)
+    print("playerId: ", playerId, flush=True)
     return render(
         request,
         "pong.html",
