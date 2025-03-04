@@ -1,0 +1,22 @@
+{% extends "auth_app/layout.html" %}
+
+{% block head %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block body %}
+
+{% if message %}
+	<p>{{ message }}</p>
+{% endif %}
+
+
+<form action="{% url 'login' %}" method="post">
+	{% csrf_token %}
+	{{ form }}
+	<input type="submit">
+</form>
+
+<a href="{% url 'signin' %}"> Not registered ? Sign In Here</a>
+
+{% endblock %}

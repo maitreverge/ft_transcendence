@@ -17,9 +17,14 @@ Including another URLconf
 
 from django.urls import path
 import match_app.views as views
+from django.http import HttpResponse
+
+def health_check(request):
+    return HttpResponse(status=200)
 
 urlpatterns = [
-	path("match/new-match/", views.new_match),
+    path("health/", health_check, name="health_check"), 
     path("match/", views.start_match),
+	path("match/new-match/", views.new_match),
 	path("match/stop-match/<int:playerId>/<int:matchId>/", views.stop_match),
 ]

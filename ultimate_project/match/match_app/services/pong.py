@@ -11,6 +11,7 @@ class State(Enum):
 	running = "running"
 	end = "end"
 
+
 class Pong:
 
 	id = 0

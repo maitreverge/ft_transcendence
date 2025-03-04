@@ -17,10 +17,13 @@ Including another URLconf
 
 from django.urls import path
 import tournament_app.views as views
+from django.http import HttpResponse
+
+def health_check(request):
+    return HttpResponse(status=200)
 
 urlpatterns = [
+    path("health/", health_check, name="health_check"), 
 	path("tournament/simple-match/", views.simple_match),  
-	# path("tournament/start-match/", v.start_match),
-	# path("tournament/stop-match/<int:playerId>/<int:matchId>/", v.stop_match),
 	path("tournament/match-result/", views.match_result),
 ]

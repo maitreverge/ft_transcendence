@@ -28,4 +28,3 @@ class MyConsumer(AsyncWebsocketConsumer):
 		for p in players: 
 			if p['socket'] == self:
 				p['dir'] = data.get('dir')
-

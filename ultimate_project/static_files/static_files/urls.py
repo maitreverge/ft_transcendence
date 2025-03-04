@@ -17,8 +17,18 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+
+# Compose health-check, do not remove
+def health_check(request):
+    return HttpResponse(status=200)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "health/", health_check, name="health_check"
+    ),  # Compose health-check, do not remove
     path("", include("static_files_app.urls")),
 ]

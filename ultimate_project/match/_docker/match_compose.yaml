@@ -1,0 +1,32 @@
+services:
+  
+  match:
+    depends_on:
+      database:
+        condition: service_healthy
+      user:
+        condition: service_healthy
+    container_name: ctn_match
+    build :
+      context: ../ # ! FUCKING DO NOT TOUCH THIS, I LOST 5 LIFETIME YEARS ON THIS
+      dockerfile: _docker/Dockerfile
+    environment:
+      env: prod
+      name: match
+      port: $match_port
+      pi_domain: $PI_DOMAIN # maybe not set up yet
+      DJANGO_SETTINGS_MODULE: match.settings
+    env_file:
+      - ../../.env
+    image: img_match
+    networks:
+      - transcendence_network
+    volumes:
+      - staticvol:/app/staticfiles
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:${match_port}/health/"]
+      interval: 1m30s    # How often to run the health check (every 90 seconds)
+      timeout: 2s       # Maximum time to wait for the check to complete
+      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
+      start_period: 30s  # Initial grace period where failures don't count (container startup time)
+    restart: always

@@ -1,0 +1,150 @@
+services:
+  nginx:
+    depends_on:
+      user:
+        condition: service_healthy
+      tournament:
+        condition: service_healthy
+      match:
+        condition: service_healthy
+      static_files:
+        condition: service_healthy
+    container_name: ctn_nginx
+    build :
+      context: ./nginx/
+      args:
+        env: prod
+    environment:
+      - static_files_port=${static_files_port}
+      - tournament_port=${tournament_port}
+      - match_port=${match_port}
+    image: img_nginx
+    ports:
+      # - "443:443" #https NOT WORKING AT 42!!!
+      # - "80:80" #http NOT WORKING AT 42!!!
+      - "8443:443"
+      - "8000:80"
+    volumes:
+      - staticvol:/usr/share/nginx/static
+    networks:
+      - transcendence_network
+    restart: on-failure
+  
+  database:
+    image: postgres:latest
+    container_name: ctn_database
+    environment:
+      name: database
+      pi_domain: $PI_DOMAIN
+      port: $POSTGRES_PORT # really usefull ?
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+    env_file:
+      - .env
+    # HOST_PORT:CONTAINER_PORT
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      interval: 10s
+      timeout: 2s
+      retries: 5
+      start_period: 60s
+    volumes:
+      # Bind mount for db in local
+      - database_volume:/var/lib/postgresql/data
+      - ./postgres/schemas.sql:/docker-entrypoint-initdb.d/schemas.sql
+    networks:
+      - transcendence_network
+    restart: always
+  
+  # ========= TOURNAMENTS ==========
+  tournament:
+    extends:
+      file: ./tournament/_docker/tournament_compose.yaml
+      service: tournament
+
+  # ========= MATCHES ==========
+  match:
+    extends:
+      file: ./match/_docker/match_compose.yaml
+      service: match
+
+  # ========= USERS ==========
+  user:
+    extends:
+      file: ./user/_docker/user_compose.yaml
+      service: user
+
+
+  static_files:
+    depends_on:
+      database:
+        condition: service_healthy
+    container_name: ctn_static_files
+    build :
+      context: ./static_files/
+    environment:
+      env: prod
+      port: ${static_files_port}
+      name: static_files
+      pi_domain: ${PI_DOMAIN}
+      DJANGO_SETTINGS_MODULE: static_files.settings
+    image: img_static_files
+    env_file:
+      - .env
+    networks:
+      - transcendence_network
+    volumes:
+      - staticvol:/app/staticfiles
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:${static_files_port}/health/"]
+      interval: 1m30s    # How often to run the health check (every 90 seconds)
+      timeout: 2s       # Maximum time to wait for the check to complete
+      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
+      start_period: 30s  # Initial grace period where failures don't count (container startup time)
+    restart: always
+
+  api_gateway:
+    container_name: ctn_api_gateway
+    build :
+      context: ./api_gateway/
+    environment:
+      - env=prod
+      - port=${api_gateway_port}
+      - name=api_gateway
+      - pi_domain=${PI_DOMAIN}
+    image: img_api_gateway
+    networks:
+      - transcendence_network
+    volumes:
+      - staticvol:/app/staticfiles
+    restart: always
+
+
+volumes:
+  # Seb Static files volumes
+  staticvol:
+    driver: local
+  
+  database_volume:
+    # Use the local driver for the volume
+    driver: local
+    name: database_volume
+    driver_opts:
+      # Specify the type as 'none' to use a bind mount
+      type: none
+      # When assigned to a container, the posgreSQL will reflect what's in this specified path.
+      device: '/home/volumes_transcendence/postgres'
+      # Bind the specified host path to the volume
+      o: bind
+  
+
+networks:
+  transcendence_network:
+    name: transcendence_network
+    driver : bridge
