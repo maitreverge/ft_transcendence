@@ -30,7 +30,15 @@ class MyConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		global selfPlayers
-		global players				
+		global players
+		player = next(
+			(p for p in players if p.get('playerId') == self.id), None)
+		if player:
+			busy = next(
+				(p for p in players if p.get('playerId') == player.get('busy')),
+			None)
+			if busy:
+				busy['busy'] = None			
 		selfPlayers[:] = [p for p in selfPlayers if p['socket'] != self]
 		players[:] = [p for p in players if p['playerId'] != self.id]
 		for selfplay in selfPlayers:

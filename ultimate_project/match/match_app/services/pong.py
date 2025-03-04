@@ -163,9 +163,12 @@ class Pong:
 				"state": self.state.name,
 				"winnerId": self.winner
 			}))
+		print(f"YYYYY selfwinner {self.idP1} {self.idP2}", flush=True)
 		requests.post("http://tournament:8001/tournament/match-result/", json={
 			"matchId": self.id,
 			"winnerId": self.winner,
-			"looserId": self.idP1 if self.winner == self.idP2 else self.idP2
+			"looserId": self.idP1 if self.winner == self.idP2 else self.idP2,
+			"p1Id": self.idP1,
+			"p2Id": self.idP2
 		})
 	
