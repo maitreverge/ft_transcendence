@@ -58,6 +58,9 @@ function updateMatchs(matchs) {
 		{
 			if (match.id == window.selfMatchId)
 			{
+				if (window.busyElement)
+					window.busyElement.classList.remove("invitation-waiting");
+				window.busyElement = null;
 				window.selectedElement.classList.remove("invitation-confirmed");
 				window.selectedElement = null;
 				window.selfMatchId = null;
@@ -98,10 +101,21 @@ function invitationCancelled(targetId) {
 	console.log(`invitation with ${targetId} is cancelled`);
 
 	alert(`invitation with ${targetId} is cancelled`);
-	if (window.selectedElement)
-		window.selectedElement.classList.remove("invitation-confirmed");
+	if (window.busyElement)	
+		window.busyElement.classList.remove("invitation-waiting");
+	window.busyElement = null;
+	if (window.selectedElement)		
+		window.selectedElement.classList.remove("invitation-confirmed");	
 	window.selectedElement = null;
 	window.selfMatchId = null;	
+}
+
+function invitationRefused(targetId) {
+
+	alert("refuse from target: "+ targetId + " " + window.busyElement.id);
+	if (window.busyElement)
+		window.busyElement.classList.remove("invitation-waiting");
+	window.busyElement = null;
 }
 
 function invitationConfirmed(matchId, targetId) {
@@ -109,12 +123,19 @@ function invitationConfirmed(matchId, targetId) {
 	window.selectedElement = document.getElementById("players")
 		.querySelector(`[id='${targetId}']`);
 	if (window.selectedElement)
+	{
+		window.busyElement = window.selectedElement
+		window.busyElement.classList.remove("invitation-waiting");
 		window.selectedElement.classList.add("invitation-confirmed")	
+	}
 	window.selfMatchId = matchId;
 }
 
 function sendPlayerClick(socket, selected)
 {
+	if (!window.busyElement)
+		window.busyElement = selected;
+	window.busyElement.classList.add("invitation-waiting")
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
@@ -180,7 +201,7 @@ function invitation(socket, data) {
 			if (data.response)
 				invitationConfirmed(data.matchId, data.targetId)
 			else if (data.applicantId == window.selfId)		
-				alert("refuse from target: "+ data.targetId);
+				invitationRefused(data.targetId)
 			break;	
 		default:
 			break;	

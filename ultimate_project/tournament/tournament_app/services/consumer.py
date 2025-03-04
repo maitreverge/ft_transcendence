@@ -45,7 +45,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": "playerList",
 				"players": players
-			}))	
+			}))
 
 	async def receive(self, text_data):		
 		data = json.loads(text_data)
