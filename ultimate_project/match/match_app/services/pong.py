@@ -45,11 +45,11 @@ class Pong:
 	async def stop(self, playerId):
 
 		if playerId in (self.idP1, self.idP2): 	
-			self.sendTask.cancel()
-			try:
-				await self.sendTask  # Attendre que l'annulation soit complète
-			except asyncio.CancelledError:
-				print("Tâche annulée avec succès")	 
+			# self.sendTask.cancel()
+			# try:
+			# 	await self.sendTask  # Attendre que l'annulation soit complète
+			# except asyncio.CancelledError:
+			# 	print("Tâche annulée avec succès")	 
 			self.state = State.end
 			if self.winner is None and self.start_flag:
 				self.winner = self.idP1	if playerId == self.idP2 \
@@ -83,7 +83,8 @@ class Pong:
 
 	async def launch(self):
 		self.state = State.waiting
-		self.sendTask = self.myEventLoop.create_task(self.sendState())
+		# self.sendTask = self.myEventLoop.create_task(self.sendState())
+		self.myEventLoop.create_task(self.sendState())
 		while self.state in (State.running, State.waiting):		
 		
 			self.myplayers = [p for p in consumer.players
@@ -119,20 +120,20 @@ class Pong:
 				# print(f"je suis en waiting", flush=True)
 
 			if self.yp1 > 80:
-				self.sendTask.cancel()
-				try:
-					await self.sendTask  # Attendre que l'annulation soit complète
-				except asyncio.CancelledError:
-					print("Tâche annulée avec succès")		
+				# self.sendTask.cancel()
+				# try:
+				# 	await self.sendTask  # Attendre que l'annulation soit complète
+				# except asyncio.CancelledError:
+				# 	print("Tâche annulée avec succès")		
 				self.winner = self.idP1
 				self.state = State.end
 				await self.sendFinalState()
 			elif self.yp2 > 80:
-				self.sendTask.cancel()
-				try:
-					await self.sendTask  # Attendre que l'annulation soit complète
-				except asyncio.CancelledError:
-					print("Tâche annulée avec succès")
+				# self.sendTask.cancel()
+				# try:
+				# 	await self.sendTask  # Attendre que l'annulation soit complète
+				# except asyncio.CancelledError:
+				# 	print("Tâche annulée avec succès")
 				self.winner = self.idP2
 				self.state = State.end
 				await self.sendFinalState()	
@@ -144,12 +145,14 @@ class Pong:
 		while (True):	
 			self.myplayers = [p for p in consumer.players
 				if self.id == p["matchId"]]
-			for p in self.myplayers:	
-				await p["socket"].send(text_data=json.dumps({
-					"state": self.state.name,
-					"yp1": self.yp1,
-					"yp2": self.yp2
-				}))
+			for p in self.myplayers:
+				state = self.state
+				if state != State.end:	
+					await p["socket"].send(text_data=json.dumps({
+						"state": state.name,
+						"yp1": self.yp1,
+						"yp2": self.yp2
+					}))
 			await asyncio.sleep(0.05)
 
 	async def sendFinalState(self):				
