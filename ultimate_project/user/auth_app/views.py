@@ -77,6 +77,7 @@ def signin_view(request):
                 if two_fa_enabled:
                     # Log the user in first so they can access setup_2fa
                     login(request, user)
+                    request.session['user_id_for_2fa'] = user.id
                     return redirect("setup_2fa")
                 else:
                     # If no 2FA, just log them in and redirect
