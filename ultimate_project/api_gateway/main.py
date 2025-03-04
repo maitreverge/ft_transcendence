@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 import httpx
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 import logging
 
 app = FastAPI(
@@ -10,6 +10,7 @@ app = FastAPI(
 )
 
 services = {
+    "tournament": "http://tournament:8001",
     "static_files": "http://static_files:8003",
 }
 
@@ -26,6 +27,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
         path = path.lstrip("/")
         url = f"{base_url}/{path}"
 
+        print("****************************\n", url, "\n****************************")
         headers = {key: value for key, value in request.headers.items() if key.lower() not in ["host"]}
         headers["Host"] = "localhost"
 
@@ -47,6 +49,16 @@ async def proxy_request(service_name: str, path: str, request: Request):
             return HTMLResponse(content=response.text, status_code=response.status_code)
         return JSONResponse(content=response.json(), status_code=response.status_code)
 
+
+@app.api_route("/tournament/{path:path}", methods=["GET"])
+async def tournament_proxy(path: str, request: Request):
+    if "HX-Request" in request.headers:
+        return await proxy_request("tournament", "tournament/" + path, request)
+    elif path == "simple-match/":
+        return await proxy_request("static_files", "/tournament-match-wrapper/", request)
+
+        return RedirectResponse(url="/tournament/simple-match/")
+        
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def static_files_proxy(path: str, request: Request):
