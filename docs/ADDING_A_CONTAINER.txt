@@ -2,6 +2,8 @@ ADDING A CONTAINER:
 
 - make sure you are in a virtual env (source ./myscript.sh)
 - create folders in project_name/project_name_app/static/project_name/style.css, following other's struct
+    => "django-admin startproject d04"
+    => "python3 manage.py startapp ex00"
 - settings: copy paste from tournament
 - nginx: config.dev.conf: add block for static files AND container path
 - nginx: config.dev.prod: add block for container path
@@ -9,5 +11,6 @@ ADDING A CONTAINER:
 - dockerfile: copy paste :)
 - entrypoint.sh: copy paste :)
 - copier fichier requirements.txt
+- add port number to .env file
 
 + for html / css content, refere to existing container, ex: tournament
