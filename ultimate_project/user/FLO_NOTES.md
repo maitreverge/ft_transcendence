@@ -6,7 +6,19 @@
 									DUMP IDEAS
 --------------------------------------------------------------------------------
 
+Migrer la logique des dockerfiles + la structure global du compose
 
+Recrer les routes ngninx pour rebrancher mon travail
+
+Rebrancher mon travail
+
+Recheck les BDD avec dbshell dans chaque container
+
+Refaire une route pour admin
+
+centraliser la documentation django / database / container
+
+Deplacer les database de /home/ vers racine
 
 --------------------------------------------------------------------------------
 									MY ROUTES
