@@ -58,9 +58,14 @@ async def match_result(request : HttpRequest):
 	match_id = result.get('matchId')
 	winner_id = result.get('winnerId')
 	looser_id = result.get('looserId')
-	p1 = next((p for p in consumer.players if p.get('playerId') == winner_id))
-	p2 = next((p for p in consumer.players if p.get('playerId') == looser_id))
-	p1['busy'], p2['busy'] = None, None
+	p1 = next(
+		(p for p in consumer.players if p.get('playerId') == winner_id), None)
+	p2 = next(
+		(p for p in consumer.players if p.get('playerId') == looser_id), None)
+	if p1:
+		p1['busy'] = None
+	if p2:
+		p2['busy'] = None
 	consumer.matchs[:] = [m for m in consumer.matchs
 		if m.get("matchId") != match_id]
 	await consumer.MyConsumer.match_update()
