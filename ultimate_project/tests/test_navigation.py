@@ -1,6 +1,5 @@
-import re
 import time
-from playwright.sync_api import Playwright, sync_playwright, expect
+from playwright.sync_api import Playwright, sync_playwright
 
 
 def run(playwright: Playwright) -> None:
@@ -33,7 +32,7 @@ def run(playwright: Playwright) -> None:
     page.goto("http://localhost:8000/home/")
     page.locator("#field-stats").click()
     time.sleep(0.4)
-    
+
     # ---------------------
     context.close()
     browser.close()
@@ -41,9 +40,6 @@ def run(playwright: Playwright) -> None:
 
 with sync_playwright() as playwright:
     run(playwright)
-
-
-
 
 
 # # import re

@@ -21,7 +21,6 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 
-
 # Compose health-check, do not remove
 @csrf_exempt
 def health_check(request):

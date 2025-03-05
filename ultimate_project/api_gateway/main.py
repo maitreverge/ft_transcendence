@@ -48,8 +48,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
         data = await request.body()
 
         try:
-            response = await client.request(method, url,
-                                            headers=headers, content=data)
+            response = await client.request(method, url, headers=headers, content=data)
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
             logger.error
@@ -59,20 +58,18 @@ async def proxy_request(service_name: str, path: str, request: Request):
             )
         except httpx.RequestError as exc:
             logger.error(f"Request failed: {exc}")
-            raise HTTPException(status_code=500,
-                                detail="Internal Server Error")
+            raise HTTPException(status_code=500, detail="Internal Server Error")
 
-        response_headers = {key: value for key,
-                            value in response.headers.items()}
-        response_headers["Cache-Control"] = "no-cache, \
+        response_headers = {key: value for key, value in response.headers.items()}
+        response_headers["Cache-Control"] = (
+            "no-cache, \
             no-store, must-revalidate"
+        )
 
         content_type = response.headers.get("Content-Type", "")
         if content_type.startswith("text/html"):
-            return HTMLResponse(content=response.text,
-                                status_code=response.status_code)
-        return JSONResponse(content=response.json(),
-                            status_code=response.status_code)
+            return HTMLResponse(content=response.text, status_code=response.status_code)
+        return JSONResponse(content=response.json(), status_code=response.status_code)
 
 
 @app.api_route("/tournament/{path:path}", methods=["GET"])
@@ -112,11 +109,9 @@ async def user_proxy(path: str, request: Request):
     if "HX-Request" in request.headers:
         return await proxy_request("user", "user/" + path, request)
     elif path == "profile/":
-        return await proxy_request("static_files", "/user-profile-wrapper/",
-                                   request)
+        return await proxy_request("static_files", "/user-profile-wrapper/", request)
     elif path == "stats/":
-        return await proxy_request("static_files", "/user-stats-wrapper/",
-                                   request)
+        return await proxy_request("static_files", "/user-stats-wrapper/", request)
 
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
@@ -137,8 +132,10 @@ async def stop_match_proxy(path: str, request: Request):
 
 @app.api_route("/match/{path:path}", methods=["GET"])
 async def match_proxy(
-    path: str, request: Request, matchId: int = Query(None),
-    playerId: int = Query(None)
+    path: str,
+    request: Request,
+    matchId: int = Query(None),
+    playerId: int = Query(None),
 ):
     """
     Proxy requests to the match microservice.
