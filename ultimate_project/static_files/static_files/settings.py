@@ -89,11 +89,11 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_DB"),  # Name of the Database
-        "USER": os.getenv("POSTGRES_USER"),  # Username for accessing the database
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),  # Password for the database user.
+        "USER": os.getenv("POSTGRES_USER"),  # Username for database
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),  # Password db user.
         "HOST": os.getenv(
             "POSTGRES_HOST"
-        ),  # Hostname where the database server is running == compose service == Name of the db
+        ),  # Hostname == compose service == Name of the db
         "PORT": os.getenv(
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
@@ -149,9 +149,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.file"
 
+
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
         return "/health/" not in record.getMessage()
+
 
 LOGGING = {
     "version": 1,

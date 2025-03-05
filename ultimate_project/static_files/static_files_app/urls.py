@@ -6,8 +6,17 @@ urlpatterns = [
     path("login-form/", views.login_form, name="login-form"),
     path("login/", views.login, name="login"),
     path("home/", views.home),
-    path("user/profil/", views.profil),
+    path("user/profile/", views.profile),
     path("user/stats/", views.stats),
-    path("tournament-match-wrapper/", views.match_simple_template, name="tournament_match_wrapper"),
-
+    path(
+        "tournament-match-wrapper/",
+        views.match_simple_template,
+        name="tournament_match_wrapper",
+    ),
+    path(
+        "user-profile-wrapper/",
+        views.user_profile_template,
+        name="user_profile_template",
+    ),
+    path("user-stats-wrapper/", views.user_stats_template, name="user_stats_template"),
 ]

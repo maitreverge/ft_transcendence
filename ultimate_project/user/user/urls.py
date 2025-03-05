@@ -19,7 +19,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+import user_app.views as views
 from django.views.decorators.csrf import csrf_exempt
+
 
 # Create a view that doesn't get logged
 @csrf_exempt
@@ -33,4 +35,6 @@ urlpatterns = [
     ),  # Compose health-check, do not remove
     path("auth/", include("auth_app.urls")),
     path("user/", include("user_management_app.urls")),
+    path("user/profile/", views.profile),
+    path("user/stats/", views.stats),
 ]
