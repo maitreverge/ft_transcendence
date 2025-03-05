@@ -90,6 +90,26 @@ async def user_proxy(path: str, request: Request):
     elif path == "stats/":
         return await proxy_request("static_files", "/user-stats-wrapper/", request)
 
+@app.api_route("/match/stop-match/{path:path}", methods=["GET"])
+async def match_proxy(path: str, request: Request):
+    # """
+    # Proxy requests to the match microservice.
+
+    # - **path**: The path to the resource in the match service.
+    # - **request**: The incoming request object.
+    # - **Query Parameters**:
+    #   - `matchId`: The match identifier (optional).
+    #   - `playerId`: The player identifier (optional).
+    # - **Responses**:
+    #   - Returns the content from the match microservice.
+    # """
+    # path = f"match/?matchId={matchId}&playerId={playerId}" if matchId is not None and playerId is not None else "match/"
+    print("&&&&&&&&&&&&&&&&&", path, "&&&&&&&&&&&&&&&&&&")
+    return await proxy_request("match", "/match/stop-match/" + path, request)
+    # elif path == "simple-match/":
+    #     return await proxy_request("static_files", "/home/", request)     
+
+
 
 @app.api_route("/match/{path:path}", methods=["GET"])
 async def match_proxy(path: str, request: Request, matchId: int = Query(None), playerId: int = Query(None)):
@@ -110,11 +130,12 @@ async def match_proxy(path: str, request: Request, matchId: int = Query(None), p
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)     
 
+
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):
     """
     Proxy requests to the static files microservice.
-    
+
     THE SPA'S INDEX.HTML FILE IS HERE!!!
 
     - **path**: The path to the resource in the static files service.
