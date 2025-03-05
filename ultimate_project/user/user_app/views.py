@@ -12,3 +12,13 @@ def profile(request : HttpRequest):
             "pidom": os.getenv("pi_domain", "localhost:8000"),			
 		}
 	)
+
+def stats(request : HttpRequest):	
+	return render(
+		request,
+		"stats.html",
+		{
+			"rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),			
+		}
+	)

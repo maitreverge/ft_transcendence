@@ -65,6 +65,9 @@ async def user_proxy(path: str, request: Request):
         return await proxy_request("user", "user/" + path, request)
     elif path == "profile/":
         return await proxy_request("static_files", "/user-profile-wrapper/", request)
+    elif path == "stats/":
+        return await proxy_request("static_files", "/user-stats-wrapper/", request)
+
 
 @app.api_route("/match/{path:path}", methods=["GET"])
 async def match_proxy(path: str, request: Request, matchId: int = Query(None), playerId: int = Query(None)):

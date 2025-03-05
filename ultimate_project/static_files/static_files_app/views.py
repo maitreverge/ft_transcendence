@@ -39,7 +39,7 @@ def stats(request):
     return render(request, "index.html", {"username": username, "page": "partials/stats.html"})
 
 def match_simple_template(request):
-    tournament_html = requests.get("http://tournament:8001/tournament/simple-match/").text
+    page_html = requests.get("http://tournament:8001/tournament/simple-match/").text
     username = request.session.get("username")
     return render(
         request,
@@ -49,12 +49,12 @@ def match_simple_template(request):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8000"),
             # "simpleUsers": consumer.players,
-            "page": tournament_html
+            "page": page_html
         }
     )
 
 def user_profile_template(request):
-    profile_html = requests.get("http://user:8004/user/profile/").text
+    page_html = requests.get("http://user:8004/user/profile/").text
     username = request.session.get("username")
     return render(
         request,
@@ -64,6 +64,21 @@ def user_profile_template(request):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8000"),
             # "simpleUsers": consumer.players,
-            "page": profile_html
+            "page": page_html
+        }
+    )
+
+def user_stats_template(request):
+    page_html = requests.get("http://user:8004/user/stats/").text
+    username = request.session.get("username")
+    return render(
+        request,
+        "index.html",
+        {
+            "username": username,
+            "rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            # "simpleUsers": consumer.players,
+            "page": page_html
         }
     )
