@@ -110,6 +110,14 @@ function invitationCancelled(targetId) {
 	window.selfMatchId = null;	
 }
 
+function selectedBusy() {
+
+	alert("selectedBusy");
+	if (window.busyElement)
+		window.busyElement.classList.remove("invitation-waiting");
+	window.busyElement = null;
+}
+
 function invitationRefused(targetId) {
 
 	alert("refuse from target: "+ targetId + " " + window.busyElement.id);
@@ -189,7 +197,7 @@ function invitation(socket, data) {
 			if (data.response === "selfBusy")
 				alert("selfBusy");
 			else if (data.response === "selectedBusy")
-				alert("selectedBusy");	
+				selectedBusy();	
 			break;
 		case "demand":
 			receiveInvitation(socket, data.applicantId);

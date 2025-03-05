@@ -73,11 +73,11 @@ function sequelInitMatchWs(socket) {
 
 function initMatchWs() {
 
-	// if (window.matchSocket && window.antiLoop)
-	// 	return window.matchSocket.close();
-    if (window.matchSocket)
-		window.matchSocket.close();
-	// window.antiLoop = true;
+	if (window.matchSocket && window.antiLoop)
+		return window.matchSocket.close();
+    // if (window.matchSocket)
+	// 	window.matchSocket.close();
+	window.antiLoop = true;
 	if (window.rasp == "true")
 		window.matchSocket = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
@@ -91,8 +91,8 @@ function initMatchWs() {
 	};
 	window.matchSocket.onclose = () => {	
 		console.log("Connexion Match disconnected 😈");		
-		// window.antiLoop = false;
-		// initMatchWs();	
+		window.antiLoop = false;
+		initMatchWs();	
 	};
 	sequelInitMatchWs(window.matchSocket);
 }

@@ -183,7 +183,7 @@ class Pong:
 			await asyncio.sleep(1.00)
 
 	async def sendState(self):		
-		while True:	
+		while self.state != State.end:	
 			self.myplayers = [p for p in consumer.players
 				if self.id == p["matchId"]]
 			for p in self.myplayers:
