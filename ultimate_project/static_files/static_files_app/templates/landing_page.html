@@ -59,7 +59,7 @@
 					<div id="login-form" class="form-container active w-75">
 						<h2 class="mb-4">Log In</h2>
 						<div id="login-message"></div>
-						<form class="d-flex flex-column align-items-start w-100" method="post" action="/nope2">
+						<form class="d-flex flex-column align-items-start w-100" method="post" action="/user/login/">
 							{% csrf_token %}
 							<label>Username or Email</label>
 							<input class="mb-3 form-control" type="text" name="username" placeholder="Username or Email"
