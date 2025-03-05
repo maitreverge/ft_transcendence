@@ -18,9 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 # Compose health-check, do not remove
+@csrf_exempt
 def health_check(request):
     return HttpResponse(status=200)
 
