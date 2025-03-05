@@ -9,9 +9,11 @@ if not FERNET_KEY:
 
 cipher = Fernet(FERNET_KEY.encode())
 
+
 # Encrypts the 2FA secret key
 def encrypt_2fa_secret(secret):
     return cipher.encrypt(secret.encode()).decode()
+
 
 # Decrypts the 2FA secret key
 def decrypt_2fa_secret(encrypted_secret):
