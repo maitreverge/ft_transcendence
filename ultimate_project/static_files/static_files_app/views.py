@@ -26,11 +26,11 @@ def home(request):
     username = request.session.get("username")
     return render(request, "index.html", {"username": username, "page": "partials/home.html"})
 
-def profil(request):
+def profile(request):
     if request.headers.get("HX-Request"):
-        return render(request, "partials/profil.html")
+        return render(request, "partials/profile.html")
     username = request.session.get("username")
-    return render(request, "index.html", {"username": username, "page": "partials/profil.html"})
+    return render(request, "index.html", {"username": username, "page": "partials/profile.html"})
 
 def stats(request):
     if request.headers.get("HX-Request"):

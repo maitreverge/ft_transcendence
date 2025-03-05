@@ -19,7 +19,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
-
+import user_app.views as views
 
 # Compose health-check, do not remove
 def health_check(request):
@@ -33,4 +33,5 @@ urlpatterns = [
     ),  # Compose health-check, do not remove
     path("auth/", include("auth_app.urls")),
     path("user/", include("user_management_app.urls")),
+    path("user/profile/", views.profile),
 ]
