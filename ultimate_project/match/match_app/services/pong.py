@@ -25,6 +25,8 @@ class Pong:
 		self.yp2 = 0
 		self.winner = None
 		self.max_delay = 10
+		self.send_task = None
+		self.watch_task = None
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -80,6 +82,7 @@ class Pong:
 		# self.myEventLoop.run_forever()
 		# myEventLoop.run_until_complete(asyncio.Future())
 		self.myEventLoop.run_until_complete(self.launch())
+	
 		self.myEventLoop.stop()
 		self.myEventLoop.close() 
 		print("in match after RUN", flush=True)
@@ -87,8 +90,8 @@ class Pong:
 	async def launch(self):
 		self.state = State.waiting
 		# self.sendTask = self.myEventLoop.create_task(self.sendState())
-		self.myEventLoop.create_task(self.sendState())
-		self.myEventLoop.create_task(self.watch_dog())
+		self.send_task = self.myEventLoop.create_task(self.sendState())
+		# self.watch_task = self.myEventLoop.create_task(self.watch_dog())
 		while self.state in (State.running, State.waiting):		
 			
 			self.myplayers = [p for p in consumer.players
@@ -143,45 +146,72 @@ class Pong:
 				await self.sendFinalState()	
 			# print(f"ACTUAL WINNER:{self.winner}", flush=True)
 			await asyncio.sleep(0.05)
+
+		if self.send_task:
+			self.send_task.cancel()
+		if self.watch_task:
+			self.watch_task.cancel()
+		await asyncio.gather(
+			self.task_sendState, self.task_watchdog, return_exceptions=True)
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
+	# async def watch_dog2(self):
+	# 	print(f"watchdog match{self.id}", flush=True)
+	# 	delay = 0		
+	# 	while self.state == State.waiting:
+	# 		print(f"watchdog waiting match{self.id} delay {delay}", flush=True)
+	# 		delay += 1
+	# 		if (delay > self.max_delay):
+	# 			print(f"stopped by wathdog", flush=True)
+	# 			await self.stop(self.idP1)
+	# 			# self.state = State.end
+	# 			return
+	# 		await asyncio.sleep(1.00)
+	# 	await asyncio.sleep(1.00)
+	# 	await self.watch_dog()
+
 	async def watch_dog(self):
-		print(f"watchdog match{self.id}", flush=True)
-		delay = 0		
-		while self.state == State.waiting:
-			print(f"watchdog waiting match{self.id} delay {delay}", flush=True)
-			delay += 1
+		delay = 0
+		while self.state != State.end:			
+			if self.state == State.running:
+				delay = 0
 			if (delay > self.max_delay):
 				print(f"stopped by wathdog", flush=True)
-				self.state = State.end
+				await self.stop(self.idP1)
 				return
+			delay += 1
 			await asyncio.sleep(1.00)
-		await asyncio.sleep(1.00)
-		await self.watch_dog()
-				
+
 	async def sendState(self):		
 		while True:	
 			self.myplayers = [p for p in consumer.players
 				if self.id == p["matchId"]]
 			for p in self.myplayers:
 				state = self.state
-				if state != State.end:	
-					await p["socket"].send(text_data=json.dumps({
-						"state": state.name,
-						"yp1": self.yp1,
-						"yp2": self.yp2
-					}))
+				if state != State.end:
+					try:						
+						await p["socket"].send(text_data=json.dumps({
+							"state": state.name,
+							"yp1": self.yp1,
+							"yp2": self.yp2
+						}))                  
+					except Exception as e:
+						pass				
 			await asyncio.sleep(0.05)
 
 	async def sendFinalState(self):				
 		self.myplayers = [p for p in consumer.players
 			if self.id == p["matchId"]]
-		for p in self.myplayers:	
-			await p["socket"].send(text_data=json.dumps({
-				"state": self.state.name,
-				"winnerId": self.winner
-			}))
-		print(f"YYYYY selfwinner {self.idP1} {self.idP2}", flush=True)
+		for p in self.myplayers:
+			try:
+				if p["socket"].scope["type"] == "websocket" \
+					and not p["socket"].closed:	
+					await p["socket"].send(text_data=json.dumps({
+					"state": self.state.name,
+					"winnerId": self.winner
+					}))
+			except Exception as e:
+				pass
 		requests.post("http://tournament:8001/tournament/match-result/", json={
 			"matchId": self.id,
 			"winnerId": self.winner,
@@ -190,14 +220,4 @@ class Pong:
 			"p2Id": self.idP2
 		})
 	
-	try:
-                    if p["socket"].scope["type"] == "websocket" and not p["socket"].closed:
-                        await p["socket"].send(text_data=json.dumps({
-                            "state": state.name,
-                            "yp1": self.yp1,
-                            "yp2": self.yp2
-                        }))
-                    else:
-                        print(f"Socket fermé pour {p['matchId']}, arrêt de l'envoi", flush=True)
-                except Exception as e:
-                    print(f"Erreur d'envoi WebSocket : {e}", flush=True)
+			

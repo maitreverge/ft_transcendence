@@ -91,7 +91,7 @@ async def user_proxy(path: str, request: Request):
         return await proxy_request("static_files", "/user-stats-wrapper/", request)
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
-async def match_proxy(path: str, request: Request):
+async def stop_match_proxy(path: str, request: Request):
     # """
     # Proxy requests to the match microservice.
 
