@@ -46,6 +46,9 @@ async def proxy_request(service_name: str, path: str, request: Request):
             logger.error(f"Request failed: {exc}")
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
+        response_headers = {key: value for key, value in response.headers.items()}
+        response_headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
         content_type = response.headers.get("Content-Type", "")
         if content_type.startswith("text/html"):
             return HTMLResponse(content=response.text, status_code=response.status_code)
