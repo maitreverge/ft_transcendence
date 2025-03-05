@@ -5,7 +5,7 @@ import logging
 
 app = FastAPI(
     title="API Gateway",
-    description="This API Gateway routes requests to various microservices.",
+    description="This API Gateway routes requests to various microservices. Define endpoints to get any data here :)",
     version="1.0.0",
 )
 
@@ -29,7 +29,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
         path = path.lstrip("/")
         url = f"{base_url}/{path}"
 
-        print("****************************\n", url, "\n****************************")
+        print("****************************\n", url, "\n****************************", flush=True)
         headers = {key: value for key, value in request.headers.items() if key.lower() not in ["host"]}
         headers["Host"] = "localhost"
 
@@ -54,6 +54,17 @@ async def proxy_request(service_name: str, path: str, request: Request):
 
 @app.api_route("/tournament/{path:path}", methods=["GET"])
 async def tournament_proxy(path: str, request: Request):
+    """
+    Proxy requests to the tournament microservice.
+
+    - **path**: The path to the resource in the tournament service.
+    - **request**: The incoming request object.
+    - **Headers**:
+      - `HX-Request`: If present, the request is treated as an HTMX request.
+    - **Responses**:
+      - Returns the content from the tournament microservice.
+      - If `path` is "simple-match/", returns specific content.
+    """
     if "HX-Request" in request.headers:
         return await proxy_request("tournament", "tournament/" + path, request)
     elif path == "simple-match/":
@@ -61,6 +72,17 @@ async def tournament_proxy(path: str, request: Request):
 
 @app.api_route("/user/{path:path}", methods=["GET"])
 async def user_proxy(path: str, request: Request):
+    """
+    Proxy requests to the user microservice.
+
+    - **path**: The path to the resource in the user service.
+    - **request**: The incoming request object.
+    - **Headers**:
+      - `HX-Request`: If present, the request is treated as an HTMX request.
+    - **Responses**:
+      - Returns the content from the user microservice.
+      - If `path` is "profile/" or "stats/", returns specific content.
+    """
     if "HX-Request" in request.headers:
         return await proxy_request("user", "user/" + path, request)
     elif path == "profile/":
@@ -71,16 +93,29 @@ async def user_proxy(path: str, request: Request):
 
 @app.api_route("/match/{path:path}", methods=["GET"])
 async def match_proxy(path: str, request: Request, matchId: int = Query(None), playerId: int = Query(None)):
+    """
+    Proxy requests to the match microservice.
+
+    - **path**: The path to the resource in the match service.
+    - **request**: The incoming request object.
+    - **Query Parameters**:
+      - `matchId`: The match identifier (optional).
+      - `playerId`: The player identifier (optional).
+    - **Responses**:
+      - Returns the content from the match microservice.
+    """
     path = f"match/?matchId={matchId}&playerId={playerId}" if matchId is not None and playerId is not None else "match/"
 
     return await proxy_request("match", path, request)
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)     
 
-@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+@app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):
     """
     Proxy requests to the static files microservice.
+    
+    THE SPA'S INDEX.HTML FILE IS HERE!!!
 
     - **path**: The path to the resource in the static files service.
     - **request**: The incoming request object.
