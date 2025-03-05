@@ -91,7 +91,7 @@ class Pong:
 		self.state = State.waiting
 		# self.sendTask = self.myEventLoop.create_task(self.sendState())
 		self.send_task = self.myEventLoop.create_task(self.sendState())
-		# self.watch_task = self.myEventLoop.create_task(self.watch_dog())
+		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
 		while self.state in (State.running, State.waiting):		
 			
 			self.myplayers = [p for p in consumer.players
@@ -152,7 +152,7 @@ class Pong:
 		if self.watch_task:
 			self.watch_task.cancel()
 		await asyncio.gather(
-			self.task_sendState, self.task_watchdog, return_exceptions=True)
+			self.send_task, self.watch_task, return_exceptions=True)
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
 	# async def watch_dog2(self):
@@ -189,7 +189,7 @@ class Pong:
 			for p in self.myplayers:
 				state = self.state
 				if state != State.end:
-					try:						
+					try:												
 						await p["socket"].send(text_data=json.dumps({
 							"state": state.name,
 							"yp1": self.yp1,
@@ -203,13 +203,11 @@ class Pong:
 		self.myplayers = [p for p in consumer.players
 			if self.id == p["matchId"]]
 		for p in self.myplayers:
-			try:
-				if p["socket"].scope["type"] == "websocket" \
-					and not p["socket"].closed:	
-					await p["socket"].send(text_data=json.dumps({
-					"state": self.state.name,
-					"winnerId": self.winner
-					}))
+			try:					
+				await p["socket"].send(text_data=json.dumps({
+				"state": self.state.name,
+				"winnerId": self.winner
+				}))
 			except Exception as e:
 				pass
 		requests.post("http://tournament:8001/tournament/match-result/", json={
