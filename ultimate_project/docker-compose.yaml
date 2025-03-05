@@ -7,8 +7,6 @@ services:
         condition: service_healthy
       match:
         condition: service_healthy
-      static_files:
-        condition: service_healthy
     container_name: ctn_nginx
     build :
       context: ./nginx/
@@ -45,7 +43,6 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
     env_file:
       - .env
-    # HOST_PORT:CONTAINER_PORT
     ports:
       - "5433:5432"
     healthcheck:
@@ -82,9 +79,6 @@ services:
 
 
   static_files:
-    depends_on:
-      database:
-        condition: service_healthy
     container_name: ctn_static_files
     build :
       context: ./static_files/
@@ -101,12 +95,6 @@ services:
       - transcendence_network
     volumes:
       - staticvol:/app/staticfiles
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f -s http://localhost:${static_files_port}/health/ > /dev/null 2>&1"]
-      interval: 10s    # How often to run the health check (every 90 seconds)
-      timeout: 2s       # Maximum time to wait for the check to complete
-      retries: 10         # Number of consecutive failures needed to mark container as unhealthy
-      start_period: 60s  # Initial grace period where failures don't count (container startup time)
     restart: always
 
   api_gateway:
@@ -132,15 +120,11 @@ volumes:
     driver: local
   
   database_volume:
-    # Use the local driver for the volume
     driver: local
     name: database_volume
     driver_opts:
-      # Specify the type as 'none' to use a bind mount
       type: none
-      # When assigned to a container, the posgreSQL will reflect what's in this specified path.
-      device: '/home/volumes_transcendence/postgres'
-      # Bind the specified host path to the volume
+      device: '~/volumes_transcendence/postgres'
       o: bind
   
 
