@@ -20,8 +20,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.csrf import csrf_exempt
-
 
 # Create a view that doesn't get logged
 @csrf_exempt

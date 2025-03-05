@@ -13,7 +13,7 @@ def index(request):
 
 def login_form(request):
     csrf_token = csrf.get_token(request)
-    return render(request, "login.html")
+    return render(request, "landing_page.html")
 
 def login(request):
     username = request.POST.get("username")
