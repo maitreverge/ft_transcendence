@@ -13,6 +13,7 @@ services = {
     "tournament": "http://tournament:8001",
     "static_files": "http://static_files:8003",
     "match": "http://match:8002",
+    "user": "http://user:8004",
 }
 
 # logging configuration
@@ -57,6 +58,13 @@ async def tournament_proxy(path: str, request: Request):
         return await proxy_request("tournament", "tournament/" + path, request)
     elif path == "simple-match/":
         return await proxy_request("static_files", "/tournament-match-wrapper/", request)
+
+@app.api_route("/user/{path:path}", methods=["GET"])
+async def user_proxy(path: str, request: Request):
+    if "HX-Request" in request.headers:
+        return await proxy_request("user", "user/" + path, request)
+    elif path == "profile/":
+        return await proxy_request("static_files", "/user-profile-wrapper/", request)
 
 @app.api_route("/match/{path:path}", methods=["GET"])
 async def match_proxy(path: str, request: Request, matchId: int = Query(None), playerId: int = Query(None)):

@@ -52,3 +52,18 @@ def match_simple_template(request):
             "page": tournament_html
         }
     )
+
+def user_profile_template(request):
+    profile_html = requests.get("http://user:8004/user/profile/").text
+    username = request.session.get("username")
+    return render(
+        request,
+        "index.html",
+        {
+            "username": username,
+            "rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            # "simpleUsers": consumer.players,
+            "page": profile_html
+        }
+    )
