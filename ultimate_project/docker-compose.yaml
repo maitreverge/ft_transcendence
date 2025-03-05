@@ -49,10 +49,10 @@ services:
     ports:
       - "5433:5432"
     healthcheck:
-      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} > /dev/null 2>&1"]
       interval: 10s
       timeout: 2s
-      retries: 5
+      retries: 10
       start_period: 60s
     volumes:
       # Bind mount for db in local
@@ -102,11 +102,11 @@ services:
     volumes:
       - staticvol:/app/staticfiles
     healthcheck:
-      test: ["CMD", "curl", "-f", "-s", "http://localhost:${static_files_port}/health/"]
-      interval: 1m30s    # How often to run the health check (every 90 seconds)
+      test: ["CMD-SHELL", "curl -f -s http://localhost:${static_files_port}/health/ > /dev/null 2>&1"]
+      interval: 10s    # How often to run the health check (every 90 seconds)
       timeout: 2s       # Maximum time to wait for the check to complete
-      retries: 5         # Number of consecutive failures needed to mark container as unhealthy
-      start_period: 30s  # Initial grace period where failures don't count (container startup time)
+      retries: 10         # Number of consecutive failures needed to mark container as unhealthy
+      start_period: 60s  # Initial grace period where failures don't count (container startup time)
     restart: always
 
   api_gateway:
