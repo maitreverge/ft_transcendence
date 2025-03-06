@@ -5,13 +5,15 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-def simple_match(request : HttpRequest):	
+def simple_match(request : HttpRequest, user_id):
+	print(f"dans simple match {user_id}", flush=True)	
 	return render(
 		request,
 		"selection_simple.html",
 		{
 			"rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8000"),			
+            "pidom": os.getenv("pi_domain", "localhost:8000"),	
+			"user_id": user_id		
 		}
 	)
 

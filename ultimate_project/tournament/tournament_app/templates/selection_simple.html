@@ -4,7 +4,8 @@
 		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
 		<script>
 			window.rasp = "{{ rasp }}"; 
-			window.pidom = "{{ pidom }}";								
+			window.pidom = "{{ pidom }}";
+            window.user_id = "{{ user_id }}";								
 		</script>
 		<script src="{% static 'tournament/selection_simple.js' %}"
 				onload="initTournamentWs()"></script>

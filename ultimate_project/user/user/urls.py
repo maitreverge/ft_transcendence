@@ -22,7 +22,6 @@ from django.http import HttpResponse
 import user_app.views as views
 from django.views.decorators.csrf import csrf_exempt
 
-
 # Create a view that doesn't get logged
 @csrf_exempt
 def health_check(request):

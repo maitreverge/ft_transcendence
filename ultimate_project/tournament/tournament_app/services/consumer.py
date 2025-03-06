@@ -9,11 +9,13 @@ matchs = []
 
 class MyConsumer(AsyncWebsocketConsumer):
 
-	id = 0
-	async def connect(self):				
+	# id = 0
+	async def connect(self):
+		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])				
 		await self.accept() 
-		MyConsumer.id += 1
-		self.id = MyConsumer.id
+		# MyConsumer.id += 1
+		# self.id = MyConsumer.id
+		players[:] = [p for p in players if p.get('playerId') != self.id]
 		players.append({'playerId': self.id, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
 		await self.send(text_data=json.dumps({

@@ -110,6 +110,14 @@ function invitationCancelled(targetId) {
 	window.selfMatchId = null;	
 }
 
+function selectedBusy() {
+
+	alert("selectedBusy");
+	if (window.busyElement)
+		window.busyElement.classList.remove("invitation-waiting");
+	window.busyElement = null;
+}
+
 function invitationRefused(targetId) {
 
 	alert("refuse from target: "+ targetId + " " + window.busyElement.id);
@@ -189,7 +197,7 @@ function invitation(socket, data) {
 			if (data.response === "selfBusy")
 				alert("selfBusy");
 			else if (data.response === "selectedBusy")
-				alert("selectedBusy");	
+				selectedBusy();	
 			break;
 		case "demand":
 			receiveInvitation(socket, data.applicantId);
@@ -233,16 +241,18 @@ function onTournamentWsMessage(event, socket) {
 
 function initTournamentWs() {
 	
+    if (window.tournamentSocket)
+        window.tournamentSocket.close();
 	if (window.rasp == "true")
-		var socket = new WebSocket(`wss://${window.pidom}/ws/tournament/`);
+		window.tournamentSocket = new WebSocket(`wss://${window.pidom}/ws/tournament/`);
 	else
-		var socket = new WebSocket(`ws://localhost:8000/ws/tournament/`);
-	socket.onopen = () => {
+		window.tournamentSocket = new WebSocket(`ws://localhost:8000/ws/tournament/${window.user_id}/`);
+	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
 	}
-	socket.onclose = () => {
+	window.tournamentSocket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");
 		// initTournamentWs();	
 	};	
-	socket.onmessage = event => onTournamentWsMessage(event, socket);
+	window.tournamentSocket.onmessage = event => onTournamentWsMessage(event, window.tournamentSocket);
 }

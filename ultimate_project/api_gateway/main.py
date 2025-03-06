@@ -72,6 +72,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
         return JSONResponse(content=response.json(), status_code=response.status_code)
 
 
+user_id = 0
 @app.api_route("/tournament/{path:path}", methods=["GET"])
 async def tournament_proxy(path: str, request: Request):
     """
@@ -85,8 +86,14 @@ async def tournament_proxy(path: str, request: Request):
       - Returns the content from the tournament microservice.
       - If `path` is "simple-match/", returns specific content.
     """
+    
+    global user_id
+    user_id += 1
+    print("################## NEW USER CREATED #######################", user_id, flush=True)
+    print(path + str(user_id) + "/")
+
     if "HX-Request" in request.headers:
-        return await proxy_request("tournament", "tournament/" + path, request)
+        return await proxy_request("tournament", "tournament/" + path + str(user_id) + "/", request)
     elif path == "simple-match/":
         return await proxy_request(
             "static_files", "/tournament-match-wrapper/", request
