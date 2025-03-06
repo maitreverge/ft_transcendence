@@ -89,10 +89,17 @@ function initMatchWs() {
 	window.matchSocket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};
-	window.matchSocket.onclose = () => {	
+	window.matchSocket.onclose = (event) => {	
 		console.log("Connexion Match disconnected 😈");		
 		window.antiLoop = false;
-		initMatchWs();	
+		console.log("CODE: " + event.code);
+		if (event.code !== 3000)
+		{
+			console.log("codepas42");
+			initMatchWs();	
+		}
+		else
+			console.log("code42");
 	};
 	sequelInitMatchWs(window.matchSocket);
 }

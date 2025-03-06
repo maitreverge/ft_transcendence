@@ -65,6 +65,7 @@ async def tournament_proxy(path: str, request: Request):
       - Returns the content from the tournament microservice.
       - If `path` is "simple-match/", returns specific content.
     """
+    print(f"APPEL DE APIGATEWE path {path}")
     if "HX-Request" in request.headers:
         return await proxy_request("tournament", "tournament/" + path, request)
     elif path == "simple-match/":

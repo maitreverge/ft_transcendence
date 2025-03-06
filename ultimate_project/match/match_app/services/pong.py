@@ -6,17 +6,19 @@ import json
 import requests
 from enum import Enum
 
+
+
+
 class State(Enum):
 	waiting = "waiting"
 	running = "running"
 	end = "end"
 
-
 class Pong:
 
 	id = 0
 	def __init__(self, idP1, idP2):
-		
+		# pongs.append(self)
 		Pong.id += 1
 		self.id = Pong.id
 		self.idP1 = idP1
@@ -57,9 +59,18 @@ class Pong:
 			if self.winner is None and self.start_flag:
 				self.winner = self.idP1	if playerId == self.idP2 \
 					else self.idP2
+			# asyncio.run_coroutine_threadsafe(self.stop_tasks, self.myEventLoop)
 			await self.sendFinalState()
 			return True
 		return False
+
+	async def stop_tasks(self):
+
+		tasks = [self.send_task, self.watch_task]
+		for task in tasks:
+			if task and not task.done() and not task.cancelled():
+				task.cancel()
+		await asyncio.gather(*[t for t in tasks if t], return_exceptions=True)
 
 	# def stop(self, playerId):
 	# 	print(f"in stop PONG my id is : {self.id}", flush=True)
@@ -77,15 +88,32 @@ class Pong:
 	def launchTask(self):
 		self.start_flag = False
 		self.myEventLoop = asyncio.new_event_loop()
-		asyncio.set_event_loop(self.myEventLoop)
-		self.myEventLoop.create_task(self.launch())
-		# self.myEventLoop.run_forever()
-		# myEventLoop.run_until_complete(asyncio.Future())
-		self.myEventLoop.run_until_complete(self.launch())
+		asyncio.set_event_loop(self.myEventLoop)	
+		try:
+			self.myEventLoop.run_until_complete(self.launch())  
+		finally:			
+			tasks = [
+				t for t in asyncio.all_tasks(self.myEventLoop) if not t.done()]
+			for task in tasks:
+				task.cancel()
+			self.myEventLoop.run_until_complete(
+				asyncio.gather(*tasks, return_exceptions=True))
+			self.myEventLoop.stop()
+			self.myEventLoop.close()
+			print(f"Event loop fermé proprement pour match {self.id}", flush=True)
+
+	# def launchTask(self):
+	# 	self.start_flag = False
+	# 	self.myEventLoop = asyncio.new_event_loop()
+	# 	asyncio.set_event_loop(self.myEventLoop)
+	# 	self.myEventLoop.create_task(self.launch())
+	# 	# self.myEventLoop.run_forever()
+	# 	# myEventLoop.run_until_complete(asyncio.Future())
+	# 	self.myEventLoop.run_until_complete(self.launch())
 	
-		self.myEventLoop.stop()
-		self.myEventLoop.close() 
-		print("in match after RUN", flush=True)
+	# 	self.myEventLoop.stop()
+	# 	self.myEventLoop.close() 
+	# 	print("in match after RUN", flush=True)
 
 	async def launch(self):
 		self.state = State.waiting
@@ -146,29 +174,14 @@ class Pong:
 				await self.sendFinalState()	
 			# print(f"ACTUAL WINNER:{self.winner}", flush=True)
 			await asyncio.sleep(0.05)
-
-		if self.send_task:
-			self.send_task.cancel()
-		if self.watch_task:
-			self.watch_task.cancel()
-		await asyncio.gather(
-			self.send_task, self.watch_task, return_exceptions=True)
+		# self.stop_tasks()
+		# tasks = [self.send_task, self.watch_task]
+		# for task in tasks:
+		# 	if task and not task.done() and not task.cancelled():
+		# 		task.cancel()
+		# await asyncio.gather(
+		# 	*[t for t in tasks if t], return_exceptions=True)
 		print(f"in match after WHILE id:{self.id}", flush=True)
-
-	# async def watch_dog2(self):
-	# 	print(f"watchdog match{self.id}", flush=True)
-	# 	delay = 0		
-	# 	while self.state == State.waiting:
-	# 		print(f"watchdog waiting match{self.id} delay {delay}", flush=True)
-	# 		delay += 1
-	# 		if (delay > self.max_delay):
-	# 			print(f"stopped by wathdog", flush=True)
-	# 			await self.stop(self.idP1)
-	# 			# self.state = State.end
-	# 			return
-	# 		await asyncio.sleep(1.00)
-	# 	await asyncio.sleep(1.00)
-	# 	await self.watch_dog()
 
 	async def watch_dog(self):
 		delay = 0
@@ -209,7 +222,9 @@ class Pong:
 				"winnerId": self.winner
 				}))
 			except Exception as e:
-				pass
+				pass		
+		from match_app.views import del_pong
+		del_pong(self.id)
 		requests.post("http://tournament:8001/tournament/match-result/", json={
 			"matchId": self.id,
 			"winnerId": self.winner,

@@ -33,3 +33,8 @@ async def stop_match(request : HttpRequest, playerId, matchId):
 			else:
 				return JsonResponse({"status": "fail"}, status=500)
 	return JsonResponse({"status": "not authorized"}, status=403)
+
+def del_pong(pong_id):
+	print(pongs, flush=True)
+	pongs[:] = [p for p in pongs if p.id != pong_id]
+	print(pongs, flush=True)
