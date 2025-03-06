@@ -6,12 +6,21 @@
 									DUMP IDEAS
 --------------------------------------------------------------------------------
 
+DATABASE MIGRATIONS :
 
-Recrer les routes ngninx pour rebrancher mon travail
+⛔ ✅  Create a database_api service
+⛔ ✅  Move the managed models in this one
+⛔ ✅  Delete all the others models
+⛔ ✅  Simplify the SQL schemas to have none
+⛔ ✅  Simplify the models
+⛔ ✅  Strip every cipher / encryption logic into the `database_api` container
+⛔ ✅  Move the `django-admin` managing logic
+⛔ ✅  Split `admin` id from the `Players` logic to avoid getting connected
+⛔ ✅  
+⛔ ✅  
+⛔ ✅  
+⛔ ✅  Possibly leverage django filters
 
-Rebrancher mon travail
-
-Refaire une route pour admin
 
 centraliser la documentation django / database / container
 
