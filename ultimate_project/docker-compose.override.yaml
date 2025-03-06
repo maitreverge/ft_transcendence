@@ -40,6 +40,14 @@ services:
     volumes:
       - ./match:/app/
 
+  authentication:
+    environment:
+      - env=dev
+    ports:
+      - "${authentication_port}:${authentication_port}"
+    volumes:
+      - ./authentication:/app/
+
   api_gateway:
     environment:
       - env=dev
