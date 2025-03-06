@@ -2,10 +2,7 @@
 
 set -e
 
-# ! IMPORTANT : You need to NOT migrate this container.
-
-python3 manage.py makemigrations auth_app
-python3 manage.py makemigrations user_management_app
+python3 manage.py makemigrations database_api_app
 python3 manage.py makemigrations
 python3 manage.py migrate --noinput
 

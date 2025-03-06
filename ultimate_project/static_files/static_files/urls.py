@@ -28,9 +28,7 @@ def health_check(request):
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path(
-        "health/", health_check, name="health_check"
-    ),  # Compose health-check, do not remove
+    # path("admin/", admin.site.urls),
+    path("health/", health_check, name="health_check"),
     path("", include("static_files_app.urls")),
 ]

@@ -12,7 +12,7 @@ def health_check(request):
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    # path("admin/", admin.site.urls),
     path("health/", health_check, name="health_check"),
     path("user/", include("user_management_app.urls")),
     path("user/profile/", views.profile),

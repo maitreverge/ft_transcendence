@@ -63,7 +63,7 @@ services:
     volumes:
       # Bind mount for db in local
       - database_volume:/var/lib/postgresql/data
-      - ./postgres/schemas.sql:/docker-entrypoint-initdb.d/schemas.sql
+      # - ./postgres/schemas.sql:/docker-entrypoint-initdb.d/schemas.sql
     networks:
       - transcendence_network
     restart: always
