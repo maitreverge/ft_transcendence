@@ -23,8 +23,12 @@ async def match_players_update(request : HttpRequest):
 	match_id = data.get('matchId', None)
 	players = data.get('players', [])
 	match = next(
-		(m for m in consumer.matchs if m.get("matchId" == match_id)), None)
-	match.append(players)
+		(m for m in consumer.matchs if m.get("matchId") == match_id), None)
+	if match:
+		match['players'] = players
+		await consumer.MyConsumer.match_update()
+	return JsonResponse({"status": "succes"})
+
 @csrf_exempt
 async def match_result(request : HttpRequest):	
 	data = json.loads(request.body.decode('utf-8'))

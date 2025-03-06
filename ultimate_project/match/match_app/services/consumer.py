@@ -25,23 +25,25 @@ class MyConsumer(AsyncWebsocketConsumer):
 			'socket': self,
 			'dir': None
 		})
-		requests.post(
-			"http://tournament:8001/tournament/match-players-update/", json={
-				"matchId": self.matchId,
-				"players": players
-		})	
+		self.send_players_update()	
 
 	async def disconnect(self, close_code):
 		global players
 		players[:] = [p for p in players if p['socket'] != self]
-		requests.post(
-			"http://tournament:8001/tournament/match-players-update/", json={
-				"matchId": self.matchId,
-				"players": players
-		})
+		self.send_players_update()
 
 	async def receive(self, text_data):				
 		data = json.loads(text_data)	
 		for p in players: 
 			if p['socket'] == self:
 				p['dir'] = data.get('dir')
+
+	def send_players_update(self):
+		requests.post(
+		"http://tournament:8001/tournament/match-players-update/", json={
+			"matchId": self.matchId,
+			"players": [
+				{key : value for key, value in p.items() if key == 'playerId'}
+				for p in players
+			]
+		})

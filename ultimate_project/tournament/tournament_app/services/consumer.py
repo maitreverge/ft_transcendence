@@ -197,6 +197,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 
 	@staticmethod
 	async def match_update():
+		print(f"MATCH {matchs}", flush=True)
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": "matchList",
