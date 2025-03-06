@@ -8,25 +8,23 @@ players = []
 class MyConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
-		print(f"CONNECTE", flush=True)
+
 		self.matchId = self.scope["url_route"]["kwargs"]["matchId"]    
 		query_string = self.scope["query_string"].decode() 	
 		params = urllib.parse.parse_qs(query_string)
 		self.playerId = int(params.get("playerId", [None])[0])
 		match = next((p for p in pongs if p.id ==  self.matchId), None)
-		print(f"self match id {self.matchId}, {match}", flush=True)
 		await self.accept()
 		if match is None:
 			await self.close(code=3000)
-			print(f"CLOSE", flush=True)
 			return
-		print(f"PA SI CLOSE selfmatchid {self.matchId}, {match.id}", flush=True)		
 		players.append({
 			'playerId': self.playerId,
 			'matchId': self.matchId,
 			'socket': self,
 			'dir': None
-		})	
+		})
+		await self.send({'newPlayer': self.playerId})	
 
 	async def disconnect(self, close_code):
 		global players

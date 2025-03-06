@@ -38,7 +38,8 @@
 }
 
 .match {
-	
+	width:fit-content;
+	height:fit-content;
 	margin:5px;
 	margin-top:10px;
 	display:inline-block;
@@ -65,6 +66,8 @@
 }
 
 .self-match {
+	width:fit-content;
+	height:fit-content;
 	background-color: rgb(250, 8, 250);
 }
 

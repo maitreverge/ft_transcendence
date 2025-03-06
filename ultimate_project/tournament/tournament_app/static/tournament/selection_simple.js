@@ -38,16 +38,31 @@ function setSelfMatchId() {
 	});
 }
 
-function addToMatchs(matchsContainer, match) {
+function movePlayerInMatch(socket, matchElement, match) {
+	
+	const playersContainer = document.getElementById("players");
+	const playerElements = [...playersContainer.children];
+
+	playerElements.forEach(player => {
+		if (player.id == match.playerId || player.id == match.otherId)
+		{
+			player.remove();
+			matchElement.appendChild(player);		
+		}		
+	});
+}
+
+function addToMatchs(socket, matchsContainer, match) {
   	
 	const div = document.createElement("div");
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
     matchsContainer.appendChild(div);
+	movePlayerInMatch(socket, div, match)
 }
 
-function updateMatchs(matchs) {
+function updateMatchs(socket, matchs) {
 
 	console.log("new update " + matchs);
     const matchsContainer = document.getElementById("matchs");
@@ -66,11 +81,12 @@ function updateMatchs(matchs) {
 				window.selfMatchId = null;
 			}
 			matchsContainer.removeChild(match);
+			updatePlayers(socket, window.players);
 		}
 	});
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
-			addToMatchs(matchsContainer, match);		
+			addToMatchs(socket, matchsContainer, match);		
 	});
 	setSelfMatchId();	
 }
@@ -151,20 +167,20 @@ function sendPlayerClick(socket, selected)
 		}));
 }
 
-function addToPlayers(socket, playersContainer, player) {
-  	
+function addPlayerToContainer(socket, container, playerId) {
+
 	const div = document.createElement("div");
 	div.className = "user";
-	div.textContent = `user: ${player.playerId}`;
-	div.id = player.playerId;	
-	if (player.playerId === window.selfId)
+	div.textContent = `user: ${playerId}`;
+	div.id = playerId;	
+	if (playerId === window.selfId)
 	{
 		div.classList.add("self-player");
 		div.onclick = ()=> alert("you can't choose yourself");		
 	}
 	else	
 		div.onclick = () =>	sendPlayerClick(socket, div);	
-    playersContainer.appendChild(div);
+    container.appendChild(div);
 }
 
 function updatePlayers(socket, players) {
@@ -172,13 +188,13 @@ function updatePlayers(socket, players) {
     const playersContainer = document.getElementById("players");
 	const playerElements = [...playersContainer.children];	
 
-    playerElements.forEach( player => {	
+    playerElements.forEach(player => {	
 		if (players.every(el => el.playerId != player.id))		
 			playersContainer.removeChild(player);					
 	});
-	players.forEach( player => {	
+	players.forEach(player => {	
 		if (playerElements.every(el => el.id != player.playerId))		
-			addToPlayers(socket, playersContainer, player);		
+			addPlayerToContainer(socket, playersContainer, player.playerId);		
 	});	
 }
 
@@ -220,16 +236,18 @@ function onTournamentWsMessage(event, socket) {
 
 	console.log("Message reçu :", event.data);
 	const data = JSON.parse(event.data);
+	
 	switch (data.type)
 	{
 		case "selfAssign":
 			setSelfId(data.selfId);
 			break;
 		case "playerList":
+			window.players = data.players;
 			updatePlayers(socket, data.players);
 			break;
 		case "matchList":
-			updateMatchs(data.matchs);
+			updateMatchs(socket, data.matchs);
 			break;
 		case "invitation":
 			invitation(socket, data)

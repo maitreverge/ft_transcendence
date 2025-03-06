@@ -11,8 +11,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 
 	# id = 0
 	async def connect(self):
-		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])				
 		await self.accept() 
+		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])				
 		# MyConsumer.id += 1
 		# self.id = MyConsumer.id
 		players[:] = [p for p in players if p.get('playerId') != self.id]

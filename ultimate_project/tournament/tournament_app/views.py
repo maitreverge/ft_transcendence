@@ -18,13 +18,17 @@ def simple_match(request : HttpRequest, user_id):
 	)
 
 @csrf_exempt
+async def match_players_update(request : HttpRequest):
+	data = json.loads(request.body.decode('utf-8'))
+	
+@csrf_exempt
 async def match_result(request : HttpRequest):	
-	result = json.loads(request.body.decode('utf-8'))
-	match_id = result.get('matchId')
-	winner_id = result.get('winnerId')
-	looser_id = result.get('looserId')
-	p1_id = result.get('p1Id')
-	p2_id = result.get('p2Id')
+	data = json.loads(request.body.decode('utf-8'))
+	match_id =	data.get('matchId')
+	winner_id =	data.get('winnerId')
+	looser_id =	data.get('looserId')
+	p1_id =	data.get('p1Id')
+	p2_id =	data.get('p2Id')
 	p1 = next((p for p in consumer.players if p.get('playerId') == p1_id), None)
 	p2 = next((p for p in consumer.players if p.get('playerId') == p2_id), None)
 	if p1:
