@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect
 # from django.middleware import csrf
 import requests
 import os
-
+import static_files.settings as settings
+from django.http import JsonResponse
 
 def index(request):
     username = request.session.get("username")
@@ -98,3 +99,13 @@ def user_stats_template(request):
             "page": page_html,
         },
     )
+
+def translations(request, lang):
+    print("********** translations called **********", flush=True)
+    try:
+        file_path = os.path.join(settings.BASE_DIR, 'static_files_app', 'static', 'translations', f'{lang}.json')
+        with open(file_path, 'r') as file:
+            return JsonResponse(file.read(), safe=False)
+    except FileNotFoundError:
+        return JsonResponse({'error': 'File not found'}, status=404)
+    

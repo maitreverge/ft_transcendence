@@ -19,4 +19,5 @@ urlpatterns = [
         name="user_profile_template",
     ),
     path("user-stats-wrapper/", views.user_stats_template, name="user_stats_template"),
+    path('translations/<str:lang>.json', views.translations, name='translations'),
 ]
