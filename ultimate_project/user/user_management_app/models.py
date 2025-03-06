@@ -84,7 +84,7 @@ class Match(models.Model):
     player1 = models.ForeignKey(
         to=Player,  # Explicit reference to Player model
         on_delete=models.CASCADE,  # If a player is deleted, the match is also deleted
-        related_name="player1",  # Allows querying Match objects where the player was player1
+        related_name="player1",
     )
     player2 = models.ForeignKey(
         to=Player,
@@ -99,7 +99,7 @@ class Match(models.Model):
 
     tournament = models.ForeignKey(
         to=Tournament,
-        on_delete=models.SET_NULL,  # If the tournament is deleted, set this field to NULL
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )

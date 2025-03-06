@@ -28,6 +28,7 @@ from django.views.decorators.csrf import csrf_exempt
 def health_check(request):
     return HttpResponse(status=200)
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(

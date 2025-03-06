@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 
 # from django.http import HttpResponse
-# from django.middleware import csrf
 # from django.template import Context, Template
+from django.middleware import csrf
 import requests
 import os
 
@@ -16,8 +16,8 @@ def index(request):
 
 
 def login_form(request):
-    # csrf_token = csrf.get_token(request)
-    return render(request, "login.html")
+    csrf_token = csrf.get_token(request)
+    return render(request, "landing_page.html")
 
 
 def login(request):

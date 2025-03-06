@@ -30,9 +30,9 @@ def login_view(request):
                 if user.two_fa_enabled:
                     print("2FA called on login", flush=True)
                     # Store user ID in session without logging them in
-                    request.session['user_id_for_2fa'] = user.id
+                    request.session["user_id_for_2fa"] = user.id
                     return redirect(reverse("check_2fa"))
-                
+
                 # If 2FA is not enabled, proceed with regular login
                 login(request, user)
                 return HttpResponseRedirect(reverse("auth_index"))
@@ -72,12 +72,12 @@ def signin_view(request):
                     password=password,
                     two_fa_enabled=two_fa_enabled,
                 )
-                
+
                 # If 2FA is enabled, we need to set up 2FA first
                 if two_fa_enabled:
                     # Log the user in first so they can access setup_2fa
                     login(request, user)
-                    request.session['user_id_for_2fa'] = user.id
+                    request.session["user_id_for_2fa"] = user.id
                     return redirect("setup_2fa")
                 else:
                     # If no 2FA, just log them in and redirect

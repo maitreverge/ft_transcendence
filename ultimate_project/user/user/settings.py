@@ -108,9 +108,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB"),  # Name of the Database
         "USER": os.getenv("POSTGRES_USER"),  # Username for accessing the database
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),  # Password for the database user.
-        "HOST": os.getenv(
-            "POSTGRES_HOST"
-        ),  # Hostname where the database server is running == compose service == Name of the db
+        "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": os.getenv(
             "POSTGRES_PORT"
         ),  # Port number on which the database server is listening.
@@ -170,9 +168,11 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
+
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
         return "/health/" not in record.getMessage()
+
 
 LOGGING = {
     "version": 1,
