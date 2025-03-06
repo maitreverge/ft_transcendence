@@ -5,11 +5,9 @@
     {% include "scripts.html" %} 
     </head>
 
-    <body x-init=""  hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
+    <body hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
         
-        <template x-if="!document.querySelector('.navbar')">
-            {% include "navbar.html" %}
-        </template>
+        {% include "navbar.html" %}
         <div id="main_div">
         {% if page %}
             {% if page|slice:"-5:" == ".html" %}
