@@ -5,7 +5,7 @@
     {% include "scripts.html" %} 
     </head>
 
-    <body x-data="router()" x-init="init()"  hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
+    <body x-init="init()"  hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
         
         <template x-if="!document.querySelector('.navbar')">
             {% include "navbar.html" %}
