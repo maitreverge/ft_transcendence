@@ -50,8 +50,9 @@ def stats(request):
     return render(request, "index.html", obj)
 
 
-def match_simple_template(request):
-    url = "http://tournament:8001/tournament/simple-match/"
+def match_simple_template(request, user_id):
+    url = f"http://tournament:8001/tournament/simple-match/{user_id}/"
+    print(f"###################### userid {user_id} #################", flush=True)
     page_html = requests.get(url).text
     username = request.session.get("username")
     return render(

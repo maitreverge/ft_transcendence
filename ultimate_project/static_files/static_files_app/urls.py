@@ -9,7 +9,7 @@ urlpatterns = [
     path("user/profile/", views.profile),
     path("user/stats/", views.stats),
     path(
-        "tournament-match-wrapper/",
+        "tournament-match-wrapper/<str:user_id>/",
         views.match_simple_template,
         name="tournament_match_wrapper",
     ),

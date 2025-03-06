@@ -96,7 +96,7 @@ async def tournament_proxy(path: str, request: Request):
         return await proxy_request("tournament", "tournament/" + path + str(user_id) + "/", request)
     elif path == "simple-match/":
         return await proxy_request(
-            "static_files", "/tournament-match-wrapper/", request
+            "static_files", "/tournament-match-wrapper/" + str(user_id) + "/", request
         )
 
 
