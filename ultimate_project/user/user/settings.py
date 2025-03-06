@@ -50,13 +50,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "user_management_app",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "django_otp",  # 2FA
-    "django_otp.plugins.otp_totp",  # 2FA
     f"{NAME}_app",
+    "user_management_app",
 ]
 
 MIDDLEWARE = [
@@ -95,37 +90,23 @@ ASGI_APPLICATION = f"{NAME}.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB"),  # Name of the Database
-        "USER": os.getenv("POSTGRES_USER"),  # Username for accessing the database
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),  # Password for the database user.
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv(
-            "POSTGRES_PORT"
-        ),  # Port number on which the database server is listening.
-        "OPTIONS": {"options": "-c search_path=user_schema"},
-    }
-}
+DATABASES = {}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-AUTH_PWD_MODULE = "django.contrib.auth.password_validation."
-
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": f"{AUTH_PWD_MODULE}UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        "NAME": f"{AUTH_PWD_MODULE}MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        "NAME": f"{AUTH_PWD_MODULE}CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": f"{AUTH_PWD_MODULE}NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -156,17 +137,12 @@ STATIC_ROOT = "/app/staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    "django.contrib.auth.backends.ModelBackend",
-]
-
-
+# Healthcheck filter
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
         return "/health/" not in record.getMessage()
 
-
+# Logging configuration for healthcheck
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

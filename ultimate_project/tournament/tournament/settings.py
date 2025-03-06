@@ -95,21 +95,7 @@ ASGI_APPLICATION = f"{NAME}.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB"),  # Name of the Database
-        "USER": os.getenv("POSTGRES_USER"),  # Username for accessing the database
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),  # Password for the database user.
-        "HOST": os.getenv(
-            "POSTGRES_HOST"
-        ),  # Hostname where the database server is running == compose service == Name of the db
-        "PORT": os.getenv(
-            "POSTGRES_PORT"
-        ),  # Port number on which the database server is listening.
-        "OPTIONS": {"options": "-c search_path=user_schema"},
-    }
-}
+DATABASES = {}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

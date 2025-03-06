@@ -7,19 +7,55 @@
 --------------------------------------------------------------------------------
 
 DATABASE MIGRATIONS :
+⛔ ✅  
 
-⛔ ✅  Create a database_api service
+# PRIORITY
+✅  Create a database_api service
+
+## MODELS
 ⛔ ✅  Move the managed models in this one
 ⛔ ✅  Delete all the others models
-⛔ ✅  Simplify the SQL schemas to have none
 ⛔ ✅  Simplify the models
+
+
+## COMPOSE // DOCKER
+⛔ ✅  Remove the healthchecks for old containers
+✅  Create the service database_api
+✅  Remove the postgres clients from others containers
+
+
+## SETTINGS
+⛔ ✅  Roll back to dummy config like
+
+```python
+DATABASES = {}
+```
+⛔ ✅  Remove Admin apps in `INSTALLED_APPS`
+⛔ ✅  Remove Database MiddleWares
+⛔ ✅  Remove anything Database Related
+⛔ ✅  
+⛔ ✅  Simplify the 
+⛔ ✅  Simplify the SQL schemas to have none
+
+
+⛔ ✅  Split `admin` id from the `Players` logic to avoid getting disconnected
 ⛔ ✅  Strip every cipher / encryption logic into the `database_api` container
-⛔ ✅  Move the `django-admin` managing logic
-⛔ ✅  Split `admin` id from the `Players` logic to avoid getting connected
-⛔ ✅  
-⛔ ✅  
-⛔ ✅  
+
+
+
+⛔ ✅  Move the `django-admin` managing logic to the 
 ⛔ ✅  Possibly leverage django filters
+
+
+```python
+# default database stuff
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+```
 
 
 centraliser la documentation django / database / container
