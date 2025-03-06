@@ -99,9 +99,6 @@ services:
 
 # ================================= STATIC_FILES =====================================
   static_files:
-    depends_on:
-      database:
-        condition: service_healthy
     container_name: ctn_static_files
     build :
       context: ./static_files/

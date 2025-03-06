@@ -22,7 +22,7 @@ services:
     volumes:
       - staticvol:/app/staticfiles
     healthcheck:
-      test: ["CMD-SHELL", "curl -f -s http://localhost:${database_api_port}/health/"]
+      test: ["CMD-SHELL", "curl -f -s http://localhost:${database_api_port}/health/ > /dev/null 2>&1"]
       interval: 10s    # How often to run the health check (every 90 seconds)
       timeout: 2s       # Maximum time to wait for the check to complete
       retries: 10         # Number of consecutive failures needed to mark container as unhealthy
