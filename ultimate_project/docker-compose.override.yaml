@@ -48,6 +48,14 @@ services:
     volumes:
       - ./authentication:/app/
 
+  database_api:
+    environment:
+      - env=dev
+    ports:
+      - "${database_api_port}:${database_api_port}"
+    volumes:
+      - ./database_api:/app/
+
   api_gateway:
     environment:
       - env=dev

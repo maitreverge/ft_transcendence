@@ -15,11 +15,11 @@ DATABASE MIGRATIONS :
 ## MODELS
 ✅  Move the managed models in this one
 ✅  Delete all the others models
-⛔  ✅  Simplify the models ( maybe already simplified )
+✅  Simplify the models ( maybe already simplified )
 
 
 ## COMPOSE // DOCKER
-⛔ ✅  Remove the healthchecks for old containers
+✅  Remove the healthchecks for old containers
 ✅  Create the service database_api
 ✅  Remove the postgres clients from others containers
 
@@ -34,7 +34,7 @@ DATABASES = {}
 ✅  Remove Database MiddleWares
 ✅  Remove anything Database Related
 ⛔ ✅  
-⛔ ✅  Simplify the SQL schemas to have none
+✅  Simplify the SQL schemas to have none
 
 
 ⛔ ✅  Split `admin` id from the `Players` logic to avoid getting disconnected

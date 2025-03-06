@@ -1,33 +1,46 @@
 #!/bin/bash
 
-set -e
+# Check if migration files exist
+MIGRATION_EXISTS=$(find /app/database_api_app/migrations -name "0*.py" | wc -l)
 
-python3 manage.py makemigrations database_api_app
-python3 manage.py makemigrations
-python3 manage.py migrate --noinput
+if [ "$MIGRATION_EXISTS" -eq 0 ]; then
+    # Initial migration needed - no migration files exist
+    echo "Creating initial migrations..."
+    python3 manage.py makemigrations database_api_app
+else
+    # Check if there are model changes requiring new migrations
+    CHANGES=$(python3 manage.py makemigrations --dry-run --check database_api_app 2>&1)
+    if echo "$CHANGES" | grep -q "No changes detected"; then
+        echo "No model changes detected, skipping makemigrations"
+    else
+        echo "Model changes detected, creating migrations..."
+        python3 manage.py makemigrations database_api_app
+    fi
+fi
 
-# Ensure a superuser exists AFTER migrations, and creates one if not here
+# Check if there are pending migrations to apply
+PENDING_MIGRATIONS=$(python3 manage.py showmigrations --plan | grep -c "\[ \]")
+if [ "$PENDING_MIGRATIONS" -gt 0 ]; then
+    echo "Applying pending migrations..."
+    python3 manage.py migrate
+else
+    echo "No pending migrations, database is up to date"
+fi
+
+# Ensure a superuser exists
 python3 manage.py shell -c "
-from django.db import connection
 from django.contrib.auth import get_user_model;
-
-# Check if auth_user table exists before querying
-with connection.cursor() as cursor:
-    cursor.execute(\"SELECT to_regclass('user_schema.player')\")
-    exists = cursor.fetchone()[0]
-
-if exists:
-    User = get_user_model()
-    if not User.objects.filter(is_superuser=True).exists():
-        User.objects.create_superuser('admin@example.com', 'admin', 'adminpassword')
+User = get_user_model()
+if not User.objects.filter(is_superuser=True).exists():
+    User.objects.create_superuser('admin@example.com', 'admin', 'adminpassword')
 "
 
 if [ "${env}" = "prod" ]; then \
-	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
-	python3 manage.py collectstatic --noinput; \
-	uvicorn ${name}.asgi:application --host 0.0.0.0 --port ${port}; \
+    mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \
+    python3 manage.py collectstatic --noinput; \
+    uvicorn ${name}.asgi:application --host 0.0.0.0 --port ${port}; \
 else \
-	python3 ./manage.py runserver 0.0.0.0:${port}; \
+    python3 ./manage.py runserver 0.0.0.0:${port}; \
 fi
 
 exec "$@"

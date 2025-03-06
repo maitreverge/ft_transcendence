@@ -58,9 +58,6 @@ class Player(AbstractBaseUser, PermissionsMixin):
     objects = PlayerManager()  # Custom manager
 
     class Meta:
-        managed = (
-            True  # This service is responsible for creating and managing this model
-        )
         db_table = "player"  # Explicitly set the schema and table name
 
     def __str__(self):
@@ -71,7 +68,6 @@ class Tournament(models.Model):
     id = models.AutoField(primary_key=True)
 
     class Meta:
-        managed = True
         db_table = "tournament"
 
     def __str__(self):
@@ -105,7 +101,6 @@ class Match(models.Model):
     )
 
     class Meta:
-        managed = True
         db_table = "match"
 
     def __str__(self):
