@@ -20,7 +20,11 @@ def simple_match(request : HttpRequest, user_id):
 @csrf_exempt
 async def match_players_update(request : HttpRequest):
 	data = json.loads(request.body.decode('utf-8'))
-	
+	match_id = data.get('matchId', None)
+	players = data.get('players', [])
+	match = next(
+		(m for m in consumer.matchs if m.get("matchId" == match_id)), None)
+	match.append(players)
 @csrf_exempt
 async def match_result(request : HttpRequest):	
 	data = json.loads(request.body.decode('utf-8'))

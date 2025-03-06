@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import urllib
 from match_app.views import pongs
+import requests
 
 players = []
 
@@ -24,13 +25,22 @@ class MyConsumer(AsyncWebsocketConsumer):
 			'socket': self,
 			'dir': None
 		})
-		await self.send({'newPlayer': self.playerId})	
+		requests.post(
+			"http://tournament:8001/tournament/match-players-update/", json={
+				"matchId": self.matchId,
+				"players": players
+		})	
 
 	async def disconnect(self, close_code):
 		global players
 		players[:] = [p for p in players if p['socket'] != self]
-		
-	async def receive(self, text_data):		
+		requests.post(
+			"http://tournament:8001/tournament/match-players-update/", json={
+				"matchId": self.matchId,
+				"players": players
+		})
+
+	async def receive(self, text_data):				
 		data = json.loads(text_data)	
 		for p in players: 
 			if p['socket'] == self:
