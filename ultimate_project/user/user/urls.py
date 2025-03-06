@@ -1,21 +1,3 @@
-"""
-URL configuration for user project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-
-# USER MAIN PROJECT
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
@@ -29,11 +11,8 @@ def health_check(request):
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path(
-        "health/", health_check, name="health_check"
-    ),  # Compose health-check, do not remove
-    path("auth/", include("auth_app.urls")),
+    # path("admin/", admin.site.urls),
+    path("health/", health_check, name="health_check"),
     path("user/", include("user_management_app.urls")),
     path("user/profile/", views.profile),
     path("user/stats/", views.stats),

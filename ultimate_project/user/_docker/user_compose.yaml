@@ -1,8 +1,5 @@
 services:
   user:
-    depends_on:
-      database:
-        condition: service_healthy
     container_name: ctn_user
     build :
       context: ../ # ! FUCKING DO NOT TOUCH THIS, I LOST 5 LIFETIME YEARS ON THIS
@@ -12,8 +9,7 @@ services:
       name: user
       port: $user_port
       pi_domain: $PI_DOMAIN
-      2FA_KEY: $2FA_KEY
-      DJANGO_SETTINGS_MODULE: user.settings
+      DJANGO_SETTINGS_MODULE: user.settings # usefull ??
     env_file:
       - ../../.env
     image: img_user
@@ -22,7 +18,7 @@ services:
     volumes:
       - staticvol:/app/staticfiles
     healthcheck:
-      test: ["CMD-SHELL", "curl -f -s http://localhost:${user_port}/health/"]
+      test: ["CMD-SHELL", "curl -f -s http://localhost:${user_port}/health/ > /dev/null 2>&1"]
       interval: 10s    # How often to run the health check (every 90 seconds)
       timeout: 2s       # Maximum time to wait for the check to complete
       retries: 10         # Number of consecutive failures needed to mark container as unhealthy

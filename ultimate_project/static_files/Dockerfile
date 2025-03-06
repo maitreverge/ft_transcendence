@@ -2,8 +2,7 @@ FROM python:3.11-slim
 
 RUN apt update -y && \ 
 	apt upgrade -y && \
-	apt install curl -y && \
-	apt install postgresql-client -y
+	apt install curl -y
 
 WORKDIR /app
 

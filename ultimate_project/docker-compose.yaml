@@ -1,4 +1,6 @@
 services:
+
+  # ===================================== NGINX ========================================
   nginx:
     depends_on:
       user:
@@ -8,6 +10,10 @@ services:
       match:
         condition: service_healthy
       static_files:
+        condition: service_healthy
+      authentication:
+        condition: service_healthy
+      database_api:
         condition: service_healthy
     container_name: ctn_nginx
     build :
@@ -30,6 +36,7 @@ services:
       - transcendence_network
     restart: on-failure
   
+# ===================================== DATABASE =====================================
   database:
     image: postgres:latest
     container_name: ctn_database
@@ -56,34 +63,42 @@ services:
     volumes:
       # Bind mount for db in local
       - database_volume:/var/lib/postgresql/data
-      - ./postgres/schemas.sql:/docker-entrypoint-initdb.d/schemas.sql
+      # - ./postgres/schemas.sql:/docker-entrypoint-initdb.d/schemas.sql
     networks:
       - transcendence_network
     restart: always
   
-  # ========= TOURNAMENTS ==========
+  database_api:
+    extends:
+      file: ./database_api/_docker/db_api_compose.yaml
+      service: database_api
+
+# =================================== TOURNAMENTS ====================================
   tournament:
     extends:
       file: ./tournament/_docker/tournament_compose.yaml
       service: tournament
 
-  # ========= MATCHES ==========
+# ===================================== MATCHES ======================================
   match:
     extends:
       file: ./match/_docker/match_compose.yaml
       service: match
 
-  # ========= USERS ==========
+# ====================================== USERS =======================================
   user:
     extends:
       file: ./user/_docker/user_compose.yaml
       service: user
 
+# ================================= AUTHENTICATION ===================================
+  authentication:
+    extends:
+      file: ./authentication/_docker/auth_compose.yaml
+      service: authentication
 
+# ================================= STATIC_FILES =====================================
   static_files:
-    depends_on:
-      database:
-        condition: service_healthy
     container_name: ctn_static_files
     build :
       context: ./static_files/
@@ -108,6 +123,7 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
+# ================================= API GATEWAY ======================================
   api_gateway:
     container_name: ctn_api_gateway
     build :
@@ -124,7 +140,7 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
-
+# ================================= COMPOSE VOLUMES ==================================
 volumes:
   # Seb Static files volumes
   staticvol:
@@ -137,8 +153,8 @@ volumes:
       type: none
       device: '~/volumes_transcendence/postgres'
       o: bind
-  
 
+# ================================= COMPOSE NETWORK ==================================
 networks:
   transcendence_network:
     name: transcendence_network

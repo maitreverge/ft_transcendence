@@ -1,4 +1,3 @@
 django
 requests    
 uvicorn
-psycopg2-binary
