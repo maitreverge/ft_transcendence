@@ -67,6 +67,13 @@ function movePlayerInMatch(socket, matchElement, match) {
 				matchElement.appendChild(clone);	
 			}		
 		});
+
+		matchPlayerElements.forEach(player => {
+			if (match.players.every(el => el.playerId != player.id))
+			{
+				player.remove();
+			}
+		});
 	}
 	else
 	{
