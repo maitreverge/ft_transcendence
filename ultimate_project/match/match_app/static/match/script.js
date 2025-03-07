@@ -14,6 +14,31 @@ function stopMatch(matchId)
 	}
 	else
 		document.getElementById('match').remove()
+	console.log("YOUHOUHOUHOU");
+	if (window.selfMatchId != window.matchId)
+	{
+		console.log("jypigequeuedalle");
+		if (!window.matchSocket)
+			console.log("LE WEBSOCKET ETS NULL.");
+		else 
+		{
+			console.log("je sais pas ce qu eje fou la");
+			if (window.matchSocket.readyState === WebSocket.OPEN)
+			{
+				console.log("je vais envoyer 42");
+				window.stop = true
+				window.matchSocket.close();
+			} 
+			else 
+			{
+				console.log("La WebSocket était déjà fermée.");
+			}
+			console.log("je nai pas plante");
+		}
+	}
+	else
+		console.log("pas spec!!");
+	
 }
 
 function setCommands(socket) {
@@ -47,14 +72,20 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	}
 	if (waitingState[0] != data.state) 
 	{
-		waitingState[0] = data.state;				
-		if (data.state == "waiting")
-			waiting.classList.remove("no-waiting");
-		else			
-			waiting.classList.add("no-waiting");			
+		waitingState[0] = data.state;	
+		if (waiting) 
+		{
+			if (data.state == "waiting")			
+				waiting.classList.remove("no-waiting");
+			else			
+				waiting.classList.add("no-waiting");			
+		}			
 	}
-	pads[0].style.top = data.yp1 + "vh";
-	pads[1].style.top = data.yp2 + "vh";
+	if (pads[0] && pads[1])
+	{
+		pads[0].style.top = data.yp1 + "vh";
+		pads[1].style.top = data.yp2 + "vh";
+	}
 }
 
 function sequelInitMatchWs(socket) {
@@ -68,11 +99,15 @@ function sequelInitMatchWs(socket) {
 		event, pads, [waiting, end], waitingState);
 	setCommands(socket);
 	if (window.selfMatchId != window.matchId)
-		document.getElementById("spec").style.display = "block";
+	{
+		const spec = document.getElementById("spec");
+		if (spec)
+			spec.style.display = "block";
+	}
 }
 
 function initMatchWs() {
-
+//si je viens du debut je sui sclosé (et je reviens par boucle) si je viens de onclse je continu normal
 	if (window.matchSocket && window.antiLoop)
 		return window.matchSocket.close();
     // if (window.matchSocket)
@@ -93,13 +128,14 @@ function initMatchWs() {
 		console.log("Connexion Match disconnected 😈");		
 		window.antiLoop = false;
 		console.log("CODE: " + event.code);
-		if (event.code !== 3000)
-		{
+		if (event.code !== 3000 && !window.stop)
+		{			
 			console.log("codepas42");
 			initMatchWs();	
 		}
 		else
 			console.log("code42");
+		window.stop = false;
 	};
 	sequelInitMatchWs(window.matchSocket);
 }

@@ -178,7 +178,8 @@ class MyConsumer(AsyncWebsocketConsumer):
 		matchs.append({
 			"matchId": match_id,
 			"playerId": applicantId, 
-			"otherId": self.id
+			"otherId": self.id,
+			# "players": [{"playerId": applicantId}, {"playerId": self.id}]
 		})
 		return match_id		
 

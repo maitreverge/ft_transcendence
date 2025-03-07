@@ -56,14 +56,15 @@ function movePlayerInMatch(socket, matchElement, match) {
 		match.players.forEach(p => console.log("foriche ", p.playerId))
 		playerElements.forEach(player => {
 			if (
-				(player.id == match.playerId || player.id == match.otherId ||
-				match.players.some(p => p.playerId == player.id)) && matchPlayerElements.every(p => p.id != player.id)
+				// (player.id == match.playerId || player.id == match.otherId ||
+				(match.players.some(p => p.playerId == player.id)) && matchPlayerElements.every(p => p.id != player.id)
 			)
 			{
 				// player.remove();
 				console.log("JE VAIS APPEND CHILD CAR IL Y A PLAYER!!");
 				// matchElement.appendChild(player);	
 				const clone = player.cloneNode(true)
+				clone.onclick = player.onclick;
 				matchElement.appendChild(clone);	
 			}		
 		});
@@ -75,22 +76,23 @@ function movePlayerInMatch(socket, matchElement, match) {
 			}
 		});
 	}
-	else
-	{
+	// else
+	// {
 
-		console.log("pas de players ", match.players);
-		console.log("CHROUCROUTE");
-		playerElements.forEach(player => {
-			if (player.id == match.playerId || player.id == match.otherId)// ||
-				// (match.players.some(p => p.playerId == player.id)))// && matchPlayerElements.every(p => p.id != player.id)))
-			{
-				// player.remove();
-				console.log("JE VAIS APPEND CHILD CAR IL Y A CHROUCROUTE!!");
-				const clone = player.cloneNode(true)
-				matchElement.appendChild(clone);		
-			}		
-		});
-	}
+	// 	console.log("pas de players ", match.players);
+	// 	console.log("CHROUCROUTE");
+	// 	playerElements.forEach(player => {
+	// 		if (player.id == match.playerId || player.id == match.otherId)// ||
+	// 			// (match.players.some(p => p.playerId == player.id)))// && matchPlayerElements.every(p => p.id != player.id)))
+	// 		{
+	// 			// player.remove();
+	// 			console.log("JE VAIS APPEND CHILD CAR IL Y A CHROUCROUTE!!");
+	// 			const clone = player.cloneNode(true)
+	// 			clone.onclick = player.onclick;
+	// 			matchElement.appendChild(clone);		
+	// 		}		
+	// 	});
+	// }
 }
 
 // function movePlayerInMatch(socket) {
