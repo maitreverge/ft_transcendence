@@ -1,6 +1,17 @@
 {
-    "Ma queue": "My dick",
-    "Mon zob": "My Willy",
-    "Mes couilles": "My eggs",
-    "Mon membre": "My cock"
+    "Accueil": "Home",
+    "Nom d’utilisateur": "Username",
+    "Email": "Email",
+    "Date d'inscription": "Subscription date",
+    "Dernière connexion": "Last login",
+    "Statut": "Status",
+    "Nombre d'actions": "Total actions",
+    "Durée totale": "Total duration of use",
+    "Nombre de connexions": "Total logins",
+    "Taux de complétion": "Completion rate",
+    "Classement": "Ranking",
+    "Match simple": "Single match",
+    "Tournoi": "Tournament",
+    "Profil": "Profile",
+    "Statistiques": "Statistics"
 }

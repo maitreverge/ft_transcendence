@@ -10,7 +10,7 @@
             </select>
             <span>----</span>
             <a id="nav-home" class="navbar-brand cursor-pointer" hx-trigger="click" hx-push-url="true" hx-get="/home/"
-            hx-target="#main_div" hx-select="#main_div > *" >Home</a>
+            hx-target="#main_div" hx-select="#main_div > *" data-translate="Accueil">Home</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -19,12 +19,13 @@
                     <li class="nav-item cursor-pointer">
                         <a id="nav-profile" class="nav-link active" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
                         hx-target="#main_div"
-                        >profile</a>
+                        data-translate="Profil">profile</a>
                     </li>
                     <li class="nav-item">
                         <a id="nav-stats" class="nav-link pe-auto"  hx-trigger="click" hx-push-url="true" hx-get="/user/stats/"
                         hx-debug="true"
-                        hx-target="#main_div" >Stats</a>
+                        hx-target="#main_div" 
+                        data-translate="Statistiques">Stats</a>
                     </li>
                 </ul>
             </div>

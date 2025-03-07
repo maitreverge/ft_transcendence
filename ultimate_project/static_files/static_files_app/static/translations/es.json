@@ -1,6 +1,17 @@
 {
-    "Ma queue": "Mi cola",
-    "Mon zob": "Mi carajo",
-    "Mes couilles": "Mis cojones",
-    "Mon membre": "Mi polla"
+    "Accueil": "Inicio",
+    "Nom d’utilisateur": "Nombre de usuario",
+    "Email": "Correo electrónico",
+    "Date d'inscription": "Fecha de inscripción",
+    "Dernière connexion": "Última conexión",
+    "Statut": "Estado",
+    "Nombre d'actions": "Número de acciones",
+    "Durée totale": "Duración total",
+    "Nombre de connexions": "Número de inicios de sesión",
+    "Taux de complétion": "Tasa de finalización",
+    "Classement": "Clasificación",
+    "Match simple": "Partido simple",
+    "Tournoi": "Torneo",
+    "Profil": "Perfil",
+    "Statistiques": "Estadísticas"
 }

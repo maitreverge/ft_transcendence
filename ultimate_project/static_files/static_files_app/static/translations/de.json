@@ -1,6 +1,17 @@
 {
-    "Ma queue": "Mein Schwanz",
-    "Mon zob": "Mein Pimmel",
-    "Mes couilles": "Meine Eier",
-    "Mon membre": "Mein Glied"
+    "Accueil": "Startseite",
+    "Nom d’utilisateur": "Benutzername",
+    "Email": "E-Mail",
+    "Date d'inscription": "Anmeldedatum",
+    "Dernière connexion": "Letzte Anmeldung",
+    "Statut": "Status",
+    "Nombre d'actions": "Anzahl der Aktionen",
+    "Durée totale": "Gesamtdauer",
+    "Nombre de connexions": "Anzahl der Logins",
+    "Taux de complétion": "Abschlussrate",
+    "Classement": "Rangliste",
+    "Match simple": "Einzelspiel",
+    "Tournoi": "Turnier",
+    "Profil": "Profil",
+    "Statistiques": "Statistiken"
 }
