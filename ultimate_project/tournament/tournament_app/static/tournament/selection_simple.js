@@ -38,33 +38,54 @@ function setSelfMatchId() {
 	});
 }
 
-function movePlayerInMatch(socket, matchElement, match) {
+// function movePlayerInMatch(socket, matchElement, match) {
 	
-	const playersContainer = document.getElementById("players");
-	const playerElements = [...playersContainer.children];
-	console.log("avant ");
-	console.log("match ",match);
-	console.log("hou ",match.matchId, match.playerId);
-	if (match.players)
-	{
-		// const data = JSON.parse(match.players);
-		console.log("il Y A PLAYERS!!");
-		console.log("players ",match.players);
-		// console.log(data);
-		// console.log("lala ",match.players);
-		match.players.forEach(p => console.log("foriche ", p.playerId))
-		playerElements.forEach(player => {
-			if (player.id == match.playerId || player.id == match.otherId ||
-				(match.players.some(p => p.playerId == player.id) && matchElement.some) )
-			{
-				player.remove();
-				matchElement.appendChild(player);		
-			}		
-		});
-	}
-	else
-		console.log("pas de players ",match.players);
-		console.log("CHROUCROUTE");
+// 	const playersContainer = document.getElementById("players");
+// 	const playerElements = [...playersContainer.children];
+// 	const matchPlayerElements = [...matchElement.children];
+// 	console.log("avant ");
+// 	console.log("match ", match);
+// 	console.log("hou ", match.matchId, match.playerId);
+// 	if (match.players)
+// 	{
+// 		// const data = JSON.parse(match.players);
+// 		console.log("il Y A PLAYERS!!");
+// 		console.log("players ",match.players);
+// 		// console.log(data);
+// 		// console.log("lala ",match.players);
+// 		match.players.forEach(p => console.log("foriche ", p.playerId))
+// 		playerElements.forEach(player => {
+// 			if (
+// 				(player.id == match.playerId || player.id == match.otherId ||
+// 				match.players.some(p => p.playerId == player.id)) && matchPlayerElements.every(p => p.id != player.id)
+// 			)
+// 			{
+// 				// player.remove();
+// 				console.log("JE VAIS APPEND CHILD CAR IL Y A PLAYER!!");
+// 				matchElement.appendChild(player);		
+// 			}		
+// 		});
+// 	}
+// 	else
+// 	{
+
+// 		console.log("pas de players ", match.players);
+// 		console.log("CHROUCROUTE");
+// 		playerElements.forEach(player => {
+// 			if (player.id == match.playerId || player.id == match.otherId)// ||
+// 				// (match.players.some(p => p.playerId == player.id)))// && matchPlayerElements.every(p => p.id != player.id)))
+// 			{
+// 				// player.remove();
+// 				console.log("JE VAIS APPEND CHILD CAR IL Y A CHROUCROUTE!!");
+// 				matchElement.appendChild(player);		
+// 			}		
+// 		});
+// 	}
+// }
+
+function movePlayerInMatch(socket) {
+	
+
 }
 
 function addToMatchs(socket, matchsContainer, match) {
@@ -74,14 +95,30 @@ function addToMatchs(socket, matchsContainer, match) {
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
     matchsContainer.appendChild(div);
-	movePlayerInMatch(socket, div, match)
+	movePlayerInMatch(socket)
 }
 
 function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 
-	matchElements.forEach(match => {			
-		if (matchs.every(el => el.matchId != match.id))		
-		{
+	// for (let i = matchElements.lenght - 1; i >= 0; i--)
+	// {
+	// 	if (matchs.every(el => el.matchId != matchElements[i].id))	
+	// 	{
+	// 		if (matchElements[i].id == window.selfMatchId)
+	// 		{
+	// 			if (window.busyElement)
+	// 				window.busyElement.classList.remove("invitation-waiting");
+	// 			window.busyElement = null;
+	// 			window.selectedElement.classList.remove("invitation-confirmed");
+	// 			window.selectedElement = null;
+	// 			window.selfMatchId = null;
+	// 		}
+	// 		matchsContainer.removeChild(matchElements[i]);
+	// 		updatePlayers(socket, window.players);
+	// 	}		
+	// }
+	matchElements.slice().reverse().forEach(match => {
+		if (matchs.every(el => el.matchId != match.id)) {
 			if (match.id == window.selfMatchId)
 			{
 				if (window.busyElement)
@@ -92,25 +129,43 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 				window.selfMatchId = null;
 			}
 			matchsContainer.removeChild(match);
-			updatePlayers(socket, window.players);
+			updatePlayers(socket, window.players);		
 		}
 	});
+	
+	// matchElements.forEach(match => {			
+	// 	if (matchs.every(el => el.matchId != match.id))		
+	// 	{
+	// 		if (match.id == window.selfMatchId)
+	// 		{
+	// 			if (window.busyElement)
+	// 				window.busyElement.classList.remove("invitation-waiting");
+	// 			window.busyElement = null;
+	// 			window.selectedElement.classList.remove("invitation-confirmed");
+	// 			window.selectedElement = null;
+	// 			window.selfMatchId = null;
+	// 		}
+	// 		matchsContainer.removeChild(match);
+	// 		updatePlayers(socket, window.players);
+	// 	}
+	// });
 }
 
 function updateMatchs(socket, matchs) {
 
 	console.log("new update " + matchs);
     const matchsContainer = document.getElementById("matchs");
-	const matchElements = [...matchsContainer.children];
+	let matchElements = [...matchsContainer.children];
 		
 	removeMatchs(socket, matchs, matchsContainer, matchElements);
+	matchElements = [...matchsContainer.children];
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
 			addToMatchs(socket, matchsContainer, match);
-		else
-			matchElements.forEach(el => {
-				movePlayerInMatch(socket, el, match)
-			});	
+		// else
+		// 	matchElements.forEach(el => {
+		// 		movePlayerInMatch(socket, el, match);
+		// 	});	
 	});
 	setSelfMatchId();	
 }
@@ -210,12 +265,17 @@ function addPlayerToContainer(socket, container, playerId) {
 function updatePlayers(socket, players) {
 
     const playersContainer = document.getElementById("players");
-	const playerElements = [...playersContainer.children];	
+	let playerElements = [...playersContainer.children];	
 
-    playerElements.forEach(player => {	
+    // playerElements.forEach(player => {	
+	// 	if (players.every(el => el.playerId != player.id))		
+	// 		playersContainer.removeChild(player);					
+	// });
+	playerElements.slice().reverse().forEach(player => {	
 		if (players.every(el => el.playerId != player.id))		
 			playersContainer.removeChild(player);					
 	});
+	playerElements = [...playersContainer.children];
 	players.forEach(player => {	
 		if (playerElements.every(el => el.id != player.playerId))		
 			addPlayerToContainer(socket, playersContainer, player.playerId);		
