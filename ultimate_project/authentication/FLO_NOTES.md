@@ -19,7 +19,7 @@
 
 
 ## DATABASE ENTRYPOINTS
-⛔ ✅  
+⛔ ✅  Start making endpoints
 ⛔ ✅  
 
 
