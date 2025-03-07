@@ -196,17 +196,26 @@ async def databaseapi_proxy(path: str, request: Request):
     - **Filter matches by player**: GET /api/match/?player1=1
     - **Filter matches by tournament**: GET /api/match/?tournament=1
     
+    ### Pagination:
+    - All list endpoints are paginated with 10 items per page
+    - **Navigate pages**: GET /api/player/?page=2
+    
     ### Response format:
     ```json
-    [
-        {
-            "id": 1,
-            "username": "player1",
-            "email": "player1@example.com",
+    {
+        "count": 100,
+        "next": "http://localhost:8005/api/player/?page=2",
+        "previous": null,
+        "results": [
+            {
+                "id": 1,
+                "username": "player1",
+                "email": "player1@example.com",
+                ...
+            },
             ...
-        },
-        ...
-    ]
+        ]
+    }
     ```
     """
     return await proxy_request("databaseapi", f"api/{path}", request)
