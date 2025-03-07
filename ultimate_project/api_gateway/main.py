@@ -172,6 +172,9 @@ async def database_api_proxy(path: str, request: Request):
     Proxy requests to the database API microservice.
     
     - **path**: The path to the resource in the database API
+    - *player*: The player identifier
+    - *tournament*: The tournament identifier
+    - *match*: The match identifier
     - **request**: The incoming request object
     """
     return await proxy_request("database_api", f"api/{path}", request)
