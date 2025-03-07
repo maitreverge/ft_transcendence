@@ -43,26 +43,16 @@ function movePlayerInMatch(socket, matchElement, match) {
 	const playersContainer = document.getElementById("players");
 	const playerElements = [...playersContainer.children];
 	const matchPlayerElements = [...matchElement.children];
-	console.log("avant ");
-	console.log("match ", match);
-	console.log("hou ", match.matchId, match.playerId);
+
 	if (match.players)
-	{
-		// const data = JSON.parse(match.players);
-		console.log("il Y A PLAYERS!!");
-		console.log("players ",match.players);
-		// console.log(data);
-		// console.log("lala ",match.players);
+	{		
 		match.players.forEach(p => console.log("foriche ", p.playerId))
 		playerElements.forEach(player => {
 			if (
 				// (player.id == match.playerId || player.id == match.otherId ||
 				(match.players.some(p => p.playerId == player.id)) && matchPlayerElements.every(p => p.id != player.id)
 			)
-			{
-				// player.remove();
-				console.log("JE VAIS APPEND CHILD CAR IL Y A PLAYER!!");
-				// matchElement.appendChild(player);	
+			{				
 				const clone = player.cloneNode(true)
 				clone.onclick = player.onclick;
 				matchElement.appendChild(clone);	
@@ -95,11 +85,6 @@ function movePlayerInMatch(socket, matchElement, match) {
 	// }
 }
 
-// function movePlayerInMatch(socket) {
-	
-
-// }
-
 function addToMatchs(socket, matchsContainer, match) {
   	
 	const div = document.createElement("div");
@@ -112,23 +97,6 @@ function addToMatchs(socket, matchsContainer, match) {
 
 function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 
-	// for (let i = matchElements.lenght - 1; i >= 0; i--)
-	// {
-	// 	if (matchs.every(el => el.matchId != matchElements[i].id))	
-	// 	{
-	// 		if (matchElements[i].id == window.selfMatchId)
-	// 		{
-	// 			if (window.busyElement)
-	// 				window.busyElement.classList.remove("invitation-waiting");
-	// 			window.busyElement = null;
-	// 			window.selectedElement.classList.remove("invitation-confirmed");
-	// 			window.selectedElement = null;
-	// 			window.selfMatchId = null;
-	// 		}
-	// 		matchsContainer.removeChild(matchElements[i]);
-	// 		updatePlayers(socket, window.players);
-	// 	}		
-	// }
 	matchElements.slice().reverse().forEach(match => {
 		if (matchs.every(el => el.matchId != match.id)) {
 			if (match.id == window.selfMatchId)
@@ -144,23 +112,6 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 			updatePlayers(socket, window.players);		
 		}
 	});
-	
-	// matchElements.forEach(match => {			
-	// 	if (matchs.every(el => el.matchId != match.id))		
-	// 	{
-	// 		if (match.id == window.selfMatchId)
-	// 		{
-	// 			if (window.busyElement)
-	// 				window.busyElement.classList.remove("invitation-waiting");
-	// 			window.busyElement = null;
-	// 			window.selectedElement.classList.remove("invitation-confirmed");
-	// 			window.selectedElement = null;
-	// 			window.selfMatchId = null;
-	// 		}
-	// 		matchsContainer.removeChild(match);
-	// 		updatePlayers(socket, window.players);
-	// 	}
-	// });
 }
 
 function updateMatchs(socket, matchs) {
@@ -174,8 +125,7 @@ function updateMatchs(socket, matchs) {
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
 			addToMatchs(socket, matchsContainer, match);
-		else
-			// movePlayerInMatch(socket, el, match);
+		else			
 			matchElements.forEach(el => {
 				if (el.id == match.matchId)
 					movePlayerInMatch(socket, el, match);
@@ -280,11 +230,7 @@ function updatePlayers(socket, players) {
 
     const playersContainer = document.getElementById("players");
 	let playerElements = [...playersContainer.children];	
-
-    // playerElements.forEach(player => {	
-	// 	if (players.every(el => el.playerId != player.id))		
-	// 		playersContainer.removeChild(player);					
-	// });
+  
 	playerElements.slice().reverse().forEach(player => {	
 		if (players.every(el => el.playerId != player.id))		
 			playersContainer.removeChild(player);					
@@ -360,15 +306,19 @@ function initTournamentWs() {
     if (window.tournamentSocket)
         window.tournamentSocket.close();
 	if (window.rasp == "true")
-		window.tournamentSocket = new WebSocket(`wss://${window.pidom}/ws/tournament/`);
+		window.tournamentSocket = new WebSocket(
+			`wss://${window.pidom}/ws/tournament/${window.user_id}/`
+		);
 	else
-		window.tournamentSocket = new WebSocket(`ws://localhost:8000/ws/tournament/${window.user_id}/`);
+		window.tournamentSocket = new WebSocket(
+			`ws://localhost:8000/ws/tournament/${window.user_id}/`
+		);
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
 	}
 	window.tournamentSocket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");
-		// initTournamentWs();	
 	};	
-	window.tournamentSocket.onmessage = event => onTournamentWsMessage(event, window.tournamentSocket);
+	window.tournamentSocket.onmessage = event =>
+		onTournamentWsMessage(event, window.tournamentSocket);
 }
