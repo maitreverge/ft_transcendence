@@ -1,4 +1,4 @@
-"""database_api URL Configuration
+"""databaseapi URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -13,10 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+
 
 # Create a view that doesn't get logged
 @csrf_exempt
@@ -25,7 +27,7 @@ def health_check(request):
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("health/", health_check, name="health_check"),
-    path('', include('database_api_app.urls')),  # Include our app's URLs
+    path("", include("databaseapi_app.urls")),  # Include our app's URLs
 ]

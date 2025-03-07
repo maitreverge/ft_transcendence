@@ -13,7 +13,7 @@ services:
         condition: service_healthy
       authentication:
         condition: service_healthy
-      database_api:
+      databaseapi:
         condition: service_healthy
     container_name: ctn_nginx
     build :
@@ -68,10 +68,10 @@ services:
       - transcendence_network
     restart: always
   
-  database_api:
+  databaseapi:
     extends:
-      file: ./database_api/_docker/db_api_compose.yaml
-      service: database_api
+      file: ./databaseapi/_docker/db_api_compose.yaml
+      service: databaseapi
 
 # =================================== TOURNAMENTS ====================================
   tournament:
