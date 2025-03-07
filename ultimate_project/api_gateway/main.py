@@ -12,9 +12,10 @@ app = FastAPI(
 
 services = {
     "tournament": "http://tournament:8001",
-    "static_files": "http://static_files:8003",
     "match": "http://match:8002",
+    "static_files": "http://static_files:8003",
     "user": "http://user:8004",
+    "database_api": "http://database_api:8007",
 }
 
 # logging configuration
@@ -164,6 +165,16 @@ async def match_proxy(
     return await proxy_request("match", path, request)
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)
+
+@app.api_route("/api/{path:path}", methods=["GET"])
+async def database_api_proxy(path: str, request: Request):
+    """
+    Proxy requests to the database API microservice.
+    
+    - **path**: The path to the resource in the database API
+    - **request**: The incoming request object
+    """
+    return await proxy_request("database_api", f"api/{path}", request)
 
 
 @app.api_route("/{path:path}", methods=["GET"])
