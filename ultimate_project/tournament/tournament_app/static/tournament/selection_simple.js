@@ -38,7 +38,7 @@ function setSelfMatchId() {
 	});
 }
 
-function movePlayerInMatch(socket, matchElement, match) {
+function movePlayerInMatch(matchElement, match) {
 	
 	const playersContainer = document.getElementById("players");
 	const playerElements = [...playersContainer.children];
@@ -48,51 +48,30 @@ function movePlayerInMatch(socket, matchElement, match) {
 	{		
 		match.players.forEach(p => console.log("foriche ", p.playerId))
 		playerElements.forEach(player => {
-			if (
-				// (player.id == match.playerId || player.id == match.otherId ||
-				(match.players.some(p => p.playerId == player.id)) && matchPlayerElements.every(p => p.id != player.id)
-			)
+
+			if (match.players.some(p => p.playerId == player.id) &&
+				matchPlayerElements.every(p => p.id != player.id))
 			{				
 				const clone = player.cloneNode(true)
 				clone.onclick = player.onclick;
 				matchElement.appendChild(clone);	
 			}		
 		});
-
-		matchPlayerElements.forEach(player => {
-			if (match.players.every(el => el.playerId != player.id))
-			{
-				player.remove();
-			}
+		matchPlayerElements.slice().reverse().forEach(player => {
+			if (match.players.every(el => el.playerId != player.id))			
+				player.remove();			
 		});
-	}
-	// else
-	// {
-
-	// 	console.log("pas de players ", match.players);
-	// 	console.log("CHROUCROUTE");
-	// 	playerElements.forEach(player => {
-	// 		if (player.id == match.playerId || player.id == match.otherId)// ||
-	// 			// (match.players.some(p => p.playerId == player.id)))// && matchPlayerElements.every(p => p.id != player.id)))
-	// 		{
-	// 			// player.remove();
-	// 			console.log("JE VAIS APPEND CHILD CAR IL Y A CHROUCROUTE!!");
-	// 			const clone = player.cloneNode(true)
-	// 			clone.onclick = player.onclick;
-	// 			matchElement.appendChild(clone);		
-	// 		}		
-	// 	});
-	// }
+	}	
 }
 
-function addToMatchs(socket, matchsContainer, match) {
+function addToMatchs(matchsContainer, match) {
   	
 	const div = document.createElement("div");
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
     matchsContainer.appendChild(div);
-	movePlayerInMatch(socket, div, match)
+	movePlayerInMatch(div, match)
 }
 
 function removeMatchs(socket, matchs, matchsContainer, matchElements) {
@@ -109,7 +88,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 				window.selfMatchId = null;
 			}
 			matchsContainer.removeChild(match);
-			updatePlayers(socket, window.players);		
+			// updatePlayers(socket, window.players);		
 		}
 	});
 }
@@ -124,11 +103,11 @@ function updateMatchs(socket, matchs) {
 	matchElements = [...matchsContainer.children];
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
-			addToMatchs(socket, matchsContainer, match);
+			addToMatchs(matchsContainer, match);
 		else			
 			matchElements.forEach(el => {
 				if (el.id == match.matchId)
-					movePlayerInMatch(socket, el, match);
+					movePlayerInMatch(el, match);
 			});	
 	});
 	setSelfMatchId();	

@@ -223,8 +223,6 @@ class Pong:
 				}))
 			except Exception as e:
 				pass		
-		from match_app.views import del_pong
-		del_pong(self.id)
 		requests.post("http://tournament:8001/tournament/match-result/", json={
 			"matchId": self.id,
 			"winnerId": self.winner,
@@ -232,5 +230,7 @@ class Pong:
 			"p1Id": self.idP1,
 			"p2Id": self.idP2
 		})
+		from match_app.views import del_pong
+		del_pong(self.id)
 	
 			

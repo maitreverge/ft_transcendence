@@ -39,10 +39,8 @@ async def match_result(request : HttpRequest):
 	p2_id =	data.get('p2Id')
 	p1 = next((p for p in consumer.players if p.get('playerId') == p1_id), None)
 	p2 = next((p for p in consumer.players if p.get('playerId') == p2_id), None)
-	if p1:
-		p1['busy'] = None
-	if p2:
-		p2['busy'] = None
+	if p1: p1['busy'] = None
+	if p2: p2['busy'] = None
 	consumer.matchs[:] = [m for m in consumer.matchs
 		if m.get("matchId") != match_id]
 	await consumer.MyConsumer.match_update()
