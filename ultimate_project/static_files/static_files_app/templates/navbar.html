@@ -1,13 +1,14 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <select id="language-selector" onchange="changeLanguage(event)">
-            <option value="en">🇬🇧 English</option>
-            <option value="fr">🇫🇷 Français</option>
-            <option value="de">🇩🇪 Deustch</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="tl">🇦🇱 TlhIngan</option>
-        </select>
         <div class="container">
+            <select id="language-selector" onchange="changeLanguage(event)">
+                <option value="en">🇬🇧 English</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="de">🇩🇪 Deustch</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="tl">🇦🇱 TlhIngan</option>
+            </select>
+            <span>----</span>
             <a id="nav-home" class="navbar-brand cursor-pointer" hx-trigger="click" hx-push-url="true" hx-get="/home/"
             hx-target="#main_div" hx-select="#main_div > *" >Home</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
