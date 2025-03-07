@@ -7,8 +7,12 @@ function loadHtml(data, target) {
 
 	for (const script of scripts) {
 		const newScript = document.createElement("script");
-		if (script.src) {		
-			newScript.src = script.src;
+		if (script.src) {	
+			const oldScripts = document.querySelectorAll(
+				`script[src="${script.src}"]`
+			);
+    		oldScripts.forEach(oldScript => oldScript.remove());	
+			newScript.src = script.src// + "?t=" + Date.now();
 			newScript.async = true;  
 			newScript.onload = script.onload;
 		} else 			
@@ -46,7 +50,7 @@ function movePlayerInMatch(matchElement, match) {
 
 	if (match.players)
 	{		
-		match.players.forEach(p => console.log("foriche ", p.playerId))
+		// match.players.forEach(p => console.log("foriche ", p.playerId))
 		playerElements.forEach(player => {
 
 			if (match.players.some(p => p.playerId == player.id) &&
@@ -95,7 +99,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 
 function updateMatchs(socket, matchs) {
 
-	console.log("new update " + matchs);
+	// console.log("new update " + matchs);
     const matchsContainer = document.getElementById("matchs");
 	let matchElements = [...matchsContainer.children];
 		
@@ -282,6 +286,7 @@ function onTournamentWsMessage(event, socket) {
 
 function initTournamentWs() {
 	
+	console.log("INIT TOURNAMENT");
     if (window.tournamentSocket)
         window.tournamentSocket.close();
 	if (window.rasp == "true")

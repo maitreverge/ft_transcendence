@@ -15,8 +15,8 @@ function stopMatch(matchId)
 	else
 		document.getElementById('match').remove()
 	console.log("YOUHOUHOUHOU");
-	if (window.selfMatchId != window.matchId)
-	{
+	// if (window.selfMatchId != window.matchId)
+	// {
 		console.log("jypigequeuedalle");
 		if (!window.matchSocket)
 			console.log("LE WEBSOCKET ETS NULL.");
@@ -27,7 +27,7 @@ function stopMatch(matchId)
 			{
 				console.log("je vais envoyer 42");
 				window.stop = true
-				window.matchSocket.close();
+				window.matchSocket.close(3666);
 			} 
 			else 
 			{
@@ -35,9 +35,9 @@ function stopMatch(matchId)
 			}
 			console.log("je nai pas plante");
 		}
-	}
-	else
-		console.log("pas spec!!");
+	// }
+	// else
+	// 	console.log("pas spec!!");
 	
 }
 
@@ -81,7 +81,7 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 				waiting.classList.add("no-waiting");			
 		}			
 	}
-	if (pads[0] && pads[1])
+	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
 	{
 		pads[0].style.top = data.yp1 + "vh";
 		pads[1].style.top = data.yp2 + "vh";
@@ -108,6 +108,7 @@ function sequelInitMatchWs(socket) {
 
 function initMatchWs() {
 //si je viens du debut je sui sclosé (et je reviens par boucle) si je viens de onclse je continu normal
+	console.log("INIT MATCH 😊😊😊");
 	if (window.matchSocket && window.antiLoop)
 		return window.matchSocket.close();
     // if (window.matchSocket)
