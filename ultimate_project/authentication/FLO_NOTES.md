@@ -3,24 +3,30 @@
 🟧
 ⚠️
 --------------------------------------------------------------------------------
-									DUMP IDEAS
+									TOUDOU
 --------------------------------------------------------------------------------
 
 ⛔ ✅  
 
 # PRIORITY
 
-## DATABASE ENTRYPOINTS
-
 ⛔ ✅  Split `admin` id from the `Players` logic to avoid getting disconnected
-⛔ ✅  Strip every cipher / encryption logic into the `database_api` container
-⛔ ✅  Optimize `entrypoint.sh` for  `database_api`
+⛔ ✅  Simplifies the django admin panel credentials 
+⛔ ✅  Strip every useless requirements logics from `user`, `authentication` and `database-api`
 ⛔ ✅  
 
 
 ## DATABASE ENTRYPOINTS
-⛔ ✅  Start making endpoints
 ⛔ ✅  
+
+
+JWT :
+
+⛔ ✅ Create a very specific login and register route free of JWT requirements
+⛔ ✅ Connect the form for login in the first place WITHOUT 2FA
+⛔ ✅ Create a first version of a JWT.
+⛔ ✅ Then displays the token on the front with a redirection
+
 
 
 
@@ -40,7 +46,7 @@ http://localhost:8000/admin/  ==>  ADMIN PANEL
 
 
 --------------------------------------------------------------------------------
-									DATABASE
+									DATABASE ENDPOINTS
 --------------------------------------------------------------------------------
 
 
@@ -143,5 +149,8 @@ Clean Repo from database trying
 
 
 📅  ===== 07-03 =====
+✅  Optimize `entrypoint.sh` for  `database_api`
+✅  Start making endpoints
 
+📅  ===== 08-03 =====
 
