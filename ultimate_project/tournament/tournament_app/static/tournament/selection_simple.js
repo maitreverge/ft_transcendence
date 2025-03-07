@@ -38,55 +38,58 @@ function setSelfMatchId() {
 	});
 }
 
-// function movePlayerInMatch(socket, matchElement, match) {
+function movePlayerInMatch(socket, matchElement, match) {
 	
-// 	const playersContainer = document.getElementById("players");
-// 	const playerElements = [...playersContainer.children];
-// 	const matchPlayerElements = [...matchElement.children];
-// 	console.log("avant ");
-// 	console.log("match ", match);
-// 	console.log("hou ", match.matchId, match.playerId);
-// 	if (match.players)
-// 	{
-// 		// const data = JSON.parse(match.players);
-// 		console.log("il Y A PLAYERS!!");
-// 		console.log("players ",match.players);
-// 		// console.log(data);
-// 		// console.log("lala ",match.players);
-// 		match.players.forEach(p => console.log("foriche ", p.playerId))
-// 		playerElements.forEach(player => {
-// 			if (
-// 				(player.id == match.playerId || player.id == match.otherId ||
-// 				match.players.some(p => p.playerId == player.id)) && matchPlayerElements.every(p => p.id != player.id)
-// 			)
-// 			{
-// 				// player.remove();
-// 				console.log("JE VAIS APPEND CHILD CAR IL Y A PLAYER!!");
-// 				matchElement.appendChild(player);		
-// 			}		
-// 		});
-// 	}
-// 	else
-// 	{
+	const playersContainer = document.getElementById("players");
+	const playerElements = [...playersContainer.children];
+	const matchPlayerElements = [...matchElement.children];
+	console.log("avant ");
+	console.log("match ", match);
+	console.log("hou ", match.matchId, match.playerId);
+	if (match.players)
+	{
+		// const data = JSON.parse(match.players);
+		console.log("il Y A PLAYERS!!");
+		console.log("players ",match.players);
+		// console.log(data);
+		// console.log("lala ",match.players);
+		match.players.forEach(p => console.log("foriche ", p.playerId))
+		playerElements.forEach(player => {
+			if (
+				(player.id == match.playerId || player.id == match.otherId ||
+				match.players.some(p => p.playerId == player.id)) && matchPlayerElements.every(p => p.id != player.id)
+			)
+			{
+				// player.remove();
+				console.log("JE VAIS APPEND CHILD CAR IL Y A PLAYER!!");
+				// matchElement.appendChild(player);	
+				const clone = player.cloneNode(true)
+				matchElement.appendChild(clone);	
+			}		
+		});
+	}
+	else
+	{
 
-// 		console.log("pas de players ", match.players);
-// 		console.log("CHROUCROUTE");
-// 		playerElements.forEach(player => {
-// 			if (player.id == match.playerId || player.id == match.otherId)// ||
-// 				// (match.players.some(p => p.playerId == player.id)))// && matchPlayerElements.every(p => p.id != player.id)))
-// 			{
-// 				// player.remove();
-// 				console.log("JE VAIS APPEND CHILD CAR IL Y A CHROUCROUTE!!");
-// 				matchElement.appendChild(player);		
-// 			}		
-// 		});
-// 	}
-// }
-
-function movePlayerInMatch(socket) {
-	
-
+		console.log("pas de players ", match.players);
+		console.log("CHROUCROUTE");
+		playerElements.forEach(player => {
+			if (player.id == match.playerId || player.id == match.otherId)// ||
+				// (match.players.some(p => p.playerId == player.id)))// && matchPlayerElements.every(p => p.id != player.id)))
+			{
+				// player.remove();
+				console.log("JE VAIS APPEND CHILD CAR IL Y A CHROUCROUTE!!");
+				const clone = player.cloneNode(true)
+				matchElement.appendChild(clone);		
+			}		
+		});
+	}
 }
+
+// function movePlayerInMatch(socket) {
+	
+
+// }
 
 function addToMatchs(socket, matchsContainer, match) {
   	
@@ -95,7 +98,7 @@ function addToMatchs(socket, matchsContainer, match) {
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
     matchsContainer.appendChild(div);
-	movePlayerInMatch(socket)
+	movePlayerInMatch(socket, div, match)
 }
 
 function removeMatchs(socket, matchs, matchsContainer, matchElements) {
@@ -162,10 +165,12 @@ function updateMatchs(socket, matchs) {
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
 			addToMatchs(socket, matchsContainer, match);
-		// else
-		// 	matchElements.forEach(el => {
-		// 		movePlayerInMatch(socket, el, match);
-		// 	});	
+		else
+			// movePlayerInMatch(socket, el, match);
+			matchElements.forEach(el => {
+				if (el.id == match.matchId)
+					movePlayerInMatch(socket, el, match);
+			});	
 	});
 	setSelfMatchId();	
 }

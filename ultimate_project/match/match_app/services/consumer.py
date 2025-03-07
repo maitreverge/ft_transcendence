@@ -44,6 +44,6 @@ class MyConsumer(AsyncWebsocketConsumer):
 			"matchId": self.matchId,
 			"players": [
 				{key : value for key, value in p.items() if key == 'playerId'}
-				for p in players
+				for p in players if p.get('matchId') == self.matchId
 			]
 		})
