@@ -1,34 +1,5 @@
 #!/bin/bash
 
-# Check if migration files exist
-# MIGRATION_EXISTS=$(find /app/databaseapi_app/migrations -name "0*.py" | wc -l)
-
-# if [ "$MIGRATION_EXISTS" -eq 0 ]; then
-#     # Initial migration needed - no migration files exist
-#     echo "Creating initial migrations..."
-#     python3 manage.py makemigrations databaseapi_app
-# else
-#     # Check if there are model changes requiring new migrations
-#     CHANGES=$(python3 manage.py makemigrations --dry-run --check databaseapi_app 2>&1)
-#     if echo "$CHANGES" | grep -q "No changes detected"; then
-#         echo "No model changes detected, skipping makemigrations"
-#     else
-#         echo "Model changes detected, creating migrations..."
-#         python3 manage.py makemigrations databaseapi_app
-#     fi
-# fi
-
-# # Check if there are pending migrations to apply
-# PENDING_MIGRATIONS=$(python3 manage.py showmigrations --plan | grep -c "\[ \]")
-# if [ "$PENDING_MIGRATIONS" -gt 0 ]; then
-#     echo "Applying pending migrations..."
-#     python3 manage.py migrate
-# else
-#     echo "No pending migrations, database is up to date"
-# fi
-
-# python3 manage.py makemigrations databaseapi_app
-# python3 manage.py makemigrations
 python3 manage.py migrate --run-syncdb
 
 # Ensure a superuser exists
@@ -41,7 +12,7 @@ if not User.objects.filter(is_superuser=True).exists():
 
 python3 manage.py makemigrations databaseapi_app
 python3 manage.py makemigrations
-python3 manage.py migrate --run-syncdb
+python3 manage.py migrate
 
 if [ "${env}" = "prod" ]; then \
     mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \

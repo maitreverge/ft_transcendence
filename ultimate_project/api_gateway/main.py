@@ -181,10 +181,33 @@ async def databaseapi_proxy(path: str, request: Request):
     Proxy requests to the database API microservice.
 
     - **path**: The path to the resource in the database API
-    - *player*: The player identifier
-    - *tournament*: The tournament identifier
-    - *match*: The match identifier
-    - **request**: The incoming request object
+    
+    ### Examples:
+    - **List all players**: GET /api/player/
+    - **Get player by ID**: GET /api/player/1/
+    - **Filter players by username**: GET /api/player/?username=player1
+    - **Filter players by email**: GET /api/player/?email=example
+    
+    - **List all tournaments**: GET /api/tournament/
+    - **Get tournament by ID**: GET /api/tournament/1/
+    
+    - **List all matches**: GET /api/match/
+    - **Get match by ID**: GET /api/match/1/
+    - **Filter matches by player**: GET /api/match/?player1=1
+    - **Filter matches by tournament**: GET /api/match/?tournament=1
+    
+    ### Response format:
+    ```json
+    [
+        {
+            "id": 1,
+            "username": "player1",
+            "email": "player1@example.com",
+            ...
+        },
+        ...
+    ]
+    ```
     """
     return await proxy_request("databaseapi", f"api/{path}", request)
 
