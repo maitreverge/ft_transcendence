@@ -101,15 +101,13 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 			[...match.children].forEach(player => {
 				playersContainer.appendChild(player);
 			});
-			matchsContainer.removeChild(match);
-			// updatePlayers(socket, window.players);		
+			matchsContainer.removeChild(match);		
 		}
 	});
 }
 
 function updateMatchs(socket, matchs) {
 
-	// console.log("new update " + matchs);
     const matchsContainer = document.getElementById("matchs");
 	let matchElements = [...matchsContainer.children];
 		
