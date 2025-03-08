@@ -15,6 +15,7 @@ services = {
     "match": "http://match:8002",
     "static_files": "http://static_files:8003",
     "user": "http://user:8004",
+    "authentication": "http://authentication:8006",
     "databaseapi": "http://databaseapi:8007",
 }
 
@@ -173,6 +174,17 @@ async def match_proxy(
     return await proxy_request("match", path, request)
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)
+
+
+@app.api_route("/auth/{path:path}", methods=["GET"])
+async def authentication_proxy(path: str, request: Request):
+    """
+    Proxy requests to the authentication microservice.
+    """
+    return await proxy_request("authentication", f"auth/{path}", request)
+
+
+
 
 
 @app.api_route("/api/{path:path}", methods=["GET"])

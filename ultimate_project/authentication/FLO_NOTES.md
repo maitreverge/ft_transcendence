@@ -7,20 +7,22 @@
 --------------------------------------------------------------------------------
 
 ⛔ ✅  
+## DONE OF THE DAY
+✅  Simplifies the django admin panel credentials 
+
+
+## TO DO LATER
+⛔ ✅  Split `admin` id from the `Players` logic to avoid getting disconnected (complicated, if we can avoid it is good )
+
+
+
 
 # PRIORITY
 
-⛔ ✅  Split `admin` id from the `Players` logic to avoid getting disconnected
-⛔ ✅  Simplifies the django admin panel credentials 
 ⛔ ✅  Strip every useless requirements logics from `user`, `authentication` and `database-api`
-⛔ ✅  
 
 
-## DATABASE ENTRYPOINTS
-⛔ ✅  
-
-
-JWT :
+## JWT :
 
 ⛔ ✅ Create a very specific login and register route free of JWT requirements
 ⛔ ✅ Connect the form for login in the first place WITHOUT 2FA
