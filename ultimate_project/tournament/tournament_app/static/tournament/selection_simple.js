@@ -12,7 +12,7 @@ function loadHtml(data, target) {
 				`script[src="${script.src}"]`
 			);
     		oldScripts.forEach(oldScript => oldScript.remove());	
-			newScript.src = script.src// + "?t=" + Date.now();
+			newScript.src = script.src + "?t=" + Date.now();
 			newScript.async = true;  
 			newScript.onload = script.onload;
 		} else 			

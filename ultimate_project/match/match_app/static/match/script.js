@@ -26,7 +26,7 @@ function stopMatch(matchId)
 			if (window.matchSocket.readyState === WebSocket.OPEN)
 			{
 				console.log("je vais envoyer 42");
-				window.stop = true
+				window.stopFlag = true
 				window.matchSocket.close(3666);
 			} 
 			else 
@@ -109,6 +109,8 @@ function sequelInitMatchWs(socket) {
 function initMatchWs() {
 //si je viens du debut je sui sclosé (et je reviens par boucle) si je viens de onclse je continu normal
 	console.log("INIT MATCH 😊😊😊");
+	console.log("STOP: " + window.stopFlag);
+	console.log("ANTILOPP: " + window.antiLoop);
 	if (window.matchSocket && window.antiLoop)
 		return window.matchSocket.close();
     // if (window.matchSocket)
@@ -129,14 +131,15 @@ function initMatchWs() {
 		console.log("Connexion Match disconnected 😈");		
 		window.antiLoop = false;
 		console.log("CODE: " + event.code);
-		if (event.code !== 3000 && !window.stop)
+		console.log("STOP: " + window.stopFlag);
+		if (event.code !== 3000 && !window.stopFlag)
 		{			
 			console.log("codepas42");
 			initMatchWs();	
 		}
 		else
 			console.log("code42");
-		window.stop = false;
+		window.stopFlag = false;
 	};
 	sequelInitMatchWs(window.matchSocket);
 }
