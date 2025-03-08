@@ -42,7 +42,7 @@ function setSelfMatchId() {
 	});
 }
 
-function movePlayerInMatch(matchElement, match) {
+function movePlayerInMatch(socket, matchElement, match) {
 	
 	const playersContainer = document.getElementById("players");
 	const playerElements = [...playersContainer.children];
@@ -56,29 +56,36 @@ function movePlayerInMatch(matchElement, match) {
 			if (match.players.some(p => p.playerId == player.id) &&
 				matchPlayerElements.every(p => p.id != player.id))
 			{				
-				const clone = player.cloneNode(true)
-				clone.onclick = player.onclick;
-				matchElement.appendChild(clone);	
+				// const clone = player.cloneNode(true)
+				// clone.onclick = player.onclick;
+				// matchElement.appendChild(clone);	
+				matchElement.appendChild(player);	
 			}		
 		});
 		matchPlayerElements.slice().reverse().forEach(player => {
-			if (match.players.every(el => el.playerId != player.id))			
-				player.remove();			
+			if (match.players.every(el => el.playerId != player.id))
+			{
+				playersContainer.appendChild(player);
+				// addPlayerToContainer(socket, playersContainer, player.id);	
+				// player.remove();			
+			}			
 		});
 	}	
 }
 
-function addToMatchs(matchsContainer, match) {
+function addToMatchs(socket, matchsContainer, match) {
   	
 	const div = document.createElement("div");
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
     matchsContainer.appendChild(div);
-	movePlayerInMatch(div, match)
+	movePlayerInMatch(socket, div, match)
 }
 
 function removeMatchs(socket, matchs, matchsContainer, matchElements) {
+
+	const playersContainer = document.getElementById("players");
 
 	matchElements.slice().reverse().forEach(match => {
 		if (matchs.every(el => el.matchId != match.id)) {
@@ -91,6 +98,9 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 				window.selectedElement = null;
 				window.selfMatchId = null;
 			}
+			[...match.children].forEach(player => {
+				playersContainer.appendChild(player);
+			});
 			matchsContainer.removeChild(match);
 			// updatePlayers(socket, window.players);		
 		}
@@ -107,11 +117,11 @@ function updateMatchs(socket, matchs) {
 	matchElements = [...matchsContainer.children];
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
-			addToMatchs(matchsContainer, match);
+			addToMatchs(socket, matchsContainer, match);
 		else			
 			matchElements.forEach(el => {
 				if (el.id == match.matchId)
-					movePlayerInMatch(el, match);
+					movePlayerInMatch(socket, el, match);
 			});	
 	});
 	setSelfMatchId();	
@@ -181,8 +191,9 @@ function invitationConfirmed(matchId, targetId) {
 	window.selfMatchId = matchId;
 }
 
-function sendPlayerClick(socket, selected)
+function sendPlayerClick(socket, event, selected)
 {
+	event.stopPropagation();
 	if (!window.busyElement)
 		window.busyElement = selected;
 	window.busyElement.classList.add("invitation-waiting")
@@ -202,10 +213,13 @@ function addPlayerToContainer(socket, container, playerId) {
 	if (playerId === window.selfId)
 	{
 		div.classList.add("self-player");
-		div.onclick = ()=> alert("you can't choose yourself");		
+		div.onclick = event => {
+			event.stopPropagation();
+			alert("you can't choose yourself");
+		}		
 	}
 	else	
-		div.onclick = () =>	sendPlayerClick(socket, div);	
+		div.onclick = event =>	sendPlayerClick(socket, event, div);	
     container.appendChild(div);
 }
 
