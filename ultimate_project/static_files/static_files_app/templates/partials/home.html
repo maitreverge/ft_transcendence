@@ -11,7 +11,10 @@
             <img src="https://placehold.co/100" class="img-fluid rounded-circle mb-2" alt="Image 1">
             <p class="text-white m-0">Match simple</p>
         </a>
-        <a class="d-flex flex-column justify-content-center align-items-center rounded-5 mt-3 col-5 bg-success">
+        <a 
+		id="field-tournaments" hx-trigger="click" hx-push-url="true" hx-get="/tournament/tournament/"
+        hx-target="#main_div"
+		class="d-flex flex-column justify-content-center align-items-center rounded-5 mt-3 col-5 bg-success">
             <img src="https://placehold.co/100" class="img-fluid rounded-circle mb-2" alt="Image 2">
             <p class="text-white m-0">Tournament</p>
         </a>

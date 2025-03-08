@@ -273,7 +273,7 @@ function invitation(socket, data) {
 	}
 }
 
-function onTournamentWsMessage(event, socket) {
+function onSimpleMatchMessage(event, socket) {
 
 	console.log("Message reçu :", event.data);
 	const data = JSON.parse(event.data);
@@ -298,25 +298,25 @@ function onTournamentWsMessage(event, socket) {
 	}
 }
 
-function initTournamentWs() {
+function initSimpleMatch() {
 	
-	console.log("INIT TOURNAMENT");
-    if (window.tournamentSocket)
-        window.tournamentSocket.close();
+	console.log("INIT SIMPLE MATCH");
+    if (window.simpleMatchSocket)
+        window.simpleMatchSocket.close();
 	if (window.rasp == "true")
-		window.tournamentSocket = new WebSocket(
+		window.simpleMatchSocket = new WebSocket(
 			`wss://${window.pidom}/ws/tournament/${window.user_id}/`
 		);
 	else
-		window.tournamentSocket = new WebSocket(
+		window.simpleMatchSocket = new WebSocket(
 			`ws://localhost:8000/ws/tournament/${window.user_id}/`
 		);
-	window.tournamentSocket.onopen = () => {
+	window.simpleMatchSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
 	}
-	window.tournamentSocket.onclose = () => {
+	window.simpleMatchSocket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");
 	};	
-	window.tournamentSocket.onmessage = event =>
-		onTournamentWsMessage(event, window.tournamentSocket);
+	window.simpleMatchSocket.onmessage = event =>
+		onSimpleMatchMessage(event, window.simpleMatchSocket);
 }

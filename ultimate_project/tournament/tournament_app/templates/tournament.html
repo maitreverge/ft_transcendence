@@ -7,14 +7,14 @@
 			window.pidom = "{{ pidom }}";
             window.user_id = "{{ user_id }}";								
 		</script>
-		<script src="{% static 'tournament/selection_simple.js' %}"
-				onload="initSimpleMatch()"></script>
+		<script src="{% static 'tournament/tournament.js' %}"
+				onload="initTournament()"></script>
 	</head>
 </div>	
 <div id="simple-selections">
-	<h1>Simple - Selections</h1>
+	<h1>Tournois - Selections</h1>
 	<h2 id ="myh1">
-		Je dois choisir un joueur et entrer dans le match!
+		Je dois choisir un tournois et entrer dans le match!
 	</h2>
 	<h2 id="player">Je suis le joueur ...</h2>
 	<div id="players"></div>

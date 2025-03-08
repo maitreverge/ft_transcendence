@@ -45,4 +45,38 @@ async def match_result(request : HttpRequest):
 		if m.get("matchId") != match_id]
 	await consumer.MyConsumer.match_update()
 	return JsonResponse({"status": "succes"})
+
+def tournament(request : HttpRequest, user_id):
+	print(f"dans tournament {user_id}", flush=True)	#//!
+	return render(
+		request,
+		"tournament.html",
+		{
+			"rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),	
+			"user_id": user_id		
+		}
+	)	
+# def create_tournament(playerList):
+# 	player1
+# 	player2
+# 	player3
+# 	player4
+# 	askmatchid
+# 	send matchid to player1 player2
+# 	send matchid to player3 player4
+
+# 	makegamewith player1 player2 les joueur vont se connecter
+# 	makegamewith player3 player4 les joueur vont se connecter
+
+# 	winnergame1 je vais recevoir le res par match result
+# 	winnergame2	je vais recevoir le res par match result
+# 	une fois que les deux res sont arrive je vais 
+# 	askmatchId
+# 	send matchid to winnergame1 winnergame2	
+
+# 	makegamewith winnergame1 winnergame2
+
+# 	winnergame1 je vais recevoir le res par match result
+# 	winnergame3	
 	
