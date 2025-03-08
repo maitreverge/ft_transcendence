@@ -46,6 +46,15 @@
 	background: rgb(251, 255, 0);
 }
 
+.tournament {
+	width:fit-content;
+	height:fit-content;
+	margin:5px;
+	margin-top:10px;
+	display:inline-block;
+	background: rgb(251, 255, 0);
+}
+
 #simple-selections {
 
 	width:100%;
