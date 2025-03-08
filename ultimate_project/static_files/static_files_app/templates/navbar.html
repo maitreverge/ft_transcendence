@@ -1,14 +1,17 @@
 {% load static %}
 <!-- Topbar -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-    <a class="nav-link" href="http://localhost:8000/" id="userDropdown" role="button">
+    <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
+    hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline small"><i class="fas fa-trophy"></i> Match making</span>
     </a>
-    <a class="nav-link" href="profil.html" id="userDropdown" role="button">
+    <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
+    hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline text-dark-gray small"><i class="fa-solid fa-user"></i>
             Profile</span>
     </a>
-    <a class="nav-link" href="stats.html" id="userDropdown" role="button">
+    <a class="nav-link" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
+    hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline text-dark-gray small"><i
                 class="fa-solid fa-chart-simple"></i> Stats</span>
     </a>
@@ -61,7 +64,7 @@
         <li class="nav-item dropdown no-arrow mx-1">
             <a class="nav-link dropdown-toggle text-primary" href="#" id="alertsDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-bolt"></i>
                 <!-- Counter - Alerts -->
                 <span class="badge badge-danger badge-counter">3+</span>
             </a>
@@ -74,23 +77,23 @@
                 <a class="dropdown-item d-flex align-items-center" href="#">
                     <div class="mr-3">
                         <div class="icon-circle bg-primary">
-                            <i class="fas fa-file-alt text-white"></i>
+                            <i class="fa-solid fa-heart"></i>
                         </div>
                     </div>
                     <div>
                         <div class="small text-gray-500">December 12, 2019</div>
-                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                        <span class="font-weight-bold">Paris Hilton wants to be your friend!</span>
                     </div>
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                     <div class="mr-3">
                         <div class="icon-circle bg-success">
-                            <i class="fas fa-donate text-white"></i>
+                            <i class="fa-solid fa-heart"></i>
                         </div>
                     </div>
                     <div>
                         <div class="small text-gray-500">December 7, 2019</div>
-                        $290.29 has been deposited into your account!
+                        Sylvain Duriff wants to be your friend!
                     </div>
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
@@ -101,7 +104,7 @@
                     </div>
                     <div>
                         <div class="small text-gray-500">December 2, 2019</div>
-                        Spending Alert: We've noticed unusually high spending for your account.
+                        Alert: A tournament is about to start!
                     </div>
                 </a>
                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
@@ -121,7 +124,8 @@
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="profil.html">
+                <a class="dropdown-item" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
+                hx-target="#main_div">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>
