@@ -12,5 +12,5 @@ router.register(r'match', MatchViewSet)
 # The API URLs are now determined automatically by the router
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('verify-credentials/', views.verify_credentials, name="verify_credentials"),
+    path('api/verify-credentials/', views.verify_credentials, name="verify_credentials"),
 ]

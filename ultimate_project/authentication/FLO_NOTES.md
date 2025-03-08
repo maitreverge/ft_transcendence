@@ -24,7 +24,12 @@
 
 ## JWT :
 
-⛔ ✅ Create a very specific login and register route free of JWT requirements
+✅ Create a very specific login and register route free of JWT requirements
+⛔ ✅ Transfert the ping logic from a `curl` command to let the `auth` container handle the logic
+⛔ ✅
+⛔ ✅
+⛔ ✅
+
 ⛔ ✅ Connect the form for login in the first place WITHOUT 2FA
 ⛔ ✅ Create a first version of a JWT.
 ⛔ ✅ Then displays the token on the front with a redirection
