@@ -1,7 +1,8 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from typing import List
 
-players = []
+players : List["TournamentConsumer"] = []
 
 class TournamentConsumer(AsyncWebsocketConsumer):
 
@@ -11,3 +12,17 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		players.append(self)
 		await self.send(text_data=json.dumps({
 			"type": "selfAssign", "selfId": self.id})) 
+		await self.send_players()
+
+	async def disconnect(self, close_code):
+		players[:] = [p for p  in players if p.id != self.id]
+		await self.send_players()
+
+	async def send_players(self):		
+		for player in players:
+			await player.send(text_data=json.dumps({
+				"type": "playerList",			
+				"players": [
+					{"playerId": p.id} for p in players
+				]
+			}))
