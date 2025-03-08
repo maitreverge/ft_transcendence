@@ -4,21 +4,21 @@ function loadHtml(data, target) {
 	const overlay = document.getElementById(target);
 	overlay.innerHTML = data;
 	const scripts = overlay.getElementsByTagName("script");
-
+	
 	for (const script of scripts) {
+		
 		const newScript = document.createElement("script");
+		newScript.className = script.className;
 		if (script.src) {	
-			const oldScripts = document.querySelectorAll(
-				`script[src="${script.src}"]`
-			);
-    		oldScripts.forEach(oldScript => oldScript.remove());	
 			newScript.src = script.src + "?t=" + Date.now();
 			newScript.async = true;  
 			newScript.onload = script.onload;
 		} else 			
-			newScript.textContent = script.textContent;		
+		newScript.textContent = script.textContent;		
 		document.body.appendChild(newScript); 
 	}
+	const oldScripts = document.querySelectorAll("script.match-script");			
+	oldScripts.forEach(oldScript => oldScript.remove());	
 }
 
 function setSelfMatchId() {
