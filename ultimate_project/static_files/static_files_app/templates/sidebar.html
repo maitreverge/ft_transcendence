@@ -16,9 +16,12 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="/">
-            <i class="fa-solid fa-house"></i>
-            <span>Accueil</span></a>
+        <a class="nav-link" 
+        hx-trigger="click" hx-push-url="true" 
+        hx-get="/home/"
+        hx-target="#main_div">
+        <i class="fa-solid fa-house"></i>
+        <span>Accueil</span></a>
     </li>
 
     <!-- Divider -->

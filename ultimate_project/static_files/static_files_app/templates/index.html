@@ -25,7 +25,6 @@
             <script src="https://unpkg.com/htmx.org@1.9.6"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>            
         </head>
-    {% include "scripts.html" %} 
     </head>
 
     <body id="page-top" hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
@@ -41,21 +40,21 @@
                 <div id="content">
     
                     {% include "navbar.html" %}
-
-                    <div id="main_div"></div> 
-                    {% include "footer.html" %}
-
+                    <div id="main_div">
+                    {% if page %}
+                        {% if page|slice:"-5:" == ".html" %}
+                            {% include page %}
+                        {% else %}
+                            {{ page|safe }}
+                        {% endif %}
+                    {% else %}
+                            {% include "partials/home.html" %}
+                    {% endif %}
+                            
+                    
+                    
                 </div>  
-            
-                    <!-- {% if page %}
-                {% if page|slice:"-5:" == ".html" %}
-                    {% include page %}
-                {% else %}
-                    {{ page|safe }}
-                {% endif %}
-            {% else %}
-                {% include "partials/home.html" %} -->
-            <!-- {% endif %} -->
+                {% include "footer.html" %}
         
         </div>
     </div>
