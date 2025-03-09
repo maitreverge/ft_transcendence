@@ -56,6 +56,14 @@ def tournament(request : HttpRequest, user_id):
             "pidom": os.getenv("pi_domain", "localhost:8000"),	
 			"user_id": user_id		
 		}
+	)
+
+def tournament_pattern(request : HttpRequest, tournament_id):
+	print(f"dans tournament pattern {tournament_id}", flush=True)	
+	# print(f"dans tournament pattern {tournament_id}", flush=True)	
+	return render(
+		request,
+		"tournament_pattern.html"
 	)	
 # def create_tournament(playerList):
 # 	player1

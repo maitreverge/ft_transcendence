@@ -40,9 +40,9 @@ function onTournamentMessage(event, socket) {
 		case "tournamentList":
 			updateTournaments(socket, data.tournaments);
 			break;
-		// case "invitation":
-		// 	invitation(socket, data)
-		// 	break;
+		case "getPattern":
+			getPattern(data.tournamentId);
+			break;
 		default:				
 			break;
 	}
@@ -272,3 +272,41 @@ function enterTournament(socket, tournamentId) {
 		}));
 }
 
+function getPattern(tournamentId) {
+	console.log("getpattern: ", tournamentId);
+	const tournament = document.getElementById("tournaments").querySelector(
+		`[id='${tournamentId}']`
+	);
+	if (!tournament)
+		return;
+	fetch(`/tournament/tournament-pattern/${tournamentId}/`)
+	.then(response => {
+		if (!response.ok) 
+			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+		return response.text();
+	})
+	.then(data => loadHtml(data, tournament))
+	.catch(error => console.log(error));		
+}
+
+function loadHtml(data, overlay) {
+
+	// const overlay = document.getElementById(target);
+	overlay.innerHTML += data;
+	const scripts = overlay.getElementsByTagName("script");
+	
+	for (const script of scripts) {
+		
+		const newScript = document.createElement("script");
+		newScript.className = script.className;
+		if (script.src) {	
+			newScript.src = script.src + "?t=" + Date.now();
+			newScript.async = true;  
+			newScript.onload = script.onload;
+		} else 			
+		newScript.textContent = script.textContent;		
+		document.body.appendChild(newScript); 
+	}
+	const oldScripts = document.querySelectorAll("script.pattern-script");			
+	oldScripts.forEach(oldScript => oldScript.remove());	
+}
