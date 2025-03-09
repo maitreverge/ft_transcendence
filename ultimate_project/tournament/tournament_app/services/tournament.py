@@ -10,3 +10,7 @@ class Tournament():
 
 	def append(self, player):
 		self.players.append(player)
+
+	def remove(self, player):
+		self.players[:] = [p for p in self.players if p != player]
+		

@@ -18,6 +18,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.send_tournaments()
 
 	async def disconnect(self, close_code):
+		self.remove_player_in_tournaments()
 		players[:] = [p for p  in players if p.id != self.id]
 		await self.send_all("player", players)
 
@@ -76,12 +77,21 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		tournaments.append(Tournament(self.id))
 		await self.send_tournaments()
 
-	async def enter_tournament(self, tournament_id):
-		print(f"entertournement : {tournament_id}", flush=True)
+	def remove_player_in_tournaments(self):
+		for tournament in tournaments:
+			if self in tournament.players:
+				tournament.remove(self)
 
-		for t in tournaments:
-			print(t.id, flush=True)
-			if t.id == tournament_id:			
-				t.append(self)
-				await self.send_tournaments()
+	async def enter_tournament(self, tournament_id):
+		# print(f"entertournement : {tournament_id}", flush=True)
+		tournament = next(
+			(t for t in tournaments if t.id == tournament_id), None)		
+		if tournament and self not in tournament.players:
+			self.remove_player_in_tournaments()
+			tournament.append(self)
+			await self.send_tournaments()	
+				# for t in tournaments:	
+				# 	if t.id == tournament_id:			
+				# 		t.append(self)
+				# 		await self.send_tournaments()
 		

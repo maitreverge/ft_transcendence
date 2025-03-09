@@ -149,20 +149,69 @@ function movePlayerInTournament(tournamentElement, tournament) {
 	const playersContainer = document.getElementById("players");
 	const playerElements = [...playersContainer.children];
 	const tournamentPlayerElements = [...tournamentElement.children];
+	const tournamentsContainer = document.getElementById("tournaments");
+	const tournamentElements = [...tournamentsContainer.children];
 
 	if (tournament.players)
 	{
-		playerElements.forEach(player => {
-
+		playerElements.slice().reverse().forEach(player => { // je met le joueur ds le bon tournois depuis cont player si ny est pas deja 
 			if (tournament.players.some(p => p.playerId == player.id) &&
-				tournamentPlayerElements.every(p => p.id != player.id))			
-				tournamentElement.appendChild(player);						
+				tournamentPlayerElements.every(p => p.id != player.id))
+			{
+				console.log("appendchild to tournois; id:", player.id," ", tournamentElement.id);
+				tournamentElement.appendChild(player);
+			}			
+			else
+			{
+				tournamentElements.slice().reverse().forEach(tourn => {
+					console.log("type: ", typeof(tourn));
+					[...tourn.children].slice().reverse().forEach(player2 =>{
+
+						if (tournament.players.some(p => p.playerId == player2.id) &&
+						tournamentPlayerElements.every(p => p.id != player2.id))			
+						{
+							console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
+							tournamentElement.appendChild(player2);
+						}
+					});									
+				});
+			}						
 		});
-		tournamentPlayerElements.slice().reverse().forEach(player => {
-			if (tournament.players.every(el => el.playerId != player.id))			
-				playersContainer.appendChild(player);					
+		if (playerElements.length === 0)
+		{
+			console.log("player est faux");
+			tournamentElements.slice().reverse().forEach(tourn => {
+				console.log("type: ", typeof(tourn));
+				[...tourn.children].slice().reverse().forEach(player2 =>{
+					
+					if (tournament.players.some(p => p.playerId == player2.id) &&
+					tournamentPlayerElements.every(p => p.id != player2.id))			
+				{
+					console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
+					tournamentElement.appendChild(player2);
+				}
+			});									
 		});
-	}	
+		}
+
+
+		tournamentPlayerElements.slice().reverse().forEach(player => { // je met le joueur du tournois ds cont player 
+			if (tournament.players.every(el => el.playerId != player.id))
+			{
+				console.log("appendchild to cont player; id:", player.id," ", tournamentElement.id);
+				playersContainer.appendChild(player);	// ou alors le bon tournois!				
+			}			
+		});
+	}
+	else // si le tournois est vide
+	{
+		tournamentPlayerElements.slice().reverse().forEach(player => {	// je met tous les joueur du tournois ds cont player 					
+			
+				console.log("appendchild to cont player from void; id:", player.id," ", tournamentElement.id);
+				playersContainer.appendChild(player);	// ou alors le bon tournois!				
+				// ou alors le bon tournois!				
+		});
+	}
 }
 
 function newTournament(socket) {

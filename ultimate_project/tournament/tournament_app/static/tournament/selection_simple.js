@@ -51,7 +51,7 @@ function movePlayerInMatch(socket, matchElement, match) {
 	if (match.players)
 	{		
 		// match.players.forEach(p => console.log("foriche ", p.playerId))
-		playerElements.forEach(player => {
+		playerElements.slice().reverse().forEach(player => {
 
 			if (match.players.some(p => p.playerId == player.id) &&
 				matchPlayerElements.every(p => p.id != player.id))
