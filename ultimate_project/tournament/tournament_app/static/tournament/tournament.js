@@ -101,11 +101,11 @@ function updateTournaments(socket, tournaments) {
 	tournaments.forEach(tournament => {	
 		if (tournamentElements.every(el => el.id != tournament.tournamentId))		
 			addToTournaments(socket, tournamentsContainer, tournament);
-		// else			
-		// 	matchElements.forEach(el => {
-		// 		if (el.id == match.matchId)
-		// 			movePlayerInMatch(socket, el, match);
-		// 	});	
+		else			
+			tournamentElements.forEach(el => {
+				if (el.id == tournament.tournamentId)
+					movePlayerInTournament(el, tournament);
+			});	
 	});
 	// setSelfMatchId();	
 }
@@ -139,16 +139,46 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 	div.className = "tournament";
 	div.textContent = `tournament: ${tournament.tournamentId}`;
 	div.id = tournament.tournamentId;
+	div.onclick = () => enterTournament(socket, tournament.tournamentId);
     tournamentsContainer.appendChild(div);
-	// movePlayerInMatch(socket, div, match)
+	movePlayerInTournament(div, tournament);
+}
+
+function movePlayerInTournament(tournamentElement, tournament) {
+	
+	const playersContainer = document.getElementById("players");
+	const playerElements = [...playersContainer.children];
+	const tournamentPlayerElements = [...tournamentElement.children];
+
+	if (tournament.players)
+	{
+		playerElements.forEach(player => {
+
+			if (tournament.players.some(p => p.playerId == player.id) &&
+				tournamentPlayerElements.every(p => p.id != player.id))			
+				tournamentElement.appendChild(player);						
+		});
+		tournamentPlayerElements.slice().reverse().forEach(player => {
+			if (tournament.players.every(el => el.playerId != player.id))			
+				playersContainer.appendChild(player);					
+		});
+	}	
 }
 
 function newTournament(socket) {
 
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
-			type: "newTournament",
-			applicantId: Number(window.selfId)
+			type: "newTournament"			
+		}));
+}
+
+function enterTournament(socket, tournamentId) {
+	console.log("entertournement: ", tournamentId);
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "enterTournament",
+			tournamentId: tournamentId			
 		}));
 }
 

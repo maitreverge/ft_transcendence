@@ -6,3 +6,7 @@ class Tournament():
 
 		Tournament.id += 1
 		self.id = Tournament.id
+		self.players = []
+
+	def append(self, player):
+		self.players.append(player)
