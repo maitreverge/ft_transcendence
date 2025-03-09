@@ -2,7 +2,6 @@
     "Accueil": "Accueil",
     "first name": "Prénom",
     "last name": "Nom",
-    
     "Display Name": "Nom d'affichage",
     "Email Address": "Adresse e-mail",
     "Friends": "Amis",
@@ -10,15 +9,6 @@
     "Delete profile": "Supprimer le profil",
     "Avatar": "Avatar",
     "Add your picture here": "Ajoutez votre photo ici",
-
-    "Date d'inscription": "Date d'inscription",
-    "Dernière connexion": "Dernière connexion",
-    "Statut": "Status",
-    "Nombre d'actions": "Nombre d'actions",
-    "Durée totale": "Durée totale",
-    "Nombre de connexions": "Nombre de connexions",
-    "Taux de complétion": "Taux de complétion",
-    "Classement": "Classement",
     "Match simple": "Match simple",
     "Tournoi": " Tournoi",
     "Profil": " Profil",

@@ -2,7 +2,6 @@
     "Accueil": "Startseite",
     "first name": "Vorname",
     "last name": "Nachname",
-
     "Display Name": "Anzeigename",
     "Email Address": "E-Mail-Adresse",
     "Friends": "Freunde",
@@ -10,20 +9,10 @@
     "Delete profile": "Profil löschen",
     "Avatar": "Avatar",
     "Add your picture here": "Fügen Sie hier Ihr Bild hinzu",
-
-    "Date d'inscription": "Anmeldedatum",
-    "Dernière connexion": "Letzte Anmeldung",
-    "Statut": "Status",
-    "Nombre d'actions": "Anzahl der Aktionen",
-    "Durée totale": "Gesamtdauer",
-    "Nombre de connexions": "Anzahl der Logins",
-    "Taux de complétion": "Abschlussrate",
-    "Classement": "Rangliste",
     "Match simple": "Einzelspiel",
     "Tournoi": " Turnier",
     "Profil": " Profil",
     "Statistiques": " Statistiken",
-
     "Logout": "Abmelden",
     "Number of friends": "Anzahl der Freunde",
     "Actual number of friends: ": "Aktuelle Anzahl der Freunde: ",

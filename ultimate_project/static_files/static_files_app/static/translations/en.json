@@ -2,15 +2,13 @@
     "Accueil": "Home",
     "first name": "First name",
     "last name": "Last name",
-    "Email": "Email",
-    "Date d'inscription": "Subscription date",
-    "Dernière connexion": "Last login",
-    "Statut": "Status",
-    "Nombre d'actions": "Total actions",
-    "Durée totale": "Total duration of use",
-    "Nombre de connexions": "Total logins",
-    "Taux de complétion": "Completion rate",
-    "Classement": "Ranking",
+    "Display Name": "Display name",
+    "Email Address": "Email address",
+    "Friends": "Friends",
+    "Update profile": "Update profile",
+    "Delete profile": "Delete profile",
+    "Avatar": "Avatar",
+    "Add your picture here": "Add your picture here",
     "Match simple": "Single match",
     "Tournoi": " Tournament",
     "Profil": " Profile",
@@ -22,3 +20,4 @@
     "games won: ": "games won: ",
     "Games lost: ": "Games lost: "
 }
+    
