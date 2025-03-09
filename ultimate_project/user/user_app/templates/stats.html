@@ -1,50 +1,66 @@
 {% load static %}
 <div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 data-translate="Statistiques" class="h3 mb-2 text-gray-800">Stats</h1>
 
-    <!-- Page Heading -->
-    <h1 data-translate="Statistiques" class="h3 mb-2 text-gray-800">Stats</h1>
-
-    <!-- Content Row -->
-    <div class="row">
-
-        <div class="col-xl-8 col-lg-7">
-
-            <!-- Area Chart -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 data-translate="Number of friends" class="m-0 font-weight-bold text-primary">Number of friends</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="myAreaChart"></canvas>
-                    </div>
-                    <hr>
-                    <p><span data-translate="Actual number of friends: ">Actual number of friends: </span><span class="text-primary">42</span></p>
-                </div>
-            </div>
-
+  <!-- Content Row -->
+  <div class="row">
+    <div class="col-xl-8 col-lg-7">
+      <!-- Area Chart -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6
+            data-translate="Number of friends"
+            class="m-0 font-weight-bold text-primary"
+          >
+            Number of friends
+          </h6>
         </div>
-
-        <!-- Donut Chart -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 data-translate="Games played" class="m-0 font-weight-bold text-primary">Games played</h6>
-                </div>  
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="myPieChart"></canvas>
-                    </div>
-                    <hr>
-                    <p><span data-translate="games won: ">games won: </span><span class="text-primary">8</span></p>
-                    <p><span data-translate="Games lost: ">games lost: </span><span class="text-danger">2</span></p>
-                </div>
-            </div>
+        <div class="card-body">
+          <div class="chart-area">
+            <canvas id="myAreaChart"></canvas>
+          </div>
+          <hr />
+          <p>
+            <span data-translate="Actual number of friends: "
+              >Actual number of friends: </span
+            ><span class="text-primary">42</span>
+          </p>
         </div>
+      </div>
     </div>
-    <script src="{% static 'static_files/vendor/chart.js/Chart.min.js' %}"></script>
-    <script src="{% static 'static_files/js/demo/chart-area-demo.js' %}"></script>
-    <script src="{% static 'static_files/js/demo/chart-pie-demo.js' %}"></script>
+
+    <!-- Donut Chart -->
+    <div class="col-xl-4 col-lg-5">
+      <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3">
+          <h6
+            data-translate="Games played"
+            class="m-0 font-weight-bold text-primary"
+          >
+            Games played
+          </h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="chart-pie pt-4">
+            <canvas id="myPieChart"></canvas>
+          </div>
+          <hr />
+          <p>
+            <span data-translate="games won: ">games won: </span
+            ><span class="text-primary">8</span>
+          </p>
+          <p>
+            <span data-translate="Games lost: ">games lost: </span
+            ><span class="text-danger">2</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'static_files/vendor/chart.js/Chart.min.js' %}"></script>
+  <script src="{% static 'static_files/js/demo/chart-area-demo.js' %}"></script>
+  <script src="{% static 'static_files/js/demo/chart-pie-demo.js' %}"></script>
 </div>
