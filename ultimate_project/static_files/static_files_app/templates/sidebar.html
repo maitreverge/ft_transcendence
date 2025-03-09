@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center nav-link" 
+    <a id="nav-home" class="sidebar-brand d-flex align-items-center justify-content-center nav-link" 
     hx-trigger="click" hx-push-url="true" 
     hx-get="/home/"
     hx-target="#main_div"><div class="sidebar-brand-icon rotate-n-15">
@@ -34,7 +34,7 @@
 
     <!-- Nav Item - Match making -->
     <li class="nav-item active">
-        <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
+        <a id="nav-tournament" class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
         hx-target="#main_div">
             <i class="fas fa-fw fa-trophy"></i>
             <span>Match Making</span></a>
@@ -42,7 +42,7 @@
 
     <!-- Nav Item - Profil -->
     <li class="nav-item">
-        <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
+        <a id="nav-profile" class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
         hx-target="#main_div">
             <i class="fa-solid fa-user"></i>
             <span>Profil</span></a>
@@ -50,7 +50,7 @@
 
     <!-- Nav Item - Stats -->
     <li class="nav-item">
-        <a class="nav-link" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
+        <a id="nav-stats" class="nav-link" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
         hx-target="#main_div">
             <i class="fa-solid fa-chart-simple"></i>
             <span>Stats</span></a>

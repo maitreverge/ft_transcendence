@@ -19,6 +19,8 @@ def run(playwright: Playwright) -> None:
     time.sleep(0.4)
     page.locator("#nav-home").click()
     time.sleep(0.4)
+    page.locator("#nav-tournament").click()
+    time.sleep(0.4)
     page.locator("#nav-profile").click()
     time.sleep(0.4)
     page.locator("#nav-stats").click()
@@ -36,7 +38,6 @@ def run(playwright: Playwright) -> None:
     # ---------------------
     context.close()
     browser.close()
-
 
 with sync_playwright() as playwright:
     run(playwright)
