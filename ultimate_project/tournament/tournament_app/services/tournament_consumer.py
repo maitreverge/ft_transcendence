@@ -67,9 +67,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		match data:
 			case {"type": "newTournament"}:
 				await self.new_tournament()
-			case {"type": "enterTournament", "tournamentId": tournament_id}:
-				print(f"case entertournament!", flush=True)
-				await self.enter_tournament(tournament_id)		
+			case {"type": "enterTournament", "tournamentId": tournament_id}:		
+				await self.enter_tournament(tournament_id)
+			case {"type": "quitTournament"}:		
+				await self.quit_tournament()		
 			case _:
 				pass
 
@@ -83,15 +84,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				tournament.remove(self)
 
 	async def enter_tournament(self, tournament_id):
-		# print(f"entertournement : {tournament_id}", flush=True)
+
 		tournament = next(
 			(t for t in tournaments if t.id == tournament_id), None)		
 		if tournament and self not in tournament.players:
 			self.remove_player_in_tournaments()
 			tournament.append(self)
 			await self.send_tournaments()	
-				# for t in tournaments:	
-				# 	if t.id == tournament_id:			
-				# 		t.append(self)
-				# 		await self.send_tournaments()
-		
+			
+	async def quit_tournament(self):
+		self.remove_player_in_tournaments()			
+		await self.send_tournaments()

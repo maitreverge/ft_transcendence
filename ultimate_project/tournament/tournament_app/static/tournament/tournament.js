@@ -112,14 +112,23 @@ function addPlayerToContainer(socket, container, playerId) {
 	if (playerId === window.selfId)
 	{
 		div.classList.add("self-player");
-		// div.onclick = event => {
-		// 	event.stopPropagation();
-		// 	alert("you can't choose yourself");
-		// }		
+		div.onclick = event => {
+			event.stopPropagation();
+			quitTournament(socket);
+			// tournamentId = Number(event.currentTarget.parentElement.id)
+		}		
 	}
 	// else	
 	// 	div.onclick = event =>	sendPlayerClick(socket, event, div);	
     container.appendChild(div);
+}
+
+function quitTournament(socket) {
+	console.log("quittournement: ");
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "quitTournament"						
+		}));
 }
 
 function updateTournaments(socket, tournaments) {
