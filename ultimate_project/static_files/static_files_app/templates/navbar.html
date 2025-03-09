@@ -8,19 +8,19 @@
         <option value="es">🇪🇸 Español</option>
         <option value="tl">🇦🇱 TlhIngan</option>
     </select>
-    <a data-translate="Tournoi" class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
+    <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
     hx-target="#main_div" id="userDropdown" role="button">
-        <span class="mr-2 d-none d-lg-inline small"><i class="fas fa-trophy"></i> Match making</span>
+        <span class="mr-2 d-none d-lg-inline small"><i class="fas fa-trophy"></i><span data-translate="Tournoi">Tournoi</span></span>
     </a>
-    <a data-translate="Profil" class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
+    <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
     hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline text-dark-gray small"><i class="fa-solid fa-user"></i>
-            Profile</span>
+            <span data-translate="Profil">Profile</span></span>
     </a>
-    <a data-translate="Statistiques" class="nav-link" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
+    <a class="nav-link" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
     hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline text-dark-gray small"><i
-                class="fa-solid fa-chart-simple"></i> Stats</span>
+                class="fa-solid fa-chart-simple"></i><span data-translate="Statistiques">Stats</span></span>
     </a>
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -92,13 +92,13 @@
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
-                <a data-translate="Profil" class="dropdown-item" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
+                <a class="dropdown-item" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
                 hx-target="#main_div">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                 </a>
                 <div class="dropdown-divider"></div>
-                <a data-translate="logout" class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                     Logout
                 </a>
