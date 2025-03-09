@@ -56,19 +56,51 @@ function setSelfId(selfId) {
 }
 
 function updatePlayers(socket, players) {
-
+	console.log("UPDATE PLAYER");
     const playersContainer = document.getElementById("players");
 	let playerElements = [...playersContainer.children];	
-  
+	
+	const tournamentsContainer = document.getElementById("tournaments");
+	let tournamentElements = [...tournamentsContainer.children];
+
+	tournamentElements.slice().reverse().forEach(tournament => {
+		[...tournament.children].slice().reverse().forEach(player =>{
+			if (players.every(el => el.playerId != player.id))
+				player.remove();
+		});
+	});
+		// findPlayer = searchPlayerInTournaments(player.playerId);
+		// console.log("find player: ", findPlayer);
+		// if (findPlayer)
+		// 	findPlayer.remove();
+	
+	playerElements = [...playersContainer.children];	
 	playerElements.slice().reverse().forEach(player => {	
 		if (players.every(el => el.playerId != player.id))		
-			playersContainer.removeChild(player);					
+			playersContainer.removeChild(player);									
 	});
 	playerElements = [...playersContainer.children];
 	players.forEach(player => {	
-		if (playerElements.every(el => el.id != player.playerId))		
+		if (playerElements.every(el => el.id != player.playerId) &&
+			!searchPlayerInTournaments(player.playerId)
+		)		
 			addPlayerToContainer(socket, playersContainer, player.playerId);		
 	});	
+}
+
+function searchPlayerInTournaments(playerId) {
+
+	const tournamentsContainer = document.getElementById("tournaments");
+	let tournamentElements = [...tournamentsContainer.children];
+
+	for (const tournament of tournamentElements) {        
+        for (const player of [...tournament.children]) {
+            if (player.id == playerId) {
+                return player; 
+            }
+        }
+    }
+	return null
 }
 
 function addPlayerToContainer(socket, container, playerId) {
