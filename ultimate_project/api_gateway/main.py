@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, Query
 import httpx
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 import logging
 
 app = FastAPI(
@@ -165,6 +165,12 @@ async def match_proxy(
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)
 
+@app.get("/")
+async def redirect_to_home():
+    """
+    Redirect requests from '/' to '/home/'.
+    """
+    return RedirectResponse(url="/home/")
 
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):

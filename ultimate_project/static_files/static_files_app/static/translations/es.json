@@ -18,5 +18,8 @@
     "Actual number of friends: ": "Número actual de amigos: ",
     "Games played": "Juegos jugados: ",
     "games won: ": "juegos ganados: ",
-    "Games lost: ": "Juegos perdidos: "
+    "Games lost: ": "Juegos perdidos: ",
+    "Ready to Leave?": "¿Listo para salir?",
+    "Logout-leave": "Haga clic en \"Cerrar sesión\" a continuación si está listo para finalizar su sesión actual.",
+    "cancel": "cancelar"
 }
