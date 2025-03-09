@@ -8,6 +8,13 @@ function applyTranslations(translations) {
             element.innerText = translations[key];
         }
     });
+
+    document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-translate-placeholder');
+        if (translations[key]) {
+            element.placeholder = translations[key];
+        }
+    });
 }
 
 

@@ -1,6 +1,16 @@
 {
     "Accueil": "Inicio",
-    "Nom d’utilisateur": "Nombre de usuario",
+    "first name": "Nombre",
+    "last name": "Apellido",
+
+    "Display Name": "Nombre para mostrar",
+    "Email Address": "Dirección de correo electrónico",
+    "Friends": "Amigos",
+    "Update profile": "Actualizar perfil",
+    "Delete profile": "Eliminar perfil",
+    "Avatar": "Avatar",
+    "Add your picture here": "Añade tu foto aquí",
+    
     "Email": "Correo electrónico",
     "Date d'inscription": "Fecha de inscripción",
     "Dernière connexion": "Última conexión",

@@ -1,6 +1,7 @@
 {
     "Accueil": "Home",
-    "Nom d’utilisateur": "Username",
+    "first name": "First name",
+    "last name": "Last name",
     "Email": "Email",
     "Date d'inscription": "Subscription date",
     "Dernière connexion": "Last login",
