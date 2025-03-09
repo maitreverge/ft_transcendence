@@ -8,11 +8,11 @@
         <div id="wrapper">
 
             {% include "sidebar.html" %}
-
+            
             <div id="content-wrapper" class="d-flex flex-column">
-
+                
                 <div id="content">
-
+                    
                     {% include "navbar.html" %}
 
                     <div id="main_div">
@@ -39,5 +39,28 @@
 
         {% include "scripts.html" %}
 
+        <script>
+            function toggleNavbar(show) {
+                const navbar = document.querySelector('#homelogo');
+                console.log("toggleNavbar called");
+                if (show) {
+                    navbar.classList.remove('d-none');
+                    navbar.classList.add('d-flex');
+                } else {
+                    navbar.classList.remove('d-flex');
+                    navbar.classList.add('d-none');
+                }
+            }
+
+            function toggleSidebar(show) {
+                console.log("toggleSidebar called");
+                const sidebar = document.querySelector('#accordionSidebar');
+                if (show) {
+                    sidebar.classList.remove('d-none');
+                } else {
+                    sidebar.classList.add('d-none');
+                }
+            }
+        </script>
     </body>
 </html>
