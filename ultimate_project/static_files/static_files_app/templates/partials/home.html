@@ -1,4 +1,52 @@
-<div id="main_div">
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">ACCUEIL</h1>
+    </div>
+
+    <!-- Content Row -->
+
+    <!-- Color System -->
+    <div class="row justify-content-center">
+        <a class="col-lg-5 mb-4" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
+        hx-target="#main_div">
+            <div class="card bg-primary text-white shadow py-5">
+                <div class="card-body">
+                    Match
+                </div>
+            </div>
+        </a>
+        <a class="col-lg-5 mb-4" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
+        hx-target="#main_div">
+            <div class="card bg-success text-white shadow py-5">
+                <div class="card-body">
+                    Profil
+                </div>
+            </div>
+        </a>
+        <a class="col-lg-5 mb-4" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
+        hx-target="#main_div">
+            <div class="card bg-info text-white shadow py-5">
+                <div class="card-body">
+                    Stats
+                </div>
+            </div>
+        </a>
+        <div class="col-lg-5 mb-4">
+            <div class="card bg-warning text-white shadow py-5">
+                <div class="card-body">
+                    Warning
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<!-- <div id="main_div">
     <div class="row justify-content-around" style="height: 45vh;">
         <a id="field-tournament" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
         hx-target="#main_div" class="d-flex flex-column justify-content-center align-items-center rounded-5 mt-3 col-5 bg-primary">
@@ -22,4 +70,4 @@
             <p class="text-white m-0" data-translate="Statistiques">Stats</p>
         </a>
     </div>
-</div>
+</div> -->
