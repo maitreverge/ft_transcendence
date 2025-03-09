@@ -1,16 +1,23 @@
 {% load static %}
 <!-- Topbar -->
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-    <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
+    <select id="language-selector" onchange="changeLanguage(event)">
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deustch</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="tl">🇦🇱 TlhIngan</option>
+    </select>
+    <a data-translate="Tournoi" class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
     hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline small"><i class="fas fa-trophy"></i> Match making</span>
     </a>
-    <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
+    <a data-translate="Profil" class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
     hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline text-dark-gray small"><i class="fa-solid fa-user"></i>
             Profile</span>
     </a>
-    <a class="nav-link" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
+    <a data-translate="Statistiques" class="nav-link" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
     hx-target="#main_div" id="userDropdown" role="button">
         <span class="mr-2 d-none d-lg-inline text-dark-gray small"><i
                 class="fa-solid fa-chart-simple"></i> Stats</span>
@@ -20,45 +27,7 @@
         <i class="fa fa-bars"></i>
     </button>
 
-    <!-- Topbar Search -->
-    <!-- <form
-            class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-            <div class="input-group">
-                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                    aria-label="Search" aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                    </button>
-                </div>
-            </div>
-        </form> -->
-
-    <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
-
-        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-        <!-- <li class="nav-item dropdown no-arrow d-sm-none">
-            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
-                    <div class="input-group">
-                        <input type="text" class="form-control bg-light border-0 small"
-                            placeholder="Search for..." aria-label="Search"
-                            aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </li> -->
 
         <!-- Nav Item - Alerts -->
         <li class="nav-item dropdown no-arrow mx-1">
@@ -111,7 +80,6 @@
             </div>
         </li>
 
-
         <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - User Information -->
@@ -141,40 +109,3 @@
 
 </nav>
 <!-- End of Topbar -->
-
-
-
-<!-- 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <select id="language-selector" onchange="changeLanguage(event)">
-                <option value="en">🇬🇧 English</option>
-                <option value="fr">🇫🇷 Français</option>
-                <option value="de">🇩🇪 Deustch</option>
-                <option value="es">🇪🇸 Español</option>
-                <option value="tl">🇦🇱 TlhIngan</option>
-            </select>
-            <span>----</span>
-            <a id="nav-home" class="navbar-brand cursor-pointer" hx-trigger="click" hx-push-url="true" hx-get="/home/"
-            hx-target="#main_div" hx-select="#main_div > *" data-translate="Accueil">Home</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item cursor-pointer">
-                        <a id="nav-profile" class="nav-link active" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
-                        hx-target="#main_div"
-                        data-translate="Profil">profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="nav-stats" class="nav-link pe-auto"  hx-trigger="click" hx-push-url="true" hx-get="/user/stats/"
-                        hx-debug="true"
-                        hx-target="#main_div" 
-                        data-translate="Statistiques">Stats</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav> -->
-
