@@ -22,5 +22,11 @@
     "Match simple": "Match simple",
     "Tournoi": "Tournoi",
     "Profil": "Profil",
-    "Statistiques": "Statistiques"
+    "Statistiques": "Statistiques",
+    "logout": "Déconnexion",
+    "Number of friends": "Nombre d'amis",
+    "Actual number of friends: ": "Nombre actuel d'amis: ",
+    "Games played": "Jeux joués: ",
+    "games won: ": "jeux gagnés: ",
+    "Games lost: ": "Jeux perdus: "
 }

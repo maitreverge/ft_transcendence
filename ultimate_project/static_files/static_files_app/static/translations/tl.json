@@ -3,13 +3,13 @@
     "first name": "pIn'a'",
     "last name": "Hum",
 
-    "Display Name": "chutlh",
-    "Email Address": "chomutlh",
+    "Display Name": "nIvbogh",
+    "Email Address": "mIghlIj",
     "Friends": "jup",
-    "Update profile": "chomutlh",
-    "Delete profile": "chomutlh' nIteb",
-    "Avatar": "chomutlh",
-    "Add your picture here": "chomutlh",
+    "Update profile": "profileDaq wIv",
+    "Delete profile": "profileDaq HablI' nIch",
+    "Avatar": "Qup",
+    "Add your picture here": "nuqDaq picture vI'ang",
 
     "Date d'inscription": "joq ghajmeH jaj",
     "Dernière connexion": "Qo'noS pIj QaQ",
@@ -22,5 +22,12 @@
     "Match simple": "Qab vItlhutlh",
     "Tournoi": "rugh DaHjaj",
     "Profil": "mInDu' luH",
-    "Statistiques": "vItlhutlhmey"
+    "Statistiques": "vItlhutlhmey",
+    "logout": "tu'lu'",
+    "Number of friends": "jupmey cha'logh",
+    "Actual number of friends: ": "jupmey cha'logh: ",
+    "Games played": "ghommey vIje': ",
+    "games won: ": "ghommey vI'ang: ",
+    "Games lost: ": "ghommey vIlo': "
+
 }
