@@ -31,9 +31,7 @@ def login(request):
 @never_cache
 def home(request):
     if request.headers.get("HX-Request"):
-        print("***************\nrequete htmx sa maman\n***************", flush=True)
         return render(request, "partials/home.html")
-    print("***************\nrequete NORMAL son papa\n***************", flush=True)
     username = request.session.get("username")
     obj = {"username": username, "page": "partials/home.html"}
     return render(request, "index.html", obj)
@@ -106,7 +104,6 @@ def user_stats_template(request):
 
 @never_cache
 def translations(request, lang):
-    print("********** translations called **********", flush=True)
     try:
         file_path = os.path.join(settings.BASE_DIR, 'static_files_app', 'static', 'translations', f'{lang}.json')
         with open(file_path, 'r') as file:
@@ -116,7 +113,6 @@ def translations(request, lang):
 
 @never_cache
 def register(request):
-    print("********** register called **********", flush=True)
     username = request.session.get("username")
     obj = {"username": username, "page": "register.html"}
     return render(request, "index.html", obj)
