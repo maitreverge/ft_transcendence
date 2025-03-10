@@ -1,6 +1,7 @@
 import json
 import requests
 import asyncio
+import aiohttp
 
 class Tournament():
 	
@@ -32,9 +33,19 @@ class Tournament():
 		await self.start_match(self.players[2].id, self.players[3].id, "m3")
 
 	async def start_match(self, p1, p2, local_match_id):
-		match_id = requests.get(
-			f"http://match:8002/match/new-match/?p1={p1}&p2={p2}"
-		).json().get('matchId', None)
+		match_id = None
+		async with aiohttp.ClientSession() as session:
+			async with session.get(				
+    				f"http://match:8002/match/new-match/?p1={p1}&p2={p2}"
+				) as response:
+				if response.status == 201:
+					data = await response.json()
+					match_id = data.get('matchId', None)			
+					
+				# return None
+		# match_id = requests.get(
+		# 	f"http://match:8002/match/new-match/?p1={p1}&p2={p2}"
+		# ).json().get('matchId', None)
 		if match_id:
 		# 	print(f"MATCHID FROM TOURNOISS {match_id}, p1 {p1}, p2 {p2}", flush=True)
 			self.matchs.append({"matchId": match_id})		
@@ -54,8 +65,13 @@ class Tournament():
 		if match:
 			match['winnerId'] = winner_id
 			match['looserId'] = looser_id
+		print(self.matchs, flush=True)
 		if self.n_match == 2:
 			await self.start_match(
-				self.matchs[0].get('winnerId'), self.matchs[1].get('winnerId'), "m1")
+				self.matchs[0].get('winnerId'), self.matchs[1].get('winnerId')
+				,"m1")
+		elif self.n_match == 3:
+			print(f"THE FINAL WINNER IS :{winner_id}", flush=True)
+			
 
 					
