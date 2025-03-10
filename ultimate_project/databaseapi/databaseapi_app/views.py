@@ -16,6 +16,10 @@ def verify_credentials(request):
     username = request.data.get("username")
     password = request.data.get("password")
 
+    # print("=========== DEBUGGING DATABASE===========", flush=True)
+    # print(f"username: {username}, password: {password}", flush=True)
+    # print("=========== DEBUGGING DATABASE===========", flush=True)
+
     if not username or not password:
         return Response(
             {"error": "Please provide both username and password"},

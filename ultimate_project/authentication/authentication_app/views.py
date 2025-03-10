@@ -14,9 +14,16 @@ def login_view(request):
     print("Request Headers:", request.headers, flush=True)
     print("Request Body:", request.body, flush=True)
     print("============== PRINT REQUEST ==============", flush=True)
+    
+    
     if request.method == "POST":
         cur_username = request.POST.get('username')
         cur_password = request.POST.get('password')
+
+        # print("============== PRINT POST ==============", flush=True)
+        # print("Username:", cur_username, flush=True)
+        # print("Password:", cur_password, flush=True)
+        # print("============== PRINT POST ==============", flush=True)
         
         # Call the database API to verify credentials
         try:
