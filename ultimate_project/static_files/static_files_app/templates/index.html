@@ -8,7 +8,7 @@
     @popstate.window="navigate(window.location.pathname, false)
     bg-gradient-primary">
 
-    {% if page == "register.html" or page == "forgot-password.html" or page == "login.html" %}
+    {% if page == "register.html" or page == "forgot-password.html" or page == "login.html" or page == "two-factor-auth.html" %}
         {% include page %}
     {% else %}
         <div id="wrapper">
@@ -36,60 +36,8 @@
                     </div>
                     {% include "footer.html" %}
                     {% include "scripts.html" %}
-                    {% endif %}
-
-                </div>
-
-            </div>
-                <!-- Scroll to Top Button-->
-            <a class="scroll-to-top rounded" href="#page-top">
-                <i class="fas fa-angle-up"></i>
-            </a>
-
-            <!-- Logout Modal-->
-            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 data-translate="Ready to Leave?" class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div data-translate="Logout-leave" class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" type="button" data-translate="cancel" data-dismiss="modal">Cancel</button>
-                            <a class="btn btn-primary" href="http://localhost:8000/register" data-translate="Logout">Logout</a>
-                        </div>
-                    </div>
+    {% endif %}
                 </div>
             </div>
-        </div>
-
-
-        <script>
-            function toggleNavbar(show) {
-                const navbar = document.querySelector('#homelogo');
-                console.log("toggleNavbar called");
-                if (show) {
-                    navbar.classList.remove('d-none');
-                    navbar.classList.add('d-flex');
-                } else {
-                    navbar.classList.remove('d-flex');
-                    navbar.classList.add('d-none');
-                }
-            }
-
-            function toggleSidebar(show) {
-                console.log("toggleSidebar called");
-                const sidebar = document.querySelector('#accordionSidebar');
-                if (show) {
-                    sidebar.classList.remove('d-none');
-                } else {
-                    sidebar.classList.add('d-none');
-                }
-            }
-        </script>
     </body>
 </html>
