@@ -3,8 +3,14 @@
 
     {% include "head.html" %}
 
-    <body id="page-top" hx-boost="true" @popstate.window="navigate(window.location.pathname, false)">
+    <body id="page-top" 
+    hx-boost="true" 
+    @popstate.window="navigate(window.location.pathname, false)
+    bg-gradient-primary">
 
+    {% if page == "register.html" or page == "forgot-password.html" or page == "login.html" %}
+        {% include page %}
+    {% else %}
         <div id="wrapper">
 
             {% include "sidebar.html" %}
@@ -28,8 +34,9 @@
                         {% endif %}
 
                     </div>
-
                     {% include "footer.html" %}
+                    {% include "scripts.html" %}
+                    {% endif %}
 
                 </div>
 
@@ -53,14 +60,13 @@
                         <div data-translate="Logout-leave" class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" type="button" data-translate="cancel" data-dismiss="modal">Cancel</button>
-                            <a class="btn btn-primary" href="login.html" data-translate="Logout">Logout</a>
+                            <a class="btn btn-primary" href="http://localhost:8000/register" data-translate="Logout">Logout</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {% include "scripts.html" %}
 
         <script>
             function toggleNavbar(show) {

@@ -108,4 +108,18 @@ def translations(request, lang):
             return JsonResponse(file.read(), safe=False)
     except FileNotFoundError:
         return JsonResponse({'error': 'File not found'}, status=404)
-    
+
+def register(request):
+    username = request.session.get("username")
+    obj = {"username": username, "page": "register.html"}
+    return render(request, "index.html", obj)
+
+def forgotPassword(request):
+    username = request.session.get("username")
+    obj = {"username": username, "page": "forgot-password.html"}
+    return render(request, "index.html", obj)
+
+def login(request):
+    username = request.session.get("username")
+    obj = {"username": username, "page": "login.html"}
+    return render(request, "index.html", obj)
