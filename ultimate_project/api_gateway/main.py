@@ -71,6 +71,11 @@ async def proxy_request(service_name: str, path: str, request: Request):
             return HTMLResponse(content=response.text, status_code=response.status_code)
         return JSONResponse(content=response.json(), status_code=response.status_code)
 
+@app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
+async def tournament_pattern_proxy(tournament_id, request: Request):
+    print("################## NEW ROUTE USED #######################", flush=True) 
+    print(f"################## NEW ROUTE USED ##########{tournament_id}", flush=True)
+    return await proxy_request("tournament", f"tournament/tournament-pattern/{tournament_id}/", request)
 
 user_id = 0
 @app.api_route("/tournament/{path:path}", methods=["GET"])
