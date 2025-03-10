@@ -16,11 +16,13 @@ def index(request):
     return render(request, "index.html", obj)
 
 
+# !!      OLD LOGIN PATH AND FORMS
 def login_form(request):
     # csrf_token = csrf.get_token(request)
     return render(request, "landing_page.html")
 
 
+# !!      OLD LOGIN PATH AND FORMS
 def login(request):
     username = request.POST.get("username")
     request.session["username"] = username

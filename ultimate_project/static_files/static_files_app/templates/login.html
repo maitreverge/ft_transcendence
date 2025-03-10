@@ -66,4 +66,38 @@
 
     </div>
 
+		<!-- Add this script before the closing </div> of the container -->
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const loginForm = document.querySelector('form.user');
+		
+		loginForm.addEventListener('submit', async function(e) {
+			e.preventDefault(); // Prevent normal form submission
+			
+			const formData = new FormData(loginForm);
+			
+			try {
+				const response = await fetch('/auth/login/', {
+					method: 'POST',
+					body: formData,
+					credentials: 'same-origin' // Include cookies
+				});
+				
+				const data = await response.json();
+				
+				if (data.success) {
+					// Redirect on success
+					window.location.href = data.redirect_to;
+				} else {
+					// Show error message
+					alert(data.error || 'Login failed');
+				}
+			} catch (error) {
+				console.error('Login error:', error);
+				alert('An error occurred during login. Please try again.');
+			}
+		});
+	});
+	</script>
+
 </div>
