@@ -176,7 +176,7 @@ async def match_proxy(
     #     return await proxy_request("static_files", "/home/", request)
 
 
-@app.api_route("/auth/{path:path}", methods=["GET"])
+@app.api_route("/auth/{path:path}", methods=["GET", "POST"])
 async def authentication_proxy(path: str, request: Request):
     """
     Proxy requests to the authentication microservice.
