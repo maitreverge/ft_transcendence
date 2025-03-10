@@ -65,7 +65,7 @@ function updatePlayers(socket, players) {
 
 	tournamentElements.slice().reverse().forEach(tournament => {
 		[...tournament.children].slice().reverse().forEach(player =>{
-			if (players.every(el => el.playerId != player.id))
+			if (players.every(el => el.playerId != player.id && player.id != "pattern-cont"))
 				player.remove();
 		});
 	});
@@ -237,7 +237,7 @@ function movePlayerInTournament(tournamentElement, tournament) {
 
 
 		tournamentPlayerElements.slice().reverse().forEach(player => { // je met le joueur du tournois ds cont player 
-			if (tournament.players.every(el => el.playerId != player.id))
+			if (tournament.players.every(el => el.playerId != player.id && player.id != "pattern-cont"))
 			{
 				console.log("appendchild to cont player; id:", player.id," ", tournamentElement.id);
 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
@@ -247,9 +247,11 @@ function movePlayerInTournament(tournamentElement, tournament) {
 	else // si le tournois est vide
 	{
 		tournamentPlayerElements.slice().reverse().forEach(player => {	// je met tous les joueur du tournois ds cont player 					
-			
+			if (player.id != "pattern-cont")
+			{
 				console.log("appendchild to cont player from void; id:", player.id," ", tournamentElement.id);
 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
+			}
 				// ou alors le bon tournois!				
 		});
 	}
@@ -290,9 +292,19 @@ function getPattern(tournamentId) {
 }
 
 function loadHtml(data, overlay) {
+	
+	// newDiv = document.createElement("div");
+	// newDiv.style.width = "77px";
+	// newDiv.style.height = "77px";
+	// newDiv.style.color = "blue";
+	// newDiv.innerHTML += data;
+	// overlay.appendChild(newDiv);
+	overlay.insertAdjacentHTML("beforeend", data); // ✅ Ajoute sans supprimer les événements
 
-	// const overlay = document.getElementById(target);
-	overlay.innerHTML += data;
+	// overlay.innerHTML += data;
+	// overlay.innerHTML += data;
+	// overlay.appendChild(data);
+
 	const scripts = overlay.getElementsByTagName("script");
 	
 	for (const script of scripts) {

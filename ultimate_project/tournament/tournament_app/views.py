@@ -63,7 +63,7 @@ def tournament_pattern(request : HttpRequest, tournament_id):
 	# print(f"dans tournament pattern {tournament_id}", flush=True)	
 	return render(
 		request,
-		"tournament_pattern.html"
+		"tournament_pattern.html",
 	)	
 # def create_tournament(playerList):
 # 	player1
