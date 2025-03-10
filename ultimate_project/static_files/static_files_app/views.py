@@ -132,3 +132,9 @@ def login(request):
     username = request.session.get("username")
     obj = {"username": username, "page": "login.html"}
     return render(request, "index.html", obj)
+
+@never_cache
+def twoFactorAuth(request):
+    username = request.session.get("username")
+    obj = {"username": username, "page": "two-factor-auth.html"}
+    return render(request, "index.html", obj)

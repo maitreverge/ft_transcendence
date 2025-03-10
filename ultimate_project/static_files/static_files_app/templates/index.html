@@ -8,7 +8,7 @@
     @popstate.window="navigate(window.location.pathname, false)
     bg-gradient-primary">
 
-    {% if page == "register.html" or page == "forgot-password.html" or page == "login.html" %}
+    {% if page == "register.html" or page == "forgot-password.html" or page == "login.html" or page == "two-factor-auth.html" %}
         {% include page %}
     {% else %}
         <div id="wrapper">
