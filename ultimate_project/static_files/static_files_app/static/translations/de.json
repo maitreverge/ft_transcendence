@@ -1,6 +1,27 @@
 {
-    "Ma queue": "Mein Schwanz",
-    "Mon zob": "Mon Pimmel",
-    "Mes couilles": "Meine Eier",
-    "Mon membre": "Mein Glied"
+    "Accueil": "Startseite",
+    "first name": "Vorname",
+    "last name": "Nachname",
+    "Display Name": "Anzeigename",
+    "Email Address": "E-Mail-Adresse",
+    "Friends": "Freunde",
+    "Update profile": "Profil aktualisieren",
+    "Delete profile": "Profil löschen",
+    "Avatar": "Avatar",
+    "Add your picture here": "Fügen Sie hier Ihr Bild hinzu",
+    "Match simple": "Einzelspiel",
+    "Tournoi": " Turnier",
+    "Profil": " Profil",
+    "Statistiques": " Statistiken",
+    "Logout": "Abmelden",
+    "Number of friends": "Anzahl der Freunde",
+    "Actual number of friends: ": "Aktuelle Anzahl der Freunde: ",
+    "Games played": "Gespielte Spiele: ",
+    "games won: ": "gewonnene Spiele: ",
+    "Games lost: ": "Verlorene Spiele: ",
+    "Ready to Leave?": "Bereit zu gehen?",
+    "Logout-leave": "Klicken Sie unten auf \"Abmelden\", wenn Sie bereit sind, Ihre aktuelle Sitzung zu beenden.",
+    "cancel": "abbrechen"
 }
+
+

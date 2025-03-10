@@ -1,6 +1,26 @@
 {
-    "Ma queue": "My dick",
-    "Mon zob": "My Willy",
-    "Mes couilles": "My eggs",
-    "Mon membre": "My cock"
+    "Accueil": "Home",
+    "first name": "First name",
+    "last name": "Last name",
+    "Display Name": "Display name",
+    "Email Address": "Email address",
+    "Friends": "Friends",
+    "Update profile": "Update profile",
+    "Delete profile": "Delete profile",
+    "Avatar": "Avatar",
+    "Add your picture here": "Add your picture here",
+    "Match simple": "Single match",
+    "Tournoi": " Tournament",
+    "Profil": " Profile",
+    "Statistiques": " Statistics",
+    "Logout": "Logout",
+    "Number of friends": "Number of friends",
+    "Actual number of friends: ": "Actual number of friends: ",
+    "Games played": "Games played: ",
+    "games won: ": "games won: ",
+    "Games lost: ": "Games lost: ",
+    "Ready to Leave?": "Ready to Leave?",
+    "Logout-leave": "\"Logout\" below if you are ready to end your current session.",
+    "cancel": "cancel"
 }
+    

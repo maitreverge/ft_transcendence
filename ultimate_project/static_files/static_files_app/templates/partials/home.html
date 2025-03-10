@@ -1,31 +1,52 @@
-<div id="main_div">
-    <div style="display:none;">
-        <head>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        </head>
+<div class="container-fluid">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 data-translate="Accueil" class="h3 mb-0 text-gray-800">ACCUEIL</h1>
+  </div>
+
+  <div class="row justify-content-center">
+    <a
+      id="field-tournament"
+      class="col-lg-5 mb-4"
+      hx-trigger="click"
+      hx-push-url="true"
+      hx-get="/tournament/simple-match/"
+      hx-target="#main_div"
+      hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    >
+      <div class="card bg-primary text-white shadow py-5">
+        <div class="card-body" data-translate="Tournoi">> Match</div>
+      </div>
+    </a>
+    <a
+      id="field-profile"
+      class="col-lg-5 mb-4"
+      hx-trigger="click"
+      hx-push-url="true"
+      hx-get="/user/profile/"
+      hx-target="#main_div"
+      hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    >
+      <div class="card bg-success text-white shadow py-5">
+        <div class="card-body" data-translate="Profil">> Profil</div>
+      </div>
+    </a>
+    <a
+      id="field-stats"
+      class="col-lg-5 mb-4"
+      hx-trigger="click"
+      hx-push-url="true"
+      hx-get="/user/stats/"
+      hx-target="#main_div"
+      hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    >
+      <div class="card bg-info text-white shadow py-5">
+        <div class="card-body" data-translate="Statistiques">> Stats</div>
+      </div>
+    </a>
+    <div class="col-lg-5 mb-4">
+      <div class="card bg-warning text-white shadow py-5">
+        <div class="card-body">Warning</div>
+      </div>
     </div>
-    <div class="row justify-content-around" style="height: 45vh;">
-        <a id="field-tournament" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
-        hx-target="#main_div" class="d-flex flex-column justify-content-center align-items-center rounded-5 mt-3 col-5 bg-primary">
-            <img src="https://placehold.co/100" class="img-fluid rounded-circle mb-2" alt="Image 1">
-            <p class="text-white m-0">Match simple</p>
-        </a>
-        <a class="d-flex flex-column justify-content-center align-items-center rounded-5 mt-3 col-5 bg-success">
-            <img src="https://placehold.co/100" class="img-fluid rounded-circle mb-2" alt="Image 2">
-            <p class="text-white m-0">Tournament</p>
-        </a>
-    </div>
-    <div class="row justify-content-around" style="height: 45vh;">
-        <a id="field-profile" hx-trigger="click" hx-push-url="true" hx-get="/user/profile/"
-        hx-target="#main_div" class="d-flex flex-column justify-content-center align-items-center rounded-5 mt-4 col-5 bg-warning">
-            <img src="https://placehold.co/100" class="img-fluid rounded-circle mb-2" alt="Image 3">
-            <p class="text-dark m-0">profile</p>
-        </a>
-        <a id="field-stats" hx-trigger="click" hx-push-url="true"  hx-get="/user/stats/"
-        hx-target="#main_div" class="d-flex flex-column justify-content-center align-items-center rounded-5 mt-4 col-5 bg-danger">
-            <img src="https://placehold.co/100" class="img-fluid rounded-circle mb-2" alt="Image 4">
-            <p class="text-white m-0">Stats</p>
-        </a>
-    </div>
+  </div>
 </div>
