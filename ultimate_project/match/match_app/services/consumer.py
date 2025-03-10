@@ -14,6 +14,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		query_string = self.scope["query_string"].decode() 	
 		params = urllib.parse.parse_qs(query_string)
 		self.playerId = int(params.get("playerId", [None])[0])
+		print(f"HOULALA matchid {self.matchId} playereid: {self.playerId}", flush=True)
 		match = next((p for p in pongs if p.id ==  self.matchId), None)
 		await self.accept()
 		if match is None:

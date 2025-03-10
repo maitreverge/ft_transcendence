@@ -4,6 +4,7 @@ import tournament_app.services.consumer as consumer
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from tournament_app.services.tournament_consumer import tournaments
 
 def simple_match(request : HttpRequest, user_id):
 	print(f"dans simple match {user_id}", flush=True)	
@@ -44,6 +45,18 @@ async def match_result(request : HttpRequest):
 	consumer.matchs[:] = [m for m in consumer.matchs
 		if m.get("matchId") != match_id]
 	await consumer.MyConsumer.match_update()
+	# tournament = next((t for t in tournaments if match_id in t.matchs_id), None)
+	# tournament = next(
+	# 	(t for t in tournaments if any(match_id in m.get('matchId', []) for m in t.matchs))
+    # , None)
+
+	tournament = next(
+		(t for t in tournaments if any(match_id == m.get('matchId', None)
+		for m in t.matchs))
+	, None)
+	# tournament = next((t for t in tournaments if match_id in t.matchs_id), None)
+	if tournament:
+		await tournament.match_result(match_id, winner_id, looser_id)
 	return JsonResponse({"status": "succes"})
 
 def tournament(request : HttpRequest, user_id):

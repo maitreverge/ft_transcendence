@@ -43,6 +43,9 @@ function onTournamentMessage(event, socket) {
 		case "getPattern":
 			getPattern(data.tournamentId);
 			break;
+			case "linkMatch":
+				linkMatch(data.localMatchId, data.matchId);			
+			break;
 		default:				
 			break;
 	}
@@ -321,4 +324,37 @@ function loadHtml(data, overlay) {
 	}
 	const oldScripts = document.querySelectorAll("script.pattern-script");			
 	oldScripts.forEach(oldScript => oldScript.remove());	
+}
+
+function linkMatch(localMatchId, matchId) {
+	console.log("localid: ", localMatchId, " matchid ", matchId);
+	const overlay = document.getElementById("overlay-match");
+	const localMatch = document.getElementById(localMatchId);
+		localMatch.onclick = function() {
+			fetch(`/match/?matchId=${matchId}&playerId=${window.selfId}`)
+			.then(response => {
+				if (!response.ok) 
+					throw new Error(`Error HTTP! Status: ${response.status}`);		  
+				return response.text();
+			})
+			.then(data => loadHtml(data, overlay))
+			.catch(error => console.log(error))
+		};	
+	// const matchsContainer = document.getElementById("matchs-cont");
+	// const matchElements = [...matchsContainer.children];
+		
+    // matchElements.forEach(match => {		
+	// 	// if (match.id == window.selfMatchId)
+	// 	// 	match.classList.add("self-match");					
+	// 	match.onclick = function() {
+	// 		fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
+	// 		.then(response => {
+	// 			if (!response.ok) 
+	// 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
+	// 			return response.text();
+	// 		})
+	// 		.then(data => loadHtml(data, "overlay-match"))
+	// 		.catch(error => console.log(error))
+	// 	};					
+	// });
 }

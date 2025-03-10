@@ -81,7 +81,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	def remove_player_in_tournaments(self):
 		for tournament in tournaments:
 			if self in tournament.players:
-				tournament.remove(self)
+				tournament.remove_player(self)
 
 	async def enter_tournament(self, tournament_id):
 
@@ -89,7 +89,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			(t for t in tournaments if t.id == tournament_id), None)		
 		if tournament and self not in tournament.players:
 			self.remove_player_in_tournaments()
-			await tournament.append(self)
+			await tournament.append_player(self)
 			await self.send_tournaments()	
 			
 	async def quit_tournament(self):
