@@ -4,11 +4,16 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
-from django.views.decorators.csrf import csrf_protect
+# from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def login_view(request):
+    print("============== PRINT REQUEST ==============", flush=True)
+    print("Request Method:", request.method, flush=True)
+    print("Request Headers:", request.headers, flush=True)
+    print("Request Body:", request.body, flush=True)
+    print("============== PRINT REQUEST ==============", flush=True)
     if request.method == "POST":
         cur_username = request.POST.get('username')
         cur_password = request.POST.get('password')
