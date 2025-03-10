@@ -15,7 +15,7 @@ class Tournament():
 
 	async def append_player(self, player):
 		self.players.append(player)
-		if len(self.players) >= 2:
+		if len(self.players) >= 4:
 			for player in self.players:				
 				await player.send(text_data=json.dumps({
 					"type": "getPattern",
@@ -29,7 +29,7 @@ class Tournament():
 
 	async def launchTournament(self):
 		await self.start_match(self.players[0].id, self.players[1].id, "m2")
-		# await self.start_match(self.players[2].id, self.players[3].id, "m3")
+		await self.start_match(self.players[2].id, self.players[3].id, "m3")
 
 	async def start_match(self, p1, p2, local_match_id):
 		match_id = requests.get(
@@ -52,9 +52,10 @@ class Tournament():
 			(m for m in self.matchs if m.get('matchId') == match_id)	
 		, None)
 		if match:
-			match['winner'] = winner_id
-			match
+			match['winnerId'] = winner_id
+			match['looserId'] = looser_id
 		if self.n_match == 2:
-			await self.start_match(winner_id, self.players[1].id)
+			await self.start_match(
+				self.matchs[0].get('winnerId'), self.matchs[1].get('winnerId'), "m1")
 
 					
