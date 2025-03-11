@@ -12,14 +12,26 @@ app = FastAPI(
 
 services = {
     "tournament": "http://tournament:8001",
-    "static_files": "http://static_files:8003",
     "match": "http://match:8002",
+    "static_files": "http://static_files:8003",
     "user": "http://user:8004",
+    "authentication": "http://authentication:8006",
+    "databaseapi": "http://databaseapi:8007",
 }
 
 # logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# ! DEBUGGING COOKIES MIDDLEWARE.
+# This middleware is used to debug incoming cookies in FastAPI.
+# It prints the incoming cookies to the console.
+@app.middleware("http")
+async def debug_cookies_middleware(request: Request, call_next):
+    print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
+    response = await call_next(request)
+    return response
+
 
 
 async def proxy_request(service_name: str, path: str, request: Request):
@@ -46,9 +58,10 @@ async def proxy_request(service_name: str, path: str, request: Request):
 
         method = request.method
         data = await request.body()
+        cookies = request.cookies
 
         try:
-            response = await client.request(method, url, headers=headers, content=data)
+            response = await client.request(method, url, headers=headers, content=data, cookies=cookies)
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
             logger.error
@@ -73,6 +86,8 @@ async def proxy_request(service_name: str, path: str, request: Request):
 
 
 user_id = 0
+
+
 @app.api_route("/tournament/{path:path}", methods=["GET"])
 async def tournament_proxy(path: str, request: Request):
     """
@@ -86,14 +101,20 @@ async def tournament_proxy(path: str, request: Request):
       - Returns the content from the tournament microservice.
       - If `path` is "simple-match/", returns specific content.
     """
-    
+
     global user_id
     user_id += 1
-    print("################## NEW USER CREATED #######################", user_id, flush=True)
+    print(
+        "################## NEW USER CREATED #######################",
+        user_id,
+        flush=True,
+    )
     print(path + str(user_id) + "/")
 
     if "HX-Request" in request.headers:
-        return await proxy_request("tournament", "tournament/" + path + str(user_id) + "/", request)
+        return await proxy_request(
+            "tournament", "tournament/" + path + str(user_id) + "/", request
+        )
     elif path == "simple-match/":
         return await proxy_request(
             "static_files", "/tournament-match-wrapper/" + str(user_id) + "/", request
@@ -171,6 +192,63 @@ async def redirect_to_home():
     Redirect requests from '/' to '/home/'.
     """
     return RedirectResponse(url="/home/")
+
+@app.api_route("/auth/{path:path}", methods=["GET", "POST"])
+async def authentication_proxy(path: str, request: Request):
+    """
+    Proxy requests to the authentication microservice.
+    """
+    return await proxy_request("authentication", f"auth/{path}", request)
+
+
+
+
+
+@app.api_route("/api/{path:path}", methods=["GET"])
+async def databaseapi_proxy(path: str, request: Request):
+    """
+    Proxy requests to the database API microservice.
+
+    - **path**: The path to the resource in the database API
+    
+    ### Examples:
+    - **List all players**: GET /api/player/
+    - **Get player by ID**: GET /api/player/1/
+    - **Filter players by username**: GET /api/player/?username=player1
+    - **Filter players by email**: GET /api/player/?email=example
+    
+    - **List all tournaments**: GET /api/tournament/
+    - **Get tournament by ID**: GET /api/tournament/1/
+    
+    - **List all matches**: GET /api/match/
+    - **Get match by ID**: GET /api/match/1/
+    - **Filter matches by player**: GET /api/match/?player1=1
+    - **Filter matches by tournament**: GET /api/match/?tournament=1
+    
+    ### Pagination:
+    - All list endpoints are paginated with 10 items per page
+    - **Navigate pages**: GET /api/player/?page=2
+    
+    ### Response format:
+    ```json
+    {
+        "count": 100,
+        "next": "http://localhost:8005/api/player/?page=2",
+        "previous": null,
+        "results": [
+            {
+                "id": 1,
+                "username": "player1",
+                "email": "player1@example.com",
+                ...
+            },
+            ...
+        ]
+    }
+    ```
+    """
+    return await proxy_request("databaseapi", f"api/{path}", request)
+
 
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):

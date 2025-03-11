@@ -67,6 +67,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    'authentication_app.middleware.JWTAuthenticationMiddleware',
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -174,3 +175,7 @@ LOGGING = {
         },
     },
 }
+
+SECRET_JWT_KEY = os.getenv("JWT_KEY")
+if not SECRET_JWT_KEY:
+    raise ValueError("SECRET_JWT_KEY is not set")

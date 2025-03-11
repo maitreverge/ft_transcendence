@@ -15,35 +15,33 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                 </div>
-                                <form class="user">
+                                <form class="user" method="post" action="/auth/login/">
+									{% csrf_token %}
                                     <div class="form-group">
-                                        <input type="email" 
-                                        class="form-control form-control-user"
-                                        id="exampleInputEmail" 
-                                        aria-describedby="emailHelp"
-                                        placeholder="Enter Email Address...">
+                                        <input type="text" class="form-control form-control-user"
+                                            id="username" name="username"
+                                            placeholder="Enter Username...">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" 
-                                        class="form-control form-control-user"
-                                        id="exampleInputPassword" 
-                                        placeholder="Password">
+                                        <input type="password" class="form-control form-control-user"
+                                            id="password" name="password" placeholder="Password">
                                     </div>
                                     <div class="form-group">
-                                        <div class="custom-control custom-checkbox small">
-                                            <input type="checkbox" 
-                                            class="custom-control-input" 
-                                            id="customCheck">
-                                            <label class="custom-control-label" 
-                                            for="customCheck">
-                                            Remember Me</label>
-                                        </div>
+										<!-- !   I commented the remember me checkbox because it is not necessary -->
+                                        <!-- <div class="custom-control custom-checkbox small">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck">
+                                            <label class="custom-control-label" for="customCheck">Remember
+                                                Me</label>
+                                        </div> -->
                                     </div>
-                                    <a hx-boost="false" 
-                                    href="http://localhost:8000/home/" 
-                                    class="btn btn-primary btn-user btn-block">
+									<div class="form-group">
+										<input type="submit" class="btn btn-primary btn-user btn-block" value="Logiiiiiiiin">
+									</div>
+
+                                    <!-- <a href="http://localhost:8000/home/" class="btn btn-primary btn-user btn-block">
+                                    <a hx-boost="false" href="http://localhost:8000/home/" class="btn btn-primary btn-user btn-block">
                                         Login
-                                    </a>
+                                    </a> -->
                                     <hr>
                                     <a hx-boost="false" 
                                     href="http://localhost:8000/home/" 
@@ -81,5 +79,38 @@
         </div>
 
     </div>
+
+		<!-- Add this script before the closing </div> of the container -->
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const loginForm = document.querySelector('form.user');
+		
+		loginForm.addEventListener('submit', async function(e) {
+			e.preventDefault(); // Prevent normal form submission
+			
+			const formData = new FormData(loginForm);
+			
+			try {
+				const response = await fetch('/auth/login/', {
+					method: 'POST',
+					body: formData,
+					credentials: 'include'  // 🔥 Ensure cookies are included in requests!
+				});
+				
+				const data = await response.json();
+				
+				if (data.success) {
+					// Redirect on success
+					window.location.href = data.redirect_to;
+				} else {
+					alert(data.error || 'Login failed');
+				}
+			} catch (error) {
+				console.error('Login error:', error);
+				alert('An error occurred during login. Please try again.');
+			}
+		});
+	});
+	</script>
 
 </div>

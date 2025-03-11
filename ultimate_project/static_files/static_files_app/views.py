@@ -17,11 +17,15 @@ def index(request):
     obj = {"username": username, "request": request}
     return render(request, "index.html", obj)
 
+
+# !!      OLD LOGIN PATH AND FORMS
 @never_cache
 def login_form(request):
     # csrf_token = csrf.get_token(request)
     return render(request, "landing_page.html")
 
+
+# !!      OLD LOGIN PATH AND FORMS
 @never_cache
 def login(request):
     username = request.POST.get("username")

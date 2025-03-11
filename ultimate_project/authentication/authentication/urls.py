@@ -11,6 +11,7 @@ def health_check(request):
 
 urlpatterns = [
     path("health/", health_check, name="health_check"),
+    path("auth/", include("authentication_app.urls")),
 ]
 
 

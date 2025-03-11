@@ -8,3 +8,5 @@ qrcode
 pyotp
 pillow
 cryptography
+django-rest-framework
+django-filter
