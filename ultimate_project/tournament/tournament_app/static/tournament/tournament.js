@@ -67,8 +67,9 @@ function updatePlayers(socket, players) {
 	let tournamentElements = [...tournamentsContainer.children];
 
 	tournamentElements.slice().reverse().forEach(tournament => {
-		[...tournament.children].slice().reverse().forEach(player =>{
-			if (players.every(el => el.playerId != player.id && player.id != "pattern-cont"))
+		const playersCont = tournament.querySelector("#players-cont");
+		[...playersCont.children].slice().reverse().forEach(player =>{
+			if (players.every(el => el.playerId != player.id))
 				player.remove();
 		});
 	});
@@ -96,8 +97,9 @@ function searchPlayerInTournaments(playerId) {
 	const tournamentsContainer = document.getElementById("tournaments");
 	let tournamentElements = [...tournamentsContainer.children];
 
-	for (const tournament of tournamentElements) {        
-        for (const player of [...tournament.children]) {
+	for (const tournament of tournamentElements) { 
+		const playersCont = tournament.querySelector("#players-cont");       
+        for (const player of [...playersCont.children]) {
             if (player.id == playerId) {
                 return player; 
             }
@@ -148,7 +150,10 @@ function updateTournaments(socket, tournaments) {
 		else			
 			tournamentElements.forEach(el => {
 				if (el.id == tournament.tournamentId)
-					movePlayerInTournament(el, tournament);
+				{
+					const playersCont = el.querySelector("#players-cont");
+					movePlayerInTournament(playersCont, tournament);
+				}
 			});	
 	});
 	// setSelfMatchId();	
@@ -179,13 +184,19 @@ function removeTournaments(socket, tournaments, tournamentsContainer, tournament
 
 function addToTournaments(socket, tournamentsContainer, tournament) {
   	
-	const div = document.createElement("div");
+	const div = document.createElement("div");	
 	div.className = "tournament";
 	div.textContent = `tournament: ${tournament.tournamentId}`;
 	div.id = tournament.tournamentId;
 	div.onclick = () => enterTournament(socket, tournament.tournamentId);
+	const overlayPattern = document.createElement("div");
+	overlayPattern.id = "overlay-pattern";
+	const playersCont = document.createElement("div");
+	playersCont.id = "players-cont";
+	div.appendChild(playersCont);
+	div.appendChild(overlayPattern);
     tournamentsContainer.appendChild(div);
-	movePlayerInTournament(div, tournament);
+	movePlayerInTournament(playersCont, tournament);
 }
 
 function movePlayerInTournament(tournamentElement, tournament) {
@@ -240,9 +251,9 @@ function movePlayerInTournament(tournamentElement, tournament) {
 
 
 		tournamentPlayerElements.slice().reverse().forEach(player => { // je met le joueur du tournois ds cont player 
-			if (tournament.players.every(el => el.playerId != player.id && player.id != "pattern-cont"))
+			if (tournament.players.every(el => el.playerId != player.id))// && player.id != "overlay-pattern"))
 			{
-				console.log("appendchild to cont player; id:", player.id," ", tournamentElement.id);
+				console.log("appendchild to cont player; id:", player.id, " ", tournamentElement.id);
 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
 			}			
 		});
@@ -250,11 +261,11 @@ function movePlayerInTournament(tournamentElement, tournament) {
 	else // si le tournois est vide
 	{
 		tournamentPlayerElements.slice().reverse().forEach(player => {	// je met tous les joueur du tournois ds cont player 					
-			if (player.id != "pattern-cont")
-			{
-				console.log("appendchild to cont player from void; id:", player.id," ", tournamentElement.id);
+			// if (player.id != "overlay-pattern")
+			// {
+				console.log("appendchild to cont player from void; id:", player.id, " ", tournamentElement.id);
 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
-			}
+			// }
 				// ou alors le bon tournois!				
 		});
 	}
@@ -284,14 +295,31 @@ function getPattern(tournamentId) {
 	);
 	if (!tournament)
 		return;
+	const overlay = tournament.querySelector("#overlay-pattern");
 	fetch(`/tournament/tournament-pattern/${tournamentId}/`)
 	.then(response => {
 		if (!response.ok) 
 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
 		return response.text();
 	})
-	.then(data => loadHtml(data, tournament))
+	.then(data => loadHtml(data, overlay))
 	.catch(error => console.log(error));		
+}
+
+function linkMatch(localMatchId, matchId) {
+	console.log("localid: ", localMatchId, " matchid ", matchId);
+	const overlay = document.getElementById("overlay-match");
+	const localMatch = document.getElementById(localMatchId);
+	localMatch.onclick = function() {
+		fetch(`/match/?matchId=${matchId}&playerId=${window.selfId}`)
+		.then(response => {
+			if (!response.ok) 
+				throw new Error(`Error HTTP! Status: ${response.status}`);		  
+			return response.text();
+		})
+		.then(data => loadHtml(data, overlay))
+		.catch(error => console.log(error))
+	};
 }
 
 function loadHtml(data, overlay) {
@@ -302,11 +330,12 @@ function loadHtml(data, overlay) {
 	// newDiv.style.color = "blue";
 	// newDiv.innerHTML += data;
 	// overlay.appendChild(newDiv);
-	overlay.insertAdjacentHTML("beforeend", data); // ✅ Ajoute sans supprimer les événements
+	// overlay.insertAdjacentHTML("beforeend", data); // ✅ Ajoute sans supprimer les événements
 
-	// overlay.innerHTML += data;
+	overlay.innerHTML = data;
 	// overlay.innerHTML += data;
 	// overlay.appendChild(data);
+	// overlay.replaceChildren(data);
 
 	const scripts = overlay.getElementsByTagName("script");
 	
@@ -324,37 +353,4 @@ function loadHtml(data, overlay) {
 	}
 	const oldScripts = document.querySelectorAll("script.pattern-script");			
 	oldScripts.forEach(oldScript => oldScript.remove());	
-}
-
-function linkMatch(localMatchId, matchId) {
-	console.log("localid: ", localMatchId, " matchid ", matchId);
-	const overlay = document.getElementById("overlay-match");
-	const localMatch = document.getElementById(localMatchId);
-		localMatch.onclick = function() {
-			fetch(`/match/?matchId=${matchId}&playerId=${window.selfId}`)
-			.then(response => {
-				if (!response.ok) 
-					throw new Error(`Error HTTP! Status: ${response.status}`);		  
-				return response.text();
-			})
-			.then(data => loadHtml(data, overlay))
-			.catch(error => console.log(error))
-		};	
-	// const matchsContainer = document.getElementById("matchs-cont");
-	// const matchElements = [...matchsContainer.children];
-		
-    // matchElements.forEach(match => {		
-	// 	// if (match.id == window.selfMatchId)
-	// 	// 	match.classList.add("self-match");					
-	// 	match.onclick = function() {
-	// 		fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
-	// 		.then(response => {
-	// 			if (!response.ok) 
-	// 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
-	// 			return response.text();
-	// 		})
-	// 		.then(data => loadHtml(data, "overlay-match"))
-	// 		.catch(error => console.log(error))
-	// 	};					
-	// });
 }
