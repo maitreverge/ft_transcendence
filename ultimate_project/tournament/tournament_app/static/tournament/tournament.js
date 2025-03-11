@@ -44,8 +44,7 @@ function onTournamentMessage(event, socket) {
 			getPattern(data.tournamentId);
 			break;
 			case "linkMatch":
-				linkMatch(
-					data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
+			linkMatch(data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
 			break;
 		default:				
 			break;
