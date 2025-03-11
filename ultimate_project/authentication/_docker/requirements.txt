@@ -8,3 +8,4 @@ pyotp
 pillow
 cryptography
 PyJWT
+django-cors-headers
