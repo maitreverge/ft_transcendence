@@ -44,7 +44,8 @@ function onTournamentMessage(event, socket) {
 			getPattern(data.tournamentId);
 			break;
 			case "linkMatch":
-				linkMatch(data.localMatchId, data.matchId);			
+				linkMatch(
+					data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
 			break;
 		default:				
 			break;
@@ -306,10 +307,16 @@ function getPattern(tournamentId) {
 	.catch(error => console.log(error));		
 }
 
-function linkMatch(localMatchId, matchId) {
-	console.log("localid: ", localMatchId, " matchid ", matchId);
+function linkMatch(localMatchId, matchId, p1Id, p2Id) {
+	console.log("localid: ", localMatchId, " matchid ", matchId, " p1 ", p1Id, " p2 ", p2Id);
+	
 	const overlay = document.getElementById("overlay-match");
 	const localMatch = document.getElementById(localMatchId);
+	if (window.selfId == p1Id || window.selfId == p2Id)
+	{
+		window.selfMatchId = matchId;
+		localMatch.classList.add("next-match");
+	}
 	localMatch.onclick = function() {
 		fetch(`/match/?matchId=${matchId}&playerId=${window.selfId}`)
 		.then(response => {

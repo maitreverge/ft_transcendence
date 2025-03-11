@@ -32,11 +32,11 @@ class Tournament():
 		await self.start_match(self.players[0].id, self.players[1].id, "m2")
 		await self.start_match(self.players[2].id, self.players[3].id, "m3")
 
-	async def start_match(self, p1, p2, local_match_id):
+	async def start_match(self, p1_id, p2_id, local_match_id):
 		match_id = None
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
-    				f"http://match:8002/match/new-match/?p1={p1}&p2={p2}"
+    				f"http://match:8002/match/new-match/?p1={p1_id}&p2={p2_id}"
 				) as response:
 				if response.status == 201:
 					data = await response.json()
@@ -54,6 +54,8 @@ class Tournament():
 					"type": "linkMatch",
 					"localMatchId": local_match_id,			
 					"matchId": match_id,
+					"p1Id": p1_id,
+					"p2Id": p2_id
 				}))			
 	
 	async def match_result(self, match_id, winner_id, looser_id):
