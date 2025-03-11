@@ -54,11 +54,25 @@
       hx-target="#main_div"
       hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
     >
+      <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+      <span data-translate="Match simple">Match simple</span></a
+    >
+  </li>
+
+  <li class="nav-item active">
+    <a
+
+      class="nav-link"
+      hx-trigger="click"
+      hx-push-url="true"
+      hx-get="/tournament/tournament/"
+      hx-target="#main_div"
+      hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    >
       <i class="fas fa-fw fa-trophy"></i>
       <span data-translate="Tournoi">Tournoi</span></a
     >
   </li>
-
   <!-- Nav Item - Profil -->
   <li class="nav-item">
     <a
