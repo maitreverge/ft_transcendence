@@ -147,3 +147,5 @@ GitHub.sublime-settings
 
 ultimate_project/staticfiles/*
 migration/*
+ultimate_project/databaseapi/databaseapi_app/migrations/0001_initial.py
+ultimate_project/databaseapi/databaseapi_app/migrations/__init__.py
