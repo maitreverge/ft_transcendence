@@ -39,6 +39,21 @@
     role="button"
   >
     <span id="nav-tournament" class="mr-2 d-none d-lg-inline small">
+      <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+    <span data-translate="Match simple">Match simple</span>
+    </span>
+  </a>
+  <a
+    class="nav-link"
+    hx-trigger="click"
+    hx-push-url="true"
+    hx-get="/tournament/tournament/"
+    hx-target="#main_div"
+    hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    id="userDropdown"
+    role="button"
+  >
+    <span id="nav-tournament" class="mr-2 d-none d-lg-inline small">
       <i class="fas fa-trophy"></i>
       <span data-translate="Tournoi">Tournoi</span>
     </span>
