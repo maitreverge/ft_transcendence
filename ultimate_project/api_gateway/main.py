@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, Query
 import httpx
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 import logging
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -11,21 +11,18 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Configure CORS middleware with more permissive settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8000",  # Basic
-        "http://localhost:8001",  # Tournament
-        "http://localhost:8002",  # Match
-        "http://localhost:8003",  # Static files
-        "http://localhost:8004",  # User
-        "http://localhost:8005",  # FastAPI
-        "http://localhost:8006",  # Authentication
-        "http://localhost:8007",  # DatabaseAPI
-    ],
+    allow_origins=["*"],  # Allow all origins for development
     allow_credentials=True,  # Allow cookies
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
+    expose_headers=[
+        "Content-Type",
+        "X-CSRFToken",
+        "Set-Cookie",
+    ],  # Expose these headers
 )
 
 services = {
@@ -41,6 +38,7 @@ services = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # ! DEBUGGING COOKIES MIDDLEWARE.
 # This middleware is used to debug incoming cookies in FastAPI.
 # It prints the incoming cookies to the console.
@@ -48,8 +46,15 @@ logger = logging.getLogger(__name__)
 async def debug_cookies_middleware(request: Request, call_next):
     print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
     response = await call_next(request)
-    return response
 
+    # Also log outgoing cookies in response headers
+    if "set-cookie" in response.headers:
+        print(
+            f"🔍 Outgoing Set-Cookie headers: {response.headers.get('set-cookie')}",
+            flush=True,
+        )
+
+    return response
 
 
 async def proxy_request(service_name: str, path: str, request: Request):
@@ -67,6 +72,8 @@ async def proxy_request(service_name: str, path: str, request: Request):
             "\n****************************",
             flush=True,
         )
+
+        # Forward all headers except 'host'
         headers = {
             key: value
             for key, value in request.headers.items()
@@ -74,16 +81,20 @@ async def proxy_request(service_name: str, path: str, request: Request):
         }
         headers["Host"] = "localhost"
 
+        # Log cookies for debugging
+        print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
+
         method = request.method
         data = await request.body()
         cookies = request.cookies
 
         try:
-            response = await client.request(method, url, headers=headers, content=data, cookies=cookies)
+            response = await client.request(
+                method, url, headers=headers, content=data, cookies=cookies
+            )
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
-            logger.error
-            (f"Request failed with status code {exc.response.status_code}")
+            logger.error(f"Request failed with status code {exc.response.status_code}")
             raise HTTPException(
                 status_code=exc.response.status_code, detail=exc.response.text
             )
@@ -91,16 +102,48 @@ async def proxy_request(service_name: str, path: str, request: Request):
             logger.error(f"Request failed: {exc}")
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
-        response_headers = {key: value for key, value in response.headers.items()}
-        response_headers["Cache-Control"] = (
-            "no-cache, \
-            no-store, must-revalidate"
+        # Prepare response headers
+        response_headers = {
+            key: value
+            for key, value in response.headers.items()
+            if key.lower() not in ["set-cookie"]
+        }  # We'll handle cookies separately
+        response_headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+        # Create the response object
+        content_type = response.headers.get("Content-Type", "")
+
+        # Create the FastAPI response
+        fastapi_response = Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=response_headers,
+            media_type=content_type.split(";")[0].strip() if content_type else None,
         )
 
-        content_type = response.headers.get("Content-Type", "")
-        if content_type.startswith("text/html"):
-            return HTMLResponse(content=response.text, status_code=response.status_code)
-        return JSONResponse(content=response.json(), status_code=response.status_code)
+        # Forward any cookies from the service response
+        cookies_to_set = response.cookies
+        if cookies_to_set:
+            print(
+                f"🍪 Received cookies from service: {dict(cookies_to_set)}", flush=True
+            )
+            for cookie_name, cookie_value in cookies_to_set.items():
+                cookie_params = {
+                    "key": cookie_name,
+                    "value": cookie_value,
+                    "httponly": True,
+                    "secure": False,  # Set to True in production with HTTPS
+                    "samesite": "lax",  # Use 'none' with secure=True in production
+                    "path": "/",
+                }
+
+                # Set the cookie in the FastAPI response
+                fastapi_response.set_cookie(**cookie_params)
+                print(
+                    f"🍪 Setting cookie in gateway response: {cookie_name}", flush=True
+                )
+
+        return fastapi_response
 
 
 user_id = 0
@@ -204,12 +247,14 @@ async def match_proxy(
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)
 
+
 @app.get("/")
 async def redirect_to_home():
     """
     Redirect requests from '/' to '/home/'.
     """
     return RedirectResponse(url="/home/")
+
 
 @app.api_route("/auth/{path:path}", methods=["GET", "POST"])
 async def authentication_proxy(path: str, request: Request):
@@ -219,34 +264,31 @@ async def authentication_proxy(path: str, request: Request):
     return await proxy_request("authentication", f"auth/{path}", request)
 
 
-
-
-
 @app.api_route("/api/{path:path}", methods=["GET"])
 async def databaseapi_proxy(path: str, request: Request):
     """
     Proxy requests to the database API microservice.
 
     - **path**: The path to the resource in the database API
-    
+
     ### Examples:
     - **List all players**: GET /api/player/
     - **Get player by ID**: GET /api/player/1/
     - **Filter players by username**: GET /api/player/?username=player1
     - **Filter players by email**: GET /api/player/?email=example
-    
+
     - **List all tournaments**: GET /api/tournament/
     - **Get tournament by ID**: GET /api/tournament/1/
-    
+
     - **List all matches**: GET /api/match/
     - **Get match by ID**: GET /api/match/1/
     - **Filter matches by player**: GET /api/match/?player1=1
     - **Filter matches by tournament**: GET /api/match/?tournament=1
-    
+
     ### Pagination:
     - All list endpoints are paginated with 10 items per page
     - **Navigate pages**: GET /api/player/?page=2
-    
+
     ### Response format:
     ```json
     {

@@ -84,12 +84,30 @@
 					credentials: 'include'  // 🔥 Ensure cookies are included in requests!
 				});
 				
-				const data = await response.json();
+				// Check if response is JSON
+				const contentType = response.headers.get('content-type');
+				let data;
+				
+				if (contentType && contentType.includes('application/json')) {
+					data = await response.json();
+				} else {
+					console.error('Expected JSON response but got:', contentType);
+					data = { success: false, error: 'Unexpected response format' };
+				}
+				
+				// Check for cookies in the response
+				console.log('Response cookies (via document.cookie):', document.cookie);
 				
 				if (data.success) {
-					// Redirect on success
-					window.location.href = data.redirect_to;
+					// Log success before redirecting
+					console.log('Login successful, redirecting to:', data.redirect_to);
+					
+					// Small delay to ensure cookies are set
+					setTimeout(() => {
+						window.location.href = data.redirect_to;
+					}, 100);
 				} else {
+					console.error('Login failed:', data.error);
 					alert(data.error || 'Login failed');
 				}
 			} catch (error) {
