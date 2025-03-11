@@ -26,7 +26,7 @@ class JWTAuthenticationMiddleware:
         token = request.COOKIES.get("access_token")
 
         if not token:
-            logger.warning("No access token found in cookies")
+            # logger.warning("No access token found in cookies")
             if request.headers.get("Accept") == "application/json":
                 return JsonResponse({"error": "Authentication required"}, status=401)
             return redirect("login")

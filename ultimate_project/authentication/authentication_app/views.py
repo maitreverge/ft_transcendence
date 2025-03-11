@@ -8,10 +8,11 @@ from django.views.decorators.csrf import csrf_exempt
 import jwt
 from datetime import datetime, timedelta
 import logging
+from .wrappers import block_authenticated_users
 
 logger = logging.getLogger(__name__)
 
-
+@block_authenticated_users
 @csrf_exempt  # Disable CSRF protection for the login view
 def login_view(request):
     if request.method == "POST":

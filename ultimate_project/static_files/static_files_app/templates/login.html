@@ -102,6 +102,15 @@
 					// Log success before redirecting
 					console.log('Login successful, redirecting to:', data.redirect_to);
 					
+					// Store tokens in localStorage for the Authorization header approach
+					// Note: This is less secure than HttpOnly cookies but provides flexibility
+					if (data.access_token && data.refresh_token) {
+						localStorage.setItem('access_token', data.access_token);
+						localStorage.setItem('refresh_token', data.refresh_token);
+						localStorage.setItem('token_type', data.token_type || 'Bearer');
+						console.log('Tokens stored in localStorage for API requests');
+					}
+					
 					// Small delay to ensure cookies are set
 					setTimeout(() => {
 						window.location.href = data.redirect_to;
@@ -116,6 +125,25 @@
 			}
 		});
 	});
+	
+	// Helper function to add Authorization header to fetch requests
+	function fetchWithAuth(url, options = {}) {
+		const token = localStorage.getItem('access_token');
+		const tokenType = localStorage.getItem('token_type') || 'Bearer';
+		
+		if (!options.headers) {
+			options.headers = {};
+		}
+		
+		if (token) {
+			options.headers.Authorization = `${tokenType} ${token}`;
+		}
+		
+		// Always include credentials for cookies
+		options.credentials = 'include';
+		
+		return fetch(url, options);
+	}
 	</script>
 
 </div>
