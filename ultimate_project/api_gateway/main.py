@@ -124,6 +124,10 @@ async def tournament_proxy(path: str, request: Request):
         return await proxy_request(
             "static_files", "/tournament-match-wrapper/" + str(user_id) + "/", request
         )
+    elif path == "tournament/":
+        return await proxy_request(
+            "static_files", "/tournament-wrapper/" + str(user_id) + "/", request
+        )
 
 
 @app.api_route("/user/{path:path}", methods=["GET"])

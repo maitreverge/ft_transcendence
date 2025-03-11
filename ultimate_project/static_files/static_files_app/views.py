@@ -75,6 +75,24 @@ def match_simple_template(request, user_id):
     )
 
 @never_cache
+def tournament_template(request, user_id):
+    url = f"http://tournament:8001/tournament/tournament/{user_id}/"
+    print(f"###################### userid {user_id} #################", flush=True)
+    page_html = requests.get(url).text
+    username = request.session.get("username")
+    return render(
+        request,
+        "index.html",
+        {
+            "username": username,
+            "rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            # "simpleUsers": consumer.players,
+            "page": page_html,
+        },
+    )
+
+@never_cache
 def user_profile_template(request):
     page_html = requests.get("http://user:8004/user/profile/").text
     username = request.session.get("username")
