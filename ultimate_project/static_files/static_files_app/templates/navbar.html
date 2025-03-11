@@ -8,7 +8,9 @@
 >
 <a
     id="homelogo"
-    class="h-100 text-white bg-gradient-primary sidebar-brand {% if page != 'partials/home.html' %}d-none{% endif %} align-items-center justify-content-center nav-link"
+    class="h-100 text-white bg-gradient-primary sidebar-brand 
+    {% if page != 'partials/home.html' %}d-none{% endif %} 
+    align-items-center justify-content-center nav-link"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/home/"
@@ -31,6 +33,21 @@
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/tournament/simple-match/"
+    hx-target="#main_div"
+    hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    id="userDropdown"
+    role="button"
+  >
+    <span id="nav-simple-match" class="mr-2 d-none d-lg-inline small">
+      <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+    <span data-translate="Match simple">Match simple</span>
+    </span>
+  </a>
+  <a
+    class="nav-link"
+    hx-trigger="click"
+    hx-push-url="true"
+    hx-get="/tournament/tournament/"
     hx-target="#main_div"
     hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
     id="userDropdown"

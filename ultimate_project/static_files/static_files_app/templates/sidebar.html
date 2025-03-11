@@ -1,6 +1,8 @@
 <!-- Sidebar -->
 <ul
-  class="navbar-nav {% if page == 'partials/home.html' %}d-none{% endif %} bg-gradient-primary sidebar sidebar-dark"
+  class="navbar-nav 
+  {% if page == 'partials/home.html' %}d-none{% endif %} 
+  bg-gradient-primary sidebar sidebar-dark"
   id="accordionSidebar"
 
 >
@@ -44,7 +46,7 @@
   <div class="sidebar-heading">Menu</div>
 
   <!-- Nav Item - Match making -->
-  <li class="nav-item active">
+  <li class="nav-item">
     <a
 
       class="nav-link"
@@ -54,11 +56,25 @@
       hx-target="#main_div"
       hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
     >
+      <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+      <span data-translate="Match simple">Match simple</span></a
+    >
+  </li>
+
+  <li class="nav-item">
+    <a
+
+      class="nav-link"
+      hx-trigger="click"
+      hx-push-url="true"
+      hx-get="/tournament/tournament/"
+      hx-target="#main_div"
+      hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    >
       <i class="fas fa-fw fa-trophy"></i>
       <span data-translate="Tournoi">Tournoi</span></a
     >
   </li>
-
   <!-- Nav Item - Profil -->
   <li class="nav-item">
     <a

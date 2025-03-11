@@ -3,13 +3,13 @@
 <div style="display:none">
 	<head>
 		<link rel="stylesheet" href="{% static 'match/styles.css' %}">
-		<script>
+		<script class="match-script">
 			window.rasp = "{{ rasp }}"; 
 			window.pidom = "{{ pidom }}";
 			window.matchId = "{{ matchId }}"
 			window.playerId = "{{ playerId }}";
 		</script>
-		<script	src="{% static 'match/script.js' %}"
+		<script class="match-script" src="{% static 'match/script.js' %}"
 				onload="initMatchWs()"></script>
 	</head>
 </div>		
@@ -24,10 +24,9 @@
 	<div id="p1"></div>
 	<div id="p2"></div>
 	<div id="waiting">Waiting</div>
-	<div id="end" style="display:none">
-		<button
-			onclick="document.getElementById('match').remove()">Close
-		</button>
-	</div>
-	<button onclick="stopMatch('{{matchId}}')">Quit Match</button>
+	<div id="end" style="display:none"></div>
+	<button onclick="
+		stopMatch('{{matchId}}');
+		const matchDiv = document.getElementById('match');
+    	if (matchDiv) matchDiv.remove();">Quit Match</button>
 </div>

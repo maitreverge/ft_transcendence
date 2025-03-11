@@ -35,9 +35,7 @@ def login(request):
 @never_cache
 def home(request):
     if request.headers.get("HX-Request"):
-        print("***************\nrequete htmx sa maman\n***************", flush=True)
         return render(request, "partials/home.html")
-    print("***************\nrequete NORMAL son papa\n***************", flush=True)
     username = request.session.get("username")
     obj = {"username": username, "page": "partials/home.html"}
     return render(request, "index.html", obj)
@@ -61,6 +59,24 @@ def stats(request):
 @never_cache
 def match_simple_template(request, user_id):
     url = f"http://tournament:8001/tournament/simple-match/{user_id}/"
+    print(f"###################### userid {user_id} #################", flush=True)
+    page_html = requests.get(url).text
+    username = request.session.get("username")
+    return render(
+        request,
+        "index.html",
+        {
+            "username": username,
+            "rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            # "simpleUsers": consumer.players,
+            "page": page_html,
+        },
+    )
+
+@never_cache
+def tournament_template(request, user_id):
+    url = f"http://tournament:8001/tournament/tournament/{user_id}/"
     print(f"###################### userid {user_id} #################", flush=True)
     page_html = requests.get(url).text
     username = request.session.get("username")
@@ -110,7 +126,6 @@ def user_stats_template(request):
 
 @never_cache
 def translations(request, lang):
-    print("********** translations called **********", flush=True)
     try:
         file_path = os.path.join(settings.BASE_DIR, 'static_files_app', 'static', 'translations', f'{lang}.json')
         with open(file_path, 'r') as file:
@@ -120,7 +135,6 @@ def translations(request, lang):
 
 @never_cache
 def register(request):
-    print("********** register called **********", flush=True)
     username = request.session.get("username")
     obj = {"username": username, "page": "register.html"}
     return render(request, "index.html", obj)

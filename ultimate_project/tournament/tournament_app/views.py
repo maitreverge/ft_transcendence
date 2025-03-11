@@ -4,6 +4,7 @@ import tournament_app.services.consumer as consumer
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from tournament_app.services.tournament_consumer import tournaments
 
 def simple_match(request : HttpRequest, user_id):
 	print(f"dans simple match {user_id}", flush=True)	
@@ -18,21 +19,85 @@ def simple_match(request : HttpRequest, user_id):
 	)
 
 @csrf_exempt
+async def match_players_update(request : HttpRequest):
+	data = json.loads(request.body.decode('utf-8'))
+	match_id = data.get('matchId', None)
+	players = data.get('players', [])
+	match = next(
+		(m for m in consumer.matchs if m.get("matchId") == match_id), None)
+	if match:
+		match['players'] = players
+		await consumer.MyConsumer.match_update()
+	return JsonResponse({"status": "succes"})
+
+@csrf_exempt
 async def match_result(request : HttpRequest):	
-	result = json.loads(request.body.decode('utf-8'))
-	match_id = result.get('matchId')
-	winner_id = result.get('winnerId')
-	looser_id = result.get('looserId')
-	p1_id = result.get('p1Id')
-	p2_id = result.get('p2Id')
+	data = json.loads(request.body.decode('utf-8'))
+	match_id =	data.get('matchId')
+	winner_id =	data.get('winnerId')
+	looser_id =	data.get('looserId')
+	p1_id =	data.get('p1Id')
+	p2_id =	data.get('p2Id')
 	p1 = next((p for p in consumer.players if p.get('playerId') == p1_id), None)
 	p2 = next((p for p in consumer.players if p.get('playerId') == p2_id), None)
-	if p1:
-		p1['busy'] = None
-	if p2:
-		p2['busy'] = None
+	if p1: p1['busy'] = None
+	if p2: p2['busy'] = None
 	consumer.matchs[:] = [m for m in consumer.matchs
 		if m.get("matchId") != match_id]
 	await consumer.MyConsumer.match_update()
+	# tournament = next((t for t in tournaments if match_id in t.matchs_id), None)
+	# tournament = next(
+	# 	(t for t in tournaments if any(match_id in m.get('matchId', []) for m in t.matchs))
+    # , None)
+
+	tournament = next(
+		(t for t in tournaments if any(match_id == m.get('matchId', None)
+		for m in t.matchs))
+	, None)
+	# tournament = next((t for t in tournaments if match_id in t.matchs_id), None)
+	if tournament:
+		await tournament.match_result(match_id, winner_id, looser_id)
 	return JsonResponse({"status": "succes"})
+
+def tournament(request : HttpRequest, user_id):
+	print(f"dans tournament {user_id}", flush=True)	#//!
+	return render(
+		request,
+		"tournament.html",
+		{
+			"rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8000"),	
+			"user_id": user_id		
+		}
+	)
+
+def tournament_pattern(request : HttpRequest, tournament_id):
+	print(f"dans tournament pattern {tournament_id}", flush=True)	
+	# print(f"dans tournament pattern {tournament_id}", flush=True)	
+	return render(
+		request,
+		"tournament_pattern.html",
+	)	
+# def create_tournament(playerList):
+# 	player1
+# 	player2
+# 	player3
+# 	player4
+# 	askmatchid
+# 	send matchid to player1 player2
+# 	send matchid to player3 player4
+
+# 	makegamewith player1 player2 les joueur vont se connecter
+# 	makegamewith player3 player4 les joueur vont se connecter
+
+# 	winnergame1 je vais recevoir le res par match result
+# 	winnergame2	je vais recevoir le res par match result
+# 	une fois que les deux res sont arrive je vais 
+# 	askmatchId
+# 	send matchid to winnergame1 winnergame2	
+
+# 	makegamewith winnergame1 winnergame2
+
+# 	winnergame1 je vais recevoir le res par match result
+# 	winnergame3	
 	

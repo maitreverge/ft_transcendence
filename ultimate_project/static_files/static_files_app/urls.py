@@ -14,6 +14,11 @@ urlpatterns = [
         name="tournament_match_wrapper",
     ),
     path(
+        "tournament-wrapper/<str:user_id>/",
+        views.tournament_template,
+        name="tournament_wrapper",
+    ),
+    path(
         "user-profile-wrapper/",
         views.user_profile_template,
         name="user_profile_template",

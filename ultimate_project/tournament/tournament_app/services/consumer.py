@@ -9,12 +9,9 @@ matchs = []
 
 class MyConsumer(AsyncWebsocketConsumer):
 
-	# id = 0
 	async def connect(self):
-		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])				
 		await self.accept() 
-		# MyConsumer.id += 1
-		# self.id = MyConsumer.id
+		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
 		players[:] = [p for p in players if p.get('playerId') != self.id]
 		players.append({'playerId': self.id, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
@@ -171,16 +168,42 @@ class MyConsumer(AsyncWebsocketConsumer):
 		}))
 
 	async def start_match(self, applicantId):
+		async with aiohttp.ClientSession() as session:
+			async with session.get(				
+    				f"http://match:8002/match/new-match/"
+    				f"?p1={applicantId}&"
+    				f"p2={self.id}"
+				) as response:
+				if response.status == 201:
+					data = await response.json()
+					match_id = data.get('matchId', None)
+					matchs.append({
+						"matchId": match_id,
+						"playerId": applicantId, 
+						"otherId": self.id,			
+					})
+					return match_id
+				return None
+	# async def start_match(self, applicantId):
+	# 	# match_id = await asyncio.to_thread(
+    #     # 	requests.get, 
+	# 	# 	f"http://match:8002/match/new-match/?p1={applicantId}&p2={self.id}"
+    # 	# ).json().get('matchId', None)
+	# 	# match_id = response.json()
+	# 	# match_id = requests.get(
+	# 	# 	f"http://match:8002/match/new-match/?p1={applicantId}&p2={self.id}"
+	# 	# ).json()['matchId']
 
-		match_id = requests.get(
-			f"http://match:8002/match/new-match/?p1={applicantId}&p2={self.id}"
-		).json()['matchId']
-		matchs.append({
-			"matchId": match_id,
-			"playerId": applicantId, 
-			"otherId": self.id
-		})
-		return match_id		
+	# 	match_id = requests.get(
+	# 		f"http://match:8002/match/new-match/?p1={applicantId}&p2={self.id}"
+	# 	).json()['matchId']
+	# 	matchs.append({
+	# 		"matchId": match_id,
+	# 		"playerId": applicantId, 
+	# 		"otherId": self.id,			
+	# 	})
+	# 	return match_id		
+		
 
 	async def stop_match(self, applicant_id, match_id):
 
@@ -197,6 +220,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 
 	@staticmethod
 	async def match_update():
+		print(f"MATCH {matchs}", flush=True)
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": "matchList",
