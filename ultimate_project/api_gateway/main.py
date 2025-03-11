@@ -23,6 +23,16 @@ services = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# ! DEBUGGING COOKIES MIDDLEWARE.
+# This middleware is used to debug incoming cookies in FastAPI.
+# It prints the incoming cookies to the console.
+@app.middleware("http")
+async def debug_cookies_middleware(request: Request, call_next):
+    print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
+    response = await call_next(request)
+    return response
+
+
 
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
@@ -48,9 +58,10 @@ async def proxy_request(service_name: str, path: str, request: Request):
 
         method = request.method
         data = await request.body()
+        cookies = request.cookies
 
         try:
-            response = await client.request(method, url, headers=headers, content=data)
+            response = await client.request(method, url, headers=headers, content=data, cookies=cookies)
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
             logger.error

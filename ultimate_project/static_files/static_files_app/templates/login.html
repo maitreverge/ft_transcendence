@@ -81,7 +81,7 @@
 				const response = await fetch('/auth/login/', {
 					method: 'POST',
 					body: formData,
-					credentials: 'same-origin' // Include cookies
+					credentials: 'include'  // 🔥 Ensure cookies are included in requests!
 				});
 				
 				const data = await response.json();
@@ -90,7 +90,6 @@
 					// Redirect on success
 					window.location.href = data.redirect_to;
 				} else {
-					// Show error message
 					alert(data.error || 'Login failed');
 				}
 			} catch (error) {

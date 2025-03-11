@@ -64,21 +64,38 @@ def login_view(request):
                     }
                 })
                 
-                # Set cookies on the JSON response
+                # Replace your cookie settings with these more permissive ones for debugging
                 response.set_cookie(
                     'access_token', 
                     access_token, 
                     httponly=True, 
-                    secure=settings.DEBUG is False,
-                    max_age=15 * 60  # 15 minutes
+                    secure=False,  # Set to False during development
+                    samesite='Lax',  # Add SameSite attribute
+                    path='/',  # Make cookie available across all paths
+                    max_age=15 * 60
                 )
+                
                 response.set_cookie(
                     'refresh_token', 
                     refresh_token, 
                     httponly=True, 
-                    secure=settings.DEBUG is False,
-                    max_age=7 * 24 * 60 * 60  # 7 days
+                    secure=False,  # Set to False during development
+                    samesite='Lax',  # Add SameSite attribute
+                    path='/',  # Make cookie available across all paths
+                    max_age=7 * 24 * 60 * 60
                 )
+                
+                # Add this debug print to verify tokens are being created
+                # print(f"DEBUG - Access Token: {access_token} ", flush=True)
+                # print(f"DEBUG - Refresh Token: {refresh_token} ", flush=True)
+
+                print("============ FULL DJANGO ANSWER =============", flush=True)
+                print("============ FULL DJANGO ANSWER =============", flush=True)
+                print(f"Django Response Headers: {response.headers}", flush=True)
+                print(f"Django Response coockies: {response.cookies}", flush=True)
+                print("============ FULL DJANGO ANSWER =============", flush=True)
+                print("============ FULL DJANGO ANSWER =============", flush=True)
+
                 
                 return response
             else:
@@ -135,10 +152,12 @@ def refresh_token_view(request):
             'access_token', 
             new_access_token, 
             httponly=True, 
-            secure=settings.DEBUG is False,
+            samesite='Lax',  # Add SameSite attribute
+            secure=False,  # Set to False during development
+            path='/',  # Make cookie available across all paths
             max_age=15 * 60  # 15 minutes
         )
-        
+
         return response
         
     except jwt.ExpiredSignatureError:
