@@ -26,7 +26,7 @@ class Pong:
 		self.yp1 = 0
 		self.yp2 = 0
 		self.winner = None
-		self.max_delay = 10
+		self.max_delay = 60
 		self.send_task = None
 		self.watch_task = None
 		# asyncio.run(self.end())
@@ -223,8 +223,6 @@ class Pong:
 				}))
 			except Exception as e:
 				pass		
-		from match_app.views import del_pong
-		del_pong(self.id)
 		requests.post("http://tournament:8001/tournament/match-result/", json={
 			"matchId": self.id,
 			"winnerId": self.winner,
@@ -232,5 +230,7 @@ class Pong:
 			"p1Id": self.idP1,
 			"p2Id": self.idP2
 		})
+		from match_app.views import del_pong
+		del_pong(self.id)
 	
 			
