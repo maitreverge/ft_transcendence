@@ -56,6 +56,52 @@ http://localhost:8000/admin/  ==>  ADMIN PANEL
 									DATABASE ENDPOINTS
 --------------------------------------------------------------------------------
 
+```python
+
+# requirements
+django-cors-headers
+
+
+
+
+INSTALLED_APPS = [
+    ...
+    'corsheaders',
+]
+
+MIDDLEWARE = [
+    ...
+    'corsheaders.middleware.CorsMiddleware',  # This must be BEFORE CommonMiddleware
+    'django.middleware.common.CommonMiddleware',
+    ...
+]
+
+# CORS CONFIGURATION
+CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
+CORS_ALLOW_ORIGINS = [
+    "http://localhost:8000",  # Basic
+    "http://localhost:8001",  # Tournament
+    "http://localhost:8002",  # Match
+    "http://localhost:8003",  # Static files
+    "http://localhost:8004",  # User
+    "http://localhost:8005",  # FastAPI
+    "http://localhost:8006",  # Authentication
+    "http://localhost:8007",  # DatabaseAPI
+    f"https://{PI_DOMAIN}",  # Production
+]
+CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_HEADERS = ["*"]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_HEADERS = ["*"]
+
+
+
+
+```
+
 
 --------------------------------------------------------------------------------
 									TO ASK

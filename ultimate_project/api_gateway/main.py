@@ -2,12 +2,30 @@ from fastapi import FastAPI, Request, HTTPException, Query
 import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 import logging
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="API Gateway",
     description="This API Gateway routes requests to various microservices. \
         Define endpoints to get any data here :)",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:8000",  # Basic
+        "http://localhost:8001",  # Tournament
+        "http://localhost:8002",  # Match
+        "http://localhost:8003",  # Static files
+        "http://localhost:8004",  # User
+        "http://localhost:8005",  # FastAPI
+        "http://localhost:8006",  # Authentication
+        "http://localhost:8007",  # DatabaseAPI
+    ],
+    allow_credentials=True,  # Allow cookies
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 services = {
