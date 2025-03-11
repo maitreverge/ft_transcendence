@@ -5,7 +5,7 @@
 
   <div class="row justify-content-center">
     <a
-      id="field-tournament"
+      id="field-simple-match"
       class="col-lg-5 mb-4"
       hx-trigger="click"
       hx-push-url="true"
@@ -14,9 +14,22 @@
       hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
     >
       <div class="card bg-primary text-white shadow py-5">
-        <div class="card-body" data-translate="Tournoi">> Match</div>
+        <div class="card-body" data-translate="Match simple">Simple Match</div>
       </div>
     </a>
+    <a
+    id="field-tournament"
+    class="col-lg-5 mb-4"
+    hx-trigger="click"
+    hx-push-url="true"
+    hx-get="/tournament/simple-match/"
+    hx-target="#main_div"
+    hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+  >
+    <div class="card bg-warning text-white shadow py-5">
+      <div class="card-body" data-translate="Tournoi">> Match</div>
+    </div>
+  </a>
     <a
       id="field-profile"
       class="col-lg-5 mb-4"
@@ -43,11 +56,6 @@
         <div class="card-body" data-translate="Statistiques">> Stats</div>
       </div>
     </a>
-    <div class="col-lg-5 mb-4">
-      <div class="card bg-warning text-white shadow py-5">
-        <div class="card-body">Warning</div>
-      </div>
-    </div>
   </div>
 <!-- </div>
     <div class="row justify-content-around" style="height: 45vh;">
