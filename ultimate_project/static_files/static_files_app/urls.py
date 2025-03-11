@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("login-form/", views.login_form, name="login-form"),
     path("login/", views.login, name="login"),
     path("home/", views.home),
     path("user/profile/", views.profile),
@@ -24,7 +23,7 @@ urlpatterns = [
         name="user_profile_template",
     ),
     path("user-stats-wrapper/", views.user_stats_template, name="user_stats_template"),
-    path('translations/<str:lang>.json', views.translations, name='translations'),
+    path("translations/<str:lang>.json", views.translations, name="translations"),
     path("register/", views.register, name="register"),
     path("forgot-password/", views.forgotPassword, name="forgot-password"),
     path("login/", views.forgotPassword, name="login"),

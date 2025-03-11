@@ -9,6 +9,7 @@ import os
 import static_files.settings as settings
 from django.http import JsonResponse
 
+
 @never_cache
 def index(request):
     username = request.session.get("username")
@@ -18,20 +19,6 @@ def index(request):
     return render(request, "index.html", obj)
 
 
-# !!      OLD LOGIN PATH AND FORMS
-@never_cache
-def login_form(request):
-    # csrf_token = csrf.get_token(request)
-    return render(request, "landing_page.html")
-
-
-# !!      OLD LOGIN PATH AND FORMS
-@never_cache
-def login(request):
-    username = request.POST.get("username")
-    request.session["username"] = username
-    return redirect("/")
-
 @never_cache
 def home(request):
     if request.headers.get("HX-Request"):
@@ -39,6 +26,7 @@ def home(request):
     username = request.session.get("username")
     obj = {"username": username, "page": "partials/home.html"}
     return render(request, "index.html", obj)
+
 
 @never_cache
 def profile(request):
@@ -48,6 +36,7 @@ def profile(request):
     obj = {"username": username, "page": "partials/profile.html"}
     return render(request, "index.html", obj)
 
+
 @never_cache
 def stats(request):
     if request.headers.get("HX-Request"):
@@ -55,6 +44,7 @@ def stats(request):
     username = request.session.get("username")
     obj = {"username": username, "page": "partials/stats.html"}
     return render(request, "index.html", obj)
+
 
 @never_cache
 def match_simple_template(request, user_id):
@@ -74,6 +64,7 @@ def match_simple_template(request, user_id):
         },
     )
 
+
 @never_cache
 def tournament_template(request, user_id):
     url = f"http://tournament:8001/tournament/tournament/{user_id}/"
@@ -92,6 +83,7 @@ def tournament_template(request, user_id):
         },
     )
 
+
 @never_cache
 def user_profile_template(request):
     page_html = requests.get("http://user:8004/user/profile/").text
@@ -107,6 +99,7 @@ def user_profile_template(request):
             "page": page_html,
         },
     )
+
 
 @never_cache
 def user_stats_template(request):
@@ -124,14 +117,22 @@ def user_stats_template(request):
         },
     )
 
+
 @never_cache
 def translations(request, lang):
     try:
-        file_path = os.path.join(settings.BASE_DIR, 'static_files_app', 'static', 'translations', f'{lang}.json')
-        with open(file_path, 'r') as file:
+        file_path = os.path.join(
+            settings.BASE_DIR,
+            "static_files_app",
+            "static",
+            "translations",
+            f"{lang}.json",
+        )
+        with open(file_path, "r") as file:
             return JsonResponse(file.read(), safe=False)
     except FileNotFoundError:
-        return JsonResponse({'error': 'File not found'}, status=404)
+        return JsonResponse({"error": "File not found"}, status=404)
+
 
 @never_cache
 def register(request):
@@ -139,17 +140,20 @@ def register(request):
     obj = {"username": username, "page": "register.html"}
     return render(request, "index.html", obj)
 
+
 @never_cache
 def forgotPassword(request):
     username = request.session.get("username")
     obj = {"username": username, "page": "forgot-password.html"}
     return render(request, "index.html", obj)
 
+
 @never_cache
 def login(request):
     username = request.session.get("username")
     obj = {"username": username, "page": "login.html"}
     return render(request, "index.html", obj)
+
 
 @never_cache
 def twoFactorAuth(request):

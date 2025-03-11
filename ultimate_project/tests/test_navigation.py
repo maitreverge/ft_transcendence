@@ -39,6 +39,7 @@ def run(playwright: Playwright) -> None:
     context.close()
     browser.close()
 
+
 with sync_playwright() as playwright:
     run(playwright)
 

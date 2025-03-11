@@ -23,6 +23,7 @@ services = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # ! DEBUGGING COOKIES MIDDLEWARE.
 # This middleware is used to debug incoming cookies in FastAPI.
 # It prints the incoming cookies to the console.
@@ -31,7 +32,6 @@ async def debug_cookies_middleware(request: Request, call_next):
     print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
     response = await call_next(request)
     return response
-
 
 
 async def proxy_request(service_name: str, path: str, request: Request):
@@ -61,7 +61,9 @@ async def proxy_request(service_name: str, path: str, request: Request):
         cookies = request.cookies
 
         try:
-            response = await client.request(method, url, headers=headers, content=data, cookies=cookies)
+            response = await client.request(
+                method, url, headers=headers, content=data, cookies=cookies
+            )
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
             logger.error
@@ -84,11 +86,15 @@ async def proxy_request(service_name: str, path: str, request: Request):
             return HTMLResponse(content=response.text, status_code=response.status_code)
         return JSONResponse(content=response.json(), status_code=response.status_code)
 
+
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
 async def tournament_pattern_proxy(tournament_id, request: Request):
-    print("################## NEW ROUTE USED #######################", flush=True) 
+    print("################## NEW ROUTE USED #######################", flush=True)
     print(f"################## NEW ROUTE USED ##########{tournament_id}", flush=True)
-    return await proxy_request("tournament", f"tournament/tournament-pattern/{tournament_id}/", request)
+    return await proxy_request(
+        "tournament", f"tournament/tournament-pattern/{tournament_id}/", request
+    )
+
 
 user_id = 0
 
@@ -195,12 +201,14 @@ async def match_proxy(
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)
 
+
 @app.get("/")
 async def redirect_to_home():
     """
     Redirect requests from '/' to '/home/'.
     """
     return RedirectResponse(url="/home/")
+
 
 @app.api_route("/auth/{path:path}", methods=["GET", "POST"])
 async def authentication_proxy(path: str, request: Request):
@@ -210,34 +218,31 @@ async def authentication_proxy(path: str, request: Request):
     return await proxy_request("authentication", f"auth/{path}", request)
 
 
-
-
-
 @app.api_route("/api/{path:path}", methods=["GET"])
 async def databaseapi_proxy(path: str, request: Request):
     """
     Proxy requests to the database API microservice.
 
     - **path**: The path to the resource in the database API
-    
+
     ### Examples:
     - **List all players**: GET /api/player/
     - **Get player by ID**: GET /api/player/1/
     - **Filter players by username**: GET /api/player/?username=player1
     - **Filter players by email**: GET /api/player/?email=example
-    
+
     - **List all tournaments**: GET /api/tournament/
     - **Get tournament by ID**: GET /api/tournament/1/
-    
+
     - **List all matches**: GET /api/match/
     - **Get match by ID**: GET /api/match/1/
     - **Filter matches by player**: GET /api/match/?player1=1
     - **Filter matches by tournament**: GET /api/match/?tournament=1
-    
+
     ### Pagination:
     - All list endpoints are paginated with 10 items per page
     - **Navigate pages**: GET /api/player/?page=2
-    
+
     ### Response format:
     ```json
     {
