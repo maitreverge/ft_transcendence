@@ -43,9 +43,9 @@ function onTournamentMessage(event, socket) {
 		case "getPattern":
 			getPattern(data.tournamentId);
 			break;
-			// case "linkMatch":
-			// linkMatch(data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
-			// break;
+			case "linkMatch":
+			linkMatch(data.tournamentId, data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
+			break;
 		case "matchResult":
 			matchResult(data.tournamentId, data.localMatchId, data.matchId, data.winnerId, data.looserId);			
 			break;
