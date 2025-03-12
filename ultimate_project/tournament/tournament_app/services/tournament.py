@@ -56,14 +56,14 @@ class Tournament():
 						"linkMatch": link_match
 					}
 					self.matchs.append(match)
-					await self.send_link_match(link_match)
+					# await self.send_link_match(link_match)
 		
 	async def send_link_match(self, link_match):
 
 		for player in self.players:				
 			await player.send(text_data=json.dumps(link_match))
 
-	async def send_match_update()
+	# async def send_match_update()
 	async def match_result(self, match_id, winner_id, looser_id):
 		print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
 		self.n_match += 1

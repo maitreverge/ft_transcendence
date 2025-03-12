@@ -43,9 +43,9 @@ function onTournamentMessage(event, socket) {
 		case "getPattern":
 			getPattern(data.tournamentId);
 			break;
-			case "linkMatch":
-			linkMatch(data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
-			break;
+			// case "linkMatch":
+			// linkMatch(data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
+			// break;
 		default:				
 			break;
 	}
@@ -137,7 +137,7 @@ function quitTournament(socket) {
 }
 
 function updateTournaments(socket, tournaments) {
-
+	console.log("UPDATE TOURNAMENT");
     const tournamentsContainer = document.getElementById("tournaments");
 	let tournamentElements = [...tournamentsContainer.children];
 		
@@ -147,14 +147,25 @@ function updateTournaments(socket, tournaments) {
 	tournaments.forEach(tournament => {	
 		if (tournamentElements.every(el => el.id != tournament.tournamentId))		
 			addToTournaments(socket, tournamentsContainer, tournament);
-		else			
-			tournamentElements.forEach(el => {
-				if (el.id == tournament.tournamentId)
-				{
-					const playersCont = el.querySelector("#players-cont");
-					movePlayerInTournament(playersCont, tournament);
-				}
-			});	
+		// else	
+		tournamentElements = [...tournamentsContainer.children];		
+		tournamentElements.forEach(el => {
+			if (el.id == tournament.tournamentId)
+			{
+				const playersCont = el.querySelector("#players-cont");
+				movePlayerInTournament(playersCont, tournament);
+			}
+		});
+		
+		if (tournament.matchs.length > 0)
+			getPattern(tournament.tournamentId);
+		setTimeout(()=>{
+			tournament.matchs.forEach(match => {
+				console.log("MATCHSSS ", match)				
+				lk = match.linkMatch;
+				linkMatch(tournament.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);					
+			});
+		}, 3000);
 	});
 	// setSelfMatchId();	
 }
@@ -196,7 +207,7 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 	div.appendChild(playersCont);
 	div.appendChild(overlayPattern);
     tournamentsContainer.appendChild(div);
-	movePlayerInTournament(playersCont, tournament);
+	// movePlayerInTournament(playersCont, tournament);
 }
 
 function movePlayerInTournament(tournamentElement, tournament) {
@@ -296,6 +307,8 @@ function getPattern(tournamentId) {
 	if (!tournament)
 		return;
 	const overlay = tournament.querySelector("#overlay-pattern");
+	if (overlay.innerHTML.trim() !== "")
+		return;
 	fetch(`/tournament/tournament-pattern/${tournamentId}/`)
 	.then(response => {
 		if (!response.ok) 
@@ -306,11 +319,17 @@ function getPattern(tournamentId) {
 	.catch(error => console.log(error));		
 }
 
-function linkMatch(localMatchId, matchId, p1Id, p2Id) {
-	console.log("localid: ", localMatchId, " matchid ", matchId, " p1 ", p1Id, " p2 ", p2Id);
-	
-	const overlay = document.getElementById("overlay-match");
-	const localMatch = document.getElementById(localMatchId);
+function linkMatch(tournamentId, localMatchId, matchId, p1Id, p2Id) {
+	console.log("LINK MATCH localid: ", localMatchId, " matchid ", matchId, " p1 ", p1Id, " p2 ", p2Id, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
+	const tournament = document.getElementById("tournaments").querySelector(
+		`[id='${tournamentId}']`
+	);
+	if (!tournament)
+		return;
+	const overlay = tournament.querySelector("#overlay-match");
+	const localMatch = tournament.querySelector(`#${localMatchId}`);
+	// const overlay = document.getElementById("overlay-match");
+	// const localMatch = document.getElementById(localMatchId);
 	if (window.selfId == p1Id || window.selfId == p2Id)
 	{
 		window.selfMatchId = matchId;
