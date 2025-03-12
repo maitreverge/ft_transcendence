@@ -1,3 +1,74 @@
+/**========================================================================
+ * !                              CODE CHANGES
+ *   these functions were added.
+ *   the function "receiveInvitation" was modified (see below)
+ *========================================================================**/
+
+let isPageVisible = !document.hidden;
+let pendingInvitations = [];
+
+document.addEventListener('visibilitychange', () => {
+    isPageVisible = !document.hidden;
+    if (isPageVisible) {
+        // Si la page devient active, on traite les notifications en attente
+        handlePendingInvitations();
+    }
+});
+
+
+function handlePendingInvitations() {
+    // Traite toutes les invitations en attente lorsque la page devient active
+    pendingInvitations.forEach(invitation => {
+        const { applicantId, socket } = invitation;
+        const userConfirmed = confirm(`Vous avez une invitation de ${applicantId}`);
+        sendConfirmation(socket, applicantId, userConfirmed);
+    });
+
+    // Vide la file d'attente une fois les invitations traitées
+    pendingInvitations = [];
+}
+
+function showNotification(message, applicantId) {
+    if (Notification.permission === "granted") {
+        new Notification(message);
+    } else if (Notification.permission !== "denied") {
+        // Demande la permission si elle n'a pas encore été accordée ni refusée
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification(message);
+            }
+        });
+    } else {
+        console.log("Notification permission not granted");
+    }
+}
+
+function receiveInvitation(socket, applicantId) {
+    console.log("I have had an invitation from: " + applicantId);
+    
+    if (isPageVisible) {
+        // Si l'onglet est actif, demande la confirmation immédiatement
+        const userConfirmed = confirm(`You have an invitation from ${applicantId}`);
+        sendConfirmation(socket, applicantId, userConfirmed);
+    } else {
+        // Si l'onglet est en arrière-plan, stocke l'invitation en attente
+        pendingInvitations.push({ socket, applicantId });
+        // showNotification(`You have an invitation from ${applicantId}`, applicantId);
+    }
+}
+
+// function receiveInvitation(socket, applicantId) {
+
+// 	console.log("i have had and invitation from: " + applicantId)
+
+// 	confirm(`you have an invitation from ${applicantId}`)
+// 	? sendConfirmation(socket, applicantId, true)	
+// 	: sendConfirmation(socket, applicantId, false);
+// }
+
+/**========================================================================
+ *!                           END OF CHANGES
+ *========================================================================**/
 
 function loadHtml(data, target) {
 
@@ -135,15 +206,6 @@ function sendConfirmation(socket, applicantId, response) {
 			response: response,
 			applicantId: applicantId
 		}));
-}
-
-function receiveInvitation(socket, applicantId) {
-
-	console.log("i have had and invitation from: " + applicantId)
-
-	confirm(`you have an invitation from ${applicantId}`)
-	? sendConfirmation(socket, applicantId, true)	
-	: sendConfirmation(socket, applicantId, false);
 }
 
 function invitationCancelled(targetId) {
