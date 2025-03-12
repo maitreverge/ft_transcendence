@@ -46,6 +46,9 @@ function onTournamentMessage(event, socket) {
 			// case "linkMatch":
 			// linkMatch(data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
 			// break;
+		case "matchResult":
+			matchResult(data.tournamentId, data.localMatchId, data.matchId, data.winnerId, data.looserId);			
+			break;
 		default:				
 			break;
 	}
@@ -163,9 +166,18 @@ function updateTournaments(socket, tournaments) {
 			tournament.matchs.forEach(match => {
 				console.log("MATCHSSS ", match)				
 				lk = match.linkMatch;
-				linkMatch(tournament.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);					
+				linkMatch(lk.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);					
 			});
 		}, 3000);
+		if (tournament.matchs.matchResult)
+		{
+			console.log("match Reuslt EXISTE mouquate");
+			matchResult(data.tournamentId, data.localMatchId, data.matchId, data.winnerId, data.looserId);			
+
+		}
+		else {
+			console.log("match Reuslt nexiste pas mouquate");
+		}
 	});
 	// setSelfMatchId();	
 }
@@ -364,18 +376,33 @@ function loadHtml(data, overlay) {
 
 	const scripts = overlay.getElementsByTagName("script");
 	
-	for (const script of scripts) {
-		
+	for (const script of scripts) 
+	{		
 		const newScript = document.createElement("script");
 		newScript.className = script.className;
-		if (script.src) {	
+		if (script.src)
+		{	
 			newScript.src = script.src + "?t=" + Date.now();
 			newScript.async = true;  
 			newScript.onload = script.onload;
-		} else 			
-		newScript.textContent = script.textContent;		
+		} 
+		else 			
+			newScript.textContent = script.textContent;		
 		document.body.appendChild(newScript); 
 	}
 	const oldScripts = document.querySelectorAll("script.pattern-script");			
 	oldScripts.forEach(oldScript => oldScript.remove());	
+}
+
+function matchResult(tournamentId, localMatchId, matchId, winnerId, looserId) {
+
+	const tournament = document.getElementById("tournaments").querySelector(
+		`[id='${tournamentId}']`
+	);
+	if (!tournament)
+		return;
+	const overlay = tournament.querySelector("#overlay-match");
+	const localMatch = tournament.querySelector(`#${localMatchId}`);
+	overlay.innerHTML = "";
+	localMatch.innerText = winnerId
 }
