@@ -6,6 +6,11 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
+One the login route secured, lock it to prevent accessing it to already connected users
+
+Then implement the logout
+
+
 ⛔ ✅  
 ## DONE OF THE DAY
 ✅  Simplifies the django admin panel credentials 

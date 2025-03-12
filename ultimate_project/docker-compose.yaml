@@ -129,10 +129,11 @@ services:
     build :
       context: ./api_gateway/
     environment:
-      - env=prod
-      - port=${api_gateway_port}
-      - name=api_gateway
-      - pi_domain=${PI_DOMAIN}
+      env: prod
+      port: ${api_gateway_port}
+      name: api_gateway
+      pi_domain: ${PI_DOMAIN}
+      JWT_KEY: ${JWT_KEY}
     image: img_api_gateway
     networks:
       - transcendence_network

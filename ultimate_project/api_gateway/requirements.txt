@@ -3,3 +3,5 @@ uvicorn
 httpx
 websockets
 django-cors-headers
+cryptography
+PyJWT

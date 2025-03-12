@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Request, HTTPException, Query
+from fastapi import FastAPI, Request, HTTPException, Query, Depends
 import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 import logging
 from fastapi.middleware.cors import CORSMiddleware
+from auth_helpers import block_authenticated_users
+
 
 app = FastAPI(
     title="API Gateway",
@@ -317,6 +319,40 @@ async def databaseapi_proxy(path: str, request: Request):
     ```
     """
     return await proxy_request("databaseapi", f"api/{path}", request)
+
+
+
+# Add this route before the catch-all static_files_proxy
+@app.api_route("/login/", methods=["GET"])
+async def login_page(request: Request, is_authenticated: bool = Depends(block_authenticated_users())):
+    """
+    Handle the login page - blocks authenticated users by redirecting to home
+    """
+    # If user is authenticated, redirect to home
+    if is_authenticated:
+        print("################## AUTHENTICATED USER #######################", flush=True)
+        print("🔒 USER IS AUTHENTICATED - REDIRECTING TO HOME 🔒", flush=True)
+        print("################## AUTHENTICATED USER #######################", flush=True)
+        return RedirectResponse(url="/home/")
+        
+    print("################## LOGIN PAGE #######################", flush=True)
+    print("🔒 LOGIN PAGE ACCESSED - USER NOT AUTHENTICATED 🔒", flush=True)
+    print("################## LOGIN PAGE #######################", flush=True)
+    
+    # Otherwise proxy to static_files service
+    return await proxy_request("static_files", "login/", request)
+
+# @app.api_route("/login/{path:path}", methods=["GET"])
+# async def login_proxy(path: str, request: Request):
+#     """
+#     Proxy requests to login subpaths.
+#     Since we're checking for a specific non-empty path, this won't overlap with /login/
+#     """
+#     print("################## LOGIN ASSETS #######################", flush=True)
+#     print(f"🔥 PROXY LOGIN/{path} ROUTE ACCESSED 🔥", flush=True)
+#     print("################## LOGIN ASSETS #######################", flush=True)
+
+#     return await proxy_request("static_files", f"login/{path}", request)
 
 
 @app.api_route("/{path:path}", methods=["GET"])
