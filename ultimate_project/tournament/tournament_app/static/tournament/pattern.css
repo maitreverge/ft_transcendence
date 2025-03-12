@@ -1,3 +1,7 @@
 .pattern-match {
 	background-color:blanchedalmond;
 }
+
+.next-match {
+	background-color:hwb(36 1% 2%);
+}
