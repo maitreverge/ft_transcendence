@@ -1,0 +1,12 @@
+django
+requests
+uvicorn
+psycopg2-binary
+django-allauth
+django-otp
+qrcode
+pyotp
+pillow
+cryptography
+django-rest-framework
+django-filter

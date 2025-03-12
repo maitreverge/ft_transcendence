@@ -1,12 +1,3 @@
-body {
-    background-color: rgb(136, 43, 121);
-}
-
-button {
-	width:100px;
-	height:50px;
-}
-
 #p1, #p2 {
 	width: 50px;
 	height: 100px;
@@ -23,4 +14,28 @@ button {
 	position: absolute;
 	top:50vh;
 	right:20px
+}
+
+#match {
+	width:100%;
+	height:50%;	
+	background-color: rgb(50, 92, 87);
+}
+
+#waiting {
+	display:block;
+	width:80%;
+	height:80%;
+	background-color: rgb(22, 244, 218);
+}
+
+.no-waiting {
+	display:none !important;
+}
+
+.end {
+	display:block !important;
+	width:80%;
+	height:80%;
+	background-color: rgb(244, 118, 22);
 }

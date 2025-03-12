@@ -1,0 +1,10 @@
+django
+requests
+uvicorn
+django-allauth
+django-otp
+qrcode
+pyotp
+pillow
+cryptography
+PyJWT
