@@ -1,0 +1,122 @@
+<div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                </div>
+                                <form class="user" 
+                                method="post" 
+                                action="/auth/login/">
+									{% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="text" 
+                                        class="form-control form-control-user"
+                                        id="username" 
+                                        name="username"
+                                        placeholder="Enter Username...">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" 
+                                        class="form-control form-control-user"
+                                        id="password" 
+                                        name="password" 
+                                        placeholder="Password">
+                                    </div>
+                                    <div class="form-group">
+                                    </div>
+									<div class="form-group">
+										<input 
+                                        type="submit" 
+                                        class="btn btn-primary btn-user btn-block" 
+                                        value="Logiiiiiiiin">
+									</div>
+                                    <hr>
+                                    <a hx-boost="false" 
+                                    href="http://localhost:8000/home/" 
+                                    class="btn btn-google btn-user btn-block">
+                                        <i class="fab fa-google fa-fw"></i> 
+                                        Login with Google
+                                    </a>
+                                    <a hx-boost="false" 
+                                    href="http://localhost:8000/home/" 
+                                    class="btn btn-facebook btn-user btn-block">
+                                        <i class="fab fa-facebook-f fa-fw"></i> 
+                                        Login with Facebook
+                                    </a>
+                                </form>
+                                <hr>
+                                <div hx-boost="false"
+                                    hx-trigger="click"
+                                    hx-push-url="true"
+                                    hx-get="/forgot-password/"
+                                    hx-target="body"
+                                    class="text-center small"
+                                    href="" 
+                                    data-translate="Forgot Password?">Forgot Password?
+                                </div>
+                                <div hx-boost="false"
+                                    hx-trigger="click"
+                                    hx-push-url="true"
+                                    hx-get="/register/"
+                                    hx-target="body"
+                                    class="text-center small"
+                                    href="" 
+                                    data-translate="Create an Account!">Create an Account!
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+    </div>
+
+		<!-- Add this script before the closing </div> of the container -->
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const loginForm = document.querySelector('form.user');
+		
+		loginForm.addEventListener('submit', async function(e) {
+			e.preventDefault(); // Prevent normal form submission
+			
+			const formData = new FormData(loginForm);
+			
+			try {
+				const response = await fetch('/auth/login/', {
+					method: 'POST',
+					body: formData,
+					credentials: 'include'  // 🔥 Ensure cookies are included in requests!
+				});
+				
+				const data = await response.json();
+				
+				if (data.success) {
+					// Redirect on success
+					window.location.href = data.redirect_to;
+				} else {
+					alert(data.error || 'Login failed');
+				}
+			} catch (error) {
+				console.error('Login error:', error);
+				alert('An error occurred during login. Please try again.');
+			}
+		});
+	});
+	</script>
+
+</div>

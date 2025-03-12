@@ -3,9 +3,9 @@
 source "$(dirname "$0")/utils.sh"
 
 echo "Installing dependencies..."
-pip install --upgrade pip > /dev/null 2>&1
-pip install black flake8 pytest playwright > /dev/null 2>&1
-playwright install > /dev/null 2>&1
+# pip install --upgrade pip > /dev/null 2>&1
+# pip install black flake8 pytest playwright > /dev/null 2>&1
+# playwright install > /dev/null 2>&1
 check_result "Dependency installation"
 
 

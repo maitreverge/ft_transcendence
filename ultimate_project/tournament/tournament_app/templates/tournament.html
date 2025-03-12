@@ -1,0 +1,23 @@
+{% load static %}
+<div style="display:none;">
+	<head>
+		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
+		<script>
+			window.rasp = "{{ rasp }}"; 
+			window.pidom = "{{ pidom }}";
+            window.user_id = "{{ user_id }}";								
+		</script>
+		<script src="{% static 'tournament/tournament.js' %}"
+				onload="initTournament()"></script>
+	</head>
+</div>	
+<div id="simple-selections">
+	<h1>Tournois - Selections</h1>
+	<h2 id ="myh1">
+		Je dois choisir un tournois et entrer dans le match!
+	</h2>
+	<h2 id="player">Je suis le joueur ...</h2>
+	<div id="players"></div>
+	<button onclick="newTournament(window.tournamentSocket)">Create</button>
+	<div id="tournaments"></div>
+</div>

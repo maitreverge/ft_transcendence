@@ -15,12 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
+# from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
-# from static_files_app import views
+
+# Compose health-check, do not remove
+@csrf_exempt
+def health_check(request):
+    return HttpResponse(status=200)
+
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    # path("admin/", admin.site.urls),
+    path("health/", health_check, name="health_check"),
     path("", include("static_files_app.urls")),
 ]

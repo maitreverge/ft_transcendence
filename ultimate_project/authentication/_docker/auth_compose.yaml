@@ -1,0 +1,27 @@
+services:
+  authentication:
+    container_name: ctn_authentication
+    build :
+      context: ../ # ! FUCKING DO NOT TOUCH THIS, I LOST 5 LIFETIME YEARS ON THIS
+      dockerfile: _docker/Dockerfile
+    environment:
+      env: prod
+      name: authentication
+      port: $authentication_port
+      pi_domain: $PI_DOMAIN
+      2FA_KEY: $2FA_KEY
+      DJANGO_SETTINGS_MODULE: authentication.settings
+    env_file:
+      - ../../.env
+    image: img_authentication
+    networks:
+      - transcendence_network
+    volumes:
+      - staticvol:/app/staticfiles
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f -s http://localhost:${authentication_port}/health/ > /dev/null 2>&1"]
+      interval: 10s    # How often to run the health check (every 90 seconds)
+      timeout: 2s       # Maximum time to wait for the check to complete
+      retries: 10         # Number of consecutive failures needed to mark container as unhealthy
+      start_period: 60s  # Initial grace period where failures don't count (container startup time)
+    restart: always

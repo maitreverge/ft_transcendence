@@ -1,0 +1,6 @@
+django
+requests
+uvicorn
+channels
+daphne
+whitenoise
