@@ -26,7 +26,7 @@ class Pong:
 		self.yp1 = 0
 		self.yp2 = 0
 		self.winner = None
-		self.max_delay = 60
+		self.max_delay = 900
 		self.send_task = None
 		self.watch_task = None
 		# asyncio.run(self.end())
