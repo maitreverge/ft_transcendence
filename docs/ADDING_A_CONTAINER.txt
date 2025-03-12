@@ -5,12 +5,15 @@ ADDING A CONTAINER:
 - cd <project_name>
 - python3 manage.py startapp <project_name>_app
 - create folders in project_name/project_name_app/static/project_name/style.css, following other's struct
+    => "django-admin startproject d04"
+    => "python3 manage.py startapp ex00"
+- settings: copy paste from tournament
+- nginx: config.dev.conf: add block for static files AND container path
+- nginx: config.dev.prod: add block for container path
 - docker-compose (+.override): copy existing container config + adapt
+- Add a new port in `.env`
 - dockerfile: copy paste :)
 - entrypoint.sh: copy paste :)
 - copier fichier requirements.txt
-- nginx: config.dev.conf: add block for static files AND container path
-- nginx: config.dev.prod: add block for container path
-- settings: copy paste from tournament
 
 + for html / css content, refere to existing container, ex: tournament

@@ -15,11 +15,26 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-# from django.contrib import admin
 from django.urls import path
-import tournament_app.views
+import tournament_app.views as views
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def health_check(request):
+    return HttpResponse(status=200)
 
 urlpatterns = [
-    path("tournament/", tournament_app.views.start_tournament),
-    path("test/", tournament_app.views.test),
+    path("health/", health_check, name="health_check"), 
+	path("tournament/simple-match/<int:user_id>/", views.simple_match),  
+	# path("tournament/simple-match/", views.simple_match),
+    path("tournament/match-players-update/", views.match_players_update),  
+	path("tournament/match-result/", views.match_result), 
+       
+	path("tournament/tournament/<int:user_id>/", views.tournament),
+    path(
+        "tournament/tournament-pattern/<int:tournament_id>/",
+        views.tournament_pattern
+    ),
 ]
+

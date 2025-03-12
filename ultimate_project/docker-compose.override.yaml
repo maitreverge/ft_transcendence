@@ -1,0 +1,65 @@
+services:
+  nginx:
+    build:
+      args:
+        env: dev
+    volumes:
+      - ./staticfiles:/usr/share/nginx/static   
+
+  static_files:
+    environment:
+      - env=dev
+    ports:
+      - "${static_files_port}:${static_files_port}"
+    volumes:    
+      - ./static_files:/app/
+
+  tournament:
+    environment:
+      - env=dev
+    ports:
+      - "${tournament_port}:${tournament_port}"
+    volumes:
+      - ./tournament:/app/
+
+  user:
+    environment:
+      - env=dev
+    env_file:
+      - .env
+    ports:
+      - "${user_port}:${user_port}"
+    volumes:
+      - ./user:/app/
+
+  match:
+    environment:
+      - env=dev
+    ports:
+      - "${match_port}:${match_port}"
+    volumes:
+      - ./match:/app/
+
+  authentication:
+    environment:
+      - env=dev
+    ports:
+      - "${authentication_port}:${authentication_port}"
+    volumes:
+      - ./authentication:/app/
+
+  databaseapi:
+    environment:
+      - env=dev
+    ports:
+      - "${databaseapi_port}:${databaseapi_port}"
+    volumes:
+      - ./databaseapi:/app/
+
+  api_gateway:
+    environment:
+      - env=dev
+    ports:
+      - "${api_gateway_port}:${api_gateway_port}"
+    volumes:
+      - ./api_gateway:/app/

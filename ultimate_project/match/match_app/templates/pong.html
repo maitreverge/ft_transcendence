@@ -1,17 +1,32 @@
 {% load static %}
-<head>
-	<link rel="stylesheet" href="{% static 'match/styles.css' %}">
-	<script>
-		window.rasp = "{{ rasp }}"; 
-		window.pidom = "{{ pidom }}";
-		window.matchId = "{{ matchId }}";
-	</script>
-	<script src="{% static 'match/script.js' %}"></script>
-	<h1> match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}</h1>
-</head>
 
-<body>	
-	<button onclick="launch()"> launch match </button>
+<div style="display:none">
+	<head>
+		<link rel="stylesheet" href="{% static 'match/styles.css' %}">
+		<script class="match-script">
+			window.rasp = "{{ rasp }}"; 
+			window.pidom = "{{ pidom }}";
+			window.matchId = "{{ matchId }}"
+			window.playerId = "{{ playerId }}";
+		</script>
+		<script class="match-script" src="{% static 'match/script.js' %}"
+				onload="initMatchWs()"></script>
+	</head>
+</div>		
+<div id="match">
+	<h1>Match</h1>	
+	<h1 id="spec" style="display: none">Je suis spectateur</h1>
+
+	<h2>j'ai recu l'identifiant du match par query string</h2>
+	<h2>match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}
+		et {{ playerId }}</h2>
+	
 	<div id="p1"></div>
 	<div id="p2"></div>
-</body>
+	<div id="waiting">Waiting</div>
+	<div id="end" style="display:none"></div>
+	<button onclick="
+		stopMatch('{{matchId}}');
+		const matchDiv = document.getElementById('match');
+    	if (matchDiv) matchDiv.remove();">Quit Match</button>
+</div>
