@@ -4,6 +4,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 import logging
 from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
+import json
 
 
 app = FastAPI(
@@ -334,6 +335,29 @@ async def login_page(request: Request, is_authenticated: bool = Depends(block_au
         
     # Otherwise proxy to static_files service
     return await proxy_request("static_files", "login/", request)
+
+
+@app.api_route("/auth/logout/", methods=["GET"])
+async def auth_logout(request: Request):
+    """
+    Special handler for logout to properly manage the redirect
+    """
+    # Forward the request to the authentication service
+    response = await proxy_request("authentication", "auth/logout/", request)
+    
+    # Check if we got a JSON response with redirect instructions
+    if hasattr(response, "body"):
+        try:
+            body = json.loads(response.body)
+            if body.get("redirect_to"):
+                # If we have a redirect URL, create a redirect response
+                redirect_url = body.get("redirect_to")
+                print(f"🚀 Redirecting to {redirect_url} after logout", flush=True)
+                return RedirectResponse(url=redirect_url)
+        except:
+            pass
+    
+    return response
 
 
 @app.api_route("/{path:path}", methods=["GET"])

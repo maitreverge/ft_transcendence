@@ -1,7 +1,7 @@
 import json
 import requests
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -156,3 +156,19 @@ def refresh_token_view(request):
         return JsonResponse({"error": "Refresh token expired"}, status=401)
     except jwt.InvalidTokenError:
         return JsonResponse({"error": "Invalid refresh token"}, status=401)
+
+def logout_view(request):
+    # Create a JSON response with a redirect URL instead of doing a direct redirect
+    response = JsonResponse({
+        "success": True,
+        "redirect_to": "/login/"
+    })
+    
+    # Delete the cookies
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    
+    # Log the logout operation
+    logger.info("User logged out successfully, cookies deleted")
+    
+    return response
