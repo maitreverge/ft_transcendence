@@ -57,6 +57,7 @@ class Tournament():
 						"linkMatch": link_match
 					}
 					self.matchs.append(match)
+					return link_match
 					# await self.send_link_match(link_match)
 		
 	async def send_link_match(self, link_match):
@@ -85,11 +86,12 @@ class Tournament():
 			match['matchResult'] = match_result
 		print(self.matchs, flush=True)
 		if self.n_match == 2:
-			await self.start_match(
+			link_match = await self.start_match(
 				self.matchs[0].get('matchResult', {}).get('winnerId'),
 				self.matchs[1].get('matchResult', {}).get('winnerId'),				  
-				"m1")
+				"m1")			
 			await self.send_match_result(match_result)
+			await self.send_link_match(link_match)
 		elif self.n_match == 3:
 			print(f"THE FINAL WINNER IS :{winner_id}", flush=True)
 			await self.send_match_result(match_result)
