@@ -12,7 +12,7 @@ from .wrappers import block_authenticated_users
 
 logger = logging.getLogger(__name__)
 
-@block_authenticated_users
+# @block_authenticated_users
 @csrf_exempt  # Disable CSRF protection for the login view
 def login_view(request):
     if request.method == "POST":
@@ -75,7 +75,7 @@ def login_view(request):
                     secure=False,  # Set to True in production with HTTPS
                     samesite="Lax",  # Use 'None' with secure=True in production
                     path="/",  # Make cookie available across all paths
-                    max_age=15 * 60,
+                    max_age=60 * 60 * 6, # The access_token will expire in 6 hours
                     domain=None,  # Use None to allow the browser to set the cookie domain automatically
                 )
 
@@ -86,7 +86,7 @@ def login_view(request):
                     secure=False,  # Set to True in production with HTTPS
                     samesite="Lax",  # Use 'None' with secure=True in production
                     path="/",  # Make cookie available across all paths
-                    max_age=7 * 24 * 60 * 60,
+                    max_age=60 * 60 * 24 * 7,  # 7 days
                     domain=None,  # Use None to allow the browser to set the cookie domain automatically
                 )
 
@@ -147,9 +147,9 @@ def refresh_token_view(request):
             samesite="Lax",  # Add SameSite attribute
             secure=False,  # Set to False during development
             path="/",  # Make cookie available across all paths
-            max_age=15 * 60,  # 15 minutes
+            max_age=60 * 60 * 6, # The access_token will expire in 6 hours
+            domain=None,  # Use None to allow the browser to set the cookie domain automatically)
         )
-
         return response
 
     except jwt.ExpiredSignatureError:
