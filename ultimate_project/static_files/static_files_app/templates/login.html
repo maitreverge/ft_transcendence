@@ -56,20 +56,25 @@
                                     </a>
                                 </form>
                                 <hr>
-                                <div class="text-center">
-                                    <a class="small" 
-                                    hx-boost="false" 
-                                    href="http://localhost:8000/forgot-password">
-                                    Forgot Password?
-                                    </a>
+                                <div hx-boost="false"
+                                    hx-trigger="click"
+                                    hx-push-url="true"
+                                    hx-get="/forgot-password/"
+                                    hx-target="body"
+                                    class="text-center small"
+                                    href="" 
+                                    data-translate="Forgot Password?">Forgot Password?
                                 </div>
-                                <div class="text-center">
-                                    <a class="small" 
-                                    hx-boost="false" 
-                                    href="http://localhost:8000/register">
-                                    Create an Account!
-                                    </a>
+                                <div hx-boost="false"
+                                    hx-trigger="click"
+                                    hx-push-url="true"
+                                    hx-get="/register/"
+                                    hx-target="body"
+                                    class="text-center small"
+                                    href="" 
+                                    data-translate="Create an Account!">Create an Account!
                                 </div>
+                              
                             </div>
                         </div>
                     </div>
@@ -77,6 +82,7 @@
             </div>
 
         </div>
+        <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 
     </div>
 
