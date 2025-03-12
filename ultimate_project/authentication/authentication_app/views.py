@@ -158,17 +158,24 @@ def refresh_token_view(request):
         return JsonResponse({"error": "Invalid refresh token"}, status=401)
 
 def logout_view(request):
-    # Create a JSON response with a redirect URL instead of doing a direct redirect
-    response = JsonResponse({
-        "success": True,
-        "redirect_to": "/login/"
-    })
+    """Properly delete authentication cookies"""
+    response = JsonResponse({"success": True})
     
-    # Delete the cookies
-    response.delete_cookie("access_token")
-    response.delete_cookie("refresh_token")
+    # More aggressive cookie deletion with specific parameters
+    # These parameters need to match EXACTLY how the cookies were set
+    response.delete_cookie(
+        "access_token",
+        path="/",        # Must match the cookie's path
+        domain=None,     # Must match the cookie's domain
+        samesite="Lax"   # Must match the cookie's samesite
+    )
     
-    # Log the logout operation
-    logger.info("User logged out successfully, cookies deleted")
+    response.delete_cookie(
+        "refresh_token", 
+        path="/",
+        domain=None,
+        samesite="Lax"
+    )
     
+    logger.info("User logged out - cookies deleted")
     return response

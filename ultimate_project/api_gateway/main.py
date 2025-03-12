@@ -127,9 +127,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
         # Forward any cookies from the service response
         cookies_to_set = response.cookies
         if cookies_to_set:
-            print(
-                f"🍪 Received cookies from service: {dict(cookies_to_set)}", flush=True
-            )
+            print(f"🍪 Received cookies from service: {dict(cookies_to_set)}", flush=True)
             for cookie_name, cookie_value in cookies_to_set.items():
                 cookie_params = {
                     "key": cookie_name,
@@ -139,12 +137,16 @@ async def proxy_request(service_name: str, path: str, request: Request):
                     "samesite": "lax",  # Use 'none' with secure=True in production
                     "path": "/",
                 }
-
+                
+                # Add expiration for authentication tokens
+                if cookie_name == "access_token":
+                    cookie_params["max_age"] = 60 * 60 * 6  # 6 hours
+                elif cookie_name == "refresh_token":
+                    cookie_params["max_age"] = 60 * 60 * 24 * 7  # 7 days
+        
                 # Set the cookie in the FastAPI response
                 fastapi_response.set_cookie(**cookie_params)
-                print(
-                    f"🍪 Setting cookie in gateway response: {cookie_name}", flush=True
-                )
+                print(f"🍪 Setting cookie in gateway response: {cookie_name} with expiration", flush=True)
 
         return fastapi_response
 
@@ -342,22 +344,49 @@ async def auth_logout(request: Request):
     """
     Special handler for logout to properly manage the redirect
     """
-    # Forward the request to the authentication service
+    print("============= HANDLING LOGOUT =============", flush=True)
+    
+    # Forward the request to the authentication service to delete cookies
     response = await proxy_request("authentication", "auth/logout/", request)
     
-    # Check if we got a JSON response with redirect instructions
-    if hasattr(response, "body"):
-        try:
-            body = json.loads(response.body)
-            if body.get("redirect_to"):
-                # If we have a redirect URL, create a redirect response
-                redirect_url = body.get("redirect_to")
-                print(f"🚀 Redirecting to {redirect_url} after logout", flush=True)
-                return RedirectResponse(url=redirect_url)
-        except:
-            pass
+    # Create a new response that will redirect to login
+    redirect = RedirectResponse(url="/login/", status_code=303)
     
-    return response
+    # Copy ALL Set-Cookie headers from the original response
+    if hasattr(response, "headers"):
+        print(f"Original response headers: {dict(response.headers)}", flush=True)
+        for key, value in response.headers.items():
+            if key.lower() == "set-cookie":
+                redirect.headers.append(key, value)
+                print(f"Copying cookie header: {value}", flush=True)
+    
+    # Additional cookie deletion at the API gateway level
+    redirect.delete_cookie("access_token", path="/", samesite="Lax")
+    redirect.delete_cookie("refresh_token", path="/", samesite="Lax")
+    
+    print("Executing client-side redirection", flush=True)
+    
+    # Add additional script to force refresh and clear cookies
+    html_content = """
+    <!DOCTYPE html>
+    <html>
+    <head><title>Logging out...</title></head>
+    <body>
+        <p>Logging out and redirecting...</p>
+        <script>
+            // Clear cookies as an additional layer of protection
+            document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+            document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+            
+            // Force redirect to login with no-cache to prevent browser cache issues
+            window.location.replace('/login/?nocache=' + new Date().getTime());
+        </script>
+    </body>
+    </html>
+    """
+    
+    # Return an HTML response instead of a redirect
+    return HTMLResponse(content=html_content)
 
 
 @app.api_route("/{path:path}", methods=["GET"])

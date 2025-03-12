@@ -36,16 +36,33 @@ aria-labelledby="exampleModalLabel"
                 data-dismiss="modal">
                 Cancel
                 </button>
-                <div       hx-trigger="click"
-                hx-push-url="true"
-                hx-get="/auth/logout/"
-                hx-target="body"
-                class="btn btn-primary"
-                href="" 
-                data-translate="Logout">Logout
-                </div>
+				<button class="btn btn-primary"
+				data-translate="Logout" 
+				onclick="logoutUser()">
+			Logout
+		</button>
             </div>
         </div>
     </div>
 </div>
 </div>
+
+<script>
+	function logoutUser() {
+		// Close the modal first
+		$('#logoutModal').modal('hide');
+		
+		// Clear cookies client-side first
+		document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+		document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+		
+		// Call logout endpoint and force a new page load
+		fetch('/auth/logout/', {
+			method: 'GET',
+			credentials: 'include',  // Important to include credentials
+			cache: 'no-store'  // Prevent caching
+		}).then(function() {
+			window.location.href = '/login/?t=' + new Date().getTime();
+		});
+	}
+	</script>
