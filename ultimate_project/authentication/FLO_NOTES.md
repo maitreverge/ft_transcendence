@@ -10,6 +10,8 @@ One the login route secured, lock it to prevent accessing it to already connecte
 
 Then implement the logout
 
+DOCKER COMPOSE : Setting environment erase what is set in `.env` file
+
 
 ⛔ ✅  
 ## DONE OF THE DAY
