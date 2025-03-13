@@ -23,4 +23,28 @@
         </div>
     </footer>
 </body>
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+
+        if (lastVisitedPage) {
+            console.log("Dernière page visitée avant l'erreur : " + lastVisitedPage);
+        } else {
+            console.log("Aucune page précédente trouvée.");
+        }
+    });
+
+    window.addEventListener("popstate", function(event) {
+        let lastVisitedPage = sessionStorage.getItem("lastVisitedPage");
+
+        if (lastVisitedPage) {
+            // Si l'utilisateur revient en arrière et qu'il y a une URL enregistrée, rediriger vers cette URL
+            console.log("Retour à la dernière page visitée : ", lastVisitedPage);
+            window.location.href = lastVisitedPage;
+        } else {
+            // Si aucune URL n'est trouvée, on laisse l'utilisateur sur la page actuelle (par exemple la page d'erreur)
+            console.log("Aucune URL précédente trouvée, l'utilisateur reste sur la page d'erreur.");
+        }
+    });
+</script>
 </html>

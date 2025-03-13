@@ -10,6 +10,17 @@
 <script src="{% static 'static_files/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 <script src="{% static 'static_files/js/sb-admin-2.min.js' %}"></script>
 <script>
+    window.addEventListener("beforeunload", () => {
+        console.log("URL sauvegardée avec history.state et sessionStorage");
+        
+        let currentURL = window.location.href;
+
+        // Sauvegarde dans history.state
+        history.replaceState({ lastVisitedPage: currentURL }, "");
+
+        // Sauvegarde dans sessionStorage
+        sessionStorage.setItem("lastVisitedPage", currentURL);
+    });
 
     function updateLayout() {
         const url = window.location.href;
