@@ -465,4 +465,14 @@ function matchResult(rsl) {
 
 function matchPlayersUpdate(plys) {
 	console.log("plys: ", plys);
+
+	const tournament = document.getElementById("tournaments").querySelector(
+		`[id='${plys.tournamentId}']`
+	);
+	if (!tournament)
+		return;
+	const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
+	plys.players.forEach(player => {
+		
+	});
 }
