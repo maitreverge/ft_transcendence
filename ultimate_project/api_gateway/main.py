@@ -1,7 +1,13 @@
 from fastapi import FastAPI, Request, HTTPException, Query
 import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 import logging
+from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory="templates")
+
+
 
 app = FastAPI(
     title="API Gateway",
@@ -9,6 +15,11 @@ app = FastAPI(
         Define endpoints to get any data here :)",
     version="1.0.0",
 )
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc):
+    if exc.status_code == 404:
+        return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+    return JSONResponse(status_code=exc.status_code, content={"detail": str(exc)})
 
 services = {
     "tournament": "http://tournament:8001",
