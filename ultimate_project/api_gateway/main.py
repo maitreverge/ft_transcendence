@@ -16,11 +16,12 @@ app = FastAPI(
     version="1.0.0",
 )
 @app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc):
-    if exc.status_code == 404:
-        return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
-    return JSONResponse(status_code=exc.status_code, content={"detail": str(exc)})
-
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return templates.TemplateResponse(
+        "error.html",
+        {"request": request, "status_code": exc.status_code},
+        status_code=exc.status_code,
+    )
 services = {
     "tournament": "http://tournament:8001",
     "match": "http://match:8002",
