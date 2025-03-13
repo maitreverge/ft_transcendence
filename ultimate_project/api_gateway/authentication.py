@@ -265,3 +265,22 @@ async def logout_fastAPI(request: Request):
     print("🔑 JWT Cookies cleared", flush=True)
 
     return response
+
+
+# @router.post("/auth/register/")
+async def register_fastAPI(
+    request: Request,
+    response: Response,
+    username: str = Form(...),
+    password: str = Form(...),
+):
+    """
+    Register a new user and return a JWT token.
+    """
+    print(f"🔐 Tentative d'inscription pour {username}", flush=True)
+
+    # Check if user already exists
+    db_response = requests.post(
+        DATABASE_API_URL,
+        data={"username": username, "password": password},
+    )

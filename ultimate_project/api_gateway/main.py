@@ -6,7 +6,7 @@ import logging
 # from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
-from authentication import login_fastAPI, is_authenticated, logout_fastAPI
+from authentication import login_fastAPI, is_authenticated, logout_fastAPI, register_fastAPI
 
 
 app = FastAPI(
@@ -447,6 +447,54 @@ async def logout_route(request: Request):
     Handles user logout by clearing JWT cookies
     """
     return await logout_fastAPI(request)
+
+@app.api_route("/register/{path:path}", methods=["GET"])
+@app.api_route("/register", methods=["GET"])
+async def register_page_route(request: Request, path: str = ""):
+    """
+    Proxy for serving the register page.
+    Redirects to home if user is already authenticated.
+    """
+    # Check if user is authenticated
+    is_auth, user_info = is_authenticated(request)
+
+    if is_auth:
+        # If authenticated, redirect to home
+        response = RedirectResponse(url="/home")
+
+        # If token refresh is needed, set the new access token cookie
+        if user_info and user_info.get("refresh_needed"):
+            print("🔄 Setting refreshed access token during login redirect", flush=True)
+            response.set_cookie(
+                key="access_token",
+                value=user_info.get("new_access_token"),
+                httponly=True,
+                secure=False,
+                samesite="Lax",
+                path="/",
+                max_age=60 * 60 * 6,  # 6 hours
+            )
+
+        return response
+
+    # If not authenticated, show login page
+    return await proxy_request("static_files", "register/", request)
+
+
+@app.api_route("/auth/register", methods=["POST"])
+@app.api_route("/auth/register/", methods=["POST"])
+async def register_page_route(request: Request):
+    """
+    Extracts form data and passes it to `register_fastAPI`
+    """
+    form_data = await request.form()  # Extract form data
+    username = form_data.get("username")
+    password = form_data.get("password")
+
+    # Create a new response object
+    response = Response()
+
+    return await register_fastAPI(request, response, username, password)
 
 
 @app.api_route("/{path:path}", methods=["GET"])
