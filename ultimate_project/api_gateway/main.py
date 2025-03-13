@@ -4,6 +4,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 import logging
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 templates = Jinja2Templates(directory="templates")
 
@@ -15,12 +16,23 @@ app = FastAPI(
         Define endpoints to get any data here :)",
     version="1.0.0",
 )
+
+import os
+
+app.mount("/error-static", StaticFiles(directory="static/errors"), name="error-static")
+print("👁️‍🗨️👁️‍🗨️👁️‍🗨️ Serving error static files from:", os.path.abspath("static/errors"), flush=True)
+
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    error_message = "Error..."
+    if exc.status_code == 404:
+        error_message = "Page Not Found"
+    elif exc.status_code == 500:
+        error_message = "Internal Server Error"
     return templates.TemplateResponse(
         "error.html",
-        {"request": request, "status_code": exc.status_code},
-        status_code=exc.status_code,
+        {"request": request, "status_code": exc.status_code, "error_message": error_message},
+        status_code=exc.status_code, error_message=error_message,
     )
 services = {
     "tournament": "http://tournament:8001",
