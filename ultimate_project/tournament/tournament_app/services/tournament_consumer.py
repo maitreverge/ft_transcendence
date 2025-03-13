@@ -46,12 +46,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			await player.send(text_data=json.dumps({
 				"type": "tournamentList",			
 				"tournaments": [
-					{"tournamentId": t.id,
-	  				"players":
-	   				[{"playerId": p.id} for p in t.players],
-					"matchs":
-					t.matchs  
-	   				} for t in tournaments
+					{
+						"tournamentId": t.id,
+						"players": [{"playerId": p.id} for p in t.players],
+						"matchs": t.matchs  
+					} for t in tournaments
 				]
 			}))
 
