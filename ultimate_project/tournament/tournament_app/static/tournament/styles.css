@@ -89,8 +89,15 @@ button {
 	height:300px;
 	background-color: rgb(8, 250, 32);	
 }
+
 #pattern {
-	width:100px;
-	height:100px;
 	background-color: rgb(8, 189, 250);	
+}
+
+.winner {
+	background-color: rgb(8, 250, 20);		
+}
+
+.looser {
+	background-color: rgb(250, 8, 48);	
 }

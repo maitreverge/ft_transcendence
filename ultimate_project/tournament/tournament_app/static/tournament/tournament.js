@@ -49,7 +49,7 @@ function onTournamentMessage(event, socket) {
 			break;
 		case "matchResult":
 			console.log("case matchresult");
-			matchResult(data.tournamentId, data.localMatchId, data.matchId, data.winnerId, data.looserId);			
+			matchResult(data);			
 			break;
 		default:				
 			break;
@@ -148,8 +148,9 @@ function updateTournaments(socket, tournaments) {
 		
 	removeTournaments(
 		socket, tournaments, tournamentsContainer, tournamentElements);
-	tournamentElements = [...tournamentsContainer.children];
-	tournaments.forEach(tournament => {	
+	// tournamentElements = [...tournamentsContainer.children];
+	tournaments.forEach(tournament => {
+		// const playersCont = tournament.querySelector("#players-cont");	
 		if (tournamentElements.every(el => el.id != tournament.tournamentId))		
 			addToTournaments(socket, tournamentsContainer, tournament);
 		// else	
@@ -167,7 +168,7 @@ function updateTournaments(socket, tournaments) {
 			getPattern(tournament.tournamentId);
 			setTimeout(()=>{
 				tournament.matchs.forEach(match => {
-					if (match.matchResult)
+					if (match.linkMatch)
 					{
 						console.log("MATCHSSS ", match)				
 						lk = match.linkMatch;
@@ -176,8 +177,8 @@ function updateTournaments(socket, tournaments) {
 					if (match.matchResult)
 					{
 						console.log("match Reuslt EXISTE mouquate");
-						mres = match.matchResult;
-						matchResult(mres.tournamentId, mres.localMatchId, mres.matchId, mres.winnerId, mres.looserId);			
+						// mres = match.matchResult;
+						matchResult(match.matchResult);			
 		
 					}
 					else {
@@ -249,9 +250,11 @@ function movePlayerInTournament(tournamentElement, tournament) {
 			}			
 			else
 			{
+				
 				tournamentElements.slice().reverse().forEach(tourn => {
+					const playersCont = tourn.querySelector("#players-cont");
 					console.log("type: ", typeof(tourn));
-					[...tourn.children].slice().reverse().forEach(player2 =>{
+					[...playersCont.children].slice().reverse().forEach(player2 =>{
 
 						if (tournament.players.some(p => p.playerId == player2.id) &&
 						tournamentPlayerElements.every(p => p.id != player2.id))			
@@ -268,7 +271,8 @@ function movePlayerInTournament(tournamentElement, tournament) {
 			console.log("player est faux");
 			tournamentElements.slice().reverse().forEach(tourn => {
 				console.log("type: ", typeof(tourn));
-				[...tourn.children].slice().reverse().forEach(player2 =>{
+				const playersCont = tourn.querySelector("#players-cont");
+				[...playersCont.children].slice().reverse().forEach(player2 =>{
 					
 					if (tournament.players.some(p => p.playerId == player2.id) &&
 					tournamentPlayerElements.every(p => p.id != player2.id))			
@@ -347,7 +351,13 @@ function linkMatch(tournamentId, localMatchId, matchId, p1Id, p2Id) {
 	if (!tournament)
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
+	// const matchs_cont = tournament.querySelector("#matchs-cont");
 	const localMatch = tournament.querySelector(`#${localMatchId}`);
+
+	const localP1 = localMatch.querySelector(`#p1`);
+	const localP2 = localMatch.querySelector(`#p2`);
+	localP1.innerText = p1Id;
+	localP2.innerText = p2Id;
 	// const overlay = document.getElementById("overlay-match");
 	// const localMatch = document.getElementById(localMatchId);
 	if (window.selfId == p1Id || window.selfId == p2Id)
@@ -355,6 +365,7 @@ function linkMatch(tournamentId, localMatchId, matchId, p1Id, p2Id) {
 		window.selfMatchId = matchId;
 		localMatch.classList.add("next-match");
 	}
+
 	localMatch.onclick = function() {
 		fetch(`/match/?matchId=${matchId}&playerId=${window.selfId}`)
 		.then(response => {
@@ -402,16 +413,26 @@ function loadHtml(data, overlay) {
 	oldScripts.forEach(oldScript => oldScript.remove());	
 }
 
-function matchResult(tournamentId, localMatchId, matchId, winnerId, looserId) {
-	console.log("MATCH RESULT tournId ", tournamentId, " localid: ", localMatchId, " matchid ", matchId, " winner ", winnerId, " looser ", looserId, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
+function matchResult(rsl) {
+	console.log("MATCH RESULT tournId ", rsl.tournamentId, " localid: ", rsl.localMatchId, " matchid ", rsl.matchId, " winner ", rsl.winnerId, " looser ", rsl.looserId, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
 
 	const tournament = document.getElementById("tournaments").querySelector(
-		`[id='${tournamentId}']`
+		`[id='${rsl.tournamentId}']`
 	);
 	if (!tournament)
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
-	const localMatch = tournament.querySelector(`#${localMatchId}`);
-	overlay.innerHTML = "";
+	const localMatch = tournament.querySelector(`#${rsl.localMatchId}`);
+	const localP1 = localMatch.querySelector(`#p1`);
+	const localP2 = localMatch.querySelector(`#p2`);
+	if (rsl.winnerId === rsl.p1Id)
+	{
+		localP1.classList.add("winner");
+
+	}
+	else if (rsl.winnerId === rsl.p2Id)
+	// localP1.innerText = p1Id;
+	// localP2.innerText = p2Id;
+	// overlay.innerHTML = "";
 	localMatch.innerText = winnerId
 }
