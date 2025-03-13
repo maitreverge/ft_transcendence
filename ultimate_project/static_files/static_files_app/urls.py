@@ -28,5 +28,5 @@ urlpatterns = [
     path("forgot-password/", views.forgotPassword, name="forgot-password"),
     path("login/", views.forgotPassword, name="login"),
     path("auth2f/", views.twoFactorAuth, name="login"),
-    path("error/", views.error, name="error"),
+    path("error/<int:code>/", views.error, name="error"),
 ]

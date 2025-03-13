@@ -162,7 +162,7 @@ def twoFactorAuth(request):
     return render(request, "index.html", obj)
 
 @never_cache
-def error(request):
+def error(request, code=404):  # Code 404 par défaut
     username = request.session.get("username")
-    obj = {"username": username, "status_code": 404, "page": "error.html"}
+    obj = {"username": username, "status_code": code, "page": "error.html"}
     return render(request, "index.html", obj)

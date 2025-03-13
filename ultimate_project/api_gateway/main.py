@@ -19,7 +19,7 @@ app = FastAPI(
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return await proxy_request("static_files", "error", request)
+    return await proxy_request("static_files", f"error/{exc.status_code}", request)
 
 services = {
     "tournament": "http://tournament:8001",
@@ -33,7 +33,6 @@ services = {
 # logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 # ! DEBUGGING COOKIES MIDDLEWARE.
 # This middleware is used to debug incoming cookies in FastAPI.
