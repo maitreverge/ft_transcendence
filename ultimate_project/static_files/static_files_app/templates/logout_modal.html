@@ -1,68 +1,64 @@
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+	<i class="fas fa-angle-up"></i>
 </a>
 
 <!-- Logout Modal-->
-<div class="modal fade" 
-id="logoutModal" 
-tabindex="-1" 
-role="dialog" 
-aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 data-translate="Ready to Leave?" 
-                class="modal-title" 
-                id="exampleModalLabel">
-                Ready to Leave?
-                </h5>
-                <button class="close" 
-                type="button" 
-                data-dismiss="modal" 
-                aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div data-translate="Logout-leave" 
-            class="modal-body">
-                Select "Logout" below if you are ready to end your current session.
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" 
-                type="button" 
-                data-translate="cancel"
-                data-dismiss="modal">
-                Cancel
-                </button>
-				<button class="btn btn-primary"
-				data-translate="Logout" 
-				onclick="logoutUser()">
-			Logout
-		</button>
-            </div>
-        </div>
-    </div>
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 data-translate="Ready to Leave?" class="modal-title" id="exampleModalLabel">
+					Ready to Leave?
+				</h5>
+				<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div data-translate="Logout-leave" class="modal-body">
+				Select "Logout" below if you are ready to end your current session.
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" type="button" data-translate="cancel" data-dismiss="modal">
+					Cancel
+				</button>
+				<!-- !! ACTUAL LOGOUT BUTTON  -->
+				<button class="btn btn-primary" data-translate="Logout" onclick="logoutUser()">
+					Logout
+				</button>
+				<!-- !! ACTUAL LOGOUT BUTTON  -->
+			</div>
+		</div>
+	</div>
 </div>
 </div>
 
+<!-- Add JavaScript for logout functionality -->
 <script>
-	function logoutUser() {
-		// Close the modal first
-		$('#logoutModal').modal('hide');
-		
-		// Clear cookies client-side first
-		document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
-		document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
-		
-		// Call logout endpoint and force a new page load
-		fetch('/auth/logout/', {
-			method: 'GET',
-			credentials: 'include',  // Important to include credentials
-			cache: 'no-store'  // Prevent caching
-		}).then(function() {
-			window.location.href = '/login/?t=' + new Date().getTime();
-		});
-	}
-	</script>
+    function logoutUser() {
+        // Create a fetch request to logout endpoint
+        fetch('/auth/logout/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin' // Important for cookies
+        })
+        .then(response => {
+            // Check if we have a redirect header
+            const redirectUrl = response.headers.get('HX-Redirect');
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else {
+                // Fallback redirect to login page
+                window.location.href = '/login';
+            }
+        })
+        .catch(error => {
+            console.error('Logout error:', error);
+            // Fallback redirect even if there's an error
+            window.location.href = '/login';
+        });
+    }
+</script>

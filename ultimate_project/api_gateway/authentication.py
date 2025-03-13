@@ -178,3 +178,43 @@ def is_authenticated(request: Request):
         "user_id": payload.get("user_id"),
         "username": payload.get("username"),
     }
+
+
+# Function to handle user logout
+async def logout_fastAPI(request: Request):
+    """
+    Logout a user by clearing their JWT cookies.
+
+    Args:
+        request (Request): The FastAPI request object
+
+    Returns:
+        JSONResponse with cleared cookies and redirect header
+    """
+    print("🚪 Logout requested", flush=True)
+
+    # Create response
+    response = JSONResponse(content={"success": True, "message": "Déconnexion réussie"})
+
+    # Clear cookies by setting them with empty values and making them expire immediately
+    response.delete_cookie(
+        key="access_token",
+        path="/",  # Must match how it was set
+        httponly=True,  # Must match how it was set
+        samesite="Lax",  # Must match how it was set
+    )
+
+    response.delete_cookie(
+        key="refresh_token",
+        path="/",  # Must match how it was set
+        httponly=True,  # Must match how it was set
+        samesite="Lax",  # Must match how it was set
+    )
+
+    # Add a header for HTMX to redirect to login page
+    response.headers["HX-Redirect"] = "/login"
+
+    # Log for debugging
+    print("🔑 JWT Cookies cleared", flush=True)
+
+    return response

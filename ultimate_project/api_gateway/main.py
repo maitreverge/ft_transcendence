@@ -6,7 +6,7 @@ import logging
 # from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
-from authentication import login_fastAPI, is_authenticated
+from authentication import login_fastAPI, is_authenticated, logout_fastAPI
 
 
 app = FastAPI(
@@ -318,11 +318,11 @@ async def login_page_route(request: Request, path: str = ""):
     """
     # Check if user is authenticated
     is_auth, foo = is_authenticated(request)
-    
+
     if is_auth:
         # If authenticated, redirect to home
         return RedirectResponse(url="/home")
-        
+
     # If not authenticated, show login page
     return await proxy_request("static_files", "login/", request)
 
@@ -367,9 +367,19 @@ async def auth_status(request: Request):
         },
         headers={
             "Content-Type": "application/json; charset=utf-8",
-            "X-Content-Type-Options": "nosniff"
-        }
+            "X-Content-Type-Options": "nosniff",
+        },
     )
+
+
+# Add logout endpoint
+@app.api_route("/auth/logout", methods=["POST"])
+@app.api_route("/auth/logout/", methods=["POST"])
+async def logout_route(request: Request):
+    """
+    Handles user logout by clearing JWT cookies
+    """
+    return await logout_fastAPI(request)
 
 
 @app.api_route("/{path:path}", methods=["GET"])
