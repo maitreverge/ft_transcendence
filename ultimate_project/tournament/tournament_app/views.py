@@ -20,6 +20,7 @@ def simple_match(request : HttpRequest, user_id):
 
 @csrf_exempt
 async def match_players_update(request : HttpRequest):
+	print(f"MATCH PLAYERS UPDATE VIEWS", flush=True)
 	data = json.loads(request.body.decode('utf-8'))
 	match_id = data.get('matchId', None)
 	players = data.get('players', [])
@@ -28,6 +29,13 @@ async def match_players_update(request : HttpRequest):
 	if match:
 		match['players'] = players
 		await consumer.MyConsumer.match_update()
+	tournament = next(
+		(t for t in tournaments if any(
+			data.get('matchId') == m.get("matchId") for m in t.matchs))
+		, None)
+	if tournament:
+		await tournament.match_players_update(data)
+	
 	return JsonResponse({"status": "succes"})
 
 @csrf_exempt

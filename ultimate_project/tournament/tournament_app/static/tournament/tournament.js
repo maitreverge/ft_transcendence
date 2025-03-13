@@ -1,4 +1,5 @@
 
+window.players = []
 
 function initTournament() {
 	
@@ -51,6 +52,10 @@ function onTournamentMessage(event, socket) {
 			console.log("case matchresult");
 			matchResult(data);			
 			break;
+		case "matchPlayersUpdate":
+			console.log("case matchPlayersUpdate");
+			matchPlayersUpdate(data);			
+			break;
 		default:				
 			break;
 	}
@@ -75,7 +80,15 @@ function updatePlayers(socket, players) {
 		const playersCont = tournament.querySelector("#players-cont");
 		[...playersCont.children].slice().reverse().forEach(player =>{
 			if (players.every(el => el.playerId != player.id))
-				player.remove();
+		{
+			window.players = window.players.filter(el => {
+				if (el.id === player.id)				
+					return el.remove(), false
+				else
+					return true;				
+			});
+			// player.remove();
+		}
 		});
 	});
 		// findPlayer = searchPlayerInTournaments(player.playerId);
@@ -85,8 +98,16 @@ function updatePlayers(socket, players) {
 	
 	playerElements = [...playersContainer.children];	
 	playerElements.slice().reverse().forEach(player => {	
-		if (players.every(el => el.playerId != player.id))		
-			playersContainer.removeChild(player);									
+		if (players.every(el => el.playerId != player.id))	
+		{
+			window.players = window.players.filter(el => {
+				if (el.id === player.id)				
+					return el.remove(), false
+				else
+					return true;				
+			});
+			// playersContainer.removeChild(player);									
+		}	
 	});
 	playerElements = [...playersContainer.children];
 	players.forEach(player => {	
@@ -131,6 +152,7 @@ function addPlayerToContainer(socket, container, playerId) {
 	// else	
 	// 	div.onclick = event =>	sendPlayerClick(socket, event, div);	
     container.appendChild(div);
+	window.players.push(div);
 }
 
 function quitTournament(socket) {
@@ -439,4 +461,8 @@ function matchResult(rsl) {
 	// localP2.innerText = p2Id;
 	// overlay.innerHTML = "";
 	// localMatch.innerText = winnerId
+}
+
+function matchPlayersUpdate(plys) {
+	console.log("plys: ", plys);
 }

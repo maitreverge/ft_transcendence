@@ -103,6 +103,23 @@ class Tournament():
 	async def send_match_result(self, match_result):
 		from tournament_app.services.tournament_consumer import players
 		for player in players:				
-			await player.send(text_data=json.dumps(match_result))		
+			await player.send(text_data=json.dumps(match_result))
 
+	async def match_players_update(self, match_update):
+		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)
+		match = next(
+			(m for m in self.matchs if m.get('matchId') == match_update.get('matchId'))	
+		, None)
+		if match:
+			match_update['type'] = 'matchPlayersUpdate'
+			match_update['tournamentId'] = self.id
+			match_update['localMatchId'] = match.get('linkMatch', {}).get(
+				'localMatchId')
+			match['matchPlayersUpdate'] = match_update
+			await self.send_match_players_update(match_update)
+
+	async def send_match_players_update(self, match_update):		
+		from tournament_app.services.tournament_consumer import players
+		for player in players:				
+			await player.send(text_data=json.dumps(match_update))
 					
