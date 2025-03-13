@@ -10,6 +10,27 @@
 <script src="{% static 'static_files/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 <script src="{% static 'static_files/js/sb-admin-2.min.js' %}"></script>
 <script>
+        // Fonction pour mettre à jour l'état de la navbar et de la sidebar
+    function updateLayout() {
+        const url = window.location.href;
+        // Vérifie si on est sur la page d'accueil
+        if (url.includes('/home')) {
+            toggleNavbar(false); // Masquer la navbar si on est sur la home
+            toggleSidebar(false); // Masquer la sidebar si on est sur la home
+        } else {
+            toggleNavbar(true); // Sinon, afficher la navbar
+            toggleSidebar(true); // Et afficher la sidebar
+        }
+    }
+
+    // Appel de updateLayout pour définir l'état initial
+    updateLayout();
+
+    // Ajout de l'écouteur pour l'événement popstate (quand l'utilisateur utilise les flèches de navigation)
+    window.addEventListener('popstate', function(event) {
+        console.log('Navigating using browser history');
+        updateLayout(); // Réapplique les changements de layout à chaque changement d'état
+    });
     function toggleNavbar(show) {
         const navbar = document.querySelector('#homelogo');
         console.log("toggleNavbar called");
