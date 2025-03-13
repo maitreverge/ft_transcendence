@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, HTTPException, Query, Depends
 import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 import logging
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
 
@@ -15,25 +15,25 @@ app = FastAPI(
 )
 
 # Configure CORS middleware with more permissive settings
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
-    allow_credentials=True,  # Allow cookies
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
-    expose_headers=[
-        "Content-Type",
-        "X-CSRFToken",
-        "Set-Cookie",
-    ],  # Expose these headers
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # Allow all origins for development
+#     allow_credentials=True,  # Allow cookies
+#     allow_methods=["*"],  # Allow all HTTP methods
+#     allow_headers=["*"],  # Allow all headers
+#     expose_headers=[
+#         "Content-Type",
+#         "X-CSRFToken",
+#         "Set-Cookie",
+#     ],  # Expose these headers
+# )
 
 services = {
     "tournament": "http://tournament:8001",
     "match": "http://match:8002",
     "static_files": "http://static_files:8003",
     "user": "http://user:8004",
-    "authentication": "http://authentication:8006",
+    # "authentication": "http://authentication:8006",
     "databaseapi": "http://databaseapi:8007",
 }
 
@@ -270,12 +270,12 @@ async def redirect_to_home():
     return RedirectResponse(url="/home/")
 
 
-@app.api_route("/auth/{path:path}", methods=["GET", "POST"])
-async def authentication_proxy(path: str, request: Request):
-    """
-    Proxy requests to the authentication microservice.
-    """
-    return await proxy_request("authentication", f"auth/{path}", request)
+# @app.api_route("/auth/{path:path}", methods=["GET", "POST"])
+# async def authentication_proxy(path: str, request: Request):
+#     """
+#     Proxy requests to the authentication microservice.
+#     """
+#     return await proxy_request("authentication", f"auth/{path}", request)
 
 
 @app.api_route("/api/{path:path}", methods=["GET"])
@@ -325,68 +325,68 @@ async def databaseapi_proxy(path: str, request: Request):
 
 
 
-# Add this route before the catch-all static_files_proxy
-@app.api_route("/login/", methods=["GET"])
-async def login_page(request: Request, is_authenticated: bool = Depends(block_authenticated_users())):
-    """
-    Handle the login page - blocks authenticated users by redirecting to home
-    """
-    # If user is authenticated, redirect to home
-    if is_authenticated:
-        return RedirectResponse(url="/home/")
+# # Add this route before the catch-all static_files_proxy
+# @app.api_route("/login/", methods=["GET"])
+# async def login_page(request: Request, is_authenticated: bool = Depends(block_authenticated_users())):
+#     """
+#     Handle the login page - blocks authenticated users by redirecting to home
+#     """
+#     # If user is authenticated, redirect to home
+#     if is_authenticated:
+#         return RedirectResponse(url="/home/")
         
-    # Otherwise proxy to static_files service
-    return await proxy_request("static_files", "login/", request)
+#     # Otherwise proxy to static_files service
+#     return await proxy_request("static_files", "login/", request)
 
 
-@app.api_route("/auth/logout/", methods=["GET"])
-async def auth_logout(request: Request):
-    """
-    Special handler for logout to properly manage the redirect
-    """
-    print("============= HANDLING LOGOUT =============", flush=True)
+# @app.api_route("/auth/logout/", methods=["GET"])
+# async def auth_logout(request: Request):
+#     """
+#     Special handler for logout to properly manage the redirect
+#     """
+#     print("============= HANDLING LOGOUT =============", flush=True)
     
-    # Forward the request to the authentication service to delete cookies
-    response = await proxy_request("authentication", "auth/logout/", request)
+#     # Forward the request to the authentication service to delete cookies
+#     response = await proxy_request("authentication", "auth/logout/", request)
     
-    # Create a new response that will redirect to login
-    redirect = RedirectResponse(url="/login/", status_code=303)
+#     # Create a new response that will redirect to login
+#     redirect = RedirectResponse(url="/login/", status_code=303)
     
-    # Copy ALL Set-Cookie headers from the original response
-    if hasattr(response, "headers"):
-        print(f"Original response headers: {dict(response.headers)}", flush=True)
-        for key, value in response.headers.items():
-            if key.lower() == "set-cookie":
-                redirect.headers.append(key, value)
-                print(f"Copying cookie header: {value}", flush=True)
+#     # Copy ALL Set-Cookie headers from the original response
+#     if hasattr(response, "headers"):
+#         print(f"Original response headers: {dict(response.headers)}", flush=True)
+#         for key, value in response.headers.items():
+#             if key.lower() == "set-cookie":
+#                 redirect.headers.append(key, value)
+#                 print(f"Copying cookie header: {value}", flush=True)
     
-    # Additional cookie deletion at the API gateway level
-    redirect.delete_cookie("access_token", path="/", samesite="Lax")
-    redirect.delete_cookie("refresh_token", path="/", samesite="Lax")
+#     # Additional cookie deletion at the API gateway level
+#     redirect.delete_cookie("access_token", path="/", samesite="Lax")
+#     redirect.delete_cookie("refresh_token", path="/", samesite="Lax")
     
-    print("Executing client-side redirection", flush=True)
+#     print("Executing client-side redirection", flush=True)
     
-    # Add additional script to force refresh and clear cookies
-    html_content = """
-    <!DOCTYPE html>
-    <html>
-    <head><title>Logging out...</title></head>
-    <body>
-        <p>Logging out and redirecting...</p>
-        <script>
-            // Clear cookies as an additional layer of protection
-            document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
-            document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+#     # Add additional script to force refresh and clear cookies
+#     html_content = """
+#     <!DOCTYPE html>
+#     <html>
+#     <head><title>Logging out...</title></head>
+#     <body>
+#         <p>Logging out and redirecting...</p>
+#         <script>
+#             // Clear cookies as an additional layer of protection
+#             document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+#             document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
             
-            // Force redirect to login with no-cache to prevent browser cache issues
-            window.location.replace('/login/?nocache=' + new Date().getTime());
-        </script>
-    </body>
-    </html>
-    """
+#             // Force redirect to login with no-cache to prevent browser cache issues
+#             window.location.replace('/login/?nocache=' + new Date().getTime());
+#         </script>
+#     </body>
+#     </html>
+#     """
     
-    # Return an HTML response instead of a redirect
-    return HTMLResponse(content=html_content)
+#     # Return an HTML response instead of a redirect
+#     return HTMLResponse(content=html_content)
 
 
 @app.api_route("/{path:path}", methods=["GET"])

@@ -11,8 +11,8 @@ services:
         condition: service_healthy
       static_files:
         condition: service_healthy
-      authentication:
-        condition: service_healthy
+      # authentication:
+      #   condition: service_healthy
       databaseapi:
         condition: service_healthy
     container_name: ctn_nginx
@@ -92,10 +92,10 @@ services:
       service: user
 
 # ================================= AUTHENTICATION ===================================
-  authentication:
-    extends:
-      file: ./authentication/_docker/auth_compose.yaml
-      service: authentication
+  # authentication:
+  #   extends:
+  #     file: ./authentication/_docker/auth_compose.yaml
+  #     service: authentication
 
 # ================================= STATIC_FILES =====================================
   static_files:
