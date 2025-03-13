@@ -153,6 +153,15 @@ async def tournament_proxy(path: str, request: Request):
         return await proxy_request(
             "static_files", "/tournament-wrapper/" + str(user_id) + "/", request
         )
+    else:
+        error_message = "Page Not Found"
+        
+        return templates.TemplateResponse(
+            "error.html",
+            {"request": request, "status_code": 404, "error_message": error_message},
+            status_code=404, error_message=error_message,
+        )
+
 
 
 @app.api_route("/user/{path:path}", methods=["GET"])
@@ -174,6 +183,14 @@ async def user_proxy(path: str, request: Request):
         return await proxy_request("static_files", "/user-profile-wrapper/", request)
     elif path == "stats/":
         return await proxy_request("static_files", "/user-stats-wrapper/", request)
+    else:
+        error_message = "Page Not Found"
+        
+        return templates.TemplateResponse(
+            "error.html",
+            {"request": request, "status_code": 404, "error_message": error_message},
+            status_code=404, error_message=error_message,
+        )
 
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])

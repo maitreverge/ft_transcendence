@@ -15,7 +15,7 @@
     hx-push-url="true"
     hx-get="/home/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(false); toggleNavbar(true);"
+    hx-on="htmx:beforeRequest: toggleSidebar(false);"
     > -->
     <!-- <div class="sidebar-brand-icon rotate-n-15">
     <i class="fa-solid fa-table-tennis-paddle-ball"></i>
@@ -35,7 +35,7 @@
     hx-push-url="true"
     hx-get="/tournament/simple-match/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -50,7 +50,7 @@
     hx-push-url="true"
     hx-get="/tournament/tournament/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -65,7 +65,7 @@
     hx-push-url="true"
     hx-get="/user/profile/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -80,7 +80,7 @@
     hx-push-url="true"
     hx-get="/user/stats/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -193,7 +193,7 @@
           hx-push-url="true"
           hx-get="/user/profile/"
           hx-target="#main_div"
-          hx-on="htmx:beforeRequest: toggleSidebar(true); toggleNavbar(false);"
+          hx-on="htmx:beforeRequest: toggleSidebar(true);"
         >
           <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
           <span data-translate="Profil"> Profile </span>
