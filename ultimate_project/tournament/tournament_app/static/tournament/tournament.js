@@ -44,9 +44,11 @@ function onTournamentMessage(event, socket) {
 			getPattern(data.tournamentId);
 			break;
 			case "linkMatch":
+			console.log("case linkmatch");
 			linkMatch(data.tournamentId, data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
 			break;
 		case "matchResult":
+			console.log("case matchresult");
 			matchResult(data.tournamentId, data.localMatchId, data.matchId, data.winnerId, data.looserId);			
 			break;
 		default:				
@@ -161,23 +163,29 @@ function updateTournaments(socket, tournaments) {
 		});
 		
 		if (tournament.matchs.length > 0)
-			getPattern(tournament.tournamentId);
-		setTimeout(()=>{
-			tournament.matchs.forEach(match => {
-				console.log("MATCHSSS ", match)				
-				lk = match.linkMatch;
-				linkMatch(lk.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);					
-			});
-		}, 3000);
-		if (tournament.matchs.matchResult)
 		{
-			console.log("match Reuslt EXISTE mouquate");
-			matchResult(data.tournamentId, data.localMatchId, data.matchId, data.winnerId, data.looserId);			
-
-		}
-		else {
-			console.log("match Reuslt nexiste pas mouquate");
-		}
+			getPattern(tournament.tournamentId);
+			setTimeout(()=>{
+				tournament.matchs.forEach(match => {
+					if (match.matchResult)
+					{
+						console.log("MATCHSSS ", match)				
+						lk = match.linkMatch;
+						linkMatch(lk.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);
+					}
+					if (match.matchResult)
+					{
+						console.log("match Reuslt EXISTE mouquate");
+						mres = match.matchResult;
+						matchResult(mres.tournamentId, mres.localMatchId, mres.matchId, mres.winnerId, mres.looserId);			
+		
+					}
+					else {
+						console.log("match Reuslt nexiste pas mouquate");
+					}
+				});
+			}, 3000);		
+		}	
 	});
 	// setSelfMatchId();	
 }
@@ -332,7 +340,7 @@ function getPattern(tournamentId) {
 }
 
 function linkMatch(tournamentId, localMatchId, matchId, p1Id, p2Id) {
-	console.log("LINK MATCH localid: ", localMatchId, " matchid ", matchId, " p1 ", p1Id, " p2 ", p2Id, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
+	console.log("LINK MATCH tournId ", tournamentId, " localid: ", localMatchId, " matchid ", matchId, " p1 ", p1Id, " p2 ", p2Id, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
 	const tournament = document.getElementById("tournaments").querySelector(
 		`[id='${tournamentId}']`
 	);
@@ -395,6 +403,7 @@ function loadHtml(data, overlay) {
 }
 
 function matchResult(tournamentId, localMatchId, matchId, winnerId, looserId) {
+	console.log("MATCH RESULT tournId ", tournamentId, " localid: ", localMatchId, " matchid ", matchId, " winner ", winnerId, " looser ", looserId, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
 
 	const tournament = document.getElementById("tournaments").querySelector(
 		`[id='${tournamentId}']`

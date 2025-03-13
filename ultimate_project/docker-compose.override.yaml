@@ -15,6 +15,9 @@ services:
       - ./static_files:/app/
 
   tournament:
+    build:
+      context: ./tournament
+      dockerfile: _docker/Dockerfile
     environment:
       - env=dev
     ports:
@@ -23,6 +26,9 @@ services:
       - ./tournament:/app/
 
   user:
+    build:
+      context: ./user
+      dockerfile: _docker/Dockerfile
     environment:
       - env=dev
     env_file:
@@ -33,6 +39,9 @@ services:
       - ./user:/app/
 
   match:
+    build:
+      context: ./match
+      dockerfile: _docker/Dockerfile
     environment:
       - env=dev
     ports:
@@ -41,6 +50,9 @@ services:
       - ./match:/app/
 
   authentication:
+    build:
+      context: ./authentication
+      dockerfile: _docker/Dockerfile
     environment:
       - env=dev
     ports:
@@ -49,6 +61,9 @@ services:
       - ./authentication:/app/
 
   databaseapi:
+    build:
+      context: ./databaseapi
+      dockerfile: _docker/Dockerfile
     environment:
       - env=dev
     ports:
