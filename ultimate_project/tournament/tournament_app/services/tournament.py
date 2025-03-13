@@ -7,7 +7,7 @@ class Tournament():
 	
 	id = 0
 	def __init__(self, applicantId):
-
+		
 		Tournament.id += 1
 		self.id = Tournament.id
 		self.players = []
@@ -61,8 +61,8 @@ class Tournament():
 					# await self.send_link_match(link_match)
 		
 	async def send_link_match(self, link_match):
-
-		for player in self.players:				
+		from tournament_app.services.tournament_consumer import players
+		for player in players:				
 			await player.send(text_data=json.dumps(link_match))
 
 	# async def send_match_update()
@@ -80,11 +80,15 @@ class Tournament():
 				"tournamentId": self.id,
 				"localMatchId": match.get('linkMatch', {}).get('localMatchId'),			
 				"matchId": match_id,
+				"p1Id": match.get('linkMatch', {}).get('p1Id'),
+				"p2Id": match.get('linkMatch', {}).get('p2Id'),
 				"winnerId": winner_id,
 				"looserId": looser_id			
 			}
 			match['matchResult'] = match_result
 		print(self.matchs, flush=True)
+		if self.n_match == 1:
+			await self.send_match_result(match_result)
 		if self.n_match == 2:
 			link_match = await self.start_match(
 				self.matchs[0].get('matchResult', {}).get('winnerId'),
@@ -97,7 +101,25 @@ class Tournament():
 			await self.send_match_result(match_result)
 
 	async def send_match_result(self, match_result):
-		for player in self.players:				
-			await player.send(text_data=json.dumps(match_result))		
+		from tournament_app.services.tournament_consumer import players
+		for player in players:				
+			await player.send(text_data=json.dumps(match_result))
 
+	async def match_players_update(self, match_update):
+		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)
+		match = next(
+			(m for m in self.matchs if m.get('matchId') == match_update.get('matchId'))	
+		, None)
+		if match:
+			match_update['type'] = 'matchPlayersUpdate'
+			match_update['tournamentId'] = self.id
+			match_update['localMatchId'] = match.get('linkMatch', {}).get(
+				'localMatchId')
+			match['matchPlayersUpdate'] = match_update
+			await self.send_match_players_update(match_update)
+
+	async def send_match_players_update(self, match_update):		
+		from tournament_app.services.tournament_consumer import players
+		for player in players:				
+			await player.send(text_data=json.dumps(match_update))
 					

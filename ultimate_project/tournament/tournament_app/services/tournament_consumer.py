@@ -97,3 +97,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def quit_tournament(self):
 		self.remove_player_in_tournaments()			
 		await self.send_tournaments()
+
+	# async def match_players_update(self, data):
+	# 	tournament = next(
+	# 		(t for t in tournaments if any(
+	# 			data.get('matchId') == m.get("matchId") for m in t.matchs))
+	# 	, None)
+	# 	if tournament:
+	# 		await tournament.match_players_update(data)
