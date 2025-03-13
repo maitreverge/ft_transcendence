@@ -160,3 +160,9 @@ def twoFactorAuth(request):
     username = request.session.get("username")
     obj = {"username": username, "page": "two-factor-auth.html"}
     return render(request, "index.html", obj)
+
+@never_cache
+def error(request):
+    username = request.session.get("username")
+    obj = {"username": username, "status_code": 404, "page": "error.html"}
+    return render(request, "index.html", obj)

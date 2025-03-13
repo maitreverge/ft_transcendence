@@ -19,16 +19,8 @@ app = FastAPI(
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    error_message = "Error..."
-    if exc.status_code == 404:
-        error_message = "Page Not Found"
-    elif exc.status_code == 500:
-        error_message = "Internal Server Error"
-    return templates.TemplateResponse(
-        "error.html",
-        {"request": request, "status_code": exc.status_code, "error_message": error_message},
-        status_code=exc.status_code, error_message=error_message,
-    )
+    return await proxy_request("static_files", "error", request)
+
 services = {
     "tournament": "http://tournament:8001",
     "match": "http://match:8002",
@@ -156,11 +148,8 @@ async def tournament_proxy(path: str, request: Request):
     else:
         error_message = "Page Not Found"
         
-        return templates.TemplateResponse(
-            "error.html",
-            {"request": request, "status_code": 404, "error_message": error_message},
-            status_code=404, error_message=error_message,
-        )
+        return await proxy_request("static_files", "error", request)
+
 
 
 
@@ -186,11 +175,8 @@ async def user_proxy(path: str, request: Request):
     else:
         error_message = "Page Not Found"
         
-        return templates.TemplateResponse(
-            "error.html",
-            {"request": request, "status_code": 404, "error_message": error_message},
-            status_code=404, error_message=error_message,
-        )
+        return await proxy_request("static_files", "error", request)
+
 
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
