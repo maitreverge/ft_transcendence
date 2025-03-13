@@ -70,6 +70,7 @@ async def login_fastAPI(
     }
     refresh_payload = {
         "user_id": auth_data.get("user_id", 0),
+        "username": username,  # Include username in refresh token too
         "exp": expire_refresh,
     }
 
@@ -155,6 +156,7 @@ def refresh_access_token(refresh_payload):
     """
     # Create a new access token with the same user info
     user_id = refresh_payload.get("user_id")
+    username = refresh_payload.get("username")  # Extract username from refresh token
 
     # Set expiration for new access token
     expire_access = datetime.datetime.utcnow() + datetime.timedelta(
@@ -164,7 +166,7 @@ def refresh_access_token(refresh_payload):
     # Create payload for new access token
     access_payload = {
         "user_id": user_id,
-        # Note: We don't have username in refresh token, so we can't include it here
+        "username": username,  # Include username in new access token
         "exp": expire_access,
     }
 
@@ -211,6 +213,9 @@ def is_authenticated(request: Request):
         # we'll need to return a signal to set a new cookie
         return True, {
             "user_id": refresh_payload.get("user_id"),
+            "username": refresh_payload.get(
+                "username"
+            ),  # Include username from refresh token
             "refresh_needed": True,
             "new_access_token": new_access_token,
         }

@@ -117,6 +117,13 @@ async def proxy_request(service_name: str, path: str, request: Request):
         }
         headers["Host"] = "localhost"
 
+        # Check if user is authenticated and add user info to headers
+        is_auth, user_info = is_authenticated(request)
+        if is_auth and user_info:
+            headers["X-User-ID"] = str(user_info.get("user_id", ""))
+            headers["X-Username"] = user_info.get("username", "")
+
+
         # Log cookies for debugging
         print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
 
