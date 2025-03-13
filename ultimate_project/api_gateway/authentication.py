@@ -142,6 +142,39 @@ def verify_jwt(token):
         return None  # Invalid token
 
 
+# Function to generate a new access token using a valid refresh token
+def refresh_access_token(refresh_payload):
+    """
+    Generate a new access token from a valid refresh token payload.
+
+    Args:
+        refresh_payload (dict): The decoded refresh token payload
+
+    Returns:
+        str: The newly generated access token
+    """
+    # Create a new access token with the same user info
+    user_id = refresh_payload.get("user_id")
+
+    # Set expiration for new access token
+    expire_access = datetime.datetime.utcnow() + datetime.timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+
+    # Create payload for new access token
+    access_payload = {
+        "user_id": user_id,
+        # Note: We don't have username in refresh token, so we can't include it here
+        "exp": expire_access,
+    }
+
+    # Generate and return the new access token
+    new_access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
+    print(f"🔄 Generated new access token: {new_access_token[:20]}...", flush=True)
+
+    return new_access_token
+
+
 # Function to check if a user is authenticated based on cookies
 def is_authenticated(request: Request):
     """
@@ -170,10 +203,19 @@ def is_authenticated(request: Request):
         if not refresh_payload:
             return False, None
 
-        # We could implement token refresh here
-        return False, None
+        # Implement token refresh
+        new_access_token = refresh_access_token(refresh_payload)
 
-    # Return authentication status and user info
+        # Set new access token in the response
+        # Since this is middleware and not a full response handler,
+        # we'll need to return a signal to set a new cookie
+        return True, {
+            "user_id": refresh_payload.get("user_id"),
+            "refresh_needed": True,
+            "new_access_token": new_access_token,
+        }
+
+    # Return authentication status and user info from the valid access token
     return True, {
         "user_id": payload.get("user_id"),
         "username": payload.get("username"),

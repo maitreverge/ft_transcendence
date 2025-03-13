@@ -44,6 +44,37 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+# Token refresh middleware
+@app.middleware("http")
+async def token_refresh_middleware(request: Request, call_next):
+    """
+    Middleware that checks if the access token needs to be refreshed.
+    If refresh is needed, it adds the new access token to the response.
+    """
+    # First process the request normally
+    response = await call_next(request)
+
+    # Check authentication status after request processing
+    is_auth, user_info = is_authenticated(request)
+
+    # If authenticated and token refresh needed, update the response cookies
+    if is_auth and user_info and user_info.get("refresh_needed"):
+        print("🔄 Middleware: Refreshing access token", flush=True)
+
+        # Set the new access token in the response
+        response.set_cookie(
+            key="access_token",
+            value=user_info.get("new_access_token"),
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours
+        )
+
+    return response
+
+
 # ! DEBUGGING COOKIES MIDDLEWARE.
 # This middleware is used to debug incoming cookies in FastAPI.
 # It prints the incoming cookies to the console.
@@ -317,11 +348,26 @@ async def login_page_route(request: Request, path: str = ""):
     Redirects to home if user is already authenticated.
     """
     # Check if user is authenticated
-    is_auth, foo = is_authenticated(request)
+    is_auth, user_info = is_authenticated(request)
 
     if is_auth:
         # If authenticated, redirect to home
-        return RedirectResponse(url="/home")
+        response = RedirectResponse(url="/home")
+
+        # If token refresh is needed, set the new access token cookie
+        if user_info and user_info.get("refresh_needed"):
+            print("🔄 Setting refreshed access token during login redirect", flush=True)
+            response.set_cookie(
+                key="access_token",
+                value=user_info.get("new_access_token"),
+                httponly=True,
+                secure=False,
+                samesite="Lax",
+                path="/",
+                max_age=60 * 60 * 6,  # 6 hours
+            )
+
+        return response
 
     # If not authenticated, show login page
     return await proxy_request("static_files", "login/", request)
@@ -354,15 +400,14 @@ async def auth_status(request: Request):
     # Log the cookies for debugging
     print(f"🍪 Status check cookies: {request.cookies}", flush=True)
 
-    return JSONResponse(
+    # Create the response
+    response = JSONResponse(
         {
             "authenticated": is_auth,
             "user": user_info,
             "cookies": {
                 "has_access_token": "access_token" in request.cookies,
                 "has_refresh_token": "refresh_token" in request.cookies,
-                "access_token": request.cookies.get("access_token", "Not found"),
-                "refresh_token": request.cookies.get("refresh_token", "Not found"),
             },
         },
         headers={
@@ -370,6 +415,21 @@ async def auth_status(request: Request):
             "X-Content-Type-Options": "nosniff",
         },
     )
+
+    # If token refresh is needed, set the new access token cookie
+    if is_auth and user_info and user_info.get("refresh_needed"):
+        print("🔄 Setting refreshed access token in response", flush=True)
+        response.set_cookie(
+            key="access_token",
+            value=user_info.get("new_access_token"),
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours
+        )
+
+    return response
 
 
 # Add logout endpoint
