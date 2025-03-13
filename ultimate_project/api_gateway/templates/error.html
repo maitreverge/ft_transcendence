@@ -13,7 +13,15 @@
         <div class="error mx-auto" data-text="{{ status_code }}">{{ status_code }}</div>
         <p class="lead text-gray-800 mb-5">{{ error_message }}</p>
         <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
-        <a href="/">&larr; Back to Dashboard</a>
+        <a  hx-boost="false"
+        hx-trigger="click"
+        hx-push-url="true"
+        hx-get="/home/"
+        hx-target="body"
+        hx-on="htmx:beforeRequest: toggleSidebar(false); toggleNavbar(true);"
+        class="text-center small"
+        href="">Retour à l'accueil</a>
+
     </div>
     <footer class="sticky-footer bg-white">
         <div class="container my-auto">
@@ -22,6 +30,29 @@
             </div>
         </div>
     </footer>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script>
+    function toggleNavbar(show) {
+        const navbar = document.querySelector('#homelogo');
+        console.log("toggleNavbar called");
+        if (show) {
+            navbar.classList.remove('d-none');
+            navbar.classList.add('d-flex');
+        } else {
+            navbar.classList.remove('d-flex');
+            navbar.classList.add('d-none');
+        }
+    }
 
+    function toggleSidebar(show) {
+        console.log("toggleSidebar called");
+        const sidebar = document.querySelector('#accordionSidebar');
+        if (show) {
+            sidebar.classList.remove('d-none');
+        } else {
+            sidebar.classList.add('d-none');
+        }
+    }
+    </script>
 </body>
 </html>

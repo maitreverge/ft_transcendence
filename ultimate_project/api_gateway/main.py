@@ -17,11 +17,6 @@ app = FastAPI(
     version="1.0.0",
 )
 
-import os
-
-app.mount("/error-static", StaticFiles(directory="static/errors"), name="error-static")
-print("👁️‍🗨️👁️‍🗨️👁️‍🗨️ Serving error static files from:", os.path.abspath("static/errors"), flush=True)
-
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     error_message = "Error..."
