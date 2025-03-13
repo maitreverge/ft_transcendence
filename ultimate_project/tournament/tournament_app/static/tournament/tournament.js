@@ -354,8 +354,8 @@ function linkMatch(tournamentId, localMatchId, matchId, p1Id, p2Id) {
 	// const matchs_cont = tournament.querySelector("#matchs-cont");
 	const localMatch = tournament.querySelector(`#${localMatchId}`);
 
-	const localP1 = localMatch.querySelector(`#p1`);
-	const localP2 = localMatch.querySelector(`#p2`);
+	const localP1 = localMatch.querySelector(`#pl1`);
+	const localP2 = localMatch.querySelector(`#pl2`);
 	localP1.innerText = p1Id;
 	localP2.innerText = p2Id;
 	// const overlay = document.getElementById("overlay-match");
@@ -423,16 +423,20 @@ function matchResult(rsl) {
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
 	const localMatch = tournament.querySelector(`#${rsl.localMatchId}`);
-	const localP1 = localMatch.querySelector(`#p1`);
-	const localP2 = localMatch.querySelector(`#p2`);
+	const localP1 = localMatch.querySelector(`#pl1`);
+	const localP2 = localMatch.querySelector(`#pl2`);
 	if (rsl.winnerId === rsl.p1Id)
 	{
 		localP1.classList.add("winner");
-
+		localP2.classList.add("looser");
 	}
 	else if (rsl.winnerId === rsl.p2Id)
+	{
+		localP2.classList.add("winner");
+		localP1.classList.add("looser");
+	}
 	// localP1.innerText = p1Id;
 	// localP2.innerText = p2Id;
 	// overlay.innerHTML = "";
-	localMatch.innerText = winnerId
+	// localMatch.innerText = winnerId
 }
