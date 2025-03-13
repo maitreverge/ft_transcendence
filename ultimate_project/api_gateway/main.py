@@ -2,10 +2,11 @@ from fastapi import FastAPI, Request, HTTPException, Query, Depends
 import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 import logging
+
 # from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
-from authentication import login_fastAPI
+from authentication import login_fastAPI, is_authenticated
 
 
 app = FastAPI(
@@ -127,11 +128,15 @@ async def proxy_request(service_name: str, path: str, request: Request):
 
         return fastapi_response
 
+
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
 async def tournament_pattern_proxy(tournament_id, request: Request):
-    print("################## NEW ROUTE USED #######################", flush=True) 
+    print("################## NEW ROUTE USED #######################", flush=True)
     print(f"################## NEW ROUTE USED ##########{tournament_id}", flush=True)
-    return await proxy_request("tournament", f"tournament/tournament-pattern/{tournament_id}/", request)
+    return await proxy_request(
+        "tournament", f"tournament/tournament-pattern/{tournament_id}/", request
+    )
+
 
 user_id = 0
 
@@ -301,7 +306,6 @@ async def databaseapi_proxy(path: str, request: Request):
     return await proxy_request("databaseapi", f"api/{path}", request)
 
 
-
 # ! TURN BACK ON THIS LOCKING ROUTE ONE JWT ARE BACK UP
 # async def login_page(request: Request, is_authenticated: bool = Depends(block_authenticated_users())):
 # Add this route before the catch-all static_files_proxy
@@ -314,11 +318,9 @@ async def login_page_route(request: Request, path: str = ""):
     return await proxy_request("static_files", "login/", request)
 
 
-
-
 @app.api_route("/auth/login", methods=["POST"])
 @app.api_route("/auth/login/", methods=["POST"])
-async def login_page_route(request: Request, response: Response):
+async def login_page_route(request: Request):
     """
     Extracts form data and passes it to `login_fastAPI`
     """
@@ -326,9 +328,39 @@ async def login_page_route(request: Request, response: Response):
     username = form_data.get("username")
     password = form_data.get("password")
 
+    # Create a new response object
+    response = Response()
+
     return await login_fastAPI(request, response, username, password)
 
 
+# Add auth-status endpoint for debugging
+@app.get("/auth/status")
+async def auth_status(request: Request):
+    """
+    Returns current authentication status - useful for debugging
+    """
+    is_auth, user_info = is_authenticated(request)
+
+    # Log the cookies for debugging
+    print(f"🍪 Status check cookies: {request.cookies}", flush=True)
+
+    return JSONResponse(
+        {
+            "authenticated": is_auth,
+            "user": user_info,
+            "cookies": {
+                "has_access_token": "access_token" in request.cookies,
+                "has_refresh_token": "refresh_token" in request.cookies,
+                "access_token": request.cookies.get("access_token", "Not found"),
+                "refresh_token": request.cookies.get("refresh_token", "Not found"),
+            },
+        },
+        headers={
+            "Content-Type": "application/json; charset=utf-8",
+            "X-Content-Type-Options": "nosniff"
+        }
+    )
 
 
 @app.api_route("/{path:path}", methods=["GET"])

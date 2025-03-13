@@ -32,6 +32,13 @@
 
 								<!-- 🔹 Zone de feedback pour les erreurs -->
 								<div id="login-result" class="text-center text-danger mt-2"></div>
+								
+								<!-- Loading spinner that shows during HTMX requests -->
+								<div id="loading-spinner" class="htmx-indicator text-center my-2">
+									<div class="spinner-border text-primary" role="status">
+										<span class="sr-only">Loading...</span>
+									</div>
+								</div>
 
 								<hr>
 								<a hx-boost="false" href="http://localhost:8000/home/"
@@ -71,3 +78,35 @@
         });
     });
 </script> -->
+
+<!-- Add listener for HTMX redirect headers -->
+<script>
+    // Listen for responses to the login form
+    document.addEventListener('htmx:beforeSwap', function(evt) {
+        // If the target is login-result, check for JSON response
+        if (evt.detail.target.id === 'login-result') {
+            try {
+                // Parse JSON response
+                const response = JSON.parse(evt.detail.xhr.responseText);
+                
+                // Check for successful login
+                if (response.success) {
+                    // Prevent the swap if successful, so we don't show success message
+                    evt.detail.shouldSwap = false;
+                    
+                    // Check for HX-Redirect header and redirect
+                    const redirectUrl = evt.detail.xhr.getResponseHeader('HX-Redirect');
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    }
+                } else {
+                    // For errors, allow the swap but replace with error message
+                    evt.detail.innerHTML = response.message;
+                }
+            } catch (e) {
+                // Not JSON or other error, let HTMX handle it
+                console.error('Error processing response:', e);
+            }
+        }
+    });
+</script>
