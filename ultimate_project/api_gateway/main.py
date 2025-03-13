@@ -313,8 +313,17 @@ async def databaseapi_proxy(path: str, request: Request):
 @app.api_route("/login", methods=["GET"])
 async def login_page_route(request: Request, path: str = ""):
     """
-    Proxy for servir the login page.
+    Proxy for serving the login page.
+    Redirects to home if user is already authenticated.
     """
+    # Check if user is authenticated
+    is_auth, foo = is_authenticated(request)
+    
+    if is_auth:
+        # If authenticated, redirect to home
+        return RedirectResponse(url="/home")
+        
+    # If not authenticated, show login page
     return await proxy_request("static_files", "login/", request)
 
 
