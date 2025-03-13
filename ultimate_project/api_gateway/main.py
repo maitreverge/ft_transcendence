@@ -5,6 +5,7 @@ import logging
 # from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
+from authentication import login_fastAPI
 
 
 app = FastAPI(
@@ -123,30 +124,6 @@ async def proxy_request(service_name: str, path: str, request: Request):
             headers=response_headers,
             media_type=content_type.split(";")[0].strip() if content_type else None,
         )
-
-        # Forward any cookies from the service response
-        cookies_to_set = response.cookies
-        if cookies_to_set:
-            print(f"🍪 Received cookies from service: {dict(cookies_to_set)}", flush=True)
-            for cookie_name, cookie_value in cookies_to_set.items():
-                cookie_params = {
-                    "key": cookie_name,
-                    "value": cookie_value,
-                    "httponly": True,
-                    "secure": False,  # Set to True in production with HTTPS
-                    "samesite": "lax",  # Use 'none' with secure=True in production
-                    "path": "/",
-                }
-                
-                # Add expiration for authentication tokens
-                if cookie_name == "access_token":
-                    cookie_params["max_age"] = 60 * 60 * 6  # 6 hours
-                elif cookie_name == "refresh_token":
-                    cookie_params["max_age"] = 60 * 60 * 24 * 7  # 7 days
-        
-                # Set the cookie in the FastAPI response
-                fastapi_response.set_cookie(**cookie_params)
-                print(f"🍪 Setting cookie in gateway response: {cookie_name} with expiration", flush=True)
 
         return fastapi_response
 
@@ -325,68 +302,33 @@ async def databaseapi_proxy(path: str, request: Request):
 
 
 
-# # Add this route before the catch-all static_files_proxy
-# @app.api_route("/login/", methods=["GET"])
+# ! TURN BACK ON THIS LOCKING ROUTE ONE JWT ARE BACK UP
 # async def login_page(request: Request, is_authenticated: bool = Depends(block_authenticated_users())):
-#     """
-#     Handle the login page - blocks authenticated users by redirecting to home
-#     """
-#     # If user is authenticated, redirect to home
-#     if is_authenticated:
-#         return RedirectResponse(url="/home/")
-        
-#     # Otherwise proxy to static_files service
-#     return await proxy_request("static_files", "login/", request)
+# Add this route before the catch-all static_files_proxy
+@app.api_route("/login/{path:path}", methods=["GET"])
+@app.api_route("/login", methods=["GET"])
+async def login_page_route(request: Request, path: str = ""):
+    """
+    Proxy for servir the login page.
+    """
+    return await proxy_request("static_files", "login/", request)
 
 
-# @app.api_route("/auth/logout/", methods=["GET"])
-# async def auth_logout(request: Request):
-#     """
-#     Special handler for logout to properly manage the redirect
-#     """
-#     print("============= HANDLING LOGOUT =============", flush=True)
-    
-#     # Forward the request to the authentication service to delete cookies
-#     response = await proxy_request("authentication", "auth/logout/", request)
-    
-#     # Create a new response that will redirect to login
-#     redirect = RedirectResponse(url="/login/", status_code=303)
-    
-#     # Copy ALL Set-Cookie headers from the original response
-#     if hasattr(response, "headers"):
-#         print(f"Original response headers: {dict(response.headers)}", flush=True)
-#         for key, value in response.headers.items():
-#             if key.lower() == "set-cookie":
-#                 redirect.headers.append(key, value)
-#                 print(f"Copying cookie header: {value}", flush=True)
-    
-#     # Additional cookie deletion at the API gateway level
-#     redirect.delete_cookie("access_token", path="/", samesite="Lax")
-#     redirect.delete_cookie("refresh_token", path="/", samesite="Lax")
-    
-#     print("Executing client-side redirection", flush=True)
-    
-#     # Add additional script to force refresh and clear cookies
-#     html_content = """
-#     <!DOCTYPE html>
-#     <html>
-#     <head><title>Logging out...</title></head>
-#     <body>
-#         <p>Logging out and redirecting...</p>
-#         <script>
-#             // Clear cookies as an additional layer of protection
-#             document.cookie = 'access_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
-#             document.cookie = 'refresh_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
-            
-#             // Force redirect to login with no-cache to prevent browser cache issues
-#             window.location.replace('/login/?nocache=' + new Date().getTime());
-#         </script>
-#     </body>
-#     </html>
-#     """
-    
-#     # Return an HTML response instead of a redirect
-#     return HTMLResponse(content=html_content)
+
+
+@app.api_route("/auth/login", methods=["POST"])
+@app.api_route("/auth/login/", methods=["POST"])
+async def login_page_route(request: Request, response: Response):
+    """
+    Extracts form data and passes it to `login_fastAPI`
+    """
+    form_data = await request.form()  # Extract form data
+    username = form_data.get("username")
+    password = form_data.get("password")
+
+    return await login_fastAPI(request, response, username, password)
+
+
 
 
 @app.api_route("/{path:path}", methods=["GET"])

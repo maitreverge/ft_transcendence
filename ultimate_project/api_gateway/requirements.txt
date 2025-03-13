@@ -5,3 +5,5 @@ websockets
 django-cors-headers
 cryptography
 PyJWT
+requests
+python-multipart
