@@ -39,7 +39,7 @@
     id="userDropdown"
     role="button"
   >
-    <span id="nav-simple-match" class="mr-2 d-none d-lg-inline small">
+    <span id="nav-match" class="mr-2 d-none d-lg-inline small">
       <i class="fa-solid fa-table-tennis-paddle-ball"></i>
     <span data-translate="Match simple">Match simple</span>
     </span>
@@ -54,7 +54,7 @@
     id="userDropdown"
     role="button"
   >
-    <span id="nav-tournament" class="mr-2 d-none d-lg-inline small">
+    <span id="nav-tournoi" class="mr-2 d-none d-lg-inline small">
       <i class="fas fa-trophy"></i>
       <span data-translate="Tournoi">Tournoi</span>
     </span>
@@ -69,7 +69,7 @@
     id="userDropdown"
     role="button"
   >
-    <span class="mr-2 d-none d-lg-inline text-dark-gray small">
+    <span id="nav-profile" class="mr-2 d-none d-lg-inline text-dark-gray small">
       <i class="fa-solid fa-user"></i>
       <span data-translate="Profil">Profile</span>
     </span>
@@ -84,7 +84,7 @@
     id="userDropdown"
     role="button"
   >
-    <span class="mr-2 d-none d-lg-inline text-dark-gray small">
+    <span id="nav-stats" class="mr-2 d-none d-lg-inline text-dark-gray small">
       <i class="fa-solid fa-chart-simple"></i>
       <span data-translate="Statistiques">Stats</span>
     </span>
@@ -164,7 +164,7 @@
     <div class="topbar-divider d-none d-sm-block"></div>
 
     <!-- Nav Item - User Information -->
-    <li class="nav-item dropdown no-arrow">
+    <li id="youpi-banane" class="nav-item dropdown no-arrow">
       <a
         class="nav-link dropdown-toggle"
         href="#"
@@ -188,6 +188,7 @@
         aria-labelledby="userDropdown"
       >
         <a
+          id="pre-modal-profile"
           class="dropdown-item"
           hx-trigger="click"
           hx-push-url="true"
@@ -200,6 +201,7 @@
         </a>
         <div class="dropdown-divider"></div>
         <a
+          id="pre-modal-logout"
           class="dropdown-item"
           href="#"
           data-toggle="modal"

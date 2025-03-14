@@ -8,14 +8,13 @@
 >
   <!-- Sidebar - Brand -->
   <a
-    id="nav-home"
     class="sidebar-brand d-flex align-items-center justify-content-center nav-link"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/home/"
     hx-target="#main_div"
     hx-on="htmx:beforeRequest: toggleSidebar(false);"
-    ><div class="sidebar-brand-icon rotate-n-15">
+    ><div id="side-logo" class="sidebar-brand-icon rotate-n-15">
       <i class="fa-solid fa-table-tennis-paddle-ball"></i>
     </div>
     <div class="sidebar-brand-text mx-3">Pong <sup>42</sup></div>
@@ -27,6 +26,7 @@
   <!-- Nav Item - Dashboard -->
   <li class="nav-item">
     <a
+      id="side-home"
       class="nav-link"
       hx-trigger="click"
       hx-push-url="true"
@@ -48,7 +48,7 @@
   <!-- Nav Item - Match making -->
   <li class="nav-item">
     <a
-
+      id="side-match"
       class="nav-link"
       hx-trigger="click"
       hx-push-url="true"
@@ -63,7 +63,7 @@
 
   <li class="nav-item">
     <a
-
+      id="side-tournoi"
       class="nav-link"
       hx-trigger="click"
       hx-push-url="true"
@@ -78,7 +78,7 @@
   <!-- Nav Item - Profil -->
   <li class="nav-item">
     <a
-      id="nav-profile"
+      id="side-profile"
       class="nav-link"
       hx-trigger="click"
       hx-push-url="true"
@@ -94,7 +94,7 @@
   <!-- Nav Item - Stats -->
   <li class="nav-item">
     <a
-      id="nav-stats"
+      id="side-stats"
       class="nav-link"
       hx-trigger="click"
       hx-push-url="true"
