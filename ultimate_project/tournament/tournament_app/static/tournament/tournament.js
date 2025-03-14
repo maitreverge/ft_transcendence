@@ -35,14 +35,17 @@ function onTournamentMessage(event, socket) {
 			setSelfId(data.selfId);
 			break;
 		case "playerList":
+			console.log("case playerlist");
 			// window.players = data.players;
 			updatePlayers(socket, data.players);
 			break;
 		case "tournamentList":
+			console.log("case tournamentlist");
 			window.tournamentList = data.tournaments; 
 			updateTournaments(socket, data.tournaments);
 			break;
 		case "getPattern":
+			console.log("case getpattern");
 			getPattern(data.tournamentId);
 			break;
 			case "linkMatch":
@@ -55,6 +58,7 @@ function onTournamentMessage(event, socket) {
 			break;
 		case "matchPlayersUpdate":
 			console.log("case matchPlayersUpdate");
+			updateTournaments(socket, window.tournamentList);
 			matchPlayersUpdate(socket, data);			
 			break;
 		default:				
@@ -71,12 +75,16 @@ function setSelfId(selfId) {
 
 function updatePlayers(socket, playersUp)
 {
+	console.log("UPDATE PLAYERS ", playersUp);
+
 	updateWinPlayers(playersUp);
 	updatePlayersCont(playersUp);
 }
 
 function updateWinPlayers(playersUp)
 {
+	console.log("UPDATE WIN PLAYERS ", playersUp);
+
 	playersUp.forEach(plyUp => {
 		if (window.players.every(el => el.id != plyUp.playerId))
 		{
@@ -93,6 +101,9 @@ function updateWinPlayers(playersUp)
 }
 
 function create_player_element(playerId) {
+
+	console.log("CREATE PL ELEMENT ", playersId);
+
 	const div = document.createElement("div");
 	div.className = "user";
 	div.textContent = `user: ${playerId}`;
@@ -118,6 +129,8 @@ function quitTournament(socket) {
 
 function updatePlayersCont(playersUp) {
 
+	console.log("UPDATE PLAYERS CONT ", playersUp);
+
 	const playersCont = document.getElementById("players");
 	const playerElements = [...playersCont.children];
 
@@ -131,6 +144,8 @@ function updatePlayersCont(playersUp) {
 }
 
 function updateTournaments(socket, tournamentsUp) {
+
+	console.log("UPDATE TOURNAMENTS ", tournamentsUp);
 
 	const tournamentsCont = document.getElementById("tournaments");
 	const tournamentEls = [...tournamentsCont.children];
@@ -159,6 +174,8 @@ function updateTournaments(socket, tournamentsUp) {
 
 function updateTournamentsPlayers(tournamentsUp) {
 
+	console.log("UPDATE TOURNAMENTS PLAYERS ", tournamentsUp);
+
 	const tournamentsCont = document.getElementById("tournaments");
 	const tournamentEls = [...tournamentsCont.children];
 
@@ -182,7 +199,9 @@ function updateTournamentsPlayers(tournamentsUp) {
 }
 
 function updateLinkMatchAndResult(tournamentsUp) {
-	
+
+	console.log("UPDATE LINK AND MATCH RESULT ", tournamentsUp);
+
 	tournamentsUp.forEach(tourUp => {
 		tourUp.matchs.forEach(matchUp => {
 			if (matchUp.linkMatch)			
@@ -354,7 +373,9 @@ function updateLinkMatchAndResult(tournamentsUp) {
 // }
 
 function addToTournaments(socket, tournamentsContainer, tournament) {
-  	
+
+  	console.log("ADD TO TOURNAMENT ", tournamentsContainer, " : ", tournament);
+
 	const div = document.createElement("div");	
 	div.className = "tournament";
 	div.textContent = `tournament: ${tournament.tournamentId}`;
