@@ -17,28 +17,40 @@
 							<div class="form-group row">
 								<div class="col-sm-6 mb-3 mb-sm-0">
 									<input type="text" class="form-control form-control-user" id="first_name"
-										name="first_name" placeholder="First Name">
+									name="first_name" placeholder="First Name" required>
 								</div>
 								<div class="col-sm-6">
 									<input type="text" class="form-control form-control-user" id="last_name"
-										name="last_name" placeholder="Last Name">
+									name="last_name" placeholder="Last Name" required>
 								</div>
-							</div>
-							<div class="form-group">
-								<input type="text" class="form-control form-control-user" id="username"
-									name="username" placeholder="Username">
 							</div>
 							<div class="form-group row">
 								<div class="col-sm-6 mb-3 mb-sm-0">
-									<input type="password" class="form-control form-control-user"
-										name="password" placeholder="Password">
+									<input type="text" class="form-control form-control-user" id="username"
+									name="username" placeholder="Username" required>
 								</div>
 								<div class="col-sm-6">
-									<input type="password" class="form-control form-control-user"
-										name="repeat_password" placeholder="Repeat Password">
+									<input type="email" class="form-control form-control-user" id="email"
+									name="email" placeholder="Email" required>
 								</div>
 							</div>
-							<button type="submit" class="btn btn-primary btn-user btn-block">
+							<div class="form-group row">
+								<div class="col-sm-6 mb-3 mb-sm-0">
+									<input type="password" class="form-control form-control-user" id="password"
+										name="password" placeholder="Password" required>
+								</div>
+								<div class="col-sm-6">
+									<input type="password" class="form-control form-control-user" id="repeat_password"
+										name="repeat_password" placeholder="Repeat Password" required>
+									<div id="password-error" class="text-danger small mt-1" style="display: none;">
+										Passwords do not match
+									</div>
+								</div>
+							</div>
+							<div id="email-error" class="text-danger small mb-3" style="display: none;">
+								Please enter a valid email address
+							</div>
+							<button type="submit" class="btn btn-primary btn-user btn-block" id="register-button" disabled>
 								Register Account
 							</button>
 							<hr>
@@ -75,3 +87,93 @@
 	</div>
 
 </div>
+
+<!-- Add JavaScript for client-side validation -->
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const firstNameInput = document.getElementById('first_name');
+		const lastNameInput = document.getElementById('last_name');
+		const usernameInput = document.getElementById('username');
+		const emailInput = document.getElementById('email');
+		const passwordInput = document.getElementById('password');
+		const repeatPasswordInput = document.getElementById('repeat_password');
+		const emailError = document.getElementById('email-error');
+		const passwordError = document.getElementById('password-error');
+		const registerButton = document.getElementById('register-button');
+		const form = document.querySelector('form.user');
+
+		// Email validation function
+		function validateEmail(email) {
+			const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			return re.test(String(email).toLowerCase());
+		}
+
+		// Check email format
+		emailInput.addEventListener('blur', function() {
+			if (emailInput.value && !validateEmail(emailInput.value)) {
+				emailError.style.display = 'block';
+			} else {
+				emailError.style.display = 'none';
+			}
+			validateForm();
+		});
+
+		// Check if passwords match
+		function checkPasswords() {
+			if (passwordInput.value && repeatPasswordInput.value) {
+				if (passwordInput.value !== repeatPasswordInput.value) {
+					passwordError.style.display = 'block';
+					return false;
+				} else {
+					passwordError.style.display = 'none';
+					return true;
+				}
+			}
+			return passwordInput.value === repeatPasswordInput.value;
+		}
+
+		repeatPasswordInput.addEventListener('input', function() {
+			checkPasswords();
+			validateForm();
+		});
+		
+		passwordInput.addEventListener('input', function() {
+			checkPasswords();
+			validateForm();
+		});
+
+		// Add input event listeners to all required fields
+		firstNameInput.addEventListener('input', validateForm);
+		lastNameInput.addEventListener('input', validateForm);
+		usernameInput.addEventListener('input', validateForm);
+		emailInput.addEventListener('input', validateForm);
+
+		// Validate the entire form and enable/disable the register button
+		function validateForm() {
+			const isFirstNameValid = firstNameInput.value.trim() !== '';
+			const isLastNameValid = lastNameInput.value.trim() !== '';
+			const isUsernameValid = usernameInput.value.trim() !== '';
+			const isEmailValid = emailInput.value && validateEmail(emailInput.value);
+			const isPasswordValid = passwordInput.value.trim() !== '';
+			const doPasswordsMatch = checkPasswords();
+
+			const isFormValid = isFirstNameValid && 
+								isLastNameValid && 
+								isUsernameValid && 
+								isEmailValid && 
+								isPasswordValid && 
+								doPasswordsMatch;
+
+			registerButton.disabled = !isFormValid;
+			
+			return isFormValid;
+		}
+
+		// Form submission validation
+		form.addEventListener('submit', function(event) {
+			if (!validateForm()) {
+				event.preventDefault();
+			}
+		});
+	});
+</script>
