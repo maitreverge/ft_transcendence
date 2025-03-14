@@ -90,11 +90,15 @@
 								Forgot Password?
 							</a>
 						</div> -->
-						<div class="text-center">
-							<a hx-boost="false" class="small" href="http://localhost:8000/login">
-								Already have an account? Login!
-							</a>
-						</div>
+						<div hx-boost="false"
+                                hx-trigger="click"
+                                hx-push-url="true"
+                                hx-get="/login/"
+                                hx-target="body"
+                                class="text-center small"
+                                href="" 
+                                data-translate="Already have an account? Login!">Already have an account? Login!
+                            </div>
 					</div>
 				</div>
 			</div>

@@ -61,11 +61,15 @@
                                         Forgot Password?
                                     </a>
                                 </div> -->
-								<div class="text-center">
-									<a class="small" hx-boost="false" href="http://localhost:8000/register">
-										Create an Account!
-									</a>
-								</div>
+								<div hx-boost="false"
+                                    hx-trigger="click"
+                                    hx-push-url="true"
+                                    hx-get="/register/"
+                                    hx-target="body"
+                                    class="text-center small"
+                                    href="" 
+                                    data-translate="Create an Account!">Create an Account!
+                                </div>
 							</div>
 						</div>
 					</div>
