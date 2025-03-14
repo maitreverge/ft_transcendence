@@ -472,7 +472,30 @@ function matchPlayersUpdate(plys) {
 	if (!tournament)
 		return;
 	const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
+	const localP1 = localMatch.querySelector(`#pl1`);
+	const localP2 = localMatch.querySelector(`#pl2`);
+	const specCont = localMatch.querySelector(`#spec`);
+	const specs = [...specCont.children]
+	const playersContainer = document.getElementById("players");
 	plys.players.forEach(player => {
-		
+
+		if (specs.every(el => el.id != player.playerId))
+		{
+			const winplayer = window.players.find(el => el.id == player.playerId)
+			if (plys.p1Id == winplayer.id)
+				localP1.appendChild(winplayer);
+			else if (plys.p2Id == winplayer.id)
+				localP2.appendChild(winplayer);
+			else
+				specCont.appendChild(winplayer);
+		}
+
+
+		// specs.forEach(spec => {
+		// 	if (plys.every(el => el.playerId != spec.id))
+		// 		playersContainer.appendChild(spec);
+		// 	if (specs.every(el => el.id != player.playerId))
+		// 		specCont.appendChild(player);
+		// });
 	});
 }
