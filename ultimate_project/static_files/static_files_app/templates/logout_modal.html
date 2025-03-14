@@ -35,15 +35,18 @@ aria-labelledby="exampleModalLabel"
                 data-dismiss="modal">
                 Cancel
                 </button>
-                <div       hx-trigger="click"
+                
+                <button
+                data-dismiss="modal"
                 id="modal-logout"
+                hx-trigger="click"
                 hx-push-url="true"
                 hx-get="/register/"
                 hx-target="body"
                 class="btn btn-primary"
-                href="" 
+                href=""
                 data-translate="Logout">Logout
-                </div>
+            </button>
             </div>
         </div>
     </div>

@@ -36,6 +36,8 @@
     function toggleSidebar(show) {
         console.log("toggleSidebar called");
         const sidebar = document.querySelector('#accordionSidebar');
+        if (!sidebar)
+            return;
         if (show) {
             sidebar.classList.remove('d-none');
         } else {
