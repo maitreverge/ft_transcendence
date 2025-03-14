@@ -73,7 +73,6 @@ function updatePlayers(socket, playersUp)
 {
 	updateWinPlayers(playersUp);
 	updatePlayersCont(playersUp);
-
 }
 
 function updateWinPlayers(playersUp)
@@ -87,7 +86,7 @@ function updateWinPlayers(playersUp)
 	});
 	window.players = window.players.filter(winPly => {
 		if (playersUp.every(el => el.playerId != winPly.id))				
-			return el.remove(), false
+			return winPly.remove(), false
 		else
 			return true;				
 	});
@@ -120,7 +119,7 @@ function quitTournament(socket) {
 function updatePlayersCont(playersUp) {
 
 	const playersCont = document.getElementById("players");
-	const playerElements = [...playersContainer.children];
+	const playerElements = [...playersCont.children];
 
 	playersUp.forEach(plyUp => {
 		if (playerElements.every(el => el.id != plyUp.playerId))
@@ -131,66 +130,116 @@ function updatePlayersCont(playersUp) {
 	});
 }
 
-function updateTournaments(socket, tournamentListUpdate) {
+function updateTournaments(socket, tournamentsUp) {
 
-	const tournamentsContainer = document.getElementById("tournaments");
-	const tournamentElements = [...tournamentsContainer.children];
-
-	tournamentElements.slice().reverse().forEach(tourEl => {
-		if (tourEl.every(el => el.tournamentId != tourEl.id)) {
-			tournamentsContainer.removeChild(tourEl);		
+	const tournamentsCont = document.getElementById("tournaments");
+	const tournamentEls = [...tournamentsCont.children];
+	let patternExist;
+	tournamentsUp.forEach(tourUp => {
+		if (tournamentEls.every(el => el.id != tourUp.tournamentId))
+		{
+			addToTournaments(socket, tournamentsCont, tourUp);
+			if (tourUp.matchs.length > 0)			
+				patternExist = getPattern(tourUp.tournamentId);			
 		}
 	});
+	tournamentEls.slice().reverse().forEach(tourEl => {
+		if (tournamentsUp.every(el => el.tournamentId != tourEl.id)) {
+			tournamentsCont.removeChild(tourEl);		
+		}
+	});
+	updateTournamentsPlayers(tournamentsUp);
+	if (patternExist)
+		updateLinkMatchAndResult(tournamentsUp);	
+	else
+		setTimeout(()=>{
+			updateLinkMatchAndResult(tournamentsUp);
+		}, 3000);
 }
 
-function updatePlayers2(socket, players) {
-	console.log("UPDATE PLAYER");
-    const playersContainer = document.getElementById("players");
-	let playerElements = [...playersContainer.children];	
-	
-	const tournamentsContainer = document.getElementById("tournaments");
-	let tournamentElements = [...tournamentsContainer.children];
+function updateTournamentsPlayers(tournamentsUp) {
 
-	tournamentElements.slice().reverse().forEach(tournament => {
-		const playersCont = tournament.querySelector("#players-cont");
-		[...playersCont.children].slice().reverse().forEach(player =>{
-			if (players.every(el => el.playerId != player.id))
-			{
-				window.players = window.players.filter(el => {
-					if (el.id === player.id)				
-						return el.remove(), false
-					else
-						return true;				
-				});			
-			}
-		});
-	});
-		// findPlayer = searchPlayerInTournaments(player.playerId);
-		// console.log("find player: ", findPlayer);
-		// if (findPlayer)
-		// 	findPlayer.remove();
-	
-	playerElements = [...playersContainer.children];	
-	playerElements.slice().reverse().forEach(player => {	
-		if (players.every(el => el.playerId != player.id))	
+	const tournamentsCont = document.getElementById("tournaments");
+	const tournamentEls = [...tournamentsCont.children];
+
+	tournamentsUp.forEach(tourUp => {
+		const tourEl = tournamentEls.find(el => el.id == tourUp.tournamentId)
+		if (tourEl)
 		{
-			window.players = window.players.filter(el => {
-				if (el.id === player.id)				
-					return el.remove(), false
-				else
-					return true;				
+			const playersCont = tourEl.querySelector("#players-cont");
+			const playerElements = [...playersCont.children];
+			tourUp.players.forEach(plyUp => {
+				if (playerElements.every(el => el.id != plyUp.playerId))
+				{
+					const winplayer = window.players.find(
+						el => el.id == plyUp.playerId);
+					if (winplayer)
+						playersCont.appendChild(winplayer);
+				}
 			});
-			// playersContainer.removeChild(player);									
 		}	
 	});
-	playerElements = [...playersContainer.children];
-	players.forEach(player => {	
-		if (playerElements.every(el => el.id != player.playerId) &&
-			!searchPlayerInTournaments(player.playerId)
-		)		
-			addPlayerToContainer(socket, playersContainer, player.playerId);		
-	});	
 }
+
+function updateLinkMatchAndResult(tournamentsUp) {
+	
+	tournamentsUp.forEach(tourUp => {
+		tourUp.matchs.forEach(matchUp => {
+			if (matchUp.linkMatch)			
+				linkMatch(matchUp.linkMatch);
+			if (matchUp.matchResult)				
+				matchResult(matchUp.matchResult);
+		});
+	});
+}
+// function updatePlayers2(socket, players) {
+// 	console.log("UPDATE PLAYER");
+//     const playersContainer = document.getElementById("players");
+// 	let playerElements = [...playersContainer.children];	
+	
+// 	const tournamentsContainer = document.getElementById("tournaments");
+// 	let tournamentElements = [...tournamentsContainer.children];
+
+// 	tournamentElements.slice().reverse().forEach(tournament => {
+// 		const playersCont = tournament.querySelector("#players-cont");
+// 		[...playersCont.children].slice().reverse().forEach(player =>{
+// 			if (players.every(el => el.playerId != player.id))
+// 			{
+// 				window.players = window.players.filter(el => {
+// 					if (el.id === player.id)				
+// 						return el.remove(), false
+// 					else
+// 						return true;				
+// 				});			
+// 			}
+// 		});
+// 	});
+// 		// findPlayer = searchPlayerInTournaments(player.playerId);
+// 		// console.log("find player: ", findPlayer);
+// 		// if (findPlayer)
+// 		// 	findPlayer.remove();
+	
+// 	playerElements = [...playersContainer.children];	
+// 	playerElements.slice().reverse().forEach(player => {	
+// 		if (players.every(el => el.playerId != player.id))	
+// 		{
+// 			window.players = window.players.filter(el => {
+// 				if (el.id === player.id)				
+// 					return el.remove(), false
+// 				else
+// 					return true;				
+// 			});
+// 			// playersContainer.removeChild(player);									
+// 		}	
+// 	});
+// 	playerElements = [...playersContainer.children];
+// 	players.forEach(player => {	
+// 		if (playerElements.every(el => el.id != player.playerId) &&
+// 			!searchPlayerInTournaments(player.playerId)
+// 		)		
+// 			addPlayerToContainer(socket, playersContainer, player.playerId);		
+// 	});	
+// }
 
 // function searchPlayerInTournaments(playerId) {
 
@@ -208,101 +257,101 @@ function updatePlayers2(socket, players) {
 // 	return null
 // }
 
-function addPlayerToContainer(socket, container, playerId) {
+// function addPlayerToContainer(socket, container, playerId) {
 
-	const div = document.createElement("div");
-	div.className = "user";
-	div.textContent = `user: ${playerId}`;
-	div.id = playerId;	
-	if (playerId === window.selfId)
-	{
-		div.classList.add("self-player");
-		div.onclick = event => {
-			event.stopPropagation();
-			quitTournament(socket);
-			// tournamentId = Number(event.currentTarget.parentElement.id)
-		}		
-	}
-	// else	
-	// 	div.onclick = event =>	sendPlayerClick(socket, event, div);	
-    container.appendChild(div);
-	window.players.push(div);
-}
+// 	const div = document.createElement("div");
+// 	div.className = "user";
+// 	div.textContent = `user: ${playerId}`;
+// 	div.id = playerId;	
+// 	if (playerId === window.selfId)
+// 	{
+// 		div.classList.add("self-player");
+// 		div.onclick = event => {
+// 			event.stopPropagation();
+// 			quitTournament(socket);
+// 			// tournamentId = Number(event.currentTarget.parentElement.id)
+// 		}		
+// 	}
+// 	// else	
+// 	// 	div.onclick = event =>	sendPlayerClick(socket, event, div);	
+//     container.appendChild(div);
+// 	window.players.push(div);
+// }
 
 
 
-function updateTournaments2(socket, tournamentListUpdate) {
-	console.log("UPDATE TOURNAMENT");
-    const tournamentsContainer = document.getElementById("tournaments");
-	let tournamentElements = [...tournamentsContainer.children];
+// function updateTournaments2(socket, tournamentListUpdate) {
+// 	console.log("UPDATE TOURNAMENT");
+//     const tournamentsContainer = document.getElementById("tournaments");
+// 	let tournamentElements = [...tournamentsContainer.children];
 		
-	removeTournaments(
-		socket, tournamentListUpdate, tournamentsContainer, tournamentElements);
+// 	removeTournaments(
+// 		socket, tournamentListUpdate, tournamentsContainer, tournamentElements);
 
-	tournamentListUpdate.forEach(tourUp => {
+// 	tournamentListUpdate.forEach(tourUp => {
 
-		if (tournamentElements.every(el => el.id != tourUp.tournamentId))		
-			addToTournaments(socket, tournamentsContainer, tourUp);
+// 		if (tournamentElements.every(el => el.id != tourUp.tournamentId))		
+// 			addToTournaments(socket, tournamentsContainer, tourUp);
 
-		// tournamentElements = [...tournamentsContainer.children];		
-		// tournamentElements.forEach(tourEl => {
-		// 	if (tourEl.id == tourUp.tournamentId)
-		// 	{
-		// 		const playersCont = tourEl.querySelector("#players-cont");			
-				movePlayersInTournaments(tournamentsContainer, tourUp);
-		// 	}
-		// });
+// 		// tournamentElements = [...tournamentsContainer.children];		
+// 		// tournamentElements.forEach(tourEl => {
+// 		// 	if (tourEl.id == tourUp.tournamentId)
+// 		// 	{
+// 		// 		const playersCont = tourEl.querySelector("#players-cont");			
+// 				movePlayersInTournaments(tournamentsContainer, tourUp);
+// 		// 	}
+// 		// });
 		
-		if (tourUp.matchs.length > 0)
-		{
-			getPattern(tourUp.tournamentId);
-			setTimeout(()=>{
-				tourUp.matchs.forEach(match => {
-					if (match.linkMatch)
-					{
-						console.log("MATCHSSS ", match)				
-						lk = match.linkMatch;
-						linkMatch(lk.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);
-					}
-					if (match.matchResult)
-					{
-						console.log("match Reuslt EXISTE mouquate");
-						// mres = match.matchResult;
-						matchResult(match.matchResult);			
+// 		if (tourUp.matchs.length > 0)
+// 		{
+// 			getPattern(tourUp.tournamentId);
+// 			setTimeout(()=>{
+// 				tourUp.matchs.forEach(match => {
+// 					if (match.linkMatch)
+// 					{
+// 						console.log("MATCHSSS ", match)				
+// 						lk = match.linkMatch;
+// 						linkMatch(lk.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);
+// 					}
+// 					if (match.matchResult)
+// 					{
+// 						console.log("match Reuslt EXISTE mouquate");
+// 						// mres = match.matchResult;
+// 						matchResult(match.matchResult);			
 		
-					}
-					else {
-						console.log("match Reuslt nexiste pas mouquate");
-					}
-				});
-			}, 3000);		
-		}	
-	});
-	// setSelfMatchId();	
-}
+// 					}
+// 					else {
+// 						console.log("match Reuslt nexiste pas mouquate");
+// 					}
+// 				});
+// 			}, 3000);		
+// 		}	
+// 	});
+// 	// setSelfMatchId();	
+// }
 
-function removeTournaments(socket, tournaments, tournamentsContainer, tournamentElements) {
+// function removeTournaments(socket, tournaments, tournamentsContainer, tournamentElements) {
 
-	// const playersContainer = document.getElementById("players");
+// 	// const playersContainer = document.getElementById("players");
 
-	tournamentElements.slice().reverse().forEach(tournament => {
-		if (tournaments.every(el => el.tournamentId != tournament.id)) {
-			// if (match.id == window.selfMatchId)
-			// {
-			// 	if (window.busyElement)
-			// 		window.busyElement.classList.remove("invitation-waiting");
-			// 	window.busyElement = null;
-			// 	window.selectedElement.classList.remove("invitation-confirmed");
-			// 	window.selectedElement = null;
-			// 	window.selfMatchId = null;
-			// }
-			// [...match.children].forEach(player => {
-			// 	playersContainer.appendChild(player);
-			// });
-			tournamentsContainer.removeChild(tournament);		
-		}
-	});
-}
+// 	tournamentElements.slice().reverse().forEach(tournament => {
+// 		if (tournaments.every(el => el.tournamentId != tournament.id)) {
+// 			// if (match.id == window.selfMatchId)
+// 			// {
+// 			// 	if (window.busyElement)
+// 			// 		window.busyElement.classList.remove("invitation-waiting");
+// 			// 	window.busyElement = null;
+// 			// 	window.selectedElement.classList.remove("invitation-confirmed");
+// 			// 	window.selectedElement = null;
+// 			// 	window.selfMatchId = null;
+// 			// }
+// 			// [...match.children].forEach(player => {
+// 			// 	playersContainer.appendChild(player);
+// 			// });
+// 			tournamentsContainer.removeChild(tournament);		
+// 		}
+// 	});
+// }
 
 function addToTournaments(socket, tournamentsContainer, tournament) {
   	
@@ -317,104 +366,103 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 	playersCont.id = "players-cont";
 	div.appendChild(playersCont);
 	div.appendChild(overlayPattern);
-    tournamentsContainer.appendChild(div);
-	// movePlayerInTournament(playersCont, tournament);
+    tournamentsContainer.appendChild(div);	
 }
 
-function movePlayersInTournaments(tournamentsContainer, tourUp) {
-	tournamentElements = [...tournamentsContainer.children];		
-	tournamentElements.forEach(tourEl => {
-		if (tourEl.id == tourUp.tournamentId)
-		{
-			const playersCont = tourEl.querySelector("#players-cont");			
-			const playerElements = [...playersCont.children];
-			tourUp.players.forEach(plyUp => {
-				if (playerElements.every(el => el.id != plyUp.playerId))
-				{
-					const winplayer = window.players.find(el => el.id == plyUp.playerId);
-					if (winplayer)
-						playersCont.appendChild(winplayer);
-				}
-			});	
-		}
-	});
+// function movePlayersInTournaments(tournamentsContainer, tourUp) {
+// 	tournamentElements = [...tournamentsContainer.children];		
+// 	tournamentElements.forEach(tourEl => {
+// 		if (tourEl.id == tourUp.tournamentId)
+// 		{
+// 			const playersCont = tourEl.querySelector("#players-cont");			
+// 			const playerElements = [...playersCont.children];
+// 			tourUp.players.forEach(plyUp => {
+// 				if (playerElements.every(el => el.id != plyUp.playerId))
+// 				{
+// 					const winplayer = window.players.find(el => el.id == plyUp.playerId);
+// 					if (winplayer)
+// 						playersCont.appendChild(winplayer);
+// 				}
+// 			});	
+// 		}
+// 	});
 
-}
+// }
 
-function movePlayerInTournament2(tournamentElement, tournament) {
+// function movePlayerInTournament2(tournamentElement, tournament) {
 	
-	const playersContainer = document.getElementById("players");
-	const playerElements = [...playersContainer.children];
-	const tournamentPlayerElements = [...tournamentElement.children];
-	const tournamentsContainer = document.getElementById("tournaments");
-	const tournamentElements = [...tournamentsContainer.children];
+// 	const playersContainer = document.getElementById("players");
+// 	const playerElements = [...playersContainer.children];
+// 	const tournamentPlayerElements = [...tournamentElement.children];
+// 	const tournamentsContainer = document.getElementById("tournaments");
+// 	const tournamentElements = [...tournamentsContainer.children];
 
-	if (tournament.players)
-	{
-		playerElements.slice().reverse().forEach(player => { // je met le joueur ds le bon tournois depuis cont player si ny est pas deja 
-			if (tournament.players.some(p => p.playerId == player.id) &&
-				tournamentPlayerElements.every(p => p.id != player.id))
-			{
-				console.log("appendchild to tournois; id:", player.id," ", tournamentElement.id);
-				tournamentElement.appendChild(player);
-			}			
-			else
-			{
+// 	if (tournament.players)
+// 	{
+// 		playerElements.slice().reverse().forEach(player => { // je met le joueur ds le bon tournois depuis cont player si ny est pas deja 
+// 			if (tournament.players.some(p => p.playerId == player.id) &&
+// 				tournamentPlayerElements.every(p => p.id != player.id))
+// 			{
+// 				console.log("appendchild to tournois; id:", player.id," ", tournamentElement.id);
+// 				tournamentElement.appendChild(player);
+// 			}			
+// 			else
+// 			{
 				
-				tournamentElements.slice().reverse().forEach(tourn => {
-					const playersCont = tourn.querySelector("#players-cont");
-					console.log("type: ", typeof(tourn));
-					[...playersCont.children].slice().reverse().forEach(player2 =>{
+// 				tournamentElements.slice().reverse().forEach(tourn => {
+// 					const playersCont = tourn.querySelector("#players-cont");
+// 					console.log("type: ", typeof(tourn));
+// 					[...playersCont.children].slice().reverse().forEach(player2 =>{
 
-						if (tournament.players.some(p => p.playerId == player2.id) &&
-						tournamentPlayerElements.every(p => p.id != player2.id))			
-						{
-							console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
-							tournamentElement.appendChild(player2);
-						}
-					});									
-				});
-			}						
-		});
-		if (playerElements.length === 0)
-		{
-			console.log("player est faux");
-			tournamentElements.slice().reverse().forEach(tourn => {
-				console.log("type: ", typeof(tourn));
-				const playersCont = tourn.querySelector("#players-cont");
-				[...playersCont.children].slice().reverse().forEach(player2 =>{
+// 						if (tournament.players.some(p => p.playerId == player2.id) &&
+// 						tournamentPlayerElements.every(p => p.id != player2.id))			
+// 						{
+// 							console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
+// 							tournamentElement.appendChild(player2);
+// 						}
+// 					});									
+// 				});
+// 			}						
+// 		});
+// 		if (playerElements.length === 0)
+// 		{
+// 			console.log("player est faux");
+// 			tournamentElements.slice().reverse().forEach(tourn => {
+// 				console.log("type: ", typeof(tourn));
+// 				const playersCont = tourn.querySelector("#players-cont");
+// 				[...playersCont.children].slice().reverse().forEach(player2 =>{
 					
-					if (tournament.players.some(p => p.playerId == player2.id) &&
-					tournamentPlayerElements.every(p => p.id != player2.id))			
-				{
-					console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
-					tournamentElement.appendChild(player2);
-				}
-			});									
-		});
-		}
+// 					if (tournament.players.some(p => p.playerId == player2.id) &&
+// 					tournamentPlayerElements.every(p => p.id != player2.id))			
+// 				{
+// 					console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
+// 					tournamentElement.appendChild(player2);
+// 				}
+// 			});									
+// 		});
+// 		}
 
 
-		tournamentPlayerElements.slice().reverse().forEach(player => { // je met le joueur du tournois ds cont player 
-			if (tournament.players.every(el => el.playerId != player.id))// && player.id != "overlay-pattern"))
-			{
-				console.log("appendchild to cont player; id:", player.id, " ", tournamentElement.id);
-				playersContainer.appendChild(player);	// ou alors le bon tournois!				
-			}			
-		});
-	}
-	else // si le tournois est vide
-	{
-		tournamentPlayerElements.slice().reverse().forEach(player => {	// je met tous les joueur du tournois ds cont player 					
-			// if (player.id != "overlay-pattern")
-			// {
-				console.log("appendchild to cont player from void; id:", player.id, " ", tournamentElement.id);
-				playersContainer.appendChild(player);	// ou alors le bon tournois!				
-			// }
-				// ou alors le bon tournois!				
-		});
-	}
-}
+// 		tournamentPlayerElements.slice().reverse().forEach(player => { // je met le joueur du tournois ds cont player 
+// 			if (tournament.players.every(el => el.playerId != player.id))// && player.id != "overlay-pattern"))
+// 			{
+// 				console.log("appendchild to cont player; id:", player.id, " ", tournamentElement.id);
+// 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
+// 			}			
+// 		});
+// 	}
+// 	else // si le tournois est vide
+// 	{
+// 		tournamentPlayerElements.slice().reverse().forEach(player => {	// je met tous les joueur du tournois ds cont player 					
+// 			// if (player.id != "overlay-pattern")
+// 			// {
+// 				console.log("appendchild to cont player from void; id:", player.id, " ", tournamentElement.id);
+// 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
+// 			// }
+// 				// ou alors le bon tournois!				
+// 		});
+// 	}
+// }
 
 function newTournament(socket) {
 
@@ -439,10 +487,10 @@ function getPattern(tournamentId) {
 		`[id='${tournamentId}']`
 	);
 	if (!tournament)
-		return;
+		return false;
 	const overlay = tournament.querySelector("#overlay-pattern");
 	if (overlay.innerHTML.trim() !== "")
-		return;
+		return false;
 	fetch(`/tournament/tournament-pattern/${tournamentId}/`)
 	.then(response => {
 		if (!response.ok) 
@@ -450,34 +498,35 @@ function getPattern(tournamentId) {
 		return response.text();
 	})
 	.then(data => loadHtml(data, overlay))
-	.catch(error => console.log(error));		
+	.catch(error => console.log(error));
+	return true;		
 }
 
-function linkMatch(tournamentId, localMatchId, matchId, p1Id, p2Id) {
-	console.log("LINK MATCH tournId ", tournamentId, " localid: ", localMatchId, " matchid ", matchId, " p1 ", p1Id, " p2 ", p2Id, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
+function linkMatch(lk) {
+	console.log("LINK MATCH tournId ", lk.tournamentId, " localid: ", lk.localMatchId, " matchid ", lk.matchId, " p1 ", lk.p1Id, " p2 ", lk.p2Id, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
 	const tournament = document.getElementById("tournaments").querySelector(
-		`[id='${tournamentId}']`
+		`[id='${lk.tournamentId}']`
 	);
 	if (!tournament)
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
 	// const matchs_cont = tournament.querySelector("#matchs-cont");
-	const localMatch = tournament.querySelector(`#${localMatchId}`);
+	const localMatch = tournament.querySelector(`#${lk.localMatchId}`);
 
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
-	localP1.innerText = p1Id;
-	localP2.innerText = p2Id;
+	localP1.innerText = lk.p1Id;
+	localP2.innerText = lk.p2Id;
 	// const overlay = document.getElementById("overlay-match");
 	// const localMatch = document.getElementById(localMatchId);
-	if (window.selfId == p1Id || window.selfId == p2Id)
+	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
 	{
-		window.selfMatchId = matchId;
+		window.selfMatchId = lk.matchId;
 		localMatch.classList.add("next-match");
 	}
 
 	localMatch.onclick = function() {
-		fetch(`/match/?matchId=${matchId}&playerId=${window.selfId}`)
+		fetch(`/match/?matchId=${lk.matchId}&playerId=${window.selfId}`)
 		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
