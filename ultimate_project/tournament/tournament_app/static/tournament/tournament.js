@@ -44,11 +44,7 @@ function onTournamentMessage(event, socket) {
 			window.tournamentList = data.tournaments; 
 			updateTournaments(socket, data.tournaments);
 			break;
-		case "getPattern":
-			console.log("case getpattern");
-			getPattern(data.tournamentId);
-			break;
-			case "linkMatch":
+		case "linkMatch":
 			console.log("case linkmatch");
 			linkMatch(data.tournamentId, data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
 			break;
@@ -153,11 +149,9 @@ function updateTournaments(socket, tournamentsUp) {
 
 	tournamentsUp.forEach(tourUp => {
 		if (tournamentEls.every(el => el.id != tourUp.tournamentId))
-		{
 			addToTournaments(socket, tournamentsCont, tourUp);
-			if (tourUp.matchs.length > 0)			
-				patternPromises.push(getPattern(tourUp.tournamentId));			
-		}
+		if (tourUp.matchs.length > 0)			
+			patternPromises.push(getPattern(tourUp.tournamentId));			
 	});
 	tournamentEls.slice().reverse().forEach(tourEl => {
 		if (tournamentsUp.every(el => el.tournamentId != tourEl.id)) {

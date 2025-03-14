@@ -17,19 +17,10 @@ class Tournament():
 	async def append_player(self, player):
 		self.players.append(player)
 		if len(self.players) >= 4:	
-			await self.send_get_pattern()
-			await asyncio.sleep(3)#//!
 			await self.launchTournament()	
 				
 	def remove_player(self, player):
 		self.players[:] = [p for p in self.players if p != player]
-
-	async def send_get_pattern(self):
-		for player in self.players:				
-			await player.send(text_data=json.dumps({
-				"type": "getPattern",
-				"tournamentId": self.id					
-			}))
 
 	async def launchTournament(self):
 		await self.start_match(self.players[0].id, self.players[1].id, "m2")
@@ -58,23 +49,13 @@ class Tournament():
 					}
 					self.matchs.append(match)
 					return link_match
-					# await self.send_link_match(link_match)
-		
-	async def send_link_match(self, link_match):
-		from tournament_app.services.tournament_consumer import players
-		for player in players:				
-			await player.send(text_data=json.dumps(link_match))
 
-	# async def send_match_update()
 	async def match_result(self, match_id, winner_id, looser_id):
 		print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
 		self.n_match += 1
 		match = next(
-			(m for m in self.matchs if m.get('matchId') == match_id)	
-		, None)
+			(m for m in self.matchs if m.get('matchId') == match_id), None)
 		if match:
-			# match['winnerId'] = winner_id
-			# match['looserId'] = looser_id
 			match_result = {				
 				"type": "matchResult",
 				"tournamentId": self.id,
@@ -86,21 +67,24 @@ class Tournament():
 				"looserId": looser_id			
 			}
 			match['matchResult'] = match_result
-			# match['matchPlayersUpdate'] = None
 		print(self.matchs, flush=True)
 		if self.n_match == 1:
 			await self.send_match_result(match_result)
-			# await self.send_match_players_update(match_update)
 		elif self.n_match == 2:
 			link_match = await self.start_match(
 				self.matchs[0].get('matchResult', {}).get('winnerId'),
-				self.matchs[1].get('matchResult', {}).get('winnerId'),				  
-				"m1")			
+				self.matchs[1].get('matchResult', {}).get('winnerId'), "m1")			
 			await self.send_match_result(match_result)
 			await self.send_link_match(link_match)
 		elif self.n_match == 3:
 			print(f"THE FINAL WINNER IS :{winner_id}", flush=True)
 			await self.send_match_result(match_result)
+
+		
+	async def send_link_match(self, link_match):
+		from tournament_app.services.tournament_consumer import players
+		for player in players:				
+			await player.send(text_data=json.dumps(link_match))
 
 	async def send_match_result(self, match_result):
 		from tournament_app.services.tournament_consumer import players
@@ -110,8 +94,8 @@ class Tournament():
 	async def match_players_update(self, match_update):
 		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)
 		match = next(
-			(m for m in self.matchs if m.get('matchId') == match_update.get('matchId'))	
-		, None)
+			(m for m in self.matchs
+			if m.get('matchId') == match_update.get('matchId')), None)
 		if match:
 			match_update['type'] = 'matchPlayersUpdate'
 			match_update['tournamentId'] = self.id

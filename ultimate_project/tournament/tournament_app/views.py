@@ -1,6 +1,6 @@
 import os
 import json
-import tournament_app.services.consumer as consumer
+import tournament_app.services.simple_match_consumer as sm_cons
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -25,10 +25,10 @@ async def match_players_update(request : HttpRequest):
 	match_id = data.get('matchId', None)
 	players = data.get('players', [])
 	match = next(
-		(m for m in consumer.matchs if m.get("matchId") == match_id), None)
+		(m for m in sm_cons.matchs if m.get("matchId") == match_id), None)
 	if match:
 		match['players'] = players
-		await consumer.MyConsumer.match_update()
+		await sm_cons.MyConsumer.match_update()
 	tournament = next(
 		(t for t in tournaments if any(
 			data.get('matchId') == m.get("matchId") for m in t.matchs))
@@ -46,13 +46,13 @@ async def match_result(request : HttpRequest):
 	looser_id =	data.get('looserId')
 	p1_id =	data.get('p1Id')
 	p2_id =	data.get('p2Id')
-	p1 = next((p for p in consumer.players if p.get('playerId') == p1_id), None)
-	p2 = next((p for p in consumer.players if p.get('playerId') == p2_id), None)
+	p1 = next((p for p in sm_cons.players if p.get('playerId') == p1_id), None)
+	p2 = next((p for p in sm_cons.players if p.get('playerId') == p2_id), None)
 	if p1: p1['busy'] = None
 	if p2: p2['busy'] = None
-	consumer.matchs[:] = [m for m in consumer.matchs
+	sm_cons.matchs[:] = [m for m in sm_cons.matchs
 		if m.get("matchId") != match_id]
-	await consumer.MyConsumer.match_update()
+	await sm_cons.MyConsumer.match_update()
 	# tournament = next((t for t in tournaments if match_id in t.matchs_id), None)
 	# tournament = next(
 	# 	(t for t in tournaments if any(match_id in m.get('matchId', []) for m in t.matchs))
