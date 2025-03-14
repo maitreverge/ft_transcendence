@@ -86,10 +86,12 @@ class Tournament():
 				"looserId": looser_id			
 			}
 			match['matchResult'] = match_result
+			# match['matchPlayersUpdate'] = None
 		print(self.matchs, flush=True)
 		if self.n_match == 1:
 			await self.send_match_result(match_result)
-		if self.n_match == 2:
+			# await self.send_match_players_update(match_update)
+		elif self.n_match == 2:
 			link_match = await self.start_match(
 				self.matchs[0].get('matchResult', {}).get('winnerId'),
 				self.matchs[1].get('matchResult', {}).get('winnerId'),				  
