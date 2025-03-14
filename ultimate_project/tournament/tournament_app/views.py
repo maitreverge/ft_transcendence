@@ -10,7 +10,7 @@ def simple_match(request : HttpRequest, user_id):
 	print(f"dans simple match {user_id}", flush=True)	
 	return render(
 		request,
-		"selection_simple.html",
+		"simple_match.html",
 		{
 			"rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8000"),	
@@ -28,7 +28,7 @@ async def match_players_update(request : HttpRequest):
 		(m for m in sm_cons.matchs if m.get("matchId") == match_id), None)
 	if match:
 		match['players'] = players
-		await sm_cons.MyConsumer.match_update()
+		await sm_cons.SimpleConsumer.match_update()
 	tournament = next(
 		(t for t in tournaments if any(
 			data.get('matchId') == m.get("matchId") for m in t.matchs))
@@ -52,17 +52,12 @@ async def match_result(request : HttpRequest):
 	if p2: p2['busy'] = None
 	sm_cons.matchs[:] = [m for m in sm_cons.matchs
 		if m.get("matchId") != match_id]
-	await sm_cons.MyConsumer.match_update()
-	# tournament = next((t for t in tournaments if match_id in t.matchs_id), None)
-	# tournament = next(
-	# 	(t for t in tournaments if any(match_id in m.get('matchId', []) for m in t.matchs))
-    # , None)
+	await sm_cons.SimpleConsumer.match_update()
 
 	tournament = next(
 		(t for t in tournaments if any(match_id == m.get('matchId', None)
 		for m in t.matchs))
 	, None)
-	# tournament = next((t for t in tournaments if match_id in t.matchs_id), None)
 	if tournament:
 		await tournament.match_result(match_id, winner_id, looser_id)
 	return JsonResponse({"status": "succes"})
@@ -81,7 +76,6 @@ def tournament(request : HttpRequest, user_id):
 
 def tournament_pattern(request : HttpRequest, tournament_id):
 	print(f"dans tournament pattern {tournament_id}", flush=True)	
-	# print(f"dans tournament pattern {tournament_id}", flush=True)	
 	return render(
 		request,
 		"tournament_pattern.html",
