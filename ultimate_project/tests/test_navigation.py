@@ -79,7 +79,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#youpi-banane").click()
     page.locator("#pre-modal-logout").click()
     page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/register/")
+    expect(page).to_have_url(f"{base_url}/login")
 
 
     navigate(f"{base_url}/user/profile/")
@@ -91,7 +91,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#youpi-banane").click()
     page.locator("#pre-modal-logout").click()
     page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/register/")
+    expect(page).to_have_url(f"{base_url}/login")
 
     navigate(f"{base_url}/user/stats/")
     page.locator("#youpi-banane").click()
@@ -102,7 +102,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#youpi-banane").click()
     page.locator("#pre-modal-logout").click()
     page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/register/")
+    expect(page).to_have_url(f"{base_url}/login")
 
 
     navigate(f"{base_url}/tournament/simple-match/")
@@ -114,7 +114,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#youpi-banane").click()
     page.locator("#pre-modal-logout").click()
     page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/register/")
+    expect(page).to_have_url(f"{base_url}/login")
 
 
     navigate(f"{base_url}/tournament/tournament/")
@@ -126,7 +126,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#youpi-banane").click()
     page.locator("#pre-modal-logout").click()
     page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/register/")
+    expect(page).to_have_url(f"{base_url}/login")
 
     # Fermeture
     context.close()
