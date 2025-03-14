@@ -174,8 +174,9 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-          Youpi Banane
+        <span class="mr-2 d-none d-lg-inline text-gray-600 small" 
+          {% if request.headers.X_User_ID %}data-user-id="{{ request.headers.X_User_ID }}"{% endif %}>
+          {% if username %}Welcome, {{ username }}{% else %}Guest{% endif %}
         </span>
         <img
           class="img-profile rounded-circle"

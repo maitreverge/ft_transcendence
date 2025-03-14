@@ -3,3 +3,8 @@ uvicorn
 httpx
 websockets
 jinja2
+django-cors-headers
+cryptography
+PyJWT
+requests
+python-multipart

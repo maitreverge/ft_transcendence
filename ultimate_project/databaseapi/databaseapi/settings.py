@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import logging
+from datetime import timedelta
 
 NAME = os.getenv("name")
 
@@ -58,16 +59,18 @@ INSTALLED_APPS = [
     f"{NAME}_app",
     "rest_framework",
     "django_filters",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # This must be BEFORE CommonMiddleware
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -190,3 +193,41 @@ LOGGING = {
         },
     },
 }
+
+CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
+CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for development
+CORS_ALLOW_ORIGINS = [
+    "http://localhost:8000",  # Basic
+    "http://localhost:8001",  # Tournament
+    "http://localhost:8002",  # Match
+    "http://localhost:8003",  # Static files
+    "http://localhost:8004",  # User
+    "http://localhost:8005",  # FastAPI
+    "http://localhost:8006",  # Authentication
+    "http://localhost:8007",  # DatabaseAPI
+    f"https://{PI_DOMAIN}",  # Production
+]
+CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_HEADERS = ["*"]
+CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken", "Set-Cookie"]
+
+# JWT settings
+JWT_AUTH = {
+    "JWT_SECRET_KEY": SECRET_KEY,
+    "JWT_ALGORITHM": "HS256",
+    "JWT_ALLOW_REFRESH": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=15),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+}
+
+# Cookie settings
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = (
+    "Lax"  # Use 'None' with SESSION_COOKIE_SECURE=True in production
+)
+SESSION_COOKIE_PATH = "/"
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
+CSRF_COOKIE_SAMESITE = "Lax"  # Use 'None' with CSRF_COOKIE_SECURE=True in production
+CSRF_COOKIE_PATH = "/"

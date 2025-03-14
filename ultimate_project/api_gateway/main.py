@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Request, HTTPException, Query
+from fastapi import FastAPI, Request, HTTPException, Query, Depends
 import httpx
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from starlette.exceptions import HTTPException as StarletteHTTPException
 import logging
 from fastapi.templating import Jinja2Templates
@@ -10,6 +10,17 @@ templates = Jinja2Templates(directory="templates")
 
 
 
+# from fastapi.middleware.cors import CORSMiddleware
+from auth_helpers import block_authenticated_users
+import json
+from authentication import (
+    login_fastAPI,
+    is_authenticated,
+    logout_fastAPI,
+    register_fastAPI,
+)
+
+
 app = FastAPI(
     title="API Gateway",
     description="This API Gateway routes requests to various microservices. \
@@ -17,6 +28,21 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Configure CORS middleware with more permissive settings
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # Allow all origins for development
+#     allow_credentials=True,  # Allow cookies
+#     allow_methods=["*"],  # Allow all HTTP methods
+#     allow_headers=["*"],  # Allow all headers
+#     expose_headers=[
+#         "Content-Type",
+#         "X-CSRFToken",
+#         "Set-Cookie",
+#     ],  # Expose these headers
+# )
+
+# error page handler
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return await proxy_request("static_files", f"error/{exc.status_code}", request)
@@ -26,13 +52,45 @@ services = {
     "match": "http://match:8002",
     "static_files": "http://static_files:8003",
     "user": "http://user:8004",
-    "authentication": "http://authentication:8006",
+    # "authentication": "http://authentication:8006",
     "databaseapi": "http://databaseapi:8007",
 }
 
 # logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+# Token refresh middleware
+@app.middleware("http")
+async def token_refresh_middleware(request: Request, call_next):
+    """
+    Middleware that checks if the access token needs to be refreshed.
+    If refresh is needed, it adds the new access token to the response.
+    """
+    # First process the request normally
+    response = await call_next(request)
+
+    # Check authentication status after request processing
+    is_auth, user_info = is_authenticated(request)
+
+    # If authenticated and token refresh needed, update the response cookies
+    if is_auth and user_info and user_info.get("refresh_needed"):
+        print("🔄 Middleware: Refreshing access token", flush=True)
+
+        # Set the new access token in the response
+        response.set_cookie(
+            key="access_token",
+            value=user_info.get("new_access_token"),
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours
+        )
+
+    return response
+
 
 # ! DEBUGGING COOKIES MIDDLEWARE.
 # This middleware is used to debug incoming cookies in FastAPI.
@@ -41,8 +99,15 @@ logger = logging.getLogger(__name__)
 async def debug_cookies_middleware(request: Request, call_next):
     print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
     response = await call_next(request)
-    return response
 
+    # Also log outgoing cookies in response headers
+    if "set-cookie" in response.headers:
+        print(
+            f"🔍 Outgoing Set-Cookie headers: {response.headers.get('set-cookie')}",
+            flush=True,
+        )
+
+    return response
 
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
@@ -59,12 +124,23 @@ async def proxy_request(service_name: str, path: str, request: Request):
             "\n****************************",
             flush=True,
         )
+
+        # Forward all headers except 'host'
         headers = {
             key: value
             for key, value in request.headers.items()
             if key.lower() not in ["host"]
         }
         headers["Host"] = "localhost"
+
+        # Check if user is authenticated and add user info to headers
+        is_auth, user_info = is_authenticated(request)
+        if is_auth and user_info:
+            headers["X-User-ID"] = str(user_info.get("user_id", ""))
+            headers["X-Username"] = user_info.get("username", "")
+
+        # Log cookies for debugging
+        print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
 
         method = request.method
         data = await request.body()
@@ -76,8 +152,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
             )
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
-            logger.error
-            (f"Request failed with status code {exc.response.status_code}")
+            logger.error(f"Request failed with status code {exc.response.status_code}")
             raise HTTPException(
                 status_code=exc.response.status_code, detail=exc.response.text
             )
@@ -85,16 +160,27 @@ async def proxy_request(service_name: str, path: str, request: Request):
             logger.error(f"Request failed: {exc}")
             raise HTTPException(status_code=500, detail="Internal Server Error")
 
-        response_headers = {key: value for key, value in response.headers.items()}
-        response_headers["Cache-Control"] = (
-            "no-cache, \
-            no-store, must-revalidate"
+        # Prepare response headers
+        response_headers = {
+            key: value
+            for key, value in response.headers.items()
+            if key.lower() not in ["set-cookie"]
+        }  # We'll handle cookies separately
+        response_headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+        # Create the response object
+        content_type = response.headers.get("Content-Type", "")
+
+        # Create the FastAPI response
+        fastapi_response = Response(
+            content=response.content,
+            status_code=response.status_code,
+            headers=response_headers,
+            media_type=content_type.split(";")[0].strip() if content_type else None,
         )
 
-        content_type = response.headers.get("Content-Type", "")
-        if content_type.startswith("text/html"):
-            return HTMLResponse(content=response.text, status_code=response.status_code)
-        return JSONResponse(content=response.json(), status_code=response.status_code)
+        return fastapi_response
+
 
 
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
@@ -231,22 +317,15 @@ async def redirect_to_home():
     return RedirectResponse(url="/home/")
 
 
-@app.api_route("/auth/{path:path}", methods=["GET", "POST"])
-async def authentication_proxy(path: str, request: Request):
-    """
-    Proxy requests to the authentication microservice.
-    """
-    return await proxy_request("authentication", f"auth/{path}", request)
 
-
-@app.api_route("/api/{path:path}", methods=["GET"])
+@app.api_route("/api/{path:path}", methods=["GET", "POST"])
 async def databaseapi_proxy(path: str, request: Request):
     """
     Proxy requests to the database API microservice.
 
     - **path**: The path to the resource in the database API
 
-    ### Examples:
+    ### GET Examples:
     - **List all players**: GET /api/player/
     - **Get player by ID**: GET /api/player/1/
     - **Filter players by username**: GET /api/player/?username=player1
@@ -259,6 +338,11 @@ async def databaseapi_proxy(path: str, request: Request):
     - **Get match by ID**: GET /api/match/1/
     - **Filter matches by player**: GET /api/match/?player1=1
     - **Filter matches by tournament**: GET /api/match/?tournament=1
+
+    ### POST Examples:
+    - **Create a new player**: POST /api/player/
+    - **Create a new tournament**: POST /api/tournament/
+    - **Create a new match**: POST /api/match/
 
     ### Pagination:
     - All list endpoints are paginated with 10 items per page
@@ -283,6 +367,162 @@ async def databaseapi_proxy(path: str, request: Request):
     ```
     """
     return await proxy_request("databaseapi", f"api/{path}", request)
+
+
+@app.api_route("/login/{path:path}", methods=["GET"])
+@app.api_route("/login", methods=["GET"])
+async def login_page_route(request: Request, path: str = ""):
+    """
+    Proxy for serving the login page.
+    Redirects to home if user is already authenticated.
+    """
+    # Check if user is authenticated
+    is_auth, user_info = is_authenticated(request)
+
+    if is_auth:
+        # If authenticated, redirect to home
+        response = RedirectResponse(url="/home")
+
+        # If token refresh is needed, set the new access token cookie
+        if user_info and user_info.get("refresh_needed"):
+            print("🔄 Setting refreshed access token during login redirect", flush=True)
+            response.set_cookie(
+                key="access_token",
+                value=user_info.get("new_access_token"),
+                httponly=True,
+                secure=False,
+                samesite="Lax",
+                path="/",
+                max_age=60 * 60 * 6,  # 6 hours
+            )
+
+        return response
+
+    # If not authenticated, show login page
+    return await proxy_request("static_files", "login/", request)
+
+
+@app.api_route("/auth/login", methods=["POST"])
+@app.api_route("/auth/login/", methods=["POST"])
+async def login_page_route(request: Request):
+    """
+    Extracts form data and passes it to `login_fastAPI`
+    """
+    form_data = await request.form()  # Extract form data
+    username = form_data.get("username")
+    password = form_data.get("password")
+
+    # Create a new response object
+    response = Response()
+
+    return await login_fastAPI(request, response, username, password)
+
+
+# Add auth-status endpoint for debugging
+@app.get("/auth/status")
+async def auth_status(request: Request):
+    """
+    Returns current authentication status - useful for debugging
+    """
+    is_auth, user_info = is_authenticated(request)
+
+    # Log the cookies for debugging
+    print(f"🍪 Status check cookies: {request.cookies}", flush=True)
+
+    # Create the response
+    response = JSONResponse(
+        {
+            "authenticated": is_auth,
+            "user": user_info,
+            "cookies": {
+                "has_access_token": "access_token" in request.cookies,
+                "has_refresh_token": "refresh_token" in request.cookies,
+            },
+        },
+        headers={
+            "Content-Type": "application/json; charset=utf-8",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
+
+    # If token refresh is needed, set the new access token cookie
+    if is_auth and user_info and user_info.get("refresh_needed"):
+        print("🔄 Setting refreshed access token in response", flush=True)
+        response.set_cookie(
+            key="access_token",
+            value=user_info.get("new_access_token"),
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours
+        )
+
+    return response
+
+
+# Add logout endpoint
+@app.api_route("/auth/logout", methods=["POST"])
+@app.api_route("/auth/logout/", methods=["POST"])
+async def logout_route(request: Request):
+    """
+    Handles user logout by clearing JWT cookies
+    """
+    return await logout_fastAPI(request)
+
+
+@app.api_route("/register/{path:path}", methods=["GET"])
+@app.api_route("/register", methods=["GET"])
+async def register_page_route(request: Request, path: str = ""):
+    """
+    Proxy for serving the register page.
+    Redirects to home if user is already authenticated.
+    """
+    # Check if user is authenticated
+    is_auth, user_info = is_authenticated(request)
+
+    if is_auth:
+        # If authenticated, redirect to home
+        response = RedirectResponse(url="/home")
+
+        # If token refresh is needed, set the new access token cookie
+        if user_info and user_info.get("refresh_needed"):
+            print("🔄 Setting refreshed access token during login redirect", flush=True)
+            response.set_cookie(
+                key="access_token",
+                value=user_info.get("new_access_token"),
+                httponly=True,
+                secure=False,
+                samesite="Lax",
+                path="/",
+                max_age=60 * 60 * 6,  # 6 hours
+            )
+
+        return response
+
+    # If not authenticated, show login page
+    return await proxy_request("static_files", "register/", request)
+
+
+@app.api_route("/auth/register", methods=["POST"])
+@app.api_route("/auth/register/", methods=["POST"])
+async def register_page_route(request: Request):
+    """
+    Extracts form data and passes it to `register_fastAPI`
+    """
+    form_data = await request.form()  # Extract form data
+
+    first_name = form_data.get("first_name")
+    last_name = form_data.get("last_name")
+    username = form_data.get("username")
+    password = form_data.get("password")
+    email = form_data.get("email")
+    # Create a new response object
+    response = Response()
+
+    return await register_fastAPI(
+        request, response, username, password, email, first_name, last_name
+    )
 
 
 @app.api_route("/{path:path}", methods=["GET"])

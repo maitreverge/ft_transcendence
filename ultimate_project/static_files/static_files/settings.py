@@ -49,16 +49,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     f"{NAME}_app",
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',  # This must be BEFORE CommonMiddleware
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -164,3 +166,19 @@ LOGGING = {
         },
     },
 }
+
+# CORS CONFIGURATION
+CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
+CORS_ALLOW_ORIGINS = [
+    "http://localhost:8000",  # Basic
+    "http://localhost:8001",  # Tournament
+    "http://localhost:8002",  # Match
+    # "http://localhost:8003",  # Static files
+    "http://localhost:8004",  # User
+    "http://localhost:8005",  # FastAPI
+    "http://localhost:8006",  # Authentication
+    "http://localhost:8007",  # DatabaseAPI
+    f"https://{PI_DOMAIN}",  # Production
+]
+CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_HEADERS = ["*"]

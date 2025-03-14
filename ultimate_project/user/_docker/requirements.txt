@@ -7,3 +7,4 @@ qrcode
 pyotp
 pillow
 cryptography
+django-cors-headers

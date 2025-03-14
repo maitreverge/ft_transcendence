@@ -49,16 +49,16 @@ services:
     volumes:
       - ./match:/app/
 
-  authentication:
-    build:
-      context: ./authentication
-      dockerfile: _docker/Dockerfile
-    environment:
-      - env=dev
-    ports:
-      - "${authentication_port}:${authentication_port}"
-    volumes:
-      - ./authentication:/app/
+  # authentication:
+  #   build:
+  #     context: ./authentication
+  #     dockerfile: _docker/Dockerfile
+  #   environment:
+  #     - env=dev
+  #   ports:
+  #     - "${authentication_port}:${authentication_port}"
+  #   volumes:
+  #     - ./authentication:/app/
 
   databaseapi:
     build:
