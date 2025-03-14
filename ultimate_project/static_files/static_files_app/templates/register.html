@@ -130,6 +130,9 @@
 		const registerButton = document.getElementById('register-button');
 		const form = document.querySelector('form.user');
 
+		// Disable the button by default when page loads
+		registerButton.disabled = true;
+
 		// Email validation function
 		function validateEmail(email) {
 			const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -206,6 +209,9 @@
 			
 			return isFormValid;
 		}
+
+		// Run validation on page load to disable the button initially
+		validateForm();
 
 		// Form submission validation
 		form.addEventListener('submit', function(event) {

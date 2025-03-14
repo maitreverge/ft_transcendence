@@ -6,6 +6,9 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
+FORMULAIRE PAS DE FEEDBACK POUR LOGIN + REGISTER
+
+
 One the login route secured, lock it to prevent accessing it to already connected users
 
 Then implement the logout
