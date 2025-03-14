@@ -102,7 +102,7 @@ function updateWinPlayers(playersUp)
 
 function create_player_element(playerId) {
 
-	console.log("CREATE PL ELEMENT ", playersId);
+	console.log("CREATE PL ELEMENT ", playerId);
 
 	const div = document.createElement("div");
 	div.className = "user";

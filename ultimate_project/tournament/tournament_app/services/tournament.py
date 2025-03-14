@@ -117,8 +117,8 @@ class Tournament():
 			match_update['tournamentId'] = self.id
 			match_update['localMatchId'] = match.get('linkMatch', {}).get(
 				'localMatchId')
-			match_update['p1Id'] = match.get('linkMatch', {}).get('p1Id'),
-			match_update['p2Id'] = match.get('linkMatch', {}).get('p2Id'),
+			match_update['p1Id'] = match.get('linkMatch', {}).get('p1Id')
+			match_update['p2Id'] = match.get('linkMatch', {}).get('p2Id')
 			match['matchPlayersUpdate'] = match_update
 			await self.send_match_players_update(match_update)
 
