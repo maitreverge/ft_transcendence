@@ -6,7 +6,12 @@ import logging
 # from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
-from authentication import login_fastAPI, is_authenticated, logout_fastAPI, register_fastAPI
+from authentication import (
+    login_fastAPI,
+    is_authenticated,
+    logout_fastAPI,
+    register_fastAPI,
+)
 
 
 app = FastAPI(
@@ -122,7 +127,6 @@ async def proxy_request(service_name: str, path: str, request: Request):
         if is_auth and user_info:
             headers["X-User-ID"] = str(user_info.get("user_id", ""))
             headers["X-Username"] = user_info.get("username", "")
-
 
         # Log cookies for debugging
         print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
@@ -290,22 +294,15 @@ async def redirect_to_home():
     return RedirectResponse(url="/home/")
 
 
-# @app.api_route("/auth/{path:path}", methods=["GET", "POST"])
-# async def authentication_proxy(path: str, request: Request):
-#     """
-#     Proxy requests to the authentication microservice.
-#     """
-#     return await proxy_request("authentication", f"auth/{path}", request)
 
-
-@app.api_route("/api/{path:path}", methods=["GET"])
+@app.api_route("/api/{path:path}", methods=["GET", "POST"])
 async def databaseapi_proxy(path: str, request: Request):
     """
     Proxy requests to the database API microservice.
 
     - **path**: The path to the resource in the database API
 
-    ### Examples:
+    ### GET Examples:
     - **List all players**: GET /api/player/
     - **Get player by ID**: GET /api/player/1/
     - **Filter players by username**: GET /api/player/?username=player1
@@ -318,6 +315,11 @@ async def databaseapi_proxy(path: str, request: Request):
     - **Get match by ID**: GET /api/match/1/
     - **Filter matches by player**: GET /api/match/?player1=1
     - **Filter matches by tournament**: GET /api/match/?tournament=1
+
+    ### POST Examples:
+    - **Create a new player**: POST /api/player/
+    - **Create a new tournament**: POST /api/tournament/
+    - **Create a new match**: POST /api/match/
 
     ### Pagination:
     - All list endpoints are paginated with 10 items per page
@@ -344,9 +346,6 @@ async def databaseapi_proxy(path: str, request: Request):
     return await proxy_request("databaseapi", f"api/{path}", request)
 
 
-# ! TURN BACK ON THIS LOCKING ROUTE ONE JWT ARE BACK UP
-# async def login_page(request: Request, is_authenticated: bool = Depends(block_authenticated_users())):
-# Add this route before the catch-all static_files_proxy
 @app.api_route("/login/{path:path}", methods=["GET"])
 @app.api_route("/login", methods=["GET"])
 async def login_page_route(request: Request, path: str = ""):
@@ -448,6 +447,7 @@ async def logout_route(request: Request):
     """
     return await logout_fastAPI(request)
 
+
 @app.api_route("/register/{path:path}", methods=["GET"])
 @app.api_route("/register", methods=["GET"])
 async def register_page_route(request: Request, path: str = ""):
@@ -488,13 +488,18 @@ async def register_page_route(request: Request):
     Extracts form data and passes it to `register_fastAPI`
     """
     form_data = await request.form()  # Extract form data
+
+    first_name = form_data.get("first_name")
+    last_name = form_data.get("last_name")
     username = form_data.get("username")
     password = form_data.get("password")
-
+    email = form_data.get("email")
     # Create a new response object
     response = Response()
 
-    return await register_fastAPI(request, response, username, password)
+    return await register_fastAPI(
+        request, response, username, password, email, first_name, last_name
+    )
 
 
 @app.api_route("/{path:path}", methods=["GET"])

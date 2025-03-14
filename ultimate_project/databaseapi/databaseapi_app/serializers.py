@@ -3,9 +3,42 @@ from .models import Player, Tournament, Match
 
 
 class PlayerSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = Player
-        fields = ["id", "username", "email", "first_name", "last_name"]
+        fields = ["id", "username", "email", "first_name", "last_name", "password"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        # Extract password from validated data
+        password = validated_data.pop("password", None)
+
+        # Create user instance without saving to database
+        user = Player(**validated_data)
+
+        # If password was provided, set it using the set_password method
+        if password:
+            user.set_password(password)
+
+        # Save the user
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        # Handle password updates separately
+        password = validated_data.pop("password", None)
+
+        # Update all other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        # If password was provided, hash it
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+        return instance
 
 
 class PlayerNestedSerializer(serializers.ModelSerializer):

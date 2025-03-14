@@ -14,7 +14,7 @@
 									<h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
 								</div>
 
-								<!-- Formulaire de connexion avec HTMX -->
+								<!-- Formulaire de connexion HTMX -->
 								<form class="user" hx-post="/auth/login/" hx-target="#login-result" hx-swap="innerHTML"
 									hx-indicator="#loading-spinner">
 									<div class="form-group">
@@ -30,7 +30,7 @@
 									</div>
 								</form>
 
-								<!-- 🔹 Zone de feedback pour les erreurs -->
+								<!-- Zone de feedback pour les erreurs -->
 								<div id="login-result" class="text-center text-danger mt-2"></div>
 								
 								<!-- Loading spinner that shows during HTMX requests -->

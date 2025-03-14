@@ -12,6 +12,29 @@ Then implement the logout
 
 DOCKER COMPOSE : Setting environment erase what is set in `.env` file
 
+Make a register process WITHOUT 2FA.
+==> Need to open POST routes to the database
+==> Need to make a GET request before writting into it.
+==> Make the user logged just after
+
+
+
+========================
+
+Now that I got a functionnal login/logout logic, I need to implement the registration logic following the same pattern accros fastAPI main file, authentication file.
+
+The resgister form is register.html . Note that we're going to username as primary login.
+
+Please add a email field to the register.html.
+
+The request will be a POST request to the route "auth/register". Like login, you'll also create a 
+
+
+
+========================
+
+
+
 
 ⛔ ✅  
 ## DONE OF THE DAY
