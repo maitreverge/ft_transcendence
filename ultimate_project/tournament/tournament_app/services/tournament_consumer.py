@@ -72,7 +72,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			case {"type": "enterTournament", "tournamentId": tournament_id}:		
 				await self.enter_tournament(tournament_id)
 			case {"type": "quitTournament"}:		
-				await self.quit_tournament()		
+				await self.quit_tournament()
 			case _:
 				pass
 

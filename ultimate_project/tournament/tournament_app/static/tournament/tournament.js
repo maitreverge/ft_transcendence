@@ -54,7 +54,7 @@ function onTournamentMessage(event, socket) {
 			break;
 		case "matchResult":
 			console.log("case matchresult");
-			matchResult(socket, data);			
+			matchResult(data);			
 			break;
 		case "matchPlayersUpdate":
 			console.log("case matchPlayersUpdate");
@@ -149,13 +149,14 @@ function updateTournaments(socket, tournamentsUp) {
 
 	const tournamentsCont = document.getElementById("tournaments");
 	const tournamentEls = [...tournamentsCont.children];
-	let patternExist;
+	const patternPromises = [];
+
 	tournamentsUp.forEach(tourUp => {
 		if (tournamentEls.every(el => el.id != tourUp.tournamentId))
 		{
 			addToTournaments(socket, tournamentsCont, tourUp);
 			if (tourUp.matchs.length > 0)			
-				patternExist = getPattern(tourUp.tournamentId);			
+				patternPromises.push(getPattern(tourUp.tournamentId));			
 		}
 	});
 	tournamentEls.slice().reverse().forEach(tourEl => {
@@ -164,12 +165,30 @@ function updateTournaments(socket, tournamentsUp) {
 		}
 	});
 	updateTournamentsPlayers(tournamentsUp);
-	if (patternExist)
-		updateLinkMatchAndResult(tournamentsUp);	
-	else
-		setTimeout(()=>{
-			updateLinkMatchAndResult(tournamentsUp);
-		}, 3000);
+	updateLinkMatchAndResult(tournamentsUp);
+	patternPromises.forEach(promise => promise.then(()=>{
+		updateLinkMatchAndResult(tournamentsUp);
+	}));
+}
+
+function getPattern(tournamentId) {
+	console.log("getpattern: ", tournamentId);
+	const tournament = document.getElementById("tournaments").querySelector(
+		`[id='${tournamentId}']`
+	);
+	if (!tournament)
+		return Promise.resolve(false);
+	const overlay = tournament.querySelector("#overlay-pattern");
+	if (overlay.innerHTML.trim() !== "")
+		return Promise.resolve(false);
+	return fetch(`/tournament/tournament-pattern/${tournamentId}/`)
+	.then(response => {
+		if (!response.ok) 
+			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+		return response.text();
+	})
+	.then(data => loadHtml(data, overlay))
+	.catch(error => console.log(error));			
 }
 
 function updateTournamentsPlayers(tournamentsUp) {
@@ -502,27 +521,6 @@ function enterTournament(socket, tournamentId) {
 		}));
 }
 
-function getPattern(tournamentId) {
-	console.log("getpattern: ", tournamentId);
-	const tournament = document.getElementById("tournaments").querySelector(
-		`[id='${tournamentId}']`
-	);
-	if (!tournament)
-		return false;
-	const overlay = tournament.querySelector("#overlay-pattern");
-	if (overlay.innerHTML.trim() !== "")
-		return false;
-	fetch(`/tournament/tournament-pattern/${tournamentId}/`)
-	.then(response => {
-		if (!response.ok) 
-			throw new Error(`Error HTTP! Status: ${response.status}`);		  
-		return response.text();
-	})
-	.then(data => loadHtml(data, overlay))
-	.catch(error => console.log(error));
-	return true;		
-}
-
 function linkMatch(lk) {
 	console.log("LINK MATCH tournId ", lk.tournamentId, " localid: ", lk.localMatchId, " matchid ", lk.matchId, " p1 ", lk.p1Id, " p2 ", lk.p2Id, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
 	const tournament = document.getElementById("tournaments").querySelector(
@@ -533,7 +531,8 @@ function linkMatch(lk) {
 	const overlay = tournament.querySelector("#overlay-match");
 	// const matchs_cont = tournament.querySelector("#matchs-cont");
 	const localMatch = tournament.querySelector(`#${lk.localMatchId}`);
-
+	if (!localMatch)
+		return;
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	localP1.innerText = lk.p1Id;
@@ -593,7 +592,9 @@ function loadHtml(data, overlay) {
 	oldScripts.forEach(oldScript => oldScript.remove());	
 }
 
-function matchResult(socket, rsl) {
+function matchResult(rsl) {
+	console.log("rsl: <----");
+	console.log(rsl);
 	console.log("MATCH RESULT tournId ", rsl.tournamentId, " localid: ", rsl.localMatchId, " matchid ", rsl.matchId, " winner ", rsl.winnerId, " looser ", rsl.looserId, " selfmatchid ", window.selfMatchId, " selfid ", window.selfId);
 
 	const tournament = document.getElementById("tournaments").querySelector(
@@ -603,18 +604,21 @@ function matchResult(socket, rsl) {
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
 	const localMatch = tournament.querySelector(`#${rsl.localMatchId}`);
+	if (!localMatch)
+		return;
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	if (rsl.winnerId === rsl.p1Id)
-	{
-		localP1.classList.add("winner");
-		localP2.classList.add("looser");
-	}
+		{
+			localP1.classList.add("winner");
+			localP2.classList.add("looser");
+		}
 	else if (rsl.winnerId === rsl.p2Id)
 	{
 		localP2.classList.add("winner");
 		localP1.classList.add("looser");
 	}
+	
 	
 	// const playersCont = tournament.querySelector("#players-cont");
 	// const winplayer1 = window.players.find(el => el.id == rsl.winnerId);
@@ -648,8 +652,9 @@ function matchPlayersUpdate(socket, plys) {
 	);
 	if (!tournament)
 		return;
-
 	const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
+	if (!localMatch)
+		return;
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	const specCont = localMatch.querySelector(`#spec`);
