@@ -14,7 +14,11 @@
 							</h1>
 						</div>
 						<!-- Formulaire de création de compte HTMX -->
-						<form class="user" hx-post="/auth/register/" hx-target="#register-form" hx-swap="outerHTML">
+						<form id="register-form" class="user" hx-post="/auth/register/" hx-target="#register-form" hx-swap="outerHTML" hx-indicator=".htmx-indicator">
+							<!-- HTMX loading indicator -->
+							<div class="htmx-indicator" style="display:none;">
+								Processing registration...
+							</div>
 							
 							<!-- First Name et Last Name -->
 							<div class="form-group row">
@@ -61,7 +65,7 @@
 							</div>
 
 							<!-- Bouton de création de compte -->	
-							<button type="submit" class="btn btn-primary btn-user btn-block" id="register-button" disabled>
+							<button type="submit" class="btn btn-primary btn-user btn-block" id="register-button">
 								Register Account
 							</button>
 							<hr>
@@ -101,6 +105,19 @@
 
 <!-- Add JavaScript for client-side validation -->
 <script>
+	// HTMX event listeners for debugging
+	document.addEventListener('htmx:beforeRequest', function(event) {
+		console.log('HTMX before request:', event.detail);
+	});
+	
+	document.addEventListener('htmx:afterRequest', function(event) {
+		console.log('HTMX after request:', event.detail);
+	});
+	
+	document.addEventListener('htmx:responseError', function(event) {
+		console.log('HTMX response error:', event.detail);
+	});
+
 	document.addEventListener('DOMContentLoaded', function() {
 		const firstNameInput = document.getElementById('first_name');
 		const lastNameInput = document.getElementById('last_name');
@@ -175,6 +192,16 @@
 								isPasswordValid && 
 								doPasswordsMatch;
 
+			console.log('Form validation:', {
+				isFirstNameValid,
+				isLastNameValid,
+				isUsernameValid,
+				isEmailValid,
+				isPasswordValid,
+				doPasswordsMatch,
+				isFormValid
+			});
+			
 			registerButton.disabled = !isFormValid;
 			
 			return isFormValid;
@@ -182,9 +209,18 @@
 
 		// Form submission validation
 		form.addEventListener('submit', function(event) {
-			if (!validateForm()) {
-				event.preventDefault();
+			console.log('Form submission triggered');
+			// Don't prevent default - let HTMX handle the submission
+			validateForm();
+			console.log('Form validation status:', !registerButton.disabled);
+			
+			// Log form data that will be sent
+			const formData = new FormData(form);
+			const formValues = {};
+			for (let [key, value] of formData.entries()) {
+				formValues[key] = value;
 			}
+			console.log('Form data being submitted:', formValues);
 		});
 	});
 </script>

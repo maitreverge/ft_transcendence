@@ -290,7 +290,17 @@ async def register_fastAPI(
 
         if username_response.status_code == 200:
             user_data = username_response.json()
-            if user_data.get("count", 0) > 0:
+            # Handle case where user_data is a list (checking if username exists)
+            if isinstance(user_data, list) and len(user_data) > 0:
+                return JSONResponse(
+                    content={
+                        "success": False,
+                        "message": "Ce nom d'utilisateur est déjà pris.",
+                    },
+                    status_code=400,
+                )
+            # Handle case where user_data is a dict with count key
+            elif isinstance(user_data, dict) and user_data.get("count", 0) > 0:
                 return JSONResponse(
                     content={
                         "success": False,
@@ -305,7 +315,17 @@ async def register_fastAPI(
 
         if email_response.status_code == 200:
             email_data = email_response.json()
-            if email_data.get("count", 0) > 0:
+            # Handle case where email_data is a list
+            if isinstance(email_data, list) and len(email_data) > 0:
+                return JSONResponse(
+                    content={
+                        "success": False,
+                        "message": "Cette adresse email est déjà utilisée.",
+                    },
+                    status_code=400,
+                )
+            # Handle case where email_data is a dict with count key
+            elif isinstance(email_data, dict) and email_data.get("count", 0) > 0:
                 return JSONResponse(
                     content={
                         "success": False,
