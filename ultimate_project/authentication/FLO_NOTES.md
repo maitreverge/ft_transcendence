@@ -7,6 +7,7 @@
 --------------------------------------------------------------------------------
 
 FORMULAIRE PAS DE FEEDBACK POUR LOGIN + REGISTER
+bugs de console quand on resgiter avec success
 
 
 One the login route secured, lock it to prevent accessing it to already connected users
