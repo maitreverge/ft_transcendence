@@ -15,58 +15,58 @@ def run(playwright: Playwright) -> None:
         page.goto(url)
         page.wait_for_load_state("networkidle")
 
-    # # Accès aux différentes pages
-    # navigate(f"{base_url}/")
-    # navigate(f"{base_url}/home/")
-    # navigate(f"{base_url}/user/profile/")
-    # navigate(f"{base_url}/user/stats/")
-    # navigate(f"{base_url}/tournament/simple-match/")
+    # Accès aux différentes pages
+    navigate(f"{base_url}/")
+    navigate(f"{base_url}/home/")
+    navigate(f"{base_url}/user/profile/")
+    navigate(f"{base_url}/user/stats/")
+    navigate(f"{base_url}/tournament/simple-match/")
 
-    # # Vérification de la navigation via le sidebar menu
+    # Vérification de la navigation via le sidebar menu
 
-    # page.locator("#nav-tournoi").click()
-    # expect(page).to_have_url(f"{base_url}/tournament/tournament/")
+    page.locator("#nav-tournoi").click()
+    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
 
-    # page.locator("#nav-profile").click()
-    # expect(page).to_have_url(f"{base_url}/user/profile/")
+    page.locator("#nav-profile").click()
+    expect(page).to_have_url(f"{base_url}/user/profile/")
 
-    # page.locator("#nav-stats").click()
-    # expect(page).to_have_url(f"{base_url}/user/stats/")
+    page.locator("#nav-stats").click()
+    expect(page).to_have_url(f"{base_url}/user/stats/")
 
-    # page.locator("#nav-match").click()
-    # expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
+    page.locator("#nav-match").click()
+    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
 
-    # # Vérification de la navigation via le topbar menu
+    # Vérification de la navigation via le topbar menu
 
-    # page.locator("#side-tournoi").click()
-    # expect(page).to_have_url(f"{base_url}/tournament/tournament/")
+    page.locator("#side-tournoi").click()
+    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
 
-    # page.locator("#side-profile").click()
-    # expect(page).to_have_url(f"{base_url}/user/profile/")
+    page.locator("#side-profile").click()
+    expect(page).to_have_url(f"{base_url}/user/profile/")
 
-    # page.locator("#side-stats").click()
-    # expect(page).to_have_url(f"{base_url}/user/stats/")
+    page.locator("#side-stats").click()
+    expect(page).to_have_url(f"{base_url}/user/stats/")
 
-    # page.locator("#side-match").click()
-    # expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
+    page.locator("#side-match").click()
+    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
 
-    # # Vérification des boutons sur la page home
+    # Vérification des boutons sur la page home
 
-    # navigate(f"{base_url}/home/")
-    # page.locator("#field-tournoi").click()
-    # expect(page).to_have_url(f"{base_url}/tournament/tournament/")
+    navigate(f"{base_url}/home/")
+    page.locator("#field-tournoi").click()
+    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
 
-    # navigate(f"{base_url}/home/")
-    # page.locator("#field-match").click()
-    # expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
+    navigate(f"{base_url}/home/")
+    page.locator("#field-match").click()
+    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
 
-    # navigate(f"{base_url}/home/")
-    # page.locator("#field-profile").click()
-    # expect(page).to_have_url(f"{base_url}/user/profile/")
+    navigate(f"{base_url}/home/")
+    page.locator("#field-profile").click()
+    expect(page).to_have_url(f"{base_url}/user/profile/")
 
-    # navigate(f"{base_url}/home/")
-    # page.locator("#field-stats").click()
-    # expect(page).to_have_url(f"{base_url}/user/stats/")
+    navigate(f"{base_url}/home/")
+    page.locator("#field-stats").click()
+    expect(page).to_have_url(f"{base_url}/user/stats/")
 
     # Vérification de l'accès au logout modal depuis chaque vue
 

@@ -15,7 +15,6 @@ aria-labelledby="exampleModalLabel"
             <div class="modal-header">
                 <h5 data-translate="Ready to Leave?" 
                 class="modal-title" 
-                id="modal-logout">
                 Ready to Leave?
                 </h5>
                 <button class="close" 
@@ -37,6 +36,7 @@ aria-labelledby="exampleModalLabel"
                 Cancel
                 </button>
                 <div       hx-trigger="click"
+                id="modal-logout"
                 hx-push-url="true"
                 hx-get="/register/"
                 hx-target="body"
