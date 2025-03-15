@@ -25,6 +25,10 @@ Then check within the models if data has been correctly wrote
 
 Then try to login with 2FA
 
+Turn the SetUp2FA button is the user has not enable
+
+Create Disable 2FA is the user has it enabled
+
 
 
 
