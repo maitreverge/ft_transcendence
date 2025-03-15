@@ -88,4 +88,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def quit_tournament(self):
 		self.remove_player_in_tournaments()			
 		await self.send_tournaments()
+
+	@staticmethod
+	async def send_matchs_players_update():
+
+		matchs_players_up = [
+			(m.get('matchPlayersUpdate') for m in t.matchs) for t in tournaments]
+		pack = {
+			"type": "matchsPlayersUpdate",
+			"pack": matchs_players_up}
+		print(f"PACK: {pack}", flush=True)
+		for player in players:
+			await player.send(text_data=json.dumps(pack))
 	

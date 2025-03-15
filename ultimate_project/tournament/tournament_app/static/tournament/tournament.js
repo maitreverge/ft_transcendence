@@ -52,11 +52,11 @@ function onTournamentMessage(event, socket) {
 			console.log("case matchresult");
 			matchResult(data);			
 			break;
-		case "matchPlayersUpdate":
+		case "matchsPlayersUpdate":
 			console.log("case matchPlayersUpdate");
 			updatePlayersCont(window.playersList)
 			updateTournamentsPlayers(window.tournamentList);
-			updateMatchPlayers(socket, data);			
+			updateMatchsPlayers(data.pack);			
 			break;
 		default:				
 			break;
@@ -378,7 +378,11 @@ function matchResult(rsl) {
 	// localMatch.innerText = winnerId
 }
 
-function updateMatchPlayers(socket, plys) {
+function updateMatchsPlayers(pack) {
+	pack.forEach(plys => updateMatchPlayers(plys));
+}
+
+function updateMatchPlayers(plys) {
 
 	console.log("MATCH PLAYERS UPDATE ", plys);	
 
@@ -399,7 +403,7 @@ function updateMatchPlayers(socket, plys) {
 	console.log("localp2", localP2);	
 	console.log("sepccont", specCont);
 	const specs = [...specCont.children]
-	// const playersContainer = document.getElementById("players");
+
 	plys.players.forEach(player => {
 		console.log("foreachplayer ", player);	
 		if (specs.every(el => el.id != player.playerId))
@@ -426,14 +430,6 @@ function updateMatchPlayers(socket, plys) {
 				specCont.appendChild(winPly);
 			}
 		}
-
-
-		// specs.forEach(spec => {
-		// 	if (plys.every(el => el.playerId != spec.id))
-		// 		playersContainer.appendChild(spec);
-		// 	if (specs.every(el => el.id != player.playerId))
-		// 		specCont.appendChild(player);
-		// });
 	});
 }
 

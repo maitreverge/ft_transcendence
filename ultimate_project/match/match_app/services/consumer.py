@@ -3,6 +3,7 @@ import json
 import urllib
 from match_app.views import pongs
 import aiohttp
+import asyncio
 
 players = []
 
@@ -31,6 +32,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 	async def disconnect(self, close_code):
 		global players
 		players[:] = [p for p in players if p['socket'] != self]
+		await asyncio.sleep(3)
 		await self.send_players_update()
 
 	async def receive(self, text_data):				
@@ -53,4 +55,3 @@ class MyConsumer(AsyncWebsocketConsumer):
 					if resp.status != 200 and resp.status != 201:
 						err = await resp.text()
 						print(f"Error HTTP {resp.status}: {err}", flush=True)
-
