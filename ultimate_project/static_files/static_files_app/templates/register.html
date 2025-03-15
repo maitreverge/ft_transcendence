@@ -177,6 +177,27 @@
 </div>
 
 <!-- Add JavaScript for client-side validation -->
+<style>
+  /* Custom validation styles */
+  .is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+  
+  /* Make password error more visible */
+  #password-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
+  /* Make email error more visible */
+  #email-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+</style>
 <script>
   // HTMX event listeners for debugging
   document.addEventListener("DOMContentLoaded", function () {
@@ -208,20 +229,31 @@
       validateForm();
     });
 
-    // Check if passwords match
+    // Improved password check function
     function checkPasswords() {
-      if (passwordInput.value && repeatPasswordInput.value) {
+      // Both fields have values - check if they match
+      if (passwordInput.value || repeatPasswordInput.value) {
+        // At least one password field has a value
         if (passwordInput.value !== repeatPasswordInput.value) {
+          // Passwords don't match - show error
           passwordError.style.display = "block";
+          repeatPasswordInput.classList.add("is-invalid");
           return false;
         } else {
+          // Passwords match - clear error
           passwordError.style.display = "none";
+          repeatPasswordInput.classList.remove("is-invalid");
           return true;
         }
+      } else {
+        // Both fields are empty - no error but not valid
+        passwordError.style.display = "none";
+        repeatPasswordInput.classList.remove("is-invalid");
+        return false;
       }
-      return passwordInput.value === repeatPasswordInput.value;
     }
 
+    // Check passwords whenever either password field changes
     repeatPasswordInput.addEventListener("input", function () {
       checkPasswords();
       validateForm();
@@ -230,6 +262,21 @@
     passwordInput.addEventListener("input", function () {
       checkPasswords();
       validateForm();
+    });
+
+    // Also check passwords when fields lose focus
+    repeatPasswordInput.addEventListener("blur", function () {
+      if (repeatPasswordInput.value) {
+        checkPasswords();
+        validateForm();
+      }
+    });
+
+    passwordInput.addEventListener("blur", function () {
+      if (passwordInput.value && repeatPasswordInput.value) {
+        checkPasswords();
+        validateForm();
+      }
     });
 
     // Add input event listeners to all required fields
@@ -247,24 +294,31 @@
       const isPasswordValid = passwordInput.value.trim() !== "";
       const doPasswordsMatch = checkPasswords();
 
+      // Apply visual indicators for validation status
+      if (!isEmailValid && emailInput.value) {
+        emailInput.classList.add("is-invalid");
+      } else {
+        emailInput.classList.remove("is-invalid");
+      }
+
+      // Password must be valid and match the confirmation
+      const passwordValidAndMatching = isPasswordValid && doPasswordsMatch;
+      
+      // Only validate repeat password if the main password has a value
+      if (passwordInput.value && !doPasswordsMatch) {
+        repeatPasswordInput.classList.add("is-invalid");
+      } else {
+        repeatPasswordInput.classList.remove("is-invalid");
+      }
+
       const isFormValid =
         isFirstNameValid &&
         isLastNameValid &&
         isUsernameValid &&
         isEmailValid &&
-        isPasswordValid &&
-        doPasswordsMatch;
+        passwordValidAndMatching;
 
-      console.log("Form validation:", {
-        isFirstNameValid,
-        isLastNameValid,
-        isUsernameValid,
-        isEmailValid,
-        isPasswordValid,
-        doPasswordsMatch,
-        isFormValid,
-      });
-
+      // Update button state
       registerButton.disabled = !isFormValid;
 
       return isFormValid;
@@ -272,18 +326,15 @@
 
     // Form submission validation
     form.addEventListener("htmx:beforeSwap", function (evt) {
-      console.log("document.addEventListener working");
-      console.log(evt.detail.target.id);
-      console.log("after");
-
+      console.log("htmx:beforeSwap event triggered");
       if (evt.detail.target.id === "register-form") {
         try {
-          console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+          console.log("Processing response:", evt.detail.xhr.responseText);
           const response = JSON.parse(evt.detail.xhr.responseText);
 
           if (response.success) {
             evt.detail.shouldSwap = false;
-
+            // Redirect to home on successful login/registration
             htmx
               .ajax("GET", "/home/", {
                 target: "body",
@@ -294,10 +345,28 @@
                 history.pushState(null, "", "/home/");
               });
           } else {
-            evt.detail.innerHTML = response.message; // Afficher erreur de connexion
+            // Determine which page we're on to show appropriate error message
+            const onLoginPage = window.location.pathname.includes("login");
+            const onRegisterPage = window.location.pathname.includes("register");
+            
+            let errorMessage = response.message || "An error occurred. Please try again.";
+            
+            // Format the error message based on context
+            if (onLoginPage) {
+              errorMessage = "Login failed: Incorrect username or password.";
+            } else if (onRegisterPage) {
+              // For registration, use the specific error from the server if available
+              errorMessage = "Registration error: " + errorMessage;
+            }
+            
+            // Show the alert
+            alert(errorMessage);
+            
+            // Return false to prevent the default swap
+            evt.detail.shouldSwap = false;
           }
         } catch (e) {
-          console.error("Erreur de traitement de la réponse:", e);
+          console.error("Error processing response:", e);
         }
       }
     });

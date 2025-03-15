@@ -120,16 +120,15 @@
 </div>
 <script>
   document.addEventListener("htmx:beforeSwap", function (evt) {
-    console.log("document.addEventListener working");
-    console.log("LOGIN SCRIPT");
+    console.log("htmx:beforeSwap event triggered");
     if (evt.detail.target.id === "register-form") {
       try {
-        console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+        console.log("Processing response:", evt.detail.xhr.responseText);
         const response = JSON.parse(evt.detail.xhr.responseText);
 
         if (response.success) {
           evt.detail.shouldSwap = false;
-
+          // Redirect to home on successful login/registration
           htmx
             .ajax("GET", "/home/", {
               target: "body",
@@ -140,34 +139,28 @@
               history.pushState(null, "", "/home/");
             });
         } else {
-          // Enhanced error message display with animation and icon
-          const errorMessage = response.message || "Invalid credentials. Please try again.";
-          const errorHtml = `
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              <i class="fas fa-exclamation-circle mr-2"></i>
-              <strong>Login Failed!</strong> ${errorMessage}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-          `;
+          // Determine which page we're on to show appropriate error message
+          const onLoginPage = window.location.pathname.includes("login");
+          const onRegisterPage = window.location.pathname.includes("register");
           
-          evt.detail.innerHTML = errorHtml;
+          let errorMessage = response.message || "An error occurred. Please try again.";
           
-          // Add shake animation to the form to provide visual feedback
-          const form = document.querySelector('form.user');
-          form.classList.add('animate__animated', 'animate__shakeX');
+          // Format the error message based on context
+          if (onLoginPage) {
+            errorMessage = "Login failed: Incorrect username or password.";
+          } else if (onRegisterPage) {
+            // For registration, use the specific error from the server if available
+            errorMessage = "Registration error: " + errorMessage;
+          }
           
-          // Remove animation class after animation completes
-          setTimeout(() => {
-            form.classList.remove('animate__animated', 'animate__shakeX');
-          }, 1000);
+          // Show the alert
+          alert(errorMessage);
           
-          // Focus on username field for better UX
-          document.getElementById('username').focus();
+          // Return false to prevent the default swap
+          evt.detail.shouldSwap = false;
         }
       } catch (e) {
-        console.error("Erreur de traitement de la réponse:", e);
+        console.error("Error processing response:", e);
       }
     }
   });
