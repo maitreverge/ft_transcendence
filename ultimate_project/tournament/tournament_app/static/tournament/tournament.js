@@ -200,7 +200,7 @@ function getPattern(tournamentId) {
 	if (!tournament)
 		return Promise.resolve(false);
 	const overlay = tournament.querySelector("#overlay-pattern");
-	if (overlay.innerHTML.trim() !== "")
+	if (!overlay || overlay.innerHTML.trim() !== "")
 		return Promise.resolve(false);
 	return fetch(`/tournament/tournament-pattern/${tournamentId}/`)
 	.then(response => {
