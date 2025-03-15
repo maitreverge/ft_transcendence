@@ -1,181 +1,71 @@
-<div class="modal fade" 
-id="logoutModal" 
-tabindex="-1" 
-role="dialog" 
-aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 data-translate="Ready to Leave?" 
-                class="modal-title" 
-                Ready to Leave?
-                </h5>
-                <button class="close" 
-                type="button" 
-                data-dismiss="modal" 
-                aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div data-translate="Logout-leave" 
-            class="modal-body">
-                Select "Logout" below if you are ready to end your current session.
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" 
-                type="button" 
-                data-translate="cancel"
-                data-dismiss="modal">
-                Cancel
-                </button>
-                
-                <button
-                onclick="logoutUser()"
-                data-dismiss="modal"
-                id="modal-logout"
-                class="btn btn-primary"
-                href=""
-                data-translate="Logout">Logout
-            </button>
-            </div>
-        </div>
+<div
+  class="modal fade"
+  id="logoutModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 data-translate="Ready to Leave?" class="modal-title">
+          Ready to Leave?
+        </h5>
+        <button
+          class="close"
+          type="button"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div data-translate="Logout-leave" class="modal-body">
+        Select "Logout" below if you are ready to end your current session.
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn btn-secondary"
+          type="button"
+          data-translate="cancel"
+          data-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          onclick="logoutUser()"
+          data-dismiss="modal"
+          id="modal-logout"
+          class="btn btn-primary"
+          href=""
+          data-translate="Logout"
+        >
+          Logout
+        </button>
+      </div>
     </div>
-    <script>
-        function logoutUser() {
-            // Create a fetch request to logout endpoint
-            fetch('/auth/logout/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin' // Important for cookies
-            })
-            .then(response => {
-                        htmx.ajax('GET', '/login/', {
-                        target: 'body',
-                        swap: 'outerHTML',
-                        headers: {'HX-Login-Success': 'true'}
-                        }).then(function() {
-                            history.pushState(null, '', '/login/');
-                        });
-            });
-        }
-        // document.addEventListener('htmx:beforeSwap', function(evt) {
-        //     console.log("document.addEventListener working")
-        //     if (evt.detail.target.id === 'login-result') {
-        //         try {
-        //             console.log("Réponse brute:", evt.detail.xhr.responseText);  // 🔍 Debug
-        //             const response = JSON.parse(evt.detail.xhr.responseText);
-                    
-                    
-        //             if (response.success) {
-        //                 evt.detail.shouldSwap = false;
-        
-        
-        //                 htmx.ajax('GET', '/home/', {
-        //                 target: 'body',
-        //                 swap: 'outerHTML',
-        //                 headers: {'HX-Login-Success': 'true'}
-        //                 }).then(function() {
-        //                     history.pushState(null, '', '/home/');
-        //                 });
-        
-        //             } else {
-                        
-        //                 evt.detail.innerHTML = response.message;  // Afficher erreur de connexion
-        //             }
-        //         } catch (e) {
-        //             console.error('Erreur de traitement de la réponse:', e);
-        //         }
-        //     }
-        // });
-    </script>    
-
-    
-
-<!-- <a class="scroll-to-top rounded" href="#page-top">
-	<i class="fas fa-angle-up"></i>
-</a>
-
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-	aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 data-translate="Ready to Leave?" class="modal-title" id="exampleModalLabel">
-					Ready to Leave?
-				</h5>
-				<button class="close" type="button" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">×</span>
-				</button>
-			</div>
-			<div data-translate="Logout-leave" class="modal-body">
-				Select "Logout" below if you are ready to end your current session.
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-secondary" type="button" data-translate="cancel" data-dismiss="modal">
-					Cancel
-				</button>
-				<button class="btn btn-primary" data-translate="Logout" onclick="logoutUser()">
-					Logout
-				</button>
-			</div>
-		</div>
-	</div>
+  </div>
+  <script>
+    function logoutUser() {
+      // Create a fetch request to logout endpoint
+      fetch("/auth/logout/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "same-origin", // Important for cookies
+      }).then((response) => {
+        htmx
+          .ajax("GET", "/login/", {
+            target: "body",
+            swap: "outerHTML",
+            headers: { "HX-Login-Success": "true" },
+          })
+          .then(function () {
+            history.pushState(null, "", "/login/");
+          });
+      });
+    }
+  </script>
 </div>
-</div>
- -->
-<!-- Add JavaScript for logout functionality -->
-
-
-<!-- 
-
-<div class="modal fade" 
-id="logoutModal" 
-tabindex="-1" 
-role="dialog" 
-aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 data-translate="Ready to Leave?" 
-                class="modal-title" 
-                Ready to Leave?
-                </h5>
-                <button class="close" 
-                type="button" 
-                data-dismiss="modal" 
-                aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div data-translate="Logout-leave" 
-            class="modal-body">
-                Select "Logout" below if you are ready to end your current session.
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" 
-                type="button" 
-                data-translate="cancel"
-                data-dismiss="modal">
-                Cancel
-                </button>
-                
-                <button
-                data-dismiss="modal"
-                id="modal-logout"
-                hx-trigger="click"
-                hx-push-url="true"
-                hx-get="/register/"
-                hx-target="body"
-                class="btn btn-primary"
-                href=""
-                data-translate="Logout">Logout
-            </button>
-            </div>
-        </div>
-    </div>
-    
-    -->
