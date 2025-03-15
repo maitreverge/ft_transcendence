@@ -34,10 +34,6 @@ aria-labelledby="exampleModalLabel"
                 onclick="logoutUser()"
                 data-dismiss="modal"
                 id="modal-logout"
-                hx-trigger="click"
-                hx-push-url="true"
-                hx-get="/register/"
-                hx-target="body"
                 class="btn btn-primary"
                 href=""
                 data-translate="Logout">Logout
@@ -45,7 +41,57 @@ aria-labelledby="exampleModalLabel"
             </div>
         </div>
     </div>
-    
+    <script>
+        function logoutUser() {
+            // Create a fetch request to logout endpoint
+            fetch('/auth/logout/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin' // Important for cookies
+            })
+            .then(response => {
+                        htmx.ajax('GET', '/login/', {
+                        target: 'body',
+                        swap: 'outerHTML',
+                        headers: {'HX-Login-Success': 'true'}
+                        }).then(function() {
+                            history.pushState(null, '', '/login/');
+                        });
+            });
+        }
+        // document.addEventListener('htmx:beforeSwap', function(evt) {
+        //     console.log("document.addEventListener working")
+        //     if (evt.detail.target.id === 'login-result') {
+        //         try {
+        //             console.log("Réponse brute:", evt.detail.xhr.responseText);  // 🔍 Debug
+        //             const response = JSON.parse(evt.detail.xhr.responseText);
+                    
+                    
+        //             if (response.success) {
+        //                 evt.detail.shouldSwap = false;
+        
+        
+        //                 htmx.ajax('GET', '/home/', {
+        //                 target: 'body',
+        //                 swap: 'outerHTML',
+        //                 headers: {'HX-Login-Success': 'true'}
+        //                 }).then(function() {
+        //                     history.pushState(null, '', '/home/');
+        //                 });
+        
+        //             } else {
+                        
+        //                 evt.detail.innerHTML = response.message;  // Afficher erreur de connexion
+        //             }
+        //         } catch (e) {
+        //             console.error('Erreur de traitement de la réponse:', e);
+        //         }
+        //     }
+        // });
+    </script>    
+
     
 
 <!-- <a class="scroll-to-top rounded" href="#page-top">
@@ -81,33 +127,7 @@ aria-labelledby="exampleModalLabel"
 </div>
  -->
 <!-- Add JavaScript for logout functionality -->
-<script>
-    function logoutUser() {
-        // Create a fetch request to logout endpoint
-        fetch('/auth/logout/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin' // Important for cookies
-        })
-        .then(response => {
-            // Check if we have a redirect header
-            const redirectUrl = response.headers.get('HX-Redirect');
-            if (redirectUrl) {
-                window.location.href = redirectUrl;
-            } else {
-                // Fallback redirect to login page
-                window.location.href = '/login';
-            }
-        })
-        .catch(error => {
-            console.error('Logout error:', error);
-            // Fallback redirect even if there's an error
-            window.location.href = '/login';
-        });
-    }
-</script>
+
 
 <!-- 
 

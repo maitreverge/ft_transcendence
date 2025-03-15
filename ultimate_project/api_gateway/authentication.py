@@ -261,7 +261,7 @@ async def logout_fastAPI(request: Request):
     )
 
     # Add a header for HTMX to redirect to login page
-    response.headers["HX-Redirect"] = "/login"
+    # response.headers["HX-Redirect"] = "/login"
 
     # Log for debugging
     print("🔑 JWT Cookies cleared", flush=True)
