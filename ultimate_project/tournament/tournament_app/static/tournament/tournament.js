@@ -158,7 +158,9 @@ function updateTournaments(socket, tournamentsUp) {
 			tournamentsCont.removeChild(tourEl);		
 		}
 	});
+
 	updateTournamentsPlayers(tournamentsUp);
+	// setTimeout(()=>{updateLinkMatchAndResult(tournamentsUp);}, 3000)
 	updateLinkMatchAndResult(tournamentsUp);
 	patternPromises.forEach(promise => promise.then(()=>{
 		updateLinkMatchAndResult(tournamentsUp);
@@ -277,6 +279,8 @@ function linkMatch(lk) {
 		return;
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
+	if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
+		return;
 	localP1.innerText = lk.p1Id;
 	localP2.innerText = lk.p2Id;
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
@@ -378,25 +382,44 @@ function matchPlayersUpdate(socket, plys) {
 	);
 	if (!tournament)
 		return;
+	console.log("MATCH PLAYERS UPDATE TOURNMANTEE", tournament);	
 	const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
 	if (!localMatch)
 		return;
+	console.log("MATCH PLAYERS UPDATE localmatch", localMatch);	
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	const specCont = localMatch.querySelector(`#spec`);
+	console.log("localp1", localP1);	
+	console.log("localp2", localP2);	
+	console.log("sepccont", specCont);
 	const specs = [...specCont.children]
-	const playersContainer = document.getElementById("players");
+	// const playersContainer = document.getElementById("players");
 	plys.players.forEach(player => {
-
+		console.log("foreachplayer ", player);	
 		if (specs.every(el => el.id != player.playerId))
 		{
-			const winPly = window.players.find(el => el.id == player.playerId)
+			console.log("every ", player);	
+			const winPly = window.players.find(el => el.id == player.playerId);
+			console.log("winply ", winPly);	
+			console.log("winply id ", winPly.id);	
+			console.log("plys.p1Id ", plys.p1Id);	
+			console.log("plys.p2Id ", plys.p2Id);	
 			if (plys.p1Id == winPly.id)
+			{
+				console.log("plys.p1Id == winPly.id ");	
 				localP1.appendChild(winPly);
+			}
 			else if (plys.p2Id == winPly.id)
+			{
+				console.log("plys.p2Id == winPly.id ");	
 				localP2.appendChild(winPly);
+			}
 			else
+			{
+				console.log("else ");	
 				specCont.appendChild(winPly);
+			}
 		}
 
 
