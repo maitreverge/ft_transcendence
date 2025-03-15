@@ -9,6 +9,8 @@
 FORMULAIRE PAS DE FEEDBACK POUR LOGIN + REGISTER
 bugs de console quand on resgiter avec success
 
+AVOIR UN SEUL FICHIER DE TEST pour les deux formulaire et activer des conditionelles 
+
 
 One the login route secured, lock it to prevent accessing it to already connected users
 

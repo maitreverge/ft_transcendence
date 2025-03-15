@@ -57,13 +57,13 @@
         credentials: "same-origin", // Important for cookies
       }).then((response) => {
         htmx
-          .ajax("GET", "/login/", {
+          .ajax("GET", "/register/", {
             target: "body",
             swap: "outerHTML",
             headers: { "HX-Login-Success": "true" },
           })
           .then(function () {
-            history.pushState(null, "", "/login/");
+            history.pushState(null, "", "/register/");
           });
       });
     }
