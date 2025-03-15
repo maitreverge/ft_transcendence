@@ -83,6 +83,13 @@
                     placeholder="Password"
                     required
                   />
+                  <!-- Password strength indicator -->
+                  <div class="mt-2">
+                    <div id="password-strength-meter" class="progress" style="height: 5px;">
+                      <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small id="password-strength-text" class="form-text mt-1">Password strength: Not entered</small>
+                  </div>
                 </div>
                 <div class="col-sm-6">
                   <input
@@ -197,6 +204,18 @@
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
   }
+  
+  /* Style the password strength indicator */
+  #password-strength-meter {
+    width: 100%;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    margin-top: 5px;
+  }
+  
+  #password-strength-text {
+    font-weight: 500;
+  }
 </style>
 <script>
   // HTMX event listeners for debugging
@@ -212,11 +231,96 @@
     const registerButton = document.getElementById("register-button");
     const form = document.querySelector("form.user");
 
+    // Initialize password strength indicator
+    updatePasswordStrengthIndicator(0);
+
     // Email validation function
     function validateEmail(email) {
       const re =
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(String(email).toLowerCase());
+    }
+
+    // Password strength calculation function
+    function checkPasswordStrength(password) {
+      if (!password) {
+        return 0; // Empty password
+      }
+      
+      let strength = 0;
+      
+      // Length check with adjusted thresholds (maximum 50 points)
+      if (password.length > 12) {
+        strength += 50; // Strong length (13+ chars)
+      } else if (password.length >= 6) {
+        strength += 30; // Medium length (6-12 chars)
+      } else {
+        strength += 10; // Weak length (1-5 chars)
+      }
+      
+      // Character variety checks
+      let varieties = 0;
+      
+      // Check for lowercase letters
+      if (/[a-z]/.test(password)) {
+        varieties++;
+        strength += 10;
+      }
+      
+      // Check for uppercase letters
+      if (/[A-Z]/.test(password)) {
+        varieties++;
+        strength += 10;
+      }
+      
+      // Check for numbers
+      if (/\d/.test(password)) {
+        varieties++;
+        strength += 10;
+      }
+      
+      // Check for special characters
+      if (/[^A-Za-z0-9]/.test(password)) {
+        varieties++;
+        strength += 10;
+      }
+      
+      // Bonus for variety (up to 10 points extra)
+      if (varieties > 2) {
+        strength += (varieties - 2) * 5;
+      }
+      
+      // Cap at 100
+      return Math.min(strength, 100);
+    }
+    
+    // Update the password strength visual indicator
+    function updatePasswordStrengthIndicator(strength) {
+      const strengthBar = document.getElementById('password-strength-bar');
+      const strengthText = document.getElementById('password-strength-text');
+      
+      // Update progress bar width
+      strengthBar.style.width = strength + '%';
+      strengthBar.setAttribute('aria-valuenow', strength);
+      
+      // Update text and color based on strength
+      if (strength === 0) {
+        strengthBar.className = 'progress-bar';
+        strengthText.textContent = 'Password strength: Not entered';
+        strengthText.style.color = '#6c757d'; // Gray
+      } else if (strength < 40) {
+        strengthBar.className = 'progress-bar bg-danger';
+        strengthText.textContent = 'Password strength: Weak';
+        strengthText.style.color = '#dc3545'; // Red
+      } else if (strength < 70) {
+        strengthBar.className = 'progress-bar bg-warning';
+        strengthText.textContent = 'Password strength: Moderate';
+        strengthText.style.color = '#ffc107'; // Orange/Yellow
+      } else {
+        strengthBar.className = 'progress-bar bg-success';
+        strengthText.textContent = 'Password strength: Strong';
+        strengthText.style.color = '#28a745'; // Green
+      }
     }
 
     // Check email format
@@ -260,7 +364,17 @@
     });
 
     passwordInput.addEventListener("input", function () {
-      checkPasswords();
+      // First check password strength
+      const password = passwordInput.value;
+      const strength = checkPasswordStrength(password);
+      console.log("Password strength:", strength);
+      updatePasswordStrengthIndicator(strength);
+      
+      // Then check password match
+      const passwordsMatch = checkPasswords();
+      console.log("Passwords match:", passwordsMatch);
+      
+      // Finally validate the form
       validateForm();
     });
 
@@ -273,10 +387,16 @@
     });
 
     passwordInput.addEventListener("blur", function () {
-      if (passwordInput.value && repeatPasswordInput.value) {
+      // Update strength indicator
+      const strength = checkPasswordStrength(passwordInput.value);
+      updatePasswordStrengthIndicator(strength);
+      
+      // Check password match if both fields have values
+      if (passwordInput.value || repeatPasswordInput.value) {
         checkPasswords();
-        validateForm();
       }
+      
+      validateForm();
     });
 
     // Add input event listeners to all required fields
