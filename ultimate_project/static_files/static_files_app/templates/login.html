@@ -45,6 +45,7 @@
 									<div class="form-group">
 										<input 
 											type="submit" 
+											hx-push-url="true"
 											class="btn btn-primary btn-user btn-block" 
 											value="Login">
 									</div>
@@ -107,11 +108,13 @@
 				const response = JSON.parse(evt.detail.xhr.responseText);
 				
 				if (response.success) {
-					evt.detail.shouldSwap = false;  // Empêche HTMX de modifier #login-result
-					
-					// 🔹 Nouvelle requête HTMX pour charger /home/ dans <body>
-					htmx.ajax('GET', '/home/', { target: 'body', swap: 'outerHTML' });
+					evt.detail.shouldSwap = false;
+					htmx.ajax('GET', '/home/', 
+					{ target: 'body', swap: 'outerHTML',
+					headers: {'HX-Login-Success': 'true'} 
+					});
 				} else {
+					
 					evt.detail.innerHTML = response.message;  // Afficher erreur de connexion
 				}
 			} catch (e) {

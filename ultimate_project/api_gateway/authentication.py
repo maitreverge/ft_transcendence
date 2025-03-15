@@ -83,6 +83,7 @@ async def login_fastAPI(
 
     # 🔹 Indiquer à HTMX de rediriger l'utilisateur
     # response.headers["HX-Redirect"] = "/home"
+    # response.headers["HX-Login-Success"] = "true"
 
     # Create a JSONResponse with success message
     json_response = JSONResponse(
