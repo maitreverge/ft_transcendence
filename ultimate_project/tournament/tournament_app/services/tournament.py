@@ -10,19 +10,21 @@ class Tournament():
 		
 		Tournament.id += 1
 		self.id = Tournament.id
+		self.launch = False
 		self.players = []
 		self.matchs = []
 		self.n_match = 0
 
 	async def append_player(self, player):
 		self.players.append(player)
-		if len(self.players) >= 4:	
+		if len(self.players) >= 4 and not self.launch:	
 			await self.launchTournament()	
 				
 	def remove_player(self, player):
 		self.players[:] = [p for p in self.players if p != player]
 
 	async def launchTournament(self):
+		self.launch = True
 		await self.start_match(self.players[0].id, self.players[1].id, "m2")
 		await self.start_match(self.players[2].id, self.players[3].id, "m3")
 
@@ -79,11 +81,13 @@ class Tournament():
 		elif self.n_match == 3:
 			print(f"THE FINAL WINNER IS :{winner_id}", flush=True)
 			await self.send_match_result(match_result)
+			self.launch = False
 
 		
 	async def send_link_match(self, link_match):
 		from tournament_app.services.tournament_consumer import players
-		for player in players:				
+		for player in players:
+			print(f"SENDLINKMATCH {link_match}", flush=True)				
 			await player.send(text_data=json.dumps(link_match))
 
 	async def send_match_result(self, match_result):

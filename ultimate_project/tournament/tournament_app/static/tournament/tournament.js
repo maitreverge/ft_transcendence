@@ -36,7 +36,7 @@ function onTournamentMessage(event, socket) {
 			break;
 		case "playerList":
 			console.log("case playerlist");
-			// window.players = data.players;
+			window.playersList = data.players;
 			updatePlayers(socket, data.players);
 			break;
 		case "tournamentList":
@@ -46,7 +46,7 @@ function onTournamentMessage(event, socket) {
 			break;
 		case "linkMatch":
 			console.log("case linkmatch");
-			linkMatch(data.tournamentId, data.localMatchId, data.matchId, data.p1Id, data.p2Id);			
+			linkMatch(data);			
 			break;
 		case "matchResult":
 			console.log("case matchresult");
@@ -54,8 +54,9 @@ function onTournamentMessage(event, socket) {
 			break;
 		case "matchPlayersUpdate":
 			console.log("case matchPlayersUpdate");
-			updateTournaments(socket, window.tournamentList);
-			matchPlayersUpdate(socket, data);			
+			updatePlayersCont(window.playersList)
+			updateTournamentsPlayers(window.tournamentList);
+			updateMatchPlayers(socket, data);			
 			break;
 		default:				
 			break;
@@ -73,18 +74,18 @@ function updatePlayers(socket, playersUp)
 {
 	console.log("UPDATE PLAYERS ", playersUp);
 
-	updateWinPlayers(playersUp);
+	updateWinPlayers(socket, playersUp);
 	updatePlayersCont(playersUp);
 }
 
-function updateWinPlayers(playersUp)
+function updateWinPlayers(socket, playersUp)
 {
 	console.log("UPDATE WIN PLAYERS ", playersUp);
 
 	playersUp.forEach(plyUp => {
 		if (window.players.every(el => el.id != plyUp.playerId))
 		{
-			const newPlayerEl = create_player_element(plyUp.playerId);
+			const newPlayerEl = create_player_element(socket, plyUp.playerId);
 			window.players.push(newPlayerEl);
 		}	
 	});
@@ -96,7 +97,7 @@ function updateWinPlayers(playersUp)
 	});
 }
 
-function create_player_element(playerId) {
+function create_player_element(socket, playerId) {
 
 	console.log("CREATE PL ELEMENT ", playerId);
 
@@ -160,10 +161,15 @@ function updateTournaments(socket, tournamentsUp) {
 	});
 
 	updateTournamentsPlayers(tournamentsUp);
-	// setTimeout(()=>{updateLinkMatchAndResult(tournamentsUp);}, 3000)
-	updateLinkMatchAndResult(tournamentsUp);
-	patternPromises.forEach(promise => promise.then(()=>{
-		updateLinkMatchAndResult(tournamentsUp);
+	// updateLinkMatchAndResult(tournamentsUp);
+	patternPromises.forEach(promise => promise.then(value =>{
+		console.log("NEW PROMISE REC ", value);
+		if (value)
+		{
+			console.log("GO To UTP ULKR ", value);
+			updateTournamentsPlayers(tournamentsUp);
+			updateLinkMatchAndResult(tournamentsUp);
+		}
 	}));
 }
 
@@ -190,8 +196,7 @@ function getPattern(tournamentId) {
 	console.log("GET PATTERN ", tournamentId);
 
 	const tournament = document.getElementById("tournaments").querySelector(
-		`[id='${tournamentId}']`
-	);
+		`[id='${tournamentId}']`);
 	if (!tournament)
 		return Promise.resolve(false);
 	const overlay = tournament.querySelector("#overlay-pattern");
@@ -203,7 +208,7 @@ function getPattern(tournamentId) {
 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
 		return response.text();
 	})
-	.then(data => loadHtml(data, overlay))
+	.then(data => {return loadHtml(data, overlay), true})
 	.catch(error => console.log(error));			
 }
 
@@ -373,7 +378,7 @@ function matchResult(rsl) {
 	// localMatch.innerText = winnerId
 }
 
-function matchPlayersUpdate(socket, plys) {
+function updateMatchPlayers(socket, plys) {
 
 	console.log("MATCH PLAYERS UPDATE ", plys);	
 
