@@ -107,12 +107,19 @@
 				console.log("Réponse brute:", evt.detail.xhr.responseText);  // 🔍 Debug
 				const response = JSON.parse(evt.detail.xhr.responseText);
 				
+				
 				if (response.success) {
 					evt.detail.shouldSwap = false;
-					htmx.ajax('GET', '/home/', 
-					{ target: 'body', swap: 'outerHTML',
-					headers: {'HX-Login-Success': 'true'} 
+
+
+					htmx.ajax('GET', '/home/', {
+					target: 'body',
+					swap: 'outerHTML',
+					headers: {'HX-Login-Success': 'true'}
+					}).then(function() {
+						history.pushState(null, '', '/home/');
 					});
+
 				} else {
 					
 					evt.detail.innerHTML = response.message;  // Afficher erreur de connexion
