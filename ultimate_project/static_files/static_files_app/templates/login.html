@@ -99,6 +99,26 @@
 	</div>
 </div>
 <script>
+	document.addEventListener('htmx:beforeSwap', function(evt) {
+		console.log("document.addEventListener working")
+		if (evt.detail.target.id === 'login-result') {
+			try {
+				console.log("Réponse brute:", evt.detail.xhr.responseText);  // 🔍 Debug
+				const response = JSON.parse(evt.detail.xhr.responseText);
+				
+				if (response.success) {
+					evt.detail.shouldSwap = false;  // Empêche HTMX de modifier #login-result
+					
+					// 🔹 Nouvelle requête HTMX pour charger /home/ dans <body>
+					htmx.ajax('GET', '/home/', { target: 'body', swap: 'outerHTML' });
+				} else {
+					evt.detail.innerHTML = response.message;  // Afficher erreur de connexion
+				}
+			} catch (e) {
+				console.error('Erreur de traitement de la réponse:', e);
+			}
+		}
+	});
     // Listen for responses to the login form
     // document.addEventListener('htmx:beforeSwap', function(evt) {
     //     // If the target is login-result, check for JSON response

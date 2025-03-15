@@ -418,6 +418,7 @@ async def login_page_route(request: Request):
     return await login_fastAPI(request, response, username, password)
 
 
+
 # Add auth-status endpoint for debugging
 @app.get("/auth/status")
 async def auth_status(request: Request):

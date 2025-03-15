@@ -82,7 +82,7 @@ async def login_fastAPI(
     print(f"Refresh Token: {refresh_token[:20]}...", flush=True)
 
     # 🔹 Indiquer à HTMX de rediriger l'utilisateur
-    response.headers["HX-Redirect"] = "/home"
+    # response.headers["HX-Redirect"] = "/home"
 
     # Create a JSONResponse with success message
     json_response = JSONResponse(
@@ -90,8 +90,8 @@ async def login_fastAPI(
     )
 
     # Copy the headers from our response to the JSONResponse
-    for key, value in response.headers.items():
-        json_response.headers[key] = value
+    # for key, value in response.headers.items():
+    #     json_response.headers[key] = value
 
     # Make sure the cookies are also set on the JSONResponse
     # Access token
@@ -118,8 +118,9 @@ async def login_fastAPI(
 
     # Debug log for headers
     print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
-
+    
     return json_response
+
 
 
 # Function to verify JWT token
