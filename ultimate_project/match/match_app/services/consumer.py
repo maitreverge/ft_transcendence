@@ -2,7 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import urllib
 from match_app.views import pongs
-import requests
+import aiohttp
 
 players = []
 
@@ -26,12 +26,12 @@ class MyConsumer(AsyncWebsocketConsumer):
 			'socket': self,
 			'dir': None
 		})
-		self.send_players_update()	
+		await self.send_players_update()	
 
 	async def disconnect(self, close_code):
 		global players
 		players[:] = [p for p in players if p['socket'] != self]
-		self.send_players_update()
+		await self.send_players_update()
 
 	async def receive(self, text_data):				
 		data = json.loads(text_data)	
@@ -39,12 +39,18 @@ class MyConsumer(AsyncWebsocketConsumer):
 			if p['socket'] == self:
 				p['dir'] = data.get('dir')
 
-	def send_players_update(self):
-		requests.post(
-		"http://tournament:8001/tournament/match-players-update/", json={
-			"matchId": self.matchId,
-			"players": [
-				{key : value for key, value in p.items() if key == 'playerId'}
-				for p in players if p.get('matchId') == self.matchId
-			]
-		})
+	async def send_players_update(self):
+	
+		async with aiohttp.ClientSession() as session:
+			async with session.post(
+				"http://tournament:8001/tournament/match-players-update/",
+				json={
+				"matchId": self.matchId,
+				"players": [{
+					key : value for key, value in p.items() if key == 'playerId'
+					} for p in players if p.get('matchId') == self.matchId				
+				]}) as resp:
+					if resp.status != 200 and resp.status != 201:
+						err = await resp.text()
+						print(f"Error HTTP {resp.status}: {err}", flush=True)
+
