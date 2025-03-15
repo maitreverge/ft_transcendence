@@ -42,7 +42,7 @@ def home(request):
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")
 
-    if request.headers.get("HX-Request"):
+    if request.headers.get("HX-Request") and request.headers.get("HX-Login-Success") != "true":
         return render(request, "partials/home.html", {"username": username})
 
     obj = {"username": username, "page": "partials/home.html"}

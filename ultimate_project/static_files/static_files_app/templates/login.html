@@ -1,129 +1,151 @@
 <div class="container">
+  <!-- Outer Row -->
+  <div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-12 col-md-9">
+      <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+          <!-- Nested Row within Card Body -->
+          <div class="row">
+            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+            <div class="col-lg-6">
+              <div class="p-5">
+                <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                </div>
 
-	<!-- Outer Row -->
-	<div class="row justify-content-center">
-		<div class="col-xl-10 col-lg-12 col-md-9">
-			<div class="card o-hidden border-0 shadow-lg my-5">
-				<div class="card-body p-0">
-					<!-- Nested Row within Card Body -->
-					<div class="row">
-						<div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-						<div class="col-lg-6">
-							<div class="p-5">
-								<div class="text-center">
-									<h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-								</div>
+                <!-- Formulaire de connexion HTMX -->
+                <form
+                  class="user"
+                  hx-post="/auth/login/"
+                  hx-target="#register-form"
+                  hx-swap="outerHTML"
+                  hx-indicator="#loading-spinner"
+                >
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control form-control-user"
+                      id="username"
+                      name="username"
+                      placeholder="Enter Username..."
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="password"
+                      class="form-control form-control-user"
+                      id="password"
+                      name="password"
+                      placeholder="Password"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="submit"
+                      hx-push-url="true"
+                      class="btn btn-primary btn-user btn-block"
+                      value="Login"
+                    />
+                  </div>
+                </form>
 
-								<!-- Formulaire de connexion HTMX -->
-								<form class="user" hx-post="/auth/login/" hx-target="#login-result" hx-swap="innerHTML"
-									hx-indicator="#loading-spinner">
-									<div class="form-group">
-										<input type="text" class="form-control form-control-user" id="username"
-											name="username" placeholder="Enter Username..." required>
-									</div>
-									<div class="form-group">
-										<input type="password" class="form-control form-control-user" id="password"
-											name="password" placeholder="Password" required>
-									</div>
-									<div class="form-group">
-										<input type="submit" class="btn btn-primary btn-user btn-block" value="Login">
-									</div>
-								</form>
+                <!-- Zone de feedback pour les erreurs -->
+                <div
+                  id="register-form"
+                  class="text-center text-danger mt-2"
+                ></div>
 
-								<!-- Zone de feedback pour les erreurs -->
-								<div id="login-result" class="text-center text-danger mt-2 font-weight-bold"></div>
-								
-								<!-- Loading spinner that shows during HTMX requests -->
-								<div id="loading-spinner" class="htmx-indicator text-center my-2">
-									<div class="spinner-border text-primary" role="status">
-										<span class="sr-only">Loading...</span>
-									</div>
-								</div>
+                <!-- Loading spinner that shows during HTMX requests -->
+                <div
+                  id="loading-spinner"
+                  class="htmx-indicator text-center my-2"
+                >
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
 
-								<hr>
-								
-								<!-- !  Google button  -->
-								<!-- <a hx-boost="false" href="http://localhost:8000/home/"
-								class="btn btn-google btn-user btn-block">
-								<i class="fab fa-google fa-fw"></i>
-								Login with Google
-								</a> -->
-								
-								<!-- !  Facebook button  -->
-								<!-- <a hx-boost="false" href="http://localhost:8000/home/"
-									class="btn btn-facebook btn-user btn-block">
-									<i class="fab fa-facebook-f fa-fw"></i>
-									Login with Facebook
-								</a> -->
-								<hr>
-								<!-- <div class="text-center">
-                                    <a class="small" hx-boost="false" href="http://localhost:8000/forgot-password">
-                                        Forgot Password?
-                                    </a>
-                                </div> -->
-								<div class="text-center">
-									<a class="small" hx-boost="false" href="http://localhost:8000/register">
-										Create an Account!
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                <hr />
+
+                <!-- !  Google button  -->
+                <!-- <a
+                  hx-boost="false"
+                  href="http://localhost:8000/home/"
+                  class="btn btn-google btn-user btn-block"
+                >
+                  <i class="fab fa-google fa-fw"></i>
+                  Login with Google
+                </a> -->
+
+                <!-- !  Facebook button  -->
+                <!-- <a
+                  hx-boost="false"
+                  href="http://localhost:8000/home/"
+                  class="btn btn-facebook btn-user btn-block"
+                >
+                  <i class="fab fa-facebook-f fa-fw"></i>
+                  Login with Facebook
+                </a>
+                <hr /> -->
+                <!-- <div class="text-center">
+                  <a
+                    class="small"
+                    hx-boost="false"
+                    href="http://localhost:8000/forgot-password"
+                  >
+                    Forgot Password?
+                  </a>
+                </div> -->
+                <div
+                  hx-boost="false"
+                  hx-trigger="click"
+                  hx-push-url="true"
+                  hx-get="/register/"
+                  hx-target="body"
+                  class="text-center small"
+                  href=""
+                  data-translate="Create an Account!"
+                >
+                  Create an Account!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <script>
-    // Listen for responses to the login form
-    document.addEventListener('htmx:beforeSwap', function(evt) {
-        // If the target is login-result, check for JSON response
-        if (evt.detail.target.id === 'login-result') {
-            try {
-                // Parse JSON response
-                const response = JSON.parse(evt.detail.xhr.responseText);
-                
-                // Check for successful login
-                if (response.success) {
-                    // Prevent the swap if successful, so we don't show success message
-                    evt.detail.shouldSwap = false;
-                    
-                    // Check for HX-Redirect header and redirect
-                    const redirectUrl = evt.detail.xhr.getResponseHeader('HX-Redirect');
-                    if (redirectUrl) {
-                        window.location.href = redirectUrl;
-                    }
-                } else {
-                    // For errors, allow the swap but replace with error message
-                    evt.detail.innerHTML = '<div class="alert alert-danger" role="alert">' + 
-                                          (response.error || "Invalid username or password") + 
-                                          '</div>';
-                }
-            } catch (e) {
-                // Not JSON or other error, let HTMX handle it
-                console.error('Error processing response:', e);
-                evt.detail.innerHTML = '<div class="alert alert-danger" role="alert">An error occurred. Please try again.</div>';
-            }
+  document.addEventListener("htmx:beforeSwap", function (evt) {
+    console.log("document.addEventListener working");
+    console.log("LOGIN SCRIPT");
+    if (evt.detail.target.id === "register-form") {
+      try {
+        console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+        const response = JSON.parse(evt.detail.xhr.responseText);
+
+        if (response.success) {
+          evt.detail.shouldSwap = false;
+
+          htmx
+            .ajax("GET", "/home/", {
+              target: "body",
+              swap: "outerHTML",
+              headers: { "HX-Login-Success": "true" },
+            })
+            .then(function () {
+              history.pushState(null, "", "/home/");
+            });
+        } else {
+          evt.detail.innerHTML = response.message; // Afficher erreur de connexion
         }
-    });
-    
-    // Additional event listener specifically for error responses (status 400, 401, 500, etc.)
-    document.addEventListener('htmx:responseError', function(evt) {
-        // Only handle login form errors
-        if (evt.detail.target && evt.detail.target.id === 'login-result') {
-            try {
-                // Try to parse the response as JSON
-                const response = JSON.parse(evt.detail.xhr.responseText);
-                document.getElementById('login-result').innerHTML = '<div class="alert alert-danger" role="alert">' + 
-                                                                  (response.error || "Invalid username or password") + 
-                                                                  '</div>';
-            } catch (e) {
-                // If parsing fails, show a generic error
-                document.getElementById('login-result').innerHTML = '<div class="alert alert-danger" role="alert">Invalid username or password</div>';
-            }
-            // Prevent the default error handling
-            evt.preventDefault();
-        }
-    });
+      } catch (e) {
+        console.error("Erreur de traitement de la réponse:", e);
+      }
+    }
+  });
 </script>
 <script src="https://unpkg.com/htmx.org@1.9.6"></script>

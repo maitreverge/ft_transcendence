@@ -45,7 +45,9 @@ function observeDOMChanges() {
 
 window.onload = function() {
     const lang = localStorage.getItem('preferred_language') || 'en';
-    document.getElementById('language-selector').value = lang;
+    el = document.getElementById('language-selector');
+    if (el)
+        el.value = lang;
     loadTranslations(lang);
     observeDOMChanges();
 };
