@@ -1,7 +1,7 @@
 {% load static %}
 <html>
 
-    {% include "head.html" %}
+    {% include "partials/head.html" %}
     
     <body   id="page-top" 
             hx-boost="true" 
@@ -19,13 +19,13 @@
 
     <div id="wrapper">  <!-- template suff - DO NOT TOUCH -->
 
-        {% include "sidebar.html" %}
+        {% include "partials/sidebar.html" %}
 
         <div id="content-wrapper" class="d-flex flex-column"> <!-- template suff - DO NOT TOUCH -->
             
             <div id="content">  <!-- template suff - DO NOT TOUCH -->
                 
-                {% include "navbar.html" %}
+                {% include "partials/navbar.html" %}
                 
                 <div id="main_div">
 
@@ -44,12 +44,12 @@
                 </div> <!-- template suff - DO NOT TOUCH -->
             </div> <!-- template suff - DO NOT TOUCH -->
 
-                {% include "footer.html" %}
-                {% include "logout_modal.html" %}
+                {% include "partials/footer.html" %}
+                {% include "partials/logout_modal.html" %}
             
                 {% endif %}
             
-                {% include "scripts.html" %} <!-- include scripts at the end! -->
+                {% include "partials/scripts.html" %} <!-- include scripts at the end! -->
                 </div>
             </div>
     </body>
