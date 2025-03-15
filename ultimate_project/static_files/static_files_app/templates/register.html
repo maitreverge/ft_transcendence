@@ -14,7 +14,15 @@
 							</h1>
 						</div>
 						<!-- Formulaire de création de compte HTMX -->
-						<form id="register-form" class="user" hx-post="/auth/register/" hx-target="#register-form" hx-swap="outerHTML" hx-indicator=".htmx-indicator">
+						<form 
+							id="register-form" 
+							class="user" 
+							hx-post="/auth/register/" 
+							hx-target="#register-form" 
+							hx-swap="outerHTML" 
+							hx-indicator="#loading-spinner"
+							hx-indicator=".htmx-indicator">
+
 							<!-- HTMX loading indicator -->
 							<div class="htmx-indicator" style="display:none;">
 								Processing registration...
@@ -65,9 +73,17 @@
 							</div>
 
 							<!-- Bouton de création de compte -->	
-							<button type="submit" class="btn btn-primary btn-user btn-block" id="register-button">
+							<button 
+								type="submit" 
+								class="btn btn-primary btn-user btn-block" 
+								id="register-button">
 								Register Account
 							</button>
+							<div id="loading-spinner" class="htmx-indicator text-center my-2">
+								<div class="spinner-border text-primary" role="status">
+									<span class="sr-only">Loading...</span>
+								</div>
+							</div>
 							<hr>
 
 							<!-- !  Google button  -->
