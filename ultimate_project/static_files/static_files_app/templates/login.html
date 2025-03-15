@@ -17,7 +17,7 @@
                 <form
                   class="user"
                   hx-post="/auth/login/"
-                  hx-target="#login-result"
+                  hx-target="#register-form"
                   hx-swap="outerHTML"
                   hx-indicator="#loading-spinner"
                 >
@@ -53,7 +53,7 @@
 
                 <!-- Zone de feedback pour les erreurs -->
                 <div
-                  id="login-result"
+                  id="register-form"
                   class="text-center text-danger mt-2"
                 ></div>
 
@@ -121,7 +121,8 @@
 <script>
   document.addEventListener("htmx:beforeSwap", function (evt) {
     console.log("document.addEventListener working");
-    if (evt.detail.target.id === "login-result") {
+    console.log("LOGIN SCRIPT");
+    if (evt.detail.target.id === "register-form") {
       try {
         console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
         const response = JSON.parse(evt.detail.xhr.responseText);

@@ -273,6 +273,9 @@
     // Form submission validation
     form.addEventListener("htmx:beforeSwap", function (evt) {
       console.log("document.addEventListener working");
+      console.log(evt.detail.target.id);
+      console.log("after");
+
       if (evt.detail.target.id === "register-form") {
         try {
           console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
