@@ -19,7 +19,7 @@
 									class="user" 
 									hx-post="/auth/login/" 
 									hx-target="#login-result" 
-									hx-swap="innerHTML"
+									hx-swap="outerHTML"
 									hx-indicator="#loading-spinner">
 								
 									<div class="form-group">
@@ -129,6 +129,7 @@
 			}
 		}
 	});
+
     // Listen for responses to the login form
     // document.addEventListener('htmx:beforeSwap', function(evt) {
     //     // If the target is login-result, check for JSON response

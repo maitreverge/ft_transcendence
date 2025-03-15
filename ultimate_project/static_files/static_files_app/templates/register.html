@@ -21,7 +21,7 @@
 							hx-target="#register-form" 
 							hx-swap="outerHTML" 
 							hx-indicator="#loading-spinner"
-							hx-indicator=".htmx-indicator">
+							>
 
 							<!-- HTMX loading indicator -->
 							<div class="htmx-indicator" style="display:none;">
@@ -126,18 +126,6 @@
 <!-- Add JavaScript for client-side validation -->
 <script>
 	// HTMX event listeners for debugging
-	document.addEventListener('htmx:beforeRequest', function(event) {
-		console.log('HTMX before request:', event.detail);
-	});
-	
-	document.addEventListener('htmx:afterRequest', function(event) {
-		console.log('HTMX after request:', event.detail);
-	});
-	
-	document.addEventListener('htmx:responseError', function(event) {
-		console.log('HTMX response error:', event.detail);
-	});
-
 	document.addEventListener('DOMContentLoaded', function() {
 		const firstNameInput = document.getElementById('first_name');
 		const lastNameInput = document.getElementById('last_name');
@@ -228,19 +216,46 @@
 		}
 
 		// Form submission validation
-		form.addEventListener('submit', function(event) {
-			console.log('Form submission triggered');
-			// Don't prevent default - let HTMX handle the submission
-			validateForm();
-			console.log('Form validation status:', !registerButton.disabled);
-			
-			// Log form data that will be sent
-			const formData = new FormData(form);
-			const formValues = {};
-			for (let [key, value] of formData.entries()) {
-				formValues[key] = value;
+		form.addEventListener('htmx:beforeSwap', function(evt) {
+			console.log("document.addEventListener working")
+			if (evt.detail.target.id === 'register-form') {
+				try {
+					console.log("Réponse brute:", evt.detail.xhr.responseText);  // 🔍 Debug
+					const response = JSON.parse(evt.detail.xhr.responseText);
+					
+					
+					if (response.success) {
+						evt.detail.shouldSwap = false;
+
+
+						htmx.ajax('GET', '/home/', {
+						target: 'body',
+						swap: 'outerHTML',
+						headers: {'HX-Login-Success': 'true'}
+						}).then(function() {
+							history.pushState(null, '', '/home/');
+						});
+
+					} else {
+						
+						evt.detail.innerHTML = response.message;  // Afficher erreur de connexion
+					}
+				} catch (e) {
+					console.error('Erreur de traitement de la réponse:', e);
+				}
 			}
-			console.log('Form data being submitted:', formValues);
+			// console.log('Form submission triggered');
+			// // Don't prevent default - let HTMX handle the submission
+			// validateForm();
+			// console.log('Form validation status:', !registerButton.disabled);
+			
+			// // Log form data that will be sent
+			// const formData = new FormData(form);
+			// const formValues = {};
+			// for (let [key, value] of formData.entries()) {
+			// 	formValues[key] = value;
+			// }
+			// console.log('Form data being submitted:', formValues);
 		});
 	});
 </script>

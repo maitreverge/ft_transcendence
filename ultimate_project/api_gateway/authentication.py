@@ -396,7 +396,7 @@ async def register_fastAPI(
         print(f"Refresh Token: {refresh_token}...", flush=True)
 
         # Set redirect header for HTMX
-        response.headers["HX-Redirect"] = "/home"
+        # response.headers["HX-Redirect"] = "/home"
 
         # Create the response object
         json_response = JSONResponse(
@@ -404,8 +404,8 @@ async def register_fastAPI(
         )
 
         # Copy headers from our response to the JSONResponse
-        for key, value in response.headers.items():
-            json_response.headers[key] = value
+        # for key, value in response.headers.items():
+        #     json_response.headers[key] = value
 
         # Set JWT cookies
         json_response.set_cookie(
