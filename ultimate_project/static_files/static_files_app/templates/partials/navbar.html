@@ -6,21 +6,20 @@
   bg-white topbar mb-4 static-top shadow custom-navbar-height"
   style="height: 4.375rem;padding: 0;"
 >
-<!-- <a
-    id="homelogo"
+<a  id="homelogo"
     class="h-100 text-white bg-gradient-primary sidebar-brand 
-    {% if page != 'partials/home.html' %}d-none{% endif %} 
+    d-none 
     align-items-center justify-content-center nav-link"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/home/"
     hx-target="#main_div"
     hx-on="htmx:beforeRequest: toggleSidebar(false);"
-    > -->
-    <!-- <div class="sidebar-brand-icon rotate-n-15">
+    >
+    <div class="sidebar-brand-icon rotate-n-15">
     <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-    </div> -->
-    <!-- <div id="homelogo" class="sidebar-brand-text mx-3">Pong <sup>42</sup></div> -->
+    </div>
+    <div id="homelogo" class="sidebar-brand-text mx-3">Pong <sup>42</sup></div>
 </a>
   <select id="language-selector" class="ml-2 " onchange="changeLanguage(event)">
     <option value="en">🇬🇧 English</option>

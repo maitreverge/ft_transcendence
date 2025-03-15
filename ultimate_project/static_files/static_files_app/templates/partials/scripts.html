@@ -21,17 +21,16 @@
         // Sauvegarde dans sessionStorage
         sessionStorage.setItem("lastVisitedPage", currentURL);
     });
+    
 
-    function updateLayout() {
-        const url = window.location.href;
-        if (url.includes('/home')) {
-            toggleSidebar(false);
-        } else {
-            toggleSidebar(true);
-        }
-    }
+    // 🔹 1️⃣ Au chargement initial
+    document.addEventListener("DOMContentLoaded", toggleNavbarLogo);
 
-    updateLayout();
+    // 🔹 2️⃣ À chaque mise à jour HTMX (évite le retard du `htmx:afterSettle`)
+    document.addEventListener("htmx:afterSwap", toggleNavbarLogo);
+
+    // 🔹 3️⃣ Lorsqu'on navigue avec les boutons "Retour" / "Avancer"
+    window.addEventListener("popstate", toggleNavbarLogo);
 
     function toggleSidebar(show) {
         console.log("toggleSidebar called");
@@ -42,6 +41,25 @@
             sidebar.classList.remove('d-none');
         } else {
             sidebar.classList.add('d-none');
+        }
+    }
+
+    function toggleNavbarLogo() {
+        console.log("toggleNavbarLogo called");
+        const isHomePage = document.querySelector('#home-page');
+        const homelogo = document.querySelector('#homelogo');
+        if (!homelogo)
+            return
+        if (isHomePage && homelogo)
+    {
+        console.log("adding logo")
+        homelogo.classList.remove('d-none')
+    }
+        else
+        {
+            console.log("removing logo")
+
+            homelogo.classList.add('d-none')
         }
     }
 </script>
