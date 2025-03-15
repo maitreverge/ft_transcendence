@@ -140,7 +140,31 @@
               history.pushState(null, "", "/home/");
             });
         } else {
-          evt.detail.innerHTML = response.message; // Afficher erreur de connexion
+          // Enhanced error message display with animation and icon
+          const errorMessage = response.message || "Invalid credentials. Please try again.";
+          const errorHtml = `
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              <strong>Login Failed!</strong> ${errorMessage}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          `;
+          
+          evt.detail.innerHTML = errorHtml;
+          
+          // Add shake animation to the form to provide visual feedback
+          const form = document.querySelector('form.user');
+          form.classList.add('animate__animated', 'animate__shakeX');
+          
+          // Remove animation class after animation completes
+          setTimeout(() => {
+            form.classList.remove('animate__animated', 'animate__shakeX');
+          }, 1000);
+          
+          // Focus on username field for better UX
+          document.getElementById('username').focus();
         }
       } catch (e) {
         console.error("Erreur de traitement de la réponse:", e);
@@ -148,4 +172,6 @@
     }
   });
 </script>
+<!-- Add Animate.css for shake animation -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 <script src="https://unpkg.com/htmx.org@1.9.6"></script>
