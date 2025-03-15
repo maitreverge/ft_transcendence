@@ -29,7 +29,7 @@ class Tournament():
 		await self.start_match(self.players[2].id, self.players[3].id, "m3")
 
 	async def start_match(self, p1_id, p2_id, local_match_id):
-	
+		print(f"STARTMATCH p1 {p1_id} p2 {p2_id}, localmt {local_match_id}", flush=True)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
     				f"http://match:8002/match/new-match/?p1={p1_id}&p2={p2_id}"
@@ -50,7 +50,12 @@ class Tournament():
 						"linkMatch": link_match
 					}
 					self.matchs.append(match)
+					print(f"FIN STARTMATCH {link_match}", flush=True)
 					return link_match
+				else:  
+					err = await response.text()
+					print(f"Error HTTP {response.status}: {err}", flush=True)
+
 
 	async def match_result(self, match_id, winner_id, looser_id):
 		print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
@@ -85,14 +90,17 @@ class Tournament():
 
 		
 	async def send_link_match(self, link_match):
+		print(f"SENDLINKMATCH {link_match}", flush=True)	
 		from tournament_app.services.tournament_consumer import players
 		for player in players:
-			print(f"SENDLINKMATCH {link_match}", flush=True)				
+			print(f"SENDLINKMATCH {link_match} to {player.id}", flush=True)				
 			await player.send(text_data=json.dumps(link_match))
 
 	async def send_match_result(self, match_result):
+		print(f"SENDMATCHRESULT {match_result}", flush=True)
 		from tournament_app.services.tournament_consumer import players
-		for player in players:				
+		for player in players:
+			print(f"SENDMATCHRESULT {match_result} to {player.id}", flush=True)					
 			await player.send(text_data=json.dumps(match_result))
 
 	async def match_players_update(self, match_update):

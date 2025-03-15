@@ -394,7 +394,7 @@ function updateMatchPlayers(socket, plys) {
 	console.log("MATCH PLAYERS UPDATE localmatch", localMatch);	
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
-	const specCont = localMatch.querySelector(`#spec`);
+	const specCont = localMatch.querySelector(`#specs`);
 	console.log("localp1", localP1);	
 	console.log("localp2", localP2);	
 	console.log("sepccont", specCont);
