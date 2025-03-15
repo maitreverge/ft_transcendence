@@ -536,6 +536,16 @@ async def static_files_proxy(path: str, request: Request):
     - **path**: The path to the resource in the static files service.
     - **request**: The incoming request object.
     """
+    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
+    # is_auth, user_info = is_authenticated(request)
+
+    # if is_auth == False:
+    #     # If not authenticated, redirect to register
+    #     response = RedirectResponse(url="/register/")
+
+    #     return response
+    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
+    
     return await proxy_request("static_files", path, request)
 
 
