@@ -2,43 +2,43 @@
 <html>
 
     {% include "head.html" %}
-    {% include "scripts.html" %}
-
+    
     <body id="page-top" 
     hx-boost="true" 
     @popstate.window="navigate(window.location.pathname, false)
     bg-gradient-primary">
-
+    
     {% if page == "register.html" or page == "forgot-password.html" or page == "login.html" or page == "two-factor-auth.html" or page == "error.html" %}
-        {% include page %}
+    {% include page %}
     {% else %}
-        <div id="wrapper">
+    <div id="wrapper">
 
-            {% include "sidebar.html" %}
+        {% include "sidebar.html" %}
 
-            <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper" class="d-flex flex-column">
+            
+            <div id="content">
                 
-                <div id="content">
+                {% include "navbar.html" %}
+                
+                <div id="main_div">
                     
-                    {% include "navbar.html" %}
-
-                    <div id="main_div">
-
-                        {% if page %}
-                            {% if page|slice:"-5:" == ".html" %}
-                                {% include page %}
-                            {% else %}
-                                {{ page|safe }}
-                            {% endif %}
-                        {% else %}
-                            {% include "partials/home.html" %}
-                        {% endif %}
-
-                    </div>
+                    {% if page %}
+                    {% if page|slice:"-5:" == ".html" %}
+                    {% include page %}
+                    {% else %}
+                    {{ page|safe }}
+                    {% endif %}
+                    {% else %}
+                    {% include "partials/home.html" %}
+                    {% endif %}
+                    
                 </div>
-                {% include "footer.html" %}
-                {% include "logout_modal.html" %}
-    {% endif %}
+            </div>
+            {% include "footer.html" %}
+            {% include "logout_modal.html" %}
+            {% endif %}
+            {% include "scripts.html" %}
                 </div>
             </div>
     </body>
