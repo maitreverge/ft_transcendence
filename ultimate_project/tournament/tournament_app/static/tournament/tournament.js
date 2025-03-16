@@ -181,6 +181,7 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
   div.className = "tournament";
   div.textContent = `tournament: ${tournament.tournamentId}`;
   div.id = tournament.tournamentId;
+  div.className = "tournament-cont"
   div.onclick = () => enterTournament(socket, tournament.tournamentId);
   const overlayPattern = document.createElement("div");
   overlayPattern.id = "overlay-pattern";

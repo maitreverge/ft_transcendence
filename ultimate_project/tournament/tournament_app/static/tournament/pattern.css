@@ -1,7 +1,40 @@
 .pattern-match {
+	width:30%;
+	/* height:100%; */
+	display:inline-block;
+	margin:10px;
 	background-color:blanchedalmond;
 }
 
 .next-match {
 	background-color:hwb(36 1% 2%);
+}
+
+#pattern-cont {
+	margin:10px;
+	width:40%;
+	/* height:100%; */
+	display:inline-block;
+	background-color: rgb(8, 250, 32);	
+}
+
+#pattern {
+	margin:10px;
+	background-color: rgb(8, 189, 250);	
+}
+
+#m1 {
+	position:relative;
+	left: 50%;
+	transform:translateX(-50%);
+}
+
+.pattern-pl {
+	width:40%;
+	display:inline-block;
+	background-color:rgb(97, 9, 240);
+}
+
+.pattern-pl-cont {
+	background-color:rgb(49, 48, 51);
 }
