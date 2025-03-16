@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from tournament_app.services.tournament import Tournament
 from typing import List
+import aiohttp
 
 players : List["TournamentConsumer"] = []
 tournaments : List["Tournament"] = []
@@ -78,12 +79,22 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 	async def enter_tournament(self, tournament_id):
 
+		# async with aiohttp.ClientSession() as session:
+		# 	async with session.get(				
+    	# 			f"/match/stop-match/${window.selfId}/${matchId}/"
+		# 		) as response:
+		# 		if response.status == 201:
+		# 			data = await response.json()		
+		# 		else:  
+		# 			err = await response.text()
+		# 			print(f"Error HTTP {response.status}: {err}", flush=True) 
+
 		tournament = next(
 			(t for t in tournaments if t.id == tournament_id), None)		
 		if tournament and self not in tournament.players:
 			self.remove_player_in_tournaments()
 			await tournament.append_player(self)
-			await self.send_tournaments()	
+		await self.send_tournaments()	
 			
 	async def quit_tournament(self):
 		self.remove_player_in_tournaments()			

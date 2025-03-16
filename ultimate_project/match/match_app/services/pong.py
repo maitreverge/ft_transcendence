@@ -6,9 +6,6 @@ import json
 import aiohttp
 from enum import Enum
 
-
-
-
 class State(Enum):
 	waiting = "waiting"
 	running = "running"
@@ -57,6 +54,9 @@ class Pong:
 			# 	print("Tâche annulée avec succès")	 
 			self.state = State.end
 			if self.winner is None and self.start_flag:
+				self.winner = self.idP1	if playerId == self.idP2 \
+					else self.idP2
+			if self.winner is None and not self.start_flag:
 				self.winner = self.idP1	if playerId == self.idP2 \
 					else self.idP2
 			# asyncio.run_coroutine_threadsafe(self.stop_tasks, self.myEventLoop)

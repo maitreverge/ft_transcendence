@@ -298,6 +298,8 @@ function linkMatch(lk) {
 		window.selfMatchId = lk.matchId;
 		localMatch.classList.add("next-match");
 	}
+	else
+		localMatch.classList.add("spec-match");
 	localMatch.onclick = function() {
 		fetch(`/match/?matchId=${lk.matchId}&playerId=${window.selfId}`)
 		.then(response => {
@@ -334,8 +336,7 @@ function loadHtml(data, overlay) {
 }
 
 function matchResult(rsl) {
-	console.log("rsl: <----");
-	console.log(rsl);
+
 	console.log("MATCH RESULT ", rsl);
 
 	const tournament = document.getElementById("tournaments").querySelector(
@@ -343,44 +344,27 @@ function matchResult(rsl) {
 	);
 	if (!tournament)
 		return;
-	const overlay = tournament.querySelector("#overlay-match");
 	const localMatch = tournament.querySelector(`#${rsl.localMatchId}`);
 	if (!localMatch)
 		return;
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	if (rsl.winnerId === rsl.p1Id)
-		{
-			localP1.classList.add("winner");
-			localP2.classList.add("looser");
-		}
+	{
+		localP1.classList.add("winner");
+		localP2.classList.add("looser");
+	}
 	else if (rsl.winnerId === rsl.p2Id)
 	{
 		localP2.classList.add("winner");
 		localP1.classList.add("looser");
 	}
-		
-	// const playersCont = tournament.querySelector("#players-cont");
-	// const winplayer1 = window.players.find(el => el.id == rsl.winnerId);
-	// const winplayer2 = window.players.find(el => el.id == rsl.looserId);
-	// // const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
-	// // const localP1 = localMatch.querySelector(`#pl1`);
-	// // const localP2 = localMatch.querySelector(`#pl2`);
-	// const specCont = localMatch.querySelector(`#spec`);
-	// const specs = [...specCont.children]
-	// const playersContainer = document.getElementById("players");
-	// if (winplayer1)
-	// 	playersCont.appendChild(winplayer1);
-	// if (winplayer2)
-	// playersCont.appendChild(winplayer2);
-	// specs.forEach(el => {
-	// 	playersCont.appendChild(el)
-	// });
-
-	// localP1.innerText = p1Id;
-	// localP2.innerText = p2Id;
-	// overlay.innerHTML = "";
-	// localMatch.innerText = winnerId
+	else
+	{
+		localP2.classList.add("undef");
+		localP1.classList.add("undef");
+	}
+	localMatch.onclick = "";
 }
 
 function updateMatchsPlayers(pack) {

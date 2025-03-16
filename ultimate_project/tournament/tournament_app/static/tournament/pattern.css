@@ -12,6 +12,10 @@
 	background-color:hwb(36 1% 2%);
 }
 
+.spec-match {
+	background-color:hwb(202 49% 9%);
+}
+
 #pattern-cont {
 	margin:10px;
 	width:40%;

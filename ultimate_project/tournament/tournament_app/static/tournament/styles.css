@@ -32,8 +32,10 @@
 .user {
 	/* width:20px; */
 	/* height:20px; */
-	margin:5px;
-	display:inline;
+	border-radius: 5px;
+	margin: 5px;
+	padding: 2px;
+	display:inline-block;
 	background: rgb(251, 255, 0);
 }
 
@@ -89,11 +91,15 @@ button {
 
 
 .winner {
-	background-color: rgb(8, 250, 20);		
+	background-color: rgb(8, 250, 20) !important;		
 }
 
 .looser {
-	background-color: rgb(250, 8, 48);	
+	background-color: rgb(250, 8, 48) !important;	
+}
+
+.undef {
+	background-color: hwb(180 81% 18%) !important;
 }
 
 .tournament-cont {
