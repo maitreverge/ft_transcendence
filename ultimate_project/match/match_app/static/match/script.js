@@ -98,12 +98,15 @@ function sequelInitMatchWs(socket) {
 	socket.onmessage = event => onMatchWsMessage(
 		event, pads, [waiting, end], waitingState);
 	setCommands(socket);
-	if (window.selfMatchId != window.matchId)
+	const spec = document.getElementById("spec")
+	if (spec)
 	{
-		const spec = document.getElementById("spec");
-		if (spec)
+		if (window.selfMatchId != window.matchId)
 			spec.style.display = "block";
+		else
+			spec.style.display = "none";
 	}
+	
 }
 
 function initMatchWs() {

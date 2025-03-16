@@ -11,7 +11,7 @@ def new_match(request : HttpRequest):
 	pongs.append(pong)
 	return JsonResponse({"matchId": pong.id}, status=201)
 
-def start_match(request : HttpRequest):
+def enter_match(request : HttpRequest):
 
 	return render(
 		request,
