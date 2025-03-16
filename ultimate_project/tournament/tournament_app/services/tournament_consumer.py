@@ -93,10 +93,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def send_matchs_players_update():
 
 		matchs_players_up = [
-			(m.get('matchPlayersUpdate') for m in t.matchs) for t in tournaments]
+			m.get('matchPlayersUpdate') for t in tournaments for m in t.matchs
+			if m.get('matchPlayersUpdate')
+		]
 		pack = {
 			"type": "matchsPlayersUpdate",
-			"pack": matchs_players_up}
+			"pack": matchs_players_up
+		}
 		print(f"PACK: {pack}", flush=True)
 		for player in players:
 			await player.send(text_data=json.dumps(pack))

@@ -83,8 +83,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	}
 	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
 	{
-		pads[0].style.top = data.yp1 + "vh";
-		pads[1].style.top = data.yp2 + "vh";
+		pads[0].style.top = data.yp1 + "%";
+		pads[1].style.top = data.yp2 + "%";
 	}
 }
 

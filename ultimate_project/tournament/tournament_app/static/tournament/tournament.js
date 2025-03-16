@@ -248,6 +248,8 @@ function updateLinkMatchAndResult(tournamentsUp) {
 				linkMatch(matchUp.linkMatch);
 			if (matchUp.matchResult)				
 				matchResult(matchUp.matchResult);
+			if (matchUp.matchPlayersUpdate)				
+				updateMatchPlayers(matchUp.matchPlayersUpdate);
 		});
 	});
 }
