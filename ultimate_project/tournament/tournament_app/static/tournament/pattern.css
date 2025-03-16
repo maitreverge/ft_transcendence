@@ -1,9 +1,11 @@
 .pattern-match {
-	width:30%;
+	width:fit-content;
 	/* height:100%; */
 	display:inline-block;
 	margin:10px;
+	padding:10px;
 	background-color:blanchedalmond;
+	text-align: center;
 }
 
 .next-match {
@@ -19,22 +21,47 @@
 }
 
 #pattern {
+	position:relative;
 	margin:10px;
 	background-color: rgb(8, 189, 250);	
 }
 
-#m1 {
+/* #m1 {
 	position:relative;
 	left: 50%;
-	transform:translateX(-50%);
-}
+	transform:translateX(-50%); 
+} */
 
 .pattern-pl {
-	width:40%;
+	/* width:40%; */
+	width:fit-content;
+	padding:10px;
 	display:inline-block;
 	background-color:rgb(97, 9, 240);
 }
 
 .pattern-pl-cont {
+	width:fit-content;
+	position:relative;
+	left: 50%;
+	transform:translateX(-50%);
 	background-color:rgb(49, 48, 51);
+}
+
+#secline {
+	width:fit-content;
+	/* height:fit-content; */
+	position:relative;
+	left: 50%;
+	transform:translateX(-50%);
+	background-color:rgb(43, 92, 94);
+}
+
+#firstline {
+	width:fit-content;
+	/* height:fit-content; */
+	position:relative;
+	left: 50%;
+	transform:translateX(-50%);
+	background-color:rgb(43, 92, 94);
 }
