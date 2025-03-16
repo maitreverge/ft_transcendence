@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" data-page-type="login">
   <!-- Outer Row -->
   <div class="row justify-content-center">
     <div class="col-xl-10 col-lg-12 col-md-9">
@@ -123,20 +123,7 @@
 <!-- Load HTMX first -->
 <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 
-<!-- Then load our custom scripts -->
+<!-- Use the consolidated auth script -->
 {% load static %}
-<script src="{% static 'static_files/js/auth-common.js' %}"></script>
-<script src="{% static 'static_files/js/login.js' %}"></script>
-<!-- Explicitly initialize the login page scripts when this template loads -->
-<script>
-  // Ensure initialization happens after scripts are loaded
-  window.addEventListener('load', function() {
-    console.log("Login template loaded, explicitly initializing");
-    if (typeof initializeLoginPage === 'function') {
-      window.loginInitialized = true;
-      initializeLoginPage();
-    } else {
-      console.error("Login initialization function not found!");
-    }
-  });
-</script>
+<script src="{% static 'static_files/js/auth.js' %}"></script>
+<!-- No need for explicit initialization anymore, handled in auth.js -->
