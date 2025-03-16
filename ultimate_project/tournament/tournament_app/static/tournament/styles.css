@@ -97,8 +97,8 @@ button {
 }
 
 .tournament-cont {
-	width:42%;
-	height:42%;
+	width:50%;
+	height: fit-content;
 	margin:10px;
 	background-color: rgb(109, 94, 96);	
 }
