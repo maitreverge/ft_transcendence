@@ -11,7 +11,14 @@
                     <h6 class="m-0 font-weight-bold text-danger">Enter Verification Code</h6>
                 </div>
                 <div class="card-body">
-                    <form hx-post="/user/disable-2fa/" 
+                    {% if error %}
+                    <div class="alert alert-danger mb-3">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    <form method="post" action="/user/disable-2fa/"
+                          hx-post="/user/disable-2fa/" 
                           hx-target="#main_div" 
                           hx-headers='{"HX-Request": "true", "X-CSRFToken": "{{ csrf_token }}"}'>
                         {% csrf_token %}
@@ -19,11 +26,6 @@
                             <label>Enter the 6-digit code from your authenticator app:</label>
                             <input type="text" name="token" maxlength="6" class="form-control form-control-user" 
                                 placeholder="Enter 6-digit code" required>
-                            {% if form.token.errors %}
-                                <div class="text-danger">
-                                    {{ form.token.errors }}
-                                </div>
-                            {% endif %}
                         </div>
                         <div class="form-group mt-4">
                             <button type="submit" class="btn btn-danger btn-user btn-block">
