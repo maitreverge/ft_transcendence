@@ -95,9 +95,6 @@ async def update_user(user_id, data):
         return None
 
 
-def render_2fa(request):
-    user = request.htmx.get_data("user")
-
 
 async def setup_2fa(request):
     try:
