@@ -151,7 +151,18 @@
               </div>
             </div>
             
-			<!-- ! 2FA button  -->
+			<!-- 2FA buttons with conditional display -->
+            {% if user.two_fa_verified %}
+            <a href="#" class="btn btn-danger btn-icon-split float-right" 
+               hx-get="/user/disable-2fa/" 
+               hx-target="#main_div"
+               hx-headers='{"HX-Request": "true"}'>
+              <span class="icon text-white-50">
+                <i class="fas fa-shield-alt"></i>
+              </span>
+              <span data-translate="Disable 2FA" class="text">Disable 2FA</span>
+            </a>
+            {% else %}
             <a href="#" class="btn btn-success btn-icon-split float-right" 
                hx-get="/user/setup-2fa/" 
                hx-target="#main_div"
@@ -161,6 +172,7 @@
               </span>
               <span data-translate="Set Up 2FA" class="text">Set Up 2FA</span>
             </a>
+            {% endif %}
             
             <a href="#" class="btn btn-danger btn-icon-split float-right">
               <span class="icon text-white-50">

@@ -22,4 +22,5 @@ urlpatterns = [
     path("user/stats/", views.stats),
     path("user/setup-2fa/", async_to_sync(twofa_views.setup_2fa)),
     path("user/verify-2fa/", async_to_sync(twofa_views.verify_2fa)),
+    path("user/disable-2fa/", csrf_exempt(async_to_sync(twofa_views.disable_2fa))),
 ]
