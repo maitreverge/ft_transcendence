@@ -69,35 +69,6 @@
 
                 <hr />
 
-                <!-- !  Google button  -->
-                <!-- <a
-                  hx-boost="false"
-                  href="http://localhost:8000/home/"
-                  class="btn btn-google btn-user btn-block"
-                >
-                  <i class="fab fa-google fa-fw"></i>
-                  Login with Google
-                </a> -->
-
-                <!-- !  Facebook button  -->
-                <!-- <a
-                  hx-boost="false"
-                  href="http://localhost:8000/home/"
-                  class="btn btn-facebook btn-user btn-block"
-                >
-                  <i class="fab fa-facebook-f fa-fw"></i>
-                  Login with Facebook
-                </a>
-                <hr /> -->
-                <!-- <div class="text-center">
-                  <a
-                    class="small"
-                    hx-boost="false"
-                    href="http://localhost:8000/forgot-password"
-                  >
-                    Forgot Password?
-                  </a>
-                </div> -->
                 <div
                   hx-boost="false"
                   hx-trigger="click"
@@ -119,10 +90,13 @@
   </div>
 </div>
 <script>
+if (!window.htmxLoginEventAttached) {
+  window.htmxLoginEventAttached = true; // Marque l'event comme attaché
+
   document.addEventListener("htmx:beforeSwap", function (evt) {
-    console.log("document.addEventListener working");
     console.log("LOGIN SCRIPT");
     if (evt.detail.target.id === "register-form") {
+        console.log("evt.detail.target.id found!")
       try {
         console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
         const response = JSON.parse(evt.detail.xhr.responseText);
@@ -146,6 +120,11 @@
         console.error("Erreur de traitement de la réponse:", e);
       }
     }
+    else{
+        console.log("evt.detail.target.id NOT found!");
+
+    }
   });
+}
 </script>
 <script src="https://unpkg.com/htmx.org@1.9.6"></script>
