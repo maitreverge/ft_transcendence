@@ -114,7 +114,7 @@ async def setup_2fa(request):
             return render(request, "twofa_app/error.html", {"error": "User not found"})
 
         # Check if 2FA is already verified
-        if user.get("two_fa_verified"):
+        if user.get("two_fa_enabled"):
             return render(
                 request,
                 "twofa_app/error.html",
@@ -126,7 +126,7 @@ async def setup_2fa(request):
         print(f"Generated new 2FA secret: {secret}", flush=True)
 
         # Save the secret to the user via API
-        update_data = {"_two_fa_secret": secret, "two_fa_enabled": True}
+        update_data = {"_two_fa_secret": secret}
         update_result = await update_user(user["id"], update_data)
 
         if not update_result:
@@ -181,7 +181,7 @@ async def setup_2fa(request):
 async def verify_2fa(request):
     try:
         if request.method == "POST":
-            form = TwoFaForm(request.POST)
+            form = request.POST
             username = request.headers.get("X-Username")
             print(f"Verifying 2FA for user: {username}", flush=True)
 
@@ -219,7 +219,7 @@ async def verify_2fa(request):
                 if totp.verify(token):
                     print("Token verification successful", flush=True)
                     # Update user to fully enable 2FA
-                    update_data = {"two_fa_verified": True}
+                    update_data = {"two_fa_enabled": True}
                     update_result = await update_user(user["id"], update_data)
 
                     if not update_result:
@@ -296,7 +296,7 @@ async def disable_2fa(request):
             )
 
         # Check if 2FA is actually enabled
-        if not user.get("two_fa_verified"):
+        if not user.get("two_fa_enabled"):
             print(f"ERROR: 2FA not enabled for user {username}", flush=True)
             return render(
                 request,
@@ -350,7 +350,6 @@ async def disable_2fa(request):
                 # Update user to disable 2FA
                 update_data = {
                     "two_fa_enabled": False,
-                    "two_fa_verified": False,
                     "_two_fa_secret": "",  # Clear the secret
                 }
 
