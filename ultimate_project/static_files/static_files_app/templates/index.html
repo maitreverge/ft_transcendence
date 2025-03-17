@@ -2,7 +2,8 @@
 <html>
 
     {% include "partials/head.html" %}
-    
+    {% include "partials/scripts.html" %}
+
     <body   id="page-top" 
             hx-boost="true" 
             @popstate.window="navigate(window.location.pathname, false)
@@ -52,7 +53,6 @@
                 </div> <!-- template suff - DO NOT TOUCH -->
 
                     <!-- include scripts at the end! -->
-                    {% include "partials/scripts.html" %}
 
             </div>
         </div>

@@ -10,6 +10,17 @@
 <script src="{% static 'static_files/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 <script src="{% static 'static_files/js/sb-admin-2.min.js' %}"></script>
 <script>
+    document.body.addEventListener('htmx:afterSwap', function() {
+        document.querySelectorAll("script").forEach(oldScript => {
+            const newScript = document.createElement("script");
+            newScript.textContent = oldScript.textContent;
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+            oldScript.replaceWith(newScript);
+        });
+    });
+
     window.addEventListener("beforeunload", () => {
         console.log("URL sauvegardée avec history.state et sessionStorage");
         
