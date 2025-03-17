@@ -10,17 +10,20 @@
 <script src="{% static 'static_files/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 <script src="{% static 'static_files/js/sb-admin-2.min.js' %}"></script>
 <script>
-    document.body.addEventListener('htmx:afterSwap', function() {
-        document.querySelectorAll("script").forEach(oldScript => {
-            const newScript = document.createElement("script");
-            newScript.textContent = oldScript.textContent;
-            Array.from(oldScript.attributes).forEach(attr => {
-                newScript.setAttribute(attr.name, attr.value);
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.addEventListener('htmx:afterSettle', function() {
+            toggleNavbarLogo()
+            console.log("addEventListener('htmx:afterSwap'");
+            document.querySelectorAll("script").forEach(oldScript => {
+                const newScript = document.createElement("script");
+                newScript.textContent = oldScript.textContent;
+                Array.from(oldScript.attributes).forEach(attr => {
+                    newScript.setAttribute(attr.name, attr.value);
+                });
+                oldScript.replaceWith(newScript);
             });
-            oldScript.replaceWith(newScript);
         });
     });
-
     window.addEventListener("beforeunload", () => {
         console.log("URL sauvegardée avec history.state et sessionStorage");
         
@@ -38,7 +41,7 @@
     document.addEventListener("DOMContentLoaded", toggleNavbarLogo);
 
     // 🔹 2️⃣ À chaque mise à jour HTMX (évite le retard du `htmx:afterSettle`)
-    document.addEventListener("htmx:afterSwap", toggleNavbarLogo);
+    // document.addEventListener("htmx:afterSwap", toggleNavbarLogo);
 
     // 🔹 3️⃣ Lorsqu'on navigue avec les boutons "Retour" / "Avancer"
     window.addEventListener("popstate", toggleNavbarLogo);
@@ -56,21 +59,21 @@
     }
 
     function toggleNavbarLogo() {
-        console.log("toggleNavbarLogo called");
-        const isHomePage = document.querySelector('#home-page');
-        const homelogo = document.querySelector('#homelogo');
-        if (!homelogo)
-            return
-        if (isHomePage && homelogo)
-    {
-        console.log("adding logo")
-        homelogo.classList.remove('d-none')
-    }
-        else
-        {
-            console.log("removing logo")
+    console.log("toggleNavbarLogo called");
+    
+    const isHomePage = document.querySelector('#home-page') !== null;  // Vérifie si on est sur la page d'accueil
+    const homelogo = document.querySelector('#homelogo');
 
-            homelogo.classList.add('d-none')
-        }
+    if (!homelogo) {
+        return;
     }
+
+    if (isHomePage) {
+        console.log("adding logo");
+        homelogo.classList.remove('d-none');
+    } else {
+        console.log("removing logo");
+        homelogo.classList.add('d-none');
+    }
+}
 </script>
