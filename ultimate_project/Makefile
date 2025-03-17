@@ -11,6 +11,7 @@ clean:
 	-test -n "$$(docker ps -qa)" && docker rm $$(docker ps -qa)
 	-test -n "$$(docker volume ls -q)" && docker volume rm $$(docker volume ls -q)    
 	-echo y | docker network rm $$(docker network ls --filter "type=custom" -q)
+	docker image prune -f
 
 	rm -rf staticfiles/*
 

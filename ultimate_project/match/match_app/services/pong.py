@@ -3,11 +3,8 @@ import time
 import match_app.services.consumer as consumer
 import asyncio
 import json
-import requests
+import aiohttp
 from enum import Enum
-
-
-
 
 class State(Enum):
 	waiting = "waiting"
@@ -57,6 +54,9 @@ class Pong:
 			# 	print("Tâche annulée avec succès")	 
 			self.state = State.end
 			if self.winner is None and self.start_flag:
+				self.winner = self.idP1	if playerId == self.idP2 \
+					else self.idP2
+			if self.winner is None and not self.start_flag:
 				self.winner = self.idP1	if playerId == self.idP2 \
 					else self.idP2
 			# asyncio.run_coroutine_threadsafe(self.stop_tasks, self.myEventLoop)
@@ -223,14 +223,19 @@ class Pong:
 				}))
 			except Exception as e:
 				pass		
-		requests.post("http://tournament:8001/tournament/match-result/", json={
-			"matchId": self.id,
-			"winnerId": self.winner,
-			"looserId": self.idP1 if self.winner == self.idP2 else self.idP2,
-			"p1Id": self.idP1,
-			"p2Id": self.idP2
-		})
-		from match_app.views import del_pong
-		del_pong(self.id)
 	
-			
+		async with aiohttp.ClientSession() as session:
+			async with session.post(
+				"http://tournament:8001/tournament/match-result/", json={
+				"matchId": self.id,
+				"winnerId": self.winner,
+				"looserId": self.idP1 if self.winner == self.idP2
+					else self.idP2,
+				"p1Id": self.idP1,
+				"p2Id": self.idP2
+			}) as response:
+				if response.status != 200 and response.status != 201:
+					err = await response.text()
+					print(f"Erreur HTTP {response.status}: {err}", flush=True)
+		from match_app.views import del_pong
+		del_pong(self.id)			
