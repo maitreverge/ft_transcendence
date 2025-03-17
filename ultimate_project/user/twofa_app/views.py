@@ -306,7 +306,7 @@ async def disable_2fa(request):
                 print("ERROR: Invalid token", flush=True)
                 return render(request, "twofa_app/disable2fa.html", {"username": username})
 
-            update_data = {"two_fa_enabled": False}
+            update_data = {"two_fa_enabled": False, "_two_fa_secret": None}
             update_result = await update_user(user["id"], update_data)
             if not update_result:
                 print("ERROR: Failed to update 2FA status", flush=True)

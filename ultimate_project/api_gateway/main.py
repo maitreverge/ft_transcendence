@@ -571,6 +571,18 @@ async def verify_2fa_proxy(request: Request):
 
     return await proxy_request("user", "user/verify-2fa/", request)
 
+# ! HO LA CONG DE SA MERE LA ROUTE APIIIIIIIIIIIIIIIIIIIIIIIIIII
+@app.api_route("/user/disable-2fa/", methods=["GET", "POST"])
+@app.api_route("/disable-2fa/", methods=["GET", "POST"])
+async def disable_2fa_proxy(request: Request):
+    """
+    Proxy requests for 2FA disabling to the user microservice.
+    """
+    print("🔐 Handling disable-2fa request", flush=True)
+    print(f"🔐 Headers: {request.headers}", flush=True)
+
+    return await proxy_request("user", "user/disable-2fa/", request)
+
 
 if __name__ == "__main__":
     import uvicorn
