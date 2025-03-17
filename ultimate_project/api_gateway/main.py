@@ -9,7 +9,6 @@ from fastapi.staticfiles import StaticFiles
 templates = Jinja2Templates(directory="templates")
 
 
-
 # from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
@@ -42,10 +41,12 @@ app = FastAPI(
 #     ],  # Expose these headers
 # )
 
+
 # error page handler
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return await proxy_request("static_files", f"error/{exc.status_code}", request)
+
 
 services = {
     "tournament": "http://tournament:8001",
@@ -109,6 +110,7 @@ async def debug_cookies_middleware(request: Request, call_next):
 
     return response
 
+
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
         raise HTTPException(status_code=404, detail="Service not found")
@@ -120,7 +122,9 @@ async def proxy_request(service_name: str, path: str, request: Request):
 
         print(
             "****************************\n",
-            url,
+            f"Proxying to: {url}",
+            f"\nHX-Request header present: {'HX-Request' in request.headers}",
+            f"\nRequest method: {request.method}",
             "\n****************************",
             flush=True,
         )
@@ -182,7 +186,6 @@ async def proxy_request(service_name: str, path: str, request: Request):
         return fastapi_response
 
 
-
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
 async def tournament_pattern_proxy(tournament_id, request: Request):
     print("################## NEW ROUTE USED #######################", flush=True)
@@ -232,10 +235,8 @@ async def tournament_proxy(path: str, request: Request):
         )
     else:
         error_message = "Page Not Found"
-        
+
         return await proxy_request("static_files", "error", request)
-
-
 
 
 @app.api_route("/user/{path:path}", methods=["GET"])
@@ -259,9 +260,8 @@ async def user_proxy(path: str, request: Request):
         return await proxy_request("static_files", "/user-stats-wrapper/", request)
     else:
         error_message = "Page Not Found"
-        
-        return await proxy_request("static_files", "error", request)
 
+        return await proxy_request("static_files", "error", request)
 
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
@@ -315,7 +315,6 @@ async def redirect_to_home():
     Redirect requests from '/' to '/home/'.
     """
     return RedirectResponse(url="/home/")
-
 
 
 @app.api_route("/api/{path:path}", methods=["GET", "POST"])
@@ -536,7 +535,41 @@ async def static_files_proxy(path: str, request: Request):
     - **path**: The path to the resource in the static files service.
     - **request**: The incoming request object.
     """
+    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
+    # is_auth, user_info = is_authenticated(request)
+
+    # if is_auth == False:
+    #     # If not authenticated, redirect to register
+    #     response = RedirectResponse(url="/register/")
+
+    #     return response
+    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
+    
     return await proxy_request("static_files", path, request)
+
+
+@app.api_route("/user/setup-2fa/", methods=["GET"])
+@app.api_route("/setup-2fa/", methods=["GET"])
+async def setup_2fa_proxy(request: Request):
+    """
+    Proxy requests for 2FA setup to the user microservice.
+    """
+    print("🔐 Handling setup-2fa request", flush=True)
+    print(f"🔐 Headers: {request.headers}", flush=True)
+
+    return await proxy_request("user", "user/setup-2fa/", request)
+
+
+@app.api_route("/user/verify-2fa/", methods=["POST"])
+@app.api_route("/verify-2fa/", methods=["POST"])
+async def verify_2fa_proxy(request: Request):
+    """
+    Proxy requests for 2FA verification to the user microservice.
+    """
+    print("🔐 Handling verify-2fa request", flush=True)
+    print(f"🔐 Headers: {request.headers}", flush=True)
+
+    return await proxy_request("user", "user/verify-2fa/", request)
 
 
 if __name__ == "__main__":

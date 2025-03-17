@@ -6,16 +6,37 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
-One the login route secured, lock it to prevent accessing it to already connected users
+`LOGIN 2 FIX`
+FORMULAIRE PAS DE FEEDBACK POUR LOGIN + REGISTER
+bugs de console quand on resgiter avec success
 
-Then implement the logout
+AVOIR UN SEUL FICHIER DE TEST pour les deux formulaire et activer des conditionelles 
 
-DOCKER COMPOSE : Setting environment erase what is set in `.env` file
 
-Make a register process WITHOUT 2FA.
-==> Need to open POST routes to the database
-==> Need to make a GET request before writting into it.
-==> Make the user logged just after
+`2FA`
+For Dan => translate 2FA
+
+Create a user `two_fa_app` django_app
+
+Make a route with simple HTML rendering with SPA
+
+SetUp 2FA => Render QR Code + Validation
+Once validated the timestamp code => Write in models the key
+
+Then check within the models if data has been correctly wrote
+
+Then try to login with 2FA
+
+Turn the SetUp2FA button is the user has not enable
+
+Create Disable 2FA is the user has it enabled
+
+
+
+
+
+
+
 
 
 

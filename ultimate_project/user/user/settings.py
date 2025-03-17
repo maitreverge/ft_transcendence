@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     f"{NAME}_app",
     "user_management_app",
     'corsheaders',
+    "twofa_app",
 ]
 
 MIDDLEWARE = [

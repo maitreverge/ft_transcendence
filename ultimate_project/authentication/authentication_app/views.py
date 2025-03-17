@@ -12,6 +12,7 @@ from .wrappers import block_authenticated_users
 
 logger = logging.getLogger(__name__)
 
+
 # @block_authenticated_users
 @csrf_exempt  # Disable CSRF protection for the login view
 def login_view(request):
@@ -100,12 +101,14 @@ def login_view(request):
                 # Authentication failed - return JSON error
                 error_message = response.json().get("error", "Authentication failed")
                 return JsonResponse(
-                    {"success": False, "error": error_message}, status=401
+                    {"success": False, "error": error_message},
+                    status=200,  # Use 200 instead of 401 to ensure proper HTMX handling
                 )
         except requests.exceptions.RequestException as e:
             # Handle connection errors - return JSON error
             return JsonResponse(
-                {"success": False, "error": f"Connection error: {str(e)}"}, status=500
+                {"success": False, "error": f"Connection error: {str(e)}"},
+                status=200,  # Use 200 instead of 500 to ensure proper HTMX handling
             )
 
     # For GET requests, show the login form
@@ -157,10 +160,11 @@ def refresh_token_view(request):
     except jwt.InvalidTokenError:
         return JsonResponse({"error": "Invalid refresh token"}, status=401)
 
+
 def logout_view(request):
     """Properly delete authentication cookies"""
     response = JsonResponse({"success": True})
-    
+
     # More aggressive cookie deletion with specific parameters
     # These parameters need to match EXACTLY how the cookies were set
     response.delete_cookie(

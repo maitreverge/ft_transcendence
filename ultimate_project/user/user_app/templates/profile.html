@@ -150,6 +150,18 @@
                 </div>
               </div>
             </div>
+            
+			<!-- ! 2FA button  -->
+            <a href="#" class="btn btn-success btn-icon-split float-right" 
+               hx-get="/user/setup-2fa/" 
+               hx-target="#main_div"
+               hx-headers='{"HX-Request": "true"}'>
+              <span class="icon text-white-50">
+                <i class="fas fa-shield-alt"></i>
+              </span>
+              <span data-translate="Set Up 2FA" class="text">Set Up 2FA</span>
+            </a>
+            
             <a href="#" class="btn btn-danger btn-icon-split float-right">
               <span class="icon text-white-50">
                 <i class="fas fa-trash"></i>

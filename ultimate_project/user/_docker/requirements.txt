@@ -8,3 +8,5 @@ pyotp
 pillow
 cryptography
 django-cors-headers
+httpx
+asgiref

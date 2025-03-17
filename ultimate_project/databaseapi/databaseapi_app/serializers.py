@@ -7,7 +7,17 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ["id", "username", "email", "first_name", "last_name", "password"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+            "two_fa_enabled",
+            "two_fa_verified",
+            "_two_fa_secret",
+        ]
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):

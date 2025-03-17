@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" data-page-type="login">
   <!-- Outer Row -->
   <div class="row justify-content-center">
     <div class="col-xl-10 col-lg-12 col-md-9">
@@ -118,6 +118,11 @@
     </div>
   </div>
 </div>
+<!-- Add Animate.css for shake animation -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<!-- Load HTMX first -->
+<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
 <script>
   document.addEventListener("htmx:beforeSwap", function (evt) {
     console.log("document.addEventListener working");
@@ -147,5 +152,6 @@
       }
     }
   });
+
+
 </script>
-<script src="https://unpkg.com/htmx.org@1.9.6"></script>
