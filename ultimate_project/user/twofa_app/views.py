@@ -266,138 +266,63 @@ async def disable_2fa(request):
     """
     Verify the user's 2FA token and then disable 2FA for the account
     """
+    username = request.headers.get("X-Username")
     try:
-        # Debug request info
-        print(f"==== DISABLE 2FA DEBUG ====", flush=True)
-        print(f"Request method: {request.method}", flush=True)
-        print(f"Request headers: {dict(request.headers)}", flush=True)
-        print(f"Request POST data: {dict(request.POST)}", flush=True)
-
-        # Get username from header
-        username = request.headers.get("X-Username")
-
-        if not username:
-            print("ERROR: No username found in headers", flush=True)
-            return render(
-                request,
-                "twofa_app/error.html",
-                {"error": "User not authenticated: No username found in headers"},
-            )
-
-        user = await get_user_by_username(username)
-        print(f"User data retrieved for 2FA disabling: {user}", flush=True)
-
-        if not user:
-            print(f"ERROR: User {username} not found in database", flush=True)
-            return render(
-                request,
-                "twofa_app/error.html",
-                {"error": f"User '{username}' not found in database"},
-            )
-
-        # Check if 2FA is actually enabled
-        if not user.get("two_fa_enabled"):
-            print(f"ERROR: 2FA not enabled for user {username}", flush=True)
-            return render(
-                request,
-                "twofa_app/error.html",
-                {"error": "2FA is not enabled for this account"},
-            )
-
         if request.method == "POST":
-            print(f"Processing POST request for disable_2fa", flush=True)
+            form = TwoFaForm(request.POST)
+            print(f"Disabling 2FA for user: {username}", flush=True)
 
-            # Get token from POST data directly
-            token = request.POST.get("token", "").strip()
-            print(f"Received token for 2FA disabling: {token}", flush=True)
+            if not username:    
+                return render(
+                    request, "twofa_app/error.html", {"error": "User not authenticated"}
+                )
 
-            # Basic validation
+            user = await get_user_by_username(username)
+            if not user:
+                return render(request, "twofa_app/error.html", {"error": "User not found"})
+
+            if not form.is_valid():
+                print(f"ERROR: Form validation failed: {form.errors}", flush=True)
+                return render(request, "twofa_app/disable2fa.html", {"username": username})
+
+            token = request.POST.get("token")
+            print(f"Received token: {token}", flush=True)
+
             if not token:
                 print("ERROR: No token provided", flush=True)
-                return render(
-                    request,
-                    "twofa_app/disable2fa.html",
-                    {"username": username, "error": "Please enter your 6-digit code"},
-                )
+                return render(request, "twofa_app/disable2fa.html", {"username": username})
 
-            # Validate token format (6 digits)
             if not token.isdigit() or len(token) != 6:
                 print(f"ERROR: Invalid token format: {token}", flush=True)
-                return render(
-                    request,
-                    "twofa_app/disable2fa.html",
-                    {
-                        "username": username,
-                        "error": "Please enter a valid 6-digit code",
-                    },
-                )
-
-            # Get the user's secret and verify the token
+                return render(request, "twofa_app/disable2fa.html", {"username": username})         
+                
             secret = user.get("_two_fa_secret")
             if not secret:
-                print("2FA secret not found in user data", flush=True)
-                return render(
-                    request,
-                    "twofa_app/error.html",
-                    {"error": "2FA not set up properly: No secret found"},
-                )
-
-            print(f"Verifying token with secret: {secret}", flush=True)
+                print("ERROR: 2FA secret not found in user data", flush=True)
+                return render(request, "twofa_app/disable2fa.html", {"username": username})
+            
             totp = pyotp.TOTP(secret)
+            if not totp.verify(token):
+                print("ERROR: Invalid token", flush=True)
+                return render(request, "twofa_app/disable2fa.html", {"username": username})
 
-            if totp.verify(token):
-                print("Token verification successful, disabling 2FA", flush=True)
-                # Update user to disable 2FA
-                update_data = {
-                    "two_fa_enabled": False,
-                    "_two_fa_secret": "",  # Clear the secret
-                }
+            update_data = {"two_fa_enabled": False}
+            update_result = await update_user(user["id"], update_data)
+            if not update_result:
+                print("ERROR: Failed to update 2FA status", flush=True)
+                return render(request, "twofa_app/disable2fa.html", {"username": username})
 
-                try:
-                    update_result = await update_user(user["id"], update_data)
-                    print(f"Update result: {update_result}", flush=True)
-
-                    if not update_result:
-                        print("Failed to disable 2FA for user", flush=True)
-                        return render(
-                            request,
-                            "twofa_app/error.html",
-                            {"error": "Failed to disable 2FA. Please try again later."},
-                        )
-
-                    print("2FA disabled successfully", flush=True)
-                    return render(
-                        request,
-                        "twofa_app/success.html",
-                        {"message": "2FA has been successfully disabled!"},
-                    )
-                except Exception as e:
-                    print(f"Exception updating user: {str(e)}", flush=True)
-                    return render(
-                        request,
-                        "twofa_app/error.html",
-                        {"error": f"Error updating user: {str(e)}"},
-                    )
-            else:
-                print("Token verification failed for 2FA disabling", flush=True)
-                return render(
-                    request,
-                    "twofa_app/disable2fa.html",
-                    {"username": username, "error": "Invalid token. Please try again."},
-                )
+            print("2FA disabled successfully", flush=True)
+            return render(request, "twofa_app/success.html", {"message": "2FA has been successfully disabled!"})
         else:
-            # GET request - just show the form
             print("GET request for disable_2fa form", flush=True)
+            return render(request, "twofa_app/disable2fa.html", {"username": username})
 
-        # If it's a GET request or validation failed, render the form
-        return render(request, "twofa_app/disable2fa.html", {"username": username})
     except Exception as e:
-        import traceback
-
         print(f"Error in disable_2fa: {str(e)}", flush=True)
-        print(f"Traceback: {traceback.format_exc()}", flush=True)
-        return render(
-            request,
-            "twofa_app/error.html",
-            {"error": f"An unexpected error occurred while disabling 2FA: {str(e)}"},
-        )
+        return render(request, "twofa_app/error.html", {"error": "An unexpected error occurred during 2FA disabling."})
+
+
+                
+                
+                
