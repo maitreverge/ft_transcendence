@@ -12,7 +12,6 @@
             </div>
             <!-- Formulaire de création de compte HTMX -->
             <form
-              id="register-form"
               class="user"
               hx-post="/auth/register/"
               hx-target="#register-form"
@@ -20,7 +19,8 @@
               hx-indicator="#loading-spinner"
             >
               <!-- HTMX loading indicator -->
-              <div class="htmx-indicator" style="display: none">
+              <div  class="htmx-indicator" 
+                    style="display: none">
                 Processing registration...
               </div>
 
@@ -120,43 +120,24 @@
               >
                 Register Account
               </button>
-              <div id="loading-spinner" class="htmx-indicator text-center my-2">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-              </div>
-              <hr />
-
-              <!-- !  Google button  -->
-              <!-- <a
-                hx-boost="false"
-                href="http://localhost:8000/home/"
-                class="btn btn-google btn-user btn-block"
-              >
-                <i class="fab fa-google fa-fw"></i>
-                Register with Google
-              </a> -->
-
-              <!-- !  Facebook button  -->
-              <!-- <a
-                hx-boost="false"
-                href="http://localhost:8000/home/"
-                class="btn btn-facebook btn-user btn-block"
-              >
-                <i class="fab fa-facebook-f fa-fw"></i>
-                Register with Facebook
-              </a>
-              <hr />
-              <div class="text-center">
-                <a
-                  hx-boost="false"
-                  class="small"
-                  href="http://localhost:8000/forgot-password"
-                >
-                  Forgot Password?
-                </a>
-              </div> -->
+              
             </form>
+            <div
+            id="register-form"
+            class="text-center text-danger mt-2"
+          ></div>
+
+            <div  id="loading-spinner" 
+                  class="htmx-indicator text-center my-2">
+              <div    class="spinner-border text-primary" 
+                      role="status">
+                <span 
+                      class="sr-only">
+                  Loading...
+                  </span>
+              </div>
+            </div>
+            <hr />
             <div
               hx-boost="false"
               hx-trigger="click"
@@ -178,6 +159,36 @@
 
 <!-- Add JavaScript for client-side validation -->
 <script>
+    document.addEventListener("htmx:beforeSwap", function (evt) {
+      console.log("document.addEventListener working");
+      console.log(evt.detail.target.id);
+      console.log("after");
+
+      if (evt.detail.target.id === "register-form") {
+        try {
+          console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+          const response = JSON.parse(evt.detail.xhr.responseText);
+
+          if (response.success) {
+            evt.detail.shouldSwap = false;
+
+            htmx
+              .ajax("GET", "/home/", {
+                target: "body",
+                swap: "outerHTML",
+                headers: { "HX-Login-Success": "true" },
+              })
+              .then(function () {
+                history.pushState(null, "", "/home/");
+              });
+          } else {
+            evt.detail.innerHTML = response.message; // Afficher erreur de connexion
+          }
+        } catch (e) {
+          console.error("Erreur de traitement de la réponse:", e);
+        }
+      }
+    });
   // HTMX event listeners for debugging
   document.addEventListener("DOMContentLoaded", function () {
     const firstNameInput = document.getElementById("first_name");
@@ -271,35 +282,6 @@
     }
 
     // Form submission validation
-    form.addEventListener("htmx:beforeSwap", function (evt) {
-      console.log("document.addEventListener working");
-      console.log(evt.detail.target.id);
-      console.log("after");
-
-      if (evt.detail.target.id === "register-form") {
-        try {
-          console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
-          const response = JSON.parse(evt.detail.xhr.responseText);
-
-          if (response.success) {
-            evt.detail.shouldSwap = false;
-
-            htmx
-              .ajax("GET", "/home/", {
-                target: "body",
-                swap: "outerHTML",
-                headers: { "HX-Login-Success": "true" },
-              })
-              .then(function () {
-                history.pushState(null, "", "/home/");
-              });
-          } else {
-            evt.detail.innerHTML = response.message; // Afficher erreur de connexion
-          }
-        } catch (e) {
-          console.error("Erreur de traitement de la réponse:", e);
-        }
-      }
-    });
+    
   });
 </script>
