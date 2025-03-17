@@ -181,7 +181,7 @@ async def setup_2fa(request):
 async def verify_2fa(request):
     try:
         if request.method == "POST":
-            form = request.POST
+            form = TwoFaForm(request.POST)
             username = request.headers.get("X-Username")
             print(f"Verifying 2FA for user: {username}", flush=True)
 
@@ -199,7 +199,7 @@ async def verify_2fa(request):
                 )
 
             if form.is_valid():
-                token = form.cleaned_data["token"]
+                token = request.POST.get("token")
                 print(f"Received token: {token}", flush=True)
 
                 # Get the user's secret and verify the token
