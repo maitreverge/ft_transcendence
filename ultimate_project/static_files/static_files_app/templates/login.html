@@ -123,7 +123,35 @@
 <!-- Load HTMX first -->
 <script src="https://unpkg.com/htmx.org@1.9.6"></script>
 
-<!-- Use the consolidated auth script -->
-{% load static %}
-<script src="{% static 'static_files/js/auth.js' %}"></script>
-<!-- No need for explicit initialization anymore, handled in auth.js -->
+<script>
+  document.addEventListener("htmx:beforeSwap", function (evt) {
+    console.log("document.addEventListener working");
+    console.log("LOGIN SCRIPT");
+    if (evt.detail.target.id === "register-form") {
+      try {
+        console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+        const response = JSON.parse(evt.detail.xhr.responseText);
+
+        if (response.success) {
+          evt.detail.shouldSwap = false;
+
+          htmx
+            .ajax("GET", "/home/", {
+              target: "body",
+              swap: "outerHTML",
+              headers: { "HX-Login-Success": "true" },
+            })
+            .then(function () {
+              history.pushState(null, "", "/home/");
+            });
+        } else {
+          evt.detail.innerHTML = response.message; // Afficher erreur de connexion
+        }
+      } catch (e) {
+        console.error("Erreur de traitement de la réponse:", e);
+      }
+    }
+  });
+
+
+</script>

@@ -6,17 +6,18 @@
 
 #p1 {
 	position: absolute;
-	top:50vh;
+	top:50%;
 	left:20px;
 }
 
 #p2 {
 	position: absolute;
-	top:50vh;
+	top:50%;
 	right:20px
 }
 
 #match {
+	position: relative;
 	width:100%;
 	height:50%;	
 	background-color: rgb(50, 92, 87);
@@ -26,7 +27,7 @@
 	display:block;
 	width:80%;
 	height:80%;
-	background-color: rgb(22, 244, 218);
+	background-color: rgb(244, 37, 22);
 }
 
 .no-waiting {

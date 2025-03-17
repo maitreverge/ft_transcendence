@@ -7,7 +7,7 @@ players = []
 selfPlayers = []
 matchs = []
 
-class MyConsumer(AsyncWebsocketConsumer):
+class SimpleConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		await self.accept() 
@@ -153,7 +153,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 			selfApplicantPlayer['socket'])
 		await self.send_confirmation_back(
 			response, applicantId, applicantId, match_id, self)
-		await MyConsumer.match_update()
+		await SimpleConsumer.match_update()
 
 	async def send_confirmation_back(self,
 		response, applicant_id, target_id, match_id, target):
@@ -184,26 +184,6 @@ class MyConsumer(AsyncWebsocketConsumer):
 					})
 					return match_id
 				return None
-	# async def start_match(self, applicantId):
-	# 	# match_id = await asyncio.to_thread(
-    #     # 	requests.get, 
-	# 	# 	f"http://match:8002/match/new-match/?p1={applicantId}&p2={self.id}"
-    # 	# ).json().get('matchId', None)
-	# 	# match_id = response.json()
-	# 	# match_id = requests.get(
-	# 	# 	f"http://match:8002/match/new-match/?p1={applicantId}&p2={self.id}"
-	# 	# ).json()['matchId']
-
-	# 	match_id = requests.get(
-	# 		f"http://match:8002/match/new-match/?p1={applicantId}&p2={self.id}"
-	# 	).json()['matchId']
-	# 	matchs.append({
-	# 		"matchId": match_id,
-	# 		"playerId": applicantId, 
-	# 		"otherId": self.id,			
-	# 	})
-	# 	return match_id		
-		
 
 	async def stop_match(self, applicant_id, match_id):
 
@@ -216,7 +196,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		if response.status == 200:			
 			matchs[:] = [m for m in matchs
 				if m.get("matchId") != match_id]
-			await MyConsumer.match_update()
+			await SimpleConsumer.match_update()
 
 	@staticmethod
 	async def match_update():

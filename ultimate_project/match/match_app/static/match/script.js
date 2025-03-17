@@ -83,8 +83,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	}
 	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
 	{
-		pads[0].style.top = data.yp1 + "vh";
-		pads[1].style.top = data.yp2 + "vh";
+		pads[0].style.top = data.yp1 + "%";
+		pads[1].style.top = data.yp2 + "%";
 	}
 }
 
@@ -98,12 +98,15 @@ function sequelInitMatchWs(socket) {
 	socket.onmessage = event => onMatchWsMessage(
 		event, pads, [waiting, end], waitingState);
 	setCommands(socket);
-	if (window.selfMatchId != window.matchId)
+	const spec = document.getElementById("spec")
+	if (spec)
 	{
-		const spec = document.getElementById("spec");
-		if (spec)
+		if (window.selfMatchId != window.matchId)
 			spec.style.display = "block";
+		else
+			spec.style.display = "none";
 	}
+	
 }
 
 function initMatchWs() {

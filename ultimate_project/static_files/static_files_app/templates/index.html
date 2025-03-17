@@ -1,45 +1,60 @@
 {% load static %}
 <html>
 
-    {% include "head.html" %}
-    {% include "scripts.html" %}
+    {% include "partials/head.html" %}
+    
+    <body   id="page-top" 
+            hx-boost="true" 
+            @popstate.window="navigate(window.location.pathname, false)
+            bg-gradient-primary">
+    
+        <!-- display single pages conditions -->
+         
+        {% if page == "register.html" or page == "forgot-password.html" %}
+            {% include page %}
+        {% elif page == "login.html" or page == "two-factor-auth.html" %}
+            {% include page %}
+        {% elif page == "error.html" %}
+            {% include page %}
+        {% else %}
 
-    <body id="page-top" 
-    hx-boost="true" 
-    @popstate.window="navigate(window.location.pathname, false)
-    bg-gradient-primary">
+        <div id="wrapper">  <!-- template suff - DO NOT TOUCH -->
 
-    {% if page == "register.html" or page == "forgot-password.html" or page == "login.html" or page == "two-factor-auth.html" or page == "error.html" %}
-        {% include page %}
-    {% else %}
-        <div id="wrapper">
+            {% include "partials/sidebar.html" %}
 
-            {% include "sidebar.html" %}
-
-            <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content-wrapper" class="d-flex flex-column"> <!-- template suff -->
                 
-                <div id="content">
+                <div id="content">  <!-- template suff - DO NOT TOUCH -->
                     
-                    {% include "navbar.html" %}
-
+                    {% include "partials/navbar.html" %}
+                    
                     <div id="main_div">
+
+                        <!-- partials display conditions ... trust me :) -->
 
                         {% if page %}
                             {% if page|slice:"-5:" == ".html" %}
                                 {% include page %}
-                            {% else %}
-                                {{ page|safe }}
-                            {% endif %}
                         {% else %}
-                            {% include "partials/home.html" %}
+                            {{ page|safe }}
                         {% endif %}
+                        {% else %}
+                        {% include "partials/home.html" %}
+                        {% endif %}
+                        
+                    </div> <!-- template suff - DO NOT TOUCH -->
+                
+                    {% include "partials/footer.html" %}
+                    {% include "partials/logout_modal.html" %}
+                
+                    {% endif %}
+                
+                </div> <!-- template suff - DO NOT TOUCH -->
 
-                    </div>
-                </div>
-                {% include "footer.html" %}
-                {% include "logout_modal.html" %}
-    {% endif %}
-                </div>
+                    <!-- include scripts at the end! -->
+                    {% include "partials/scripts.html" %}
+
             </div>
+        </div>
     </body>
 </html>

@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 data-translate="Accueil" class="h3 mb-0 text-gray-800">ACCUEIL</h1>
+    <h1 id="home-page" data-translate="Accueil" class="h3 mb-0 text-gray-800">ACCUEIL</h1>
   </div>
 
   <div class="row justify-content-center">
@@ -18,18 +18,18 @@
       </div>
     </a>
     <a
-    id="field-tournoi"
-    class="col-lg-5 mb-4"
-    hx-trigger="click"
-    hx-push-url="true"
-    hx-get="/tournament/tournament/"
-    hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
-  >
-    <div class="card bg-warning text-white shadow py-5">
-      <div class="card-body" data-translate="Tournoi">> Match</div>
-    </div>
-  </a>
+      id="field-tournoi"
+      class="col-lg-5 mb-4"
+      hx-trigger="click"
+      hx-push-url="true"
+      hx-get="/tournament/tournament/"
+      hx-target="#main_div"
+      hx-on="htmx:beforeRequest: toggleSidebar(true);"
+    >
+      <div class="card bg-warning text-white shadow py-5">
+        <div class="card-body" data-translate="Tournoi">> Match</div>
+      </div>
+    </a>
     <a
       id="field-profile"
       class="col-lg-5 mb-4"
@@ -57,3 +57,4 @@
       </div>
     </a>
   </div>
+</div>

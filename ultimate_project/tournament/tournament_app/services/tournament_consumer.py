@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from tournament_app.services.tournament import Tournament
 from typing import List
+import aiohttp
 
 players : List["TournamentConsumer"] = []
 tournaments : List["Tournament"] = []
@@ -28,15 +29,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	# 			"type": "playerList",			
 	# 			"players": [
 	# 				{"playerId": p.id} for p in players
-	# 			]
-	# 		}))
-
-	# async def send_tournaments(self):		
-	# 	for player in players:
-	# 		await player.send(text_data=json.dumps({
-	# 			"type": "tournamentList",			
-	# 			"tournaments": [
-	# 				{"tournamentId": t.id} for t in tournaments
 	# 			]
 	# 		}))
 
@@ -72,7 +64,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			case {"type": "enterTournament", "tournamentId": tournament_id}:		
 				await self.enter_tournament(tournament_id)
 			case {"type": "quitTournament"}:		
-				await self.quit_tournament()		
+				await self.quit_tournament()
 			case _:
 				pass
 
@@ -87,21 +79,39 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 	async def enter_tournament(self, tournament_id):
 
+		# async with aiohttp.ClientSession() as session:
+		# 	async with session.get(				
+    	# 			f"/match/stop-match/${window.selfId}/${matchId}/"
+		# 		) as response:
+		# 		if response.status == 201:
+		# 			data = await response.json()		
+		# 		else:  
+		# 			err = await response.text()
+		# 			print(f"Error HTTP {response.status}: {err}", flush=True) 
+
 		tournament = next(
 			(t for t in tournaments if t.id == tournament_id), None)		
 		if tournament and self not in tournament.players:
 			self.remove_player_in_tournaments()
 			await tournament.append_player(self)
-			await self.send_tournaments()	
+		await self.send_tournaments()	
 			
 	async def quit_tournament(self):
 		self.remove_player_in_tournaments()			
 		await self.send_tournaments()
 
-	# async def match_players_update(self, data):
-	# 	tournament = next(
-	# 		(t for t in tournaments if any(
-	# 			data.get('matchId') == m.get("matchId") for m in t.matchs))
-	# 	, None)
-	# 	if tournament:
-	# 		await tournament.match_players_update(data)
+	@staticmethod
+	async def send_matchs_players_update():
+
+		matchs_players_up = [
+			m.get('matchPlayersUpdate') for t in tournaments for m in t.matchs
+			if m.get('matchPlayersUpdate')
+		]
+		pack = {
+			"type": "matchsPlayersUpdate",
+			"pack": matchs_players_up
+		}
+		print(f"PACK: {pack}", flush=True)
+		for player in players:
+			await player.send(text_data=json.dumps(pack))
+	
