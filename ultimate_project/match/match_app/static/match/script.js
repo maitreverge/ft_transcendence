@@ -35,6 +35,8 @@ function stopMatch(matchId)
 			}
 			console.log("je nai pas plante");
 		}
+		const oldScripts = document.querySelectorAll("script.match-script");			
+		oldScripts.forEach(oldScript => oldScript.remove());
 	// }
 	// else
 	// 	console.log("pas spec!!");

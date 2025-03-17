@@ -21,6 +21,7 @@ class Tournament():
 			await self.launchTournament()	
 				
 	def remove_player(self, player):
+		print(f"REMOVE PLAYER {player.id}", flush=True)
 		self.players[:] = [p for p in self.players if p != player]
 
 	async def launchTournament(self):
@@ -74,6 +75,7 @@ class Tournament():
 				"looserId": looser_id			
 			}
 			match['matchResult'] = match_result
+			match['matchPlayersUpdate'] = None
 		print(self.matchs, flush=True)
 		if self.n_match == 1:
 			await self.send_match_result(match_result)
