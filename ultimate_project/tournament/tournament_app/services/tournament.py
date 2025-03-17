@@ -20,9 +20,17 @@ class Tournament():
 		if len(self.players) >= 4 and not self.launch:	
 			await self.launchTournament()	
 				
-	def remove_player(self, player):
+	async def remove_player(self, player):
 		print(f"REMOVE PLAYER {player.id}", flush=True)
 		self.players[:] = [p for p in self.players if p != player]
+		if not self.players:	
+			await self.del_tournament()
+
+	async def del_tournament(self):
+		from tournament_app.services.tournament_consumer \
+			import tournaments, TournamentConsumer
+		tournaments[:] = [t for t in tournaments if t.id != self.id]
+		TournamentConsumer.send_tournaments()
 
 	async def launchTournament(self):
 		self.launch = True

@@ -167,6 +167,11 @@ function updateTournaments(socket, tournamentsUp) {
 	});
 	tournamentEls.slice().reverse().forEach(tourEl => {
 		if (tournamentsUp.every(el => el.tournamentId != tourEl.id)) {
+			if (tourEl.id == window.actualScriptTid)
+			{
+				const oldScripts = document.querySelectorAll("script.match-script");			
+				oldScripts.forEach(oldScript => oldScript.remove());
+			}
 			tournamentsCont.removeChild(tourEl);		
 		}
 	});
@@ -339,6 +344,7 @@ function linkMatch(lk) {
 		.then(data => {
 			const oldScripts = document.querySelectorAll("script.match-script");			
 			oldScripts.forEach(oldScript => oldScript.remove());
+			window.actualScriptTid = lk.tournamentId;
 			loadHtml(data, overlay);
 		})
 		.catch(error => console.log(error))
