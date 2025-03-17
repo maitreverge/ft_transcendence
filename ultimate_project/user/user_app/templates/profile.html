@@ -152,7 +152,7 @@
             </div>
             
 			<!-- 2FA buttons with conditional display -->
-            {% if user.two_fa_verified %}
+            {% if user.two_fa_enabled %}
             <a href="#" class="btn btn-danger btn-icon-split float-right" 
                hx-get="/user/disable-2fa/" 
                hx-target="#main_div"
