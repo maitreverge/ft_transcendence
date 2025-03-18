@@ -2,7 +2,6 @@
 <html>
 
     {% include "partials/head.html" %}
-    {% include "partials/scripts.html" %}
 
     <body   id="page-top" 
             hx-boost="true" 
@@ -49,12 +48,13 @@
                     {% include "partials/logout_modal.html" %}
                 
                     {% endif %}
-                
+                    
                 </div> <!-- template suff - DO NOT TOUCH -->
-
-                    <!-- include scripts at the end! -->
-
+                
+                <!-- include scripts at the end! -->
+                
             </div>
         </div>
     </body>
+    {% include "partials/scripts.html" %}
 </html>

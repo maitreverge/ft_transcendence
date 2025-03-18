@@ -68,18 +68,4 @@
         });
     });
   }
-  document.addEventListener("DOMContentLoaded", function () {
-        document.body.addEventListener('htmx:afterSettle', function() {
-            toggleNavbarLogo()
-            console.log("addEventListener('htmx:afterSwap'");
-            document.querySelectorAll("script").forEach(oldScript => {
-                const newScript = document.createElement("script");
-                newScript.textContent = oldScript.textContent;
-                Array.from(oldScript.attributes).forEach(attr => {
-                    newScript.setAttribute(attr.name, attr.value);
-                });
-                oldScript.replaceWith(newScript);
-            });
-        });
-    });
 </script>
