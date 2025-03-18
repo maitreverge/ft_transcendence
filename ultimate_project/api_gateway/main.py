@@ -53,7 +53,7 @@ services = {
     "match": "http://match:8002",
     "static_files": "http://static_files:8003",
     "user": "http://user:8004",
-    # "authentication": "http://authentication:8006",
+    # "authentication": "http://authentication:8006", # ! OUTDATED SERVICE, DO NOT USE
     "databaseapi": "http://databaseapi:8007",
 }
 
@@ -346,6 +346,15 @@ async def databaseapi_proxy(path: str, request: Request):
     ### Pagination:
     - All list endpoints are paginated with 10 items per page
     - **Navigate pages**: GET /api/player/?page=2
+
+    ### Check 2FA:
+    - **Check 2FA**: POST /api/check-2fa/
+    - **Body**:
+      - `username`: The username of the user
+      - `password`: The password of the user
+    - **Responses**:
+      - `200 OK`: The user is authenticated and 2FA is not enabled
+      - `401 Unauthorized`: The user is authenticated but 2FA is enabled
 
     ### Response format:
     ```json

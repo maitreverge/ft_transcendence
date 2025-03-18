@@ -16,20 +16,8 @@ AVOIR UN SEUL FICHIER DE TEST pour les deux formulaire et activer des conditione
 `2FA`
 For Dan => translate 2FA
 
-Create a user `two_fa_app` django_app
-
-Make a route with simple HTML rendering with SPA
-
-SetUp 2FA => Render QR Code + Validation
-Once validated the timestamp code => Write in models the key
-
-Then check within the models if data has been correctly wrote
 
 Then try to login with 2FA
-
-Turn the SetUp2FA button is the user has not enable
-
-Create Disable 2FA is the user has it enabled
 
 
 
@@ -256,5 +244,18 @@ Clean Repo from database trying
 ✅  Optimize `entrypoint.sh` for  `database_api`
 ✅  Start making endpoints
 
-📅  ===== 08-03 =====
+📅  ===== 18-03 =====
 
+
+✅ Create a user `two_fa_app` django_app
+
+✅ Make a route with simple HTML rendering with SPA
+
+✅ SetUp 2FA => Render QR Code + Validation
+✅ Once validated the timestamp code => Write in models the key
+
+✅ Then check within the models if data has been correctly wrote
+
+✅ Turn the SetUp2FA button is the user has not enable
+
+✅ Create Disable 2FA is the user has it enabled
