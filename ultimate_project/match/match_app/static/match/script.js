@@ -46,6 +46,7 @@ function stopMatch(matchId)
 function setCommands(socket) {
 
 	document.addEventListener("keydown", function(event) {
+		console.log("event :", event.key);
 		if (socket.readyState === WebSocket.OPEN)
 		{
 			if (event.key === "ArrowUp") 
@@ -63,7 +64,55 @@ function setCommands(socket) {
 	});
 }
 
+function setCommands2(socket) {
+
+	document.addEventListener("keydown", function(event) {
+		console.log("event :", event.key);
+		if (socket.readyState === WebSocket.OPEN)
+		{
+			if (event.key === "+") 
+			{
+				event.preventDefault();
+				socket.send(JSON.stringify({
+					action: 'move', dir: 'up'}));
+			} else if (event.key === "Enter") 
+			{
+				event.preventDefault();
+				socket.send(JSON.stringify({
+					action: 'move', dir: 'down'}));
+			}
+		} 
+	});
+}
+
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
+		
+	const data = JSON.parse(event.data);
+
+	if (data.state == "end")
+	{	
+		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
+		end.classList.add("end");
+	}
+	if (waitingState[0] != data.state) 
+	{
+		waitingState[0] = data.state;	
+		if (waiting) 
+		{
+			if (data.state == "waiting")			
+				waiting.classList.remove("no-waiting");
+			else			
+				waiting.classList.add("no-waiting");			
+		}			
+	}
+	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
+	{
+		pads[0].style.top = data.yp1 + "%";
+		pads[1].style.top = data.yp2 + "%";
+	}
+}
+
+function onMatchWsMessage2(event, pads, [waiting, end], waitingState) {
 		
 	const data = JSON.parse(event.data);
 
@@ -108,7 +157,27 @@ function sequelInitMatchWs(socket) {
 		else
 			spec.style.display = "none";
 	}
-	
+	initSecPlayer();
+}
+
+function initSecPlayer() {
+
+	if (window.rasp == "true")
+		window.matchSocket2 = new WebSocket(
+			`wss://${window.pidom}/ws/match/${window.matchId}/` +
+			`?playerId=${-window.playerId}`);
+	else	
+		window.matchSocket2 = new WebSocket(
+			`ws://localhost:8000/ws/match/${window.matchId}/` +
+			`?playerId=${-window.playerId}`);
+
+	window.matchSocket2.onopen = () => {
+		console.log("Connexion Match établie 2nd Player😊");
+	};
+	window.matchSocket2.onclose = (event) => {
+		console.log("Connexion Match disconnected 😈 2nd Player");
+	};
+	setCommands2(window.matchSocket2);
 }
 
 function initMatchWs() {

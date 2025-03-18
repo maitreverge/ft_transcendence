@@ -202,6 +202,11 @@ function sendPlayerClick(socket, event, selected)
 		}));
 }
 
+function selfInvitation(event, socket)
+{
+	event.stopPropagation();
+}
+
 function addPlayerToContainer(socket, container, playerId) {
 
 	const div = document.createElement("div");
@@ -209,15 +214,15 @@ function addPlayerToContainer(socket, container, playerId) {
 	div.textContent = `user: ${playerId}`;
 	div.id = playerId;	
 	if (playerId === window.selfId)
-	{
 		div.classList.add("self-player");
-		div.onclick = event => {
-			event.stopPropagation();
-			alert("you can't choose yourself");
-		}		
-	}
-	else	
-		div.onclick = event =>	sendPlayerClick(socket, event, div);	
+	// 	div.onclick = event => {
+	// 		selfInvitation(event, socket)
+	// 		event.stopPropagation();
+	// 		alert("you can't choose yourself");
+	// 	}		
+	// }
+	// else	
+	div.onclick = event => sendPlayerClick(socket, event, div);	
     container.appendChild(div);
 }
 
