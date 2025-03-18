@@ -37,45 +37,4 @@
         // Sauvegarde dans sessionStorage
         sessionStorage.setItem("lastVisitedPage", currentURL);
     });
-    
-
-    // 🔹 1️⃣ Au chargement initial
-    document.addEventListener("DOMContentLoaded", toggleNavbarLogo);
-
-    // 🔹 2️⃣ À chaque mise à jour HTMX (évite le retard du `htmx:afterSettle`)
-    // document.addEventListener("htmx:afterSwap", toggleNavbarLogo);
-
-    // 🔹 3️⃣ Lorsqu'on navigue avec les boutons "Retour" / "Avancer"
-    window.addEventListener("popstate", toggleNavbarLogo);
-
-    function toggleSidebar(show) {
-        console.log("toggleSidebar called");
-        const sidebar = document.querySelector('#accordionSidebar');
-        if (!sidebar)
-            return;
-        if (show) {
-            sidebar.classList.remove('d-none');
-        } else {
-            sidebar.classList.add('d-none');
-        }
-    }
-
-    function toggleNavbarLogo() {
-    console.log("toggleNavbarLogo called");
-    
-    const isHomePage = document.querySelector('#home-page') !== null;  // Vérifie si on est sur la page d'accueil
-    const homelogo = document.querySelector('#homelogo');
-
-    if (!homelogo) {
-        return;
-    }
-
-    if (isHomePage) {
-        console.log("adding logo");
-        homelogo.classList.remove('d-none');
-    } else {
-        console.log("removing logo");
-        homelogo.classList.add('d-none');
-    }
-}
 </script>
