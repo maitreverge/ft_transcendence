@@ -4,8 +4,14 @@
  *   the function "receiveInvitation" was modified (see below)
  *========================================================================**/
 
-let isPageVisible = !document.hidden;
-let pendingInvitations = [];
+if (typeof isPageVisible === "undefined") {
+    var isPageVisible = !document.hidden;
+}
+
+if (typeof pendingInvitations === "undefined") {
+	var pendingInvitations = [];
+}
+
 
 document.addEventListener('visibilitychange', () => {
     isPageVisible = !document.hidden;
