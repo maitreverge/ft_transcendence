@@ -16,6 +16,7 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 # URL de l'API qui gère la vérification des identifiants
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
+CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
 
 
 # @router.post("/auth/login/")
@@ -54,6 +55,13 @@ async def login_fastAPI(
             content={"success": False, "message": f"Service unavailable: {str(e)}"},
             status_code=500,
         )
+    
+    # Check if 2FA is enabled
+    check_2fa_response = requests.post(CHECK_2FA_URL, data={"username": username, "password": password})
+    
+    # If 2FA is enabled, return 2FA connection page 
+    if check_2fa_response.status_code == 200:
+        return JSONResponse(content={"success": False, "message": "2FA is enabled"}, status_code=401)
 
     # 🔹 Générer les tokens JWT
     expire_access = datetime.datetime.utcnow() + datetime.timedelta(

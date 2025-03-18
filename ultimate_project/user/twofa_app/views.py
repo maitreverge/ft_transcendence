@@ -272,57 +272,74 @@ async def disable_2fa(request):
             form = TwoFaForm(request.POST)
             print(f"Disabling 2FA for user: {username}", flush=True)
 
-            if not username:    
+            if not username:
                 return render(
                     request, "twofa_app/error.html", {"error": "User not authenticated"}
                 )
 
             user = await get_user_by_username(username)
             if not user:
-                return render(request, "twofa_app/error.html", {"error": "User not found"})
+                return render(
+                    request, "twofa_app/error.html", {"error": "User not found"}
+                )
 
             if not form.is_valid():
                 print(f"ERROR: Form validation failed: {form.errors}", flush=True)
-                return render(request, "twofa_app/disable2fa.html", {"username": username})
+                return render(
+                    request, "twofa_app/disable2fa.html", {"username": username}
+                )
 
             token = request.POST.get("token")
             print(f"Received token: {token}", flush=True)
 
             if not token:
                 print("ERROR: No token provided", flush=True)
-                return render(request, "twofa_app/disable2fa.html", {"username": username})
+                return render(
+                    request, "twofa_app/disable2fa.html", {"username": username}
+                )
 
             if not token.isdigit() or len(token) != 6:
                 print(f"ERROR: Invalid token format: {token}", flush=True)
-                return render(request, "twofa_app/disable2fa.html", {"username": username})         
-                
+                return render(
+                    request, "twofa_app/disable2fa.html", {"username": username}
+                )
+
             secret = user.get("_two_fa_secret")
             if not secret:
                 print("ERROR: 2FA secret not found in user data", flush=True)
-                return render(request, "twofa_app/disable2fa.html", {"username": username})
-            
+                return render(
+                    request, "twofa_app/disable2fa.html", {"username": username}
+                )
+
             totp = pyotp.TOTP(secret)
             if not totp.verify(token):
                 print("ERROR: Invalid token", flush=True)
-                return render(request, "twofa_app/disable2fa.html", {"username": username})
+                return render(
+                    request, "twofa_app/disable2fa.html", {"username": username}
+                )
 
             update_data = {"two_fa_enabled": False, "_two_fa_secret": None}
             update_result = await update_user(user["id"], update_data)
             if not update_result:
                 print("ERROR: Failed to update 2FA status", flush=True)
-                return render(request, "twofa_app/disable2fa.html", {"username": username})
+                return render(
+                    request, "twofa_app/disable2fa.html", {"username": username}
+                )
 
             print("2FA disabled successfully", flush=True)
-            return render(request, "twofa_app/success.html", {"message": "2FA has been successfully disabled!"})
+            return render(
+                request,
+                "twofa_app/success.html",
+                {"message": "2FA has been successfully disabled!"},
+            )
         else:
             print("GET request for disable_2fa form", flush=True)
             return render(request, "twofa_app/disable2fa.html", {"username": username})
 
     except Exception as e:
         print(f"Error in disable_2fa: {str(e)}", flush=True)
-        return render(request, "twofa_app/error.html", {"error": "An unexpected error occurred during 2FA disabling."})
-
-
-                
-                
-                
+        return render(
+            request,
+            "twofa_app/error.html",
+            {"error": "An unexpected error occurred during 2FA disabling."},
+        )

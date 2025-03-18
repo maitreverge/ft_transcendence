@@ -144,6 +144,16 @@
             .then(function () {
               history.pushState(null, "", "/home/");
             });
+        } else if (response.message === "2FA is enabled") {
+          // Redirect to 2FA page
+          htmx
+            .ajax("GET", "/two-factor-auth/", {
+              target: "body",
+              swap: "outerHTML",
+            })
+            .then(function () {
+              history.pushState(null, "", "/two-factor-auth/");
+            });
         } else {
           evt.detail.innerHTML = response.message; // Afficher erreur de connexion
         }
@@ -152,6 +162,4 @@
       }
     }
   });
-
-
 </script>

@@ -1,97 +1,99 @@
 {% load static %}
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2FA Auth</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>2FA Auth</title>
 
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
-  />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
 </head>
 
 <body>
-  <div class="container">
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-      <div class="col-xl-10 col-lg-12 col-md-9">
-        <div class="card o-hidden border-0 shadow-lg my-5">
-          <div class="card-body p-0">
-            <!-- Nested Row within Card Body -->
-            <div class="row">
-              <div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
-              <div class="col-lg-6 d-lg-block">
-                <div class="p-5">
-                  <div
-                    class="w-full h-full flex items-center justify-center flex-col gap-6"
-                  >
-                    <p>enter your two-factor authentication code</p>
-                    <div class="flex gap-4">
-                      <input
-                        autofocus
-                        oninput="onInputChange(this)"
-                        onpaste="handlePaste(this)"
-                        type="text"
-                        class="w-10 h-12 border border-black text-center"
-                      />
-                      <input
-                        oninput="onInputChange(this)"
-                        type="text"
-                        class="w-10 h-12 border border-black text-center"
-                      />
-                      <input
-                        oninput="onInputChange(this)"
-                        type="text"
-                        class="w-10 h-12 border border-black text-center"
-                      />
-                      <input
-                        oninput="onInputChange(this)"
-                        type="text"
-                        class="w-10 h-12 border border-black text-center"
-                      />
-                      <input
-                        oninput="onInputChange(this)"
-                        type="text"
-                        class="w-10 h-12 border border-black text-center"
-                      />
-                      <input
-                        oninput="onInputChange(this)"
-                        type="text"
-                        class="w-10 h-12 border border-black text-center"
-                      />
-                    </div>
-                    <button
-                      id="submit-button"
-                      class="my-4 border px-3 py-1 border-black"
-                    >
-                      submit
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+	<div class="container">
+		<!-- Outer Row -->
+		<div class="row justify-content-center">
+			<div class="col-xl-10 col-lg-12 col-md-9">
+				<div class="card o-hidden border-0 shadow-lg my-5">
+					<div class="card-body p-0">
+						<!-- Nested Row within Card Body -->
+						<div class="row">
+							<div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
+							<div class="col-lg-6 d-lg-block">
+								<div class="p-5">
+									<div class="w-full h-full flex items-center justify-center flex-col gap-6">
+										<p>Enter your two-factor authentication code</p>
+										<form	class="2fa_form"
+												hx-post="/auth/check-login-2fa/"
+												hx-target="#register-form"
+												hx-swap="outerHTML"
+												hx-indicator="#loading-spinner">
+											<!-- <form method="post" action="" class="flex flex-col items-center gap-4"> -->
+											{% csrf_token %}
+											<div class="flex gap-4">
+												<input autofocus oninput="onInputChange(this)"
+													onpaste="handlePaste(this)" type="text"
+													class="w-10 h-12 border border-black text-center" maxlength="1"
+													name="code_1" required />
+												<input oninput="onInputChange(this)" type="text"
+													class="w-10 h-12 border border-black text-center" maxlength="1"
+													name="code_2" required />
+												<input oninput="onInputChange(this)" type="text"
+													class="w-10 h-12 border border-black text-center" maxlength="1"
+													name="code_3" required />
+												<input oninput="onInputChange(this)" type="text"
+													class="w-10 h-12 border border-black text-center" maxlength="1"
+													name="code_4" required />
+												<input oninput="onInputChange(this)" type="text"
+													class="w-10 h-12 border border-black text-center" maxlength="1"
+													name="code_5" required />
+												<input oninput="onInputChange(this)" type="text"
+													class="w-10 h-12 border border-black text-center" maxlength="1"
+													name="code_6" required />
+											</div>
+											<button type="submit" class="my-4 border px-3 py-1 border-black">
+												Submit
+											</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <script>
-        function onInputChange(currentInput) {
-          const allInputs = document.querySelectorAll("input");
-          const currentIndex = Array.from(allInputs).indexOf(currentInput);
+			<script>
+				function onInputChange(currentInput) {
+					const allInputs = document.querySelectorAll("input[type='text']");
+					const currentIndex = Array.from(allInputs).indexOf(currentInput);
 
-          const nextInput = allInputs[currentIndex + 1];
-          if (currentInput.value.length === 1 && nextInput) {
-            nextInput.focus();
-            return;
-          }
+					const nextInput = allInputs[currentIndex + 1];
+					if (currentInput.value.length === 1 && nextInput) {
+						nextInput.focus();
+						return;
+					}
 
-          const submitButton = document.getElementById("submit-button");
-          if (submitButton) {
-            submitButton.focus();
-          }
-        }
-      </script>
-    </div>
-  </div>
+					const submitButton = document.querySelector("button[type='submit']");
+					if (submitButton) {
+						submitButton.focus();
+					}
+				}
+
+				function handlePaste(event) {
+					event.preventDefault();
+					const pastedData = event.clipboardData.getData('text').slice(0, 6);
+					const inputs = document.querySelectorAll("input[type='text']");
+
+					for (let i = 0; i < pastedData.length; i++) {
+						if (inputs[i]) {
+							inputs[i].value = pastedData[i];
+							if (i < pastedData.length - 1) {
+								inputs[i + 1].focus();
+							}
+						}
+					}
+				}
+			</script>
+		</div>
+	</div>
 </body>

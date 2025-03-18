@@ -29,7 +29,7 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("forgot-password/", views.forgotPassword, name="forgot-password"),
     path("login/", views.forgotPassword, name="login"),
-    path("auth2f/", views.twoFactorAuth, name="login"),
+    path("two-factor-auth/", views.twoFactorAuth, name="login"),
     path("error/<int:code>/", views.error, name="error"),
     path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.ico', permanent=True)),
 

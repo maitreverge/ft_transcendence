@@ -534,6 +534,14 @@ async def register_page_route(request: Request):
     )
 
 
+@app.api_route("/two-factor-auth/", methods=["GET"])
+async def two_factor_auth_proxy(request: Request):
+    """
+    Proxy requests to the two-factor authentication page.
+    """
+    return await proxy_request("static_files", "two-factor-auth/", request)
+
+
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):
     """
