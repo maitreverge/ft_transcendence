@@ -26,6 +26,9 @@ class Pong:
 		self.max_delay = 900
 		self.send_task = None
 		self.watch_task = None
+		self.ball = [50, 50]
+		self.vect = [1, 1]
+		
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -145,6 +148,21 @@ class Pong:
 					elif self.player2["dir"] == 'down':
 						self.yp2 += 1
 					self.player2["dir"] = None
+				self.ball[0] += self.vect[0]
+				self.ball[1] += self.vect[1]
+				if self.ball[0] > 90:
+					self.vect[0] = -self.vect[0]
+				if self.ball[0] == 0 :
+					self.vect[0] = -self.vect[0]
+
+				if self.ball[1] > 90:
+					self.vect[1] = -self.vect[1]
+				if self.ball[1] == 0 :
+					self.vect[1] = -self.vect[1]
+
+				if self.ball[0] == 1 and self.ball[1] == self.yp1 \
+					or self.ball[0] == 89 and self.ball[1] == self.yp2:
+						self.vect[0] = -self.vect[0]
 			else:
 				if self.start_flag:
 					if self.player1:
@@ -206,7 +224,8 @@ class Pong:
 						await p["socket"].send(text_data=json.dumps({
 							"state": state.name,
 							"yp1": self.yp1,
-							"yp2": self.yp2
+							"yp2": self.yp2,
+							"ball": self.ball
 						}))                  
 					except Exception as e:
 						pass				

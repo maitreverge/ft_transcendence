@@ -67,7 +67,7 @@ function setCommands(socket) {
 function setCommands2(socket) {
 
 	document.addEventListener("keydown", function(event) {
-		console.log("event :", event.key);
+		// console.log("event :", event.key);
 		if (socket.readyState === WebSocket.OPEN)
 		{
 			if (event.key === "+") 
@@ -88,7 +88,7 @@ function setCommands2(socket) {
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 		
 	const data = JSON.parse(event.data);
-
+	console.log("match mesage: ", data);
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
@@ -109,6 +109,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	{
 		pads[0].style.top = data.yp1 + "%";
 		pads[1].style.top = data.yp2 + "%";
+		pads[2].style.top = data.ball[0] + "%";
+		pads[2].style.left = data.ball[1] + "%";
 	}
 }
 
@@ -136,13 +138,18 @@ function onMatchWsMessage2(event, pads, [waiting, end], waitingState) {
 	{
 		pads[0].style.top = data.yp1 + "%";
 		pads[1].style.top = data.yp2 + "%";
+		pads[2].style.top = data.ball[0] + "%";
+		pads[2].style.top = data.ball[1] + "%";
 	}
 }
 
 function sequelInitMatchWs(socket) {
 
 	const pads = [
-		document.getElementById("p1"), document.getElementById("p2")];
+		document.getElementById("p1"),
+		document.getElementById("p2"),
+		document.getElementById("ball"),
+	];
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
