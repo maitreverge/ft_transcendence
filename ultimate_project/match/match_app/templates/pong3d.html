@@ -1,0 +1,32 @@
+{% load static %}
+
+
+<div style="display:none">
+<head>
+    <title>Test</title>
+    <style>
+        body { margin: 0; }
+        #container{
+            width:2000px;
+            height:2000px;
+            background-color: rgb(108, 80, 80);
+        }
+    </style>
+    <script class="match-script">
+        window.rasp = "{{ rasp }}"; 
+        window.pidom = "{{ pidom }}";
+        window.matchId = "{{ matchId }}"
+        window.playerId = "{{ playerId }}";
+    </script>
+</head>
+</div>
+
+<body>
+    <div id="container"></div>
+    <button id="action", onclick="actionClick()">Action</button>
+    <button id="other", onclick="otherClick()">Other</button>
+    <script class="match-script" src="{% static 'match/script3d.js' %}"></script>
+  
+	<div id="waiting">Waiting</div>
+	<div id="end" style="display:none"></div>
+</body>

@@ -24,6 +24,19 @@ def enter_match(request : HttpRequest):
 		},
 	)
 
+def enter_match3d(request : HttpRequest):
+
+	return render(
+		request,
+		"pong3d.html",
+		{           
+			"rasp": os.getenv("rasp", "false"),
+			"pidom": os.getenv("pi_domain", "localhost:8000"),
+			"matchId": int(request.GET.get("matchId", "0")),           
+			"playerId": int(request.GET.get("playerId", "0"))
+		},
+	)
+
 async def stop_match(request : HttpRequest, playerId, matchId): 
 
 	for p in pongs:

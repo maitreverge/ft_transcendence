@@ -29,8 +29,18 @@ function setSelfMatchId() {
     matchElements.forEach(match => {		
 		if (match.id == window.selfMatchId)
 			match.classList.add("self-match");					
-		match.onclick = function() {
-			fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
+		// match.onclick = function() {
+		// 	fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
+		// 	.then(response => {
+		// 		if (!response.ok) 
+		// 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+		// 		return response.text();
+		// 	})
+		// 	.then(data => loadHtml(data, "overlay-match"))
+		// 	.catch(error => console.log(error))
+		// };	
+        match.onclick = function() {
+			fetch(`/match/match3d/?matchId=${match.id}&playerId=${window.selfId}`)
 			.then(response => {
 				if (!response.ok) 
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
