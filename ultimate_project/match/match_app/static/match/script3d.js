@@ -194,8 +194,8 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 {
 		r1.position.x = data.yp1;
 		r2.position.x = data.yp2;
-		ball.position.x = data.ball[0];
-		ball.position.y = data.ball[1];
+		ball.position.x = data.ball[0] / 5 - 10;
+		ball.position.z = data.ball[1] / 5 - 10;
 	}
 }
 
