@@ -8,3 +8,4 @@ cryptography
 PyJWT
 requests
 python-multipart
+pyotp

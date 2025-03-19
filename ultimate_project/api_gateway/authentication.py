@@ -4,6 +4,7 @@ import requests
 import jwt
 import datetime
 import os
+import pyotp
 
 router = APIRouter()
 
@@ -55,13 +56,17 @@ async def login_fastAPI(
             content={"success": False, "message": f"Service unavailable: {str(e)}"},
             status_code=500,
         )
-    
+
     # Check if 2FA is enabled
-    check_2fa_response = requests.post(CHECK_2FA_URL, data={"username": username, "password": password})
-    
-    # If 2FA is enabled, return 2FA connection page 
+    check_2fa_response = requests.post(
+        CHECK_2FA_URL, data={"username": username, "password": password}
+    )
+
+    # If 2FA is enabled, return 2FA connection page
     if check_2fa_response.status_code == 200:
-        return JSONResponse(content={"success": False, "message": "2FA is enabled"}, status_code=401)
+        return JSONResponse(
+            content={"success": False, "message": "2FA is enabled"}, status_code=401
+        )
 
     # 🔹 Générer les tokens JWT
     expire_access = datetime.datetime.utcnow() + datetime.timedelta(
@@ -127,9 +132,8 @@ async def login_fastAPI(
 
     # Debug log for headers
     print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
-    
-    return json_response
 
+    return json_response
 
 
 # Function to verify JWT token
@@ -275,6 +279,195 @@ async def logout_fastAPI(request: Request):
     print("🔑 JWT Cookies cleared", flush=True)
 
     return response
+
+
+# Function to verify 2FA code and generate JWT tokens
+async def verify_2fa_and_login(
+    request: Request,
+    response: Response,
+    username: str,
+    token: str,
+):
+    """
+    Verifies 2FA code and generates JWT tokens if valid.
+
+    Args:
+        request (Request): The FastAPI request object
+        response (Response): The FastAPI response object
+        username (str): The username
+        token (str): The 2FA verification code
+
+    Returns:
+        JSONResponse with JWT tokens if 2FA code is valid
+    """
+    print(f"🔐 Verifying 2FA for {username}, token: {token}", flush=True)
+    print(f"🔐 Request form data: {await request.form()}", flush=True)
+    print(f"🔐 Request headers: {request.headers}", flush=True)
+
+    if not username or not token:
+        print("❌ Username or token missing", flush=True)
+        if not username:
+            print("❌ Username is missing", flush=True)
+        if not token:
+            print("❌ Token is missing", flush=True)
+
+        # Try to get username from form directly as fallback
+        if not username:
+            form_data = await request.form()
+            username = form_data.get("username")
+            print(f"🔑 Extracted username from form: {username}", flush=True)
+
+        if not token:
+            form_data = await request.form()
+            token = form_data.get("token")
+            print(f"🔑 Extracted token from form: {token}", flush=True)
+
+        # If still missing after fallback, return error
+        if not username or not token:
+            return JSONResponse(
+                content={
+                    "success": False,
+                    "message": "Username and token are required",
+                },
+                status_code=400,
+            )
+
+    # Call the database API to verify the 2FA code
+    try:
+        # Get user data first to retrieve the secret
+        get_user_url = f"http://databaseapi:8007/api/player/?username={username}"
+        print(f"🔍 Querying database API for user: {get_user_url}", flush=True)
+        user_response = requests.get(get_user_url)
+
+        if user_response.status_code != 200:
+            print(
+                f"❌ Failed to retrieve user information: {user_response.status_code}",
+                flush=True,
+            )
+            return JSONResponse(
+                content={
+                    "success": False,
+                    "message": "Failed to retrieve user information",
+                },
+                status_code=500,
+            )
+
+        user_data = user_response.json()
+        print(f"🔍 User data response: {user_data}", flush=True)
+
+        # Check if we got a list of users or a paginated response
+        if isinstance(user_data, list) and len(user_data) > 0:
+            user = user_data[0]
+            print(f"✅ Found user in list format", flush=True)
+        elif (
+            isinstance(user_data, dict)
+            and user_data.get("results")
+            and len(user_data["results"]) > 0
+        ):
+            user = user_data["results"][0]
+            print(f"✅ Found user in paginated response", flush=True)
+        else:
+            print(f"❌ User not found in response", flush=True)
+            return JSONResponse(
+                content={"success": False, "message": "User not found"}, status_code=404
+            )
+
+        print(f"🔍 User object: {user}", flush=True)
+
+        # Verify the 2FA token
+        secret = user.get("_two_fa_secret")
+        if not secret:
+            print(f"❌ 2FA secret not found for user", flush=True)
+            return JSONResponse(
+                content={"success": False, "message": "2FA not set up properly"},
+                status_code=400,
+            )
+
+        print(f"🔑 Using secret to verify token", flush=True)
+        totp = pyotp.TOTP(secret)
+        if not totp.verify(token):
+            print(f"❌ Invalid 2FA code", flush=True)
+            return JSONResponse(
+                content={"success": False, "message": "Invalid 2FA code"},
+                status_code=401,
+            )
+
+        print(f"✅ 2FA code verified successfully", flush=True)
+
+        # 2FA verification succeeded, generate JWT tokens
+        user_id = user.get("id")
+
+        # Generate JWT tokens
+        expire_access = datetime.datetime.utcnow() + datetime.timedelta(
+            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        )
+        expire_refresh = datetime.datetime.utcnow() + datetime.timedelta(
+            days=REFRESH_TOKEN_EXPIRE_DAYS
+        )
+
+        access_payload = {
+            "user_id": user_id,
+            "username": username,
+            "exp": expire_access,
+        }
+        refresh_payload = {
+            "user_id": user_id,
+            "username": username,
+            "exp": expire_refresh,
+        }
+
+        access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
+        refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
+
+        # Log for debug
+        print(f"2FA Verified. Access Token: {access_token[:20]}...", flush=True)
+        print(f"2FA Verified. Refresh Token: {refresh_token[:20]}...", flush=True)
+
+        # Create a JSONResponse with success message
+        json_response = JSONResponse(
+            content={"success": True, "message": "2FA verification successful"}
+        )
+
+        # Set cookies on the response
+        json_response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours
+        )
+
+        json_response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            secure=False,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 24 * 7,  # 7 days
+        )
+
+        # Debug log for headers
+        print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
+
+        return json_response
+
+    except requests.exceptions.RequestException as e:
+        return JSONResponse(
+            content={"success": False, "message": f"Service unavailable: {str(e)}"},
+            status_code=500,
+        )
+    except Exception as e:
+        print(f"Error in verify_2fa_and_login: {str(e)}", flush=True)
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": f"Error processing request: {str(e)}",
+            },
+            status_code=500,
+        )
 
 
 # @router.post("/auth/register/")

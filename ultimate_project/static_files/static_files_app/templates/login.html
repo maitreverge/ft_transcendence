@@ -145,14 +145,44 @@
               history.pushState(null, "", "/home/");
             });
         } else if (response.message === "2FA is enabled") {
+          // Store username for 2FA page
+          const usernameInput = document.getElementById("username");
+          if (usernameInput) {
+            const usernameValue = usernameInput.value;
+            console.log("Storing username for 2FA:", usernameValue);
+            sessionStorage.setItem("2fa_username", usernameValue);
+            
+            // Set username as global variable as another backup
+            window.twoFAUsername = usernameValue;
+          } else {
+            console.error("Username input element not found");
+          }
+          
           // Redirect to 2FA page
+          evt.detail.shouldSwap = false;
+          console.log("Redirecting to 2FA page");
+          
+          // Get username for the URL
+          const username = usernameInput ? usernameInput.value : '';
+          
+          // Include username in the URL to help with page transitions
           htmx
-            .ajax("GET", "/two-factor-auth/", {
+            .ajax("GET", `/two-factor-auth/?username=${encodeURIComponent(username)}`, {
               target: "body",
               swap: "outerHTML",
             })
             .then(function () {
+              console.log("2FA page loaded, pushing history state");
               history.pushState(null, "", "/two-factor-auth/");
+              
+              // Extra check to set username after page load
+              setTimeout(function() {
+                const usernameField = document.getElementById('username');
+                if (usernameField && window.twoFAUsername) {
+                  usernameField.value = window.twoFAUsername;
+                  console.log("Username set after page load:", usernameField.value);
+                }
+              }, 200);
             });
         } else {
           evt.detail.innerHTML = response.message; // Afficher erreur de connexion
