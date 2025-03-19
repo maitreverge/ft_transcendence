@@ -1,19 +1,19 @@
 #p1, #p2 {
-	width: 50px;
-	height: 100px;
+	width: 10%;
+	height: 20%;
 	background-color: rgb(35, 38, 222);
 }
 
 #p1 {
 	position: absolute;
-	top:50%;
-	left:20px;
+	top:0%;
+	left:10%;
 }
 
 #p2 {
 	position: absolute;
-	top:50%;
-	right:20px
+	top:0%;
+	right:10%
 }
 
 #match {
@@ -42,9 +42,11 @@
 }
 
 #ball {
+
 	position: absolute;
 	top:50%;
 	left:50%;
+	transform: translate(-50%, -50%);
 	width:2vw;
 	height:2vw;
 	background-color: rgb(22, 244, 40);

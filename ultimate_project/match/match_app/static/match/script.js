@@ -49,7 +49,7 @@ function stopMatch(matchId)
 function setCommands(socket) {
 
 	document.addEventListener("keydown", function(event) {
-		console.log("event :", event.key);
+		// console.log("event :", event.key);
 		if (socket.readyState === WebSocket.OPEN)
 		{
 			if (event.key === "ArrowUp") 
@@ -112,8 +112,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	{
 		pads[0].style.top = data.yp1 + "%";
 		pads[1].style.top = data.yp2 + "%";
-		pads[2].style.top = data.ball[0] + "%";
-		pads[2].style.left = data.ball[1] + "%";
+		pads[2].style.left = data.ball[0] + "%";
+		pads[2].style.top = data.ball[1] + "%";
 	}
 }
 
