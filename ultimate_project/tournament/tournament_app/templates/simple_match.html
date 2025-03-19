@@ -21,6 +21,84 @@
 	<div id="matchs"></div>
 	<div id="overlay-match"></div>
 </div>
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Pong <sup>42</sup></span>
+        </div>
+    </div>
+</footer>
+<div
+  class="modal fade"
+  id="logoutModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 data-translate="Ready to Leave?" class="modal-title">
+          Ready to Leave?
+        </h5>
+        <button
+          class="close"
+          type="button"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div data-translate="Logout-leave" class="modal-body">
+        Select "Logout" below if you are ready to end your current session.
+      </div>
+      <div class="modal-footer">
+        <button
+          class="btn btn-secondary"
+          type="button"
+          data-translate="cancel"
+          data-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          onclick="logoutUser()"
+          data-dismiss="modal"
+          id="modal-logout"
+          class="btn btn-primary"
+          href=""
+          data-translate="Logout"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function logoutUser() {
+    // Create a fetch request to logout endpoint
+    fetch("/auth/logout/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin", // Important for cookies
+    }).then((response) => {
+      htmx
+        .ajax("GET", "/login/", {
+          target: "body",
+          swap: "outerHTML",
+          headers: { "HX-Login-Success": "true" },
+        })
+        .then(function () {
+          history.pushState(null, "", "/login/");
+        });
+    });
+  }
+</script>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
     let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
