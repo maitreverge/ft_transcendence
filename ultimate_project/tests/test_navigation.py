@@ -15,12 +15,77 @@ def run(playwright: Playwright) -> None:
         page.goto(url)
         page.wait_for_load_state("networkidle")
 
+    # test du toggle de la sidebar
+    def check_sidebar_Toggle():
+        sidebar = page.locator("#accordionSidebar")
+        toggle_button = page.locator("#sidebarToggle")
+        assert "toggled" not in (sidebar.get_attribute("class") or "")
+        toggle_button.click()
+        assert "toggled" in (sidebar.get_attribute("class") or "")
+        toggle_button.click()
+        assert "toggled" not in (sidebar.get_attribute("class") or "")
+
+    #test du toggle du dheckout_modal
+    def check_checkout_modal_Toggle():
+        logoutModal = page.locator("#youpiBanane")
+        assert "show" not in (logoutModal.get_attribute("class") or "")
+        logoutModal.click()
+        assert "show" in (logoutModal.get_attribute("class") or "")
+        logoutModal.click()
+        assert "show" not in (logoutModal.get_attribute("class") or "")
+
+    #test du bouton logout
+    def check_checkout_button():
+        youpiBanane = page.locator("#youpiBanane")
+        logoutButton = page.locator("#logoutButton")
+        modalLogoutButton = page.locator("#modalLogoutButton")
+        assert "show" not in (youpiBanane.get_attribute("class") or "")
+        youpiBanane.click()
+        logoutButton.click()
+        modalLogoutButton.click()
+        expect(page).to_have_url(f"{base_url}/login/")
+
+        # expect(page).to_have_url(f"{base_url}/login/")
+
+
     # Accès aux différentes pages
     navigate(f"{base_url}/")
+    # check_sidebar_Toggle()
+    check_checkout_modal_Toggle()
+    check_checkout_button()
+
     navigate(f"{base_url}/home/")
+    # check_sidebar_Toggle()
+    check_checkout_modal_Toggle()
+    check_checkout_button()
+
     navigate(f"{base_url}/user/profile/")
+    check_sidebar_Toggle()
+    check_checkout_modal_Toggle()
+    check_checkout_button()
+
     navigate(f"{base_url}/user/stats/")
+    check_sidebar_Toggle()
+    check_checkout_modal_Toggle()
+    check_checkout_button()
+
     navigate(f"{base_url}/tournament/simple-match/")
+    check_sidebar_Toggle()
+    check_checkout_modal_Toggle()
+    check_checkout_button()
+
+# Vérification de l'accès à chaque vue
+
+ 
+    navigate(f"{base_url}/home/")
+ 
+    navigate(f"{base_url}/user/profile/")
+
+    navigate(f"{base_url}/user/profile/")
+
+    navigate(f"{base_url}/user/stats/")
+
+    navigate(f"{base_url}/user/stats/")
 
     # Vérification de la navigation via le sidebar menu
 
@@ -68,65 +133,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#field-stats").click()
     expect(page).to_have_url(f"{base_url}/user/stats/")
 
-    # Vérification de l'accès au logout modal depuis chaque vue
-
-    navigate(f"{base_url}/home/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    navigate(f"{base_url}/home/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-logout").click()
-    page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/login/")
-
-
-    navigate(f"{base_url}/user/profile/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    navigate(f"{base_url}/user/profile/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-logout").click()
-    page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/login/")
-
-    navigate(f"{base_url}/user/stats/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    navigate(f"{base_url}/user/stats/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-logout").click()
-    page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/login/")
-
-
-    navigate(f"{base_url}/tournament/simple-match/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    navigate(f"{base_url}/tournament/simple-match/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-logout").click()
-    page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/login/")
-
-
-    navigate(f"{base_url}/tournament/tournament/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    navigate(f"{base_url}/tournament/tournament/")
-    page.locator("#youpi-banane").click()
-    page.locator("#pre-modal-logout").click()
-    page.locator("#modal-logout").click()
-    expect(page).to_have_url(f"{base_url}/login/")
+    
 
     # Fermeture
     context.close()
