@@ -24,13 +24,23 @@
     
 
     // 🔹 1️⃣ Au chargement initial
-    document.addEventListener("DOMContentLoaded", toggleNavbarLogo);
 
     // 🔹 2️⃣ À chaque mise à jour HTMX (évite le retard du `htmx:afterSettle`)
-    document.addEventListener("htmx:afterSwap", toggleNavbarLogo);
 
     // 🔹 3️⃣ Lorsqu'on navigue avec les boutons "Retour" / "Avancer"
-    window.addEventListener("popstate", toggleNavbarLogo);
+    // window.addEventListener("popstate", toggleNavbarLogo);
+    console.log("Attachement de l'event popstate...");
+
+    window.addEventListener("popstate", () => {
+    console.log("popstate event triggered!");
+    htmx.ajax("GET", window.location.pathname, {
+              target: "body",
+              swap: "outerhtml",
+              headers: { "HX-Login-Success": "true" },
+            })
+    // htmx.ajax('GET', window.location.pathname, { target: "body" });
+    
+});
 
     function toggleSidebar(show) {
         console.log("toggleSidebar called");
@@ -44,22 +54,7 @@
         }
     }
 
-    function toggleNavbarLogo() {
-        console.log("toggleNavbarLogo called");
-        const isHomePage = document.querySelector('#home-page');
-        const homelogo = document.querySelector('#homelogo');
-        if (!homelogo)
-            return
-        if (isHomePage && homelogo)
-    {
-        console.log("adding logo")
-        homelogo.classList.remove('d-none')
-    }
-        else
-        {
-            console.log("removing logo")
 
-            homelogo.classList.add('d-none')
-        }
-    }
+
+    
 </script>
