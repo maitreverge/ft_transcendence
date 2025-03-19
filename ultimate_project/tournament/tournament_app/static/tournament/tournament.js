@@ -299,7 +299,7 @@ function enterTournament(socket, tournamentId) {
 function linkMatch(lk) {
 
 	console.log("LINK MATCH ", lk);
-
+	const dim = document.getElementById("dim");
 	const tournament = document.getElementById("tournaments").querySelector(
 		`[id='${lk.tournamentId}']`
 	);
@@ -335,7 +335,9 @@ function linkMatch(lk) {
 			window.selfMatchId = lk.matchId;
 			// localMatch.classList.add("next-match");
 		}
-		fetch(`/match/?matchId=${lk.matchId}&playerId=${window.selfId}`)
+		fetch(
+			`/match/match${dim.value}d/` +
+			`?matchId=${lk.matchId}&playerId=${window.selfId}`)
 		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  

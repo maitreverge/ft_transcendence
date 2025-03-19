@@ -16,9 +16,13 @@ class MyConsumer(AsyncWebsocketConsumer):
 		params = urllib.parse.parse_qs(query_string)
 		self.playerId = int(params.get("playerId", [None])[0])
 		print(f"CONNECT plyid {self.playerId} matchid {self.matchId}", flush=True)
-		match = next((p for p in pongs if p.id ==  self.matchId), None)
+		pong = next((p for p in pongs if p.id ==  self.matchId), None)
 		await self.accept()
-		if match is None:
+		if pong and self.playerId < 0 \
+			and self.playerId not in (pong.idP1, pong.idP2):
+			await self.close(code=3000)
+			return
+		if pong is None:
 			print(f"MATCH NONE id {self.playerId}", flush=True)
 			await self.close(code=3000)
 			return
@@ -54,7 +58,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 	
 		async with aiohttp.ClientSession() as session:
 			async with session.post(
-				"http://tournament:8001/tournament/match-players-update/",
+				"http://tournament:8001/tournament/pong-players-update/",
 				json={
 				"matchId": self.matchId,
 				"players": [{
