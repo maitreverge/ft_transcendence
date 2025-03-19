@@ -58,7 +58,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 	
 		async with aiohttp.ClientSession() as session:
 			async with session.post(
-				"http://tournament:8001/tournament/pong-players-update/",
+				"http://tournament:8001/tournament/match-players-update/",
 				json={
 				"matchId": self.matchId,
 				"players": [{
