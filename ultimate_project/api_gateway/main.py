@@ -426,7 +426,6 @@ async def login_page_route(request: Request):
     return await login_fastAPI(request, response, username, password)
 
 
-
 # Add auth-status endpoint for debugging
 @app.get("/auth/status")
 async def auth_status(request: Request):
@@ -539,30 +538,26 @@ async def two_factor_auth_proxy(request: Request):
     """
     Proxy requests to the two-factor authentication page.
     """
+    print("🔐 Handling two-factor-auth request", flush=True)
+    print(f"🔐 Headers: {request.headers}", flush=True)
+    print(f"🔐 Cookies: {request.cookies}", flush=True)
+
+    # Check if this is an HTMX request
+    is_htmx = "HX-Request" in request.headers
+    print(f"🔐 Is HTMX request: {is_htmx}", flush=True)
+
+    # If we have a username in the query parameters, make sure it's passed to the template
+    query_params = request.query_params
+    username = query_params.get("username")
+    if username:
+        print(f"🔐 Username from query params: {username}", flush=True)
+        # You might want to append it to the URL that's being proxied
+        return await proxy_request(
+            "static_files", f"two-factor-auth/?username={username}", request
+        )
+
+    # Forward the request to the static_files service
     return await proxy_request("static_files", "two-factor-auth/", request)
-
-
-@app.api_route("/{path:path}", methods=["GET"])
-async def static_files_proxy(path: str, request: Request):
-    """
-    Proxy requests to the static files microservice.
-
-    THE SPA'S INDEX.HTML FILE IS HERE!!!
-
-    - **path**: The path to the resource in the static files service.
-    - **request**: The incoming request object.
-    """
-    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
-    # is_auth, user_info = is_authenticated(request)
-
-    # if is_auth == False:
-    #     # If not authenticated, redirect to register
-    #     response = RedirectResponse(url="/register/")
-
-    #     return response
-    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
-    
-    return await proxy_request("static_files", path, request)
 
 
 @app.api_route("/user/setup-2fa/", methods=["GET"])
@@ -588,6 +583,32 @@ async def verify_2fa_proxy(request: Request):
 
     return await proxy_request("user", "user/verify-2fa/", request)
 
+
+@app.api_route("/auth/verify-2fa/", methods=["POST"])
+async def verify_2fa_login(request: Request):
+    """
+    Verifies 2FA code during login and generates JWT tokens if valid
+    """
+    print("🔐 Processing 2FA verification during login", flush=True)
+
+    # Get the form data
+    form_data = await request.form()
+    print(f"🔐 Form data: {form_data}", flush=True)
+
+    token = form_data.get("token")
+    username = form_data.get("username")
+
+    print(f"🔐 Extracted from form - username: {username}, token: {token}", flush=True)
+
+    # Create a new response object
+    response = Response()
+
+    # Process the 2FA verification and generate JWT
+    from authentication import verify_2fa_and_login
+
+    return await verify_2fa_and_login(request, response, username, token)
+
+
 # ! HO LA CONG DE SA MERE LA ROUTE APIIIIIIIIIIIIIIIIIIIIIIIIIII
 @app.api_route("/user/disable-2fa/", methods=["GET", "POST"])
 @app.api_route("/disable-2fa/", methods=["GET", "POST"])
@@ -599,6 +620,29 @@ async def disable_2fa_proxy(request: Request):
     print(f"🔐 Headers: {request.headers}", flush=True)
 
     return await proxy_request("user", "user/disable-2fa/", request)
+
+
+@app.api_route("/{path:path}", methods=["GET"])
+async def static_files_proxy(path: str, request: Request):
+    """
+    Proxy requests to the static files microservice.
+
+    THE SPA'S INDEX.HTML FILE IS HERE!!!
+
+    - **path**: The path to the resource in the static files service.
+    - **request**: The incoming request object.
+    """
+    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
+    # is_auth, user_info = is_authenticated(request)
+
+    # if is_auth == False:
+    #     # If not authenticated, redirect to register
+    #     response = RedirectResponse(url="/register/")
+
+    #     return response
+    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
+
+    return await proxy_request("static_files", path, request)
 
 
 if __name__ == "__main__":

@@ -42,7 +42,10 @@ def home(request):
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")
 
-    if request.headers.get("HX-Request") and request.headers.get("HX-Login-Success") != "true":
+    if (
+        request.headers.get("HX-Request")
+        and request.headers.get("HX-Login-Success") != "true"
+    ):
         return render(request, "partials/home.html", {"username": username})
 
     obj = {"username": username, "page": "partials/home.html"}
@@ -191,14 +194,27 @@ def forgotPassword(request):
     return render(request, "index.html", obj)
 
 
-
 @never_cache
 def twoFactorAuth(request):
-    # Get username from JWT header if available
+    # Try to get username from multiple sources
     username = request.headers.get("X-Username") or request.session.get("username")
 
+    # Check if username is in the query parameters (takes precedence)
+    query_username = request.GET.get("username")
+    if query_username:
+        print(f"Found username in query parameters: {query_username}", flush=True)
+        username = query_username
+
+    print(f"Using username for 2FA page: {username}", flush=True)
+
+    # If it's an HTMX request, just render the partial template
+    if "HX-Request" in request.headers:
+        return render(request, "two-factor-auth.html", {"username": username})
+
+    # Otherwise render the full page
     obj = {"username": username, "page": "two-factor-auth.html"}
     return render(request, "index.html", obj)
+
 
 @never_cache
 def error(request, code=404):  # Code 404 par défaut
