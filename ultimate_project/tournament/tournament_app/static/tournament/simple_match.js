@@ -1,6 +1,8 @@
 
 function loadHtml(data, target) {
 
+	const oldScripts = document.querySelectorAll("script.match-script");			
+	oldScripts.forEach(oldScript => oldScript.remove());	
 	const overlay = document.getElementById(target);
 	overlay.innerHTML = data;
 	const scripts = overlay.getElementsByTagName("script");
@@ -17,15 +19,14 @@ function loadHtml(data, target) {
 		newScript.textContent = script.textContent;		
 		document.body.appendChild(newScript); 
 	}
-	const oldScripts = document.querySelectorAll("script.match-script");			
-	oldScripts.forEach(oldScript => oldScript.remove());	
 }
 
 function setSelfMatchId() {
 
 	const matchsContainer = document.getElementById("matchs");
 	const matchElements = [...matchsContainer.children];
-		
+	const dim = document.getElementById("dim");
+
     matchElements.forEach(match => {		
 		if (match.id == window.selfMatchId)
 			match.classList.add("self-match");					
@@ -40,7 +41,9 @@ function setSelfMatchId() {
 		// 	.catch(error => console.log(error))
 		// };	
         match.onclick = function() {
-			fetch(`/match/match3d/?matchId=${match.id}&playerId=${window.selfId}`)
+			fetch(
+				`/match/match${dim.value}d/` +
+				`?matchId=${match.id}&playerId=${window.selfId}`)
 			.then(response => {
 				if (!response.ok) 
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  

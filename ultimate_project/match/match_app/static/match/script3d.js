@@ -1,53 +1,55 @@
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+// const window.scene = new THREE.Scene();
+window.scene = window.scene || new THREE.Scene();
 
-const textureLoader = new THREE.TextureLoader();
+window.camera = window.camera || new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+window.renderer = window.renderer || new THREE.WebGLRenderer({ antialias: true });
+window.renderer.setSize(window.innerWidth, window.innerHeight);
+window.document.body.appendChild(window.renderer.domElement);
 
-const rgeo = new THREE.BoxGeometry(5, 1, 1);
-const sgeo = new THREE.SphereGeometry(1, 32, 32);
+window.textureLoader = window.textureLoader || new THREE.TextureLoader();
 
-const rmat = [
-    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') })
+window.rgeo = window.rgeo || new THREE.BoxGeometry(5, 1, 1);
+window.sgeo = window.sgeo || new THREE.SphereGeometry(1, 32, 32);
+
+window.rmat = window.rmat || [
+    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') })
 ];
 
-const smat = new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
+window.smat = window.smat || new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
 
-const r1 = new THREE.Mesh(rgeo, rmat);
-const r2 = new THREE.Mesh(rgeo, rmat);
+window.r1 = window.r1 || new THREE.Mesh(window.rgeo, window.rmat);
+window.r2 = window.r2 || new THREE.Mesh(window.rgeo, window.rmat);
 
-const ball = new THREE.Mesh(sgeo, smat);
+window.ball = window.ball || new THREE.Mesh(window.sgeo, window.smat);
 
-scene.add(ball);
-scene.add(r1);
-scene.add(r2);
+window.scene.add(window.ball);
+window.scene.add(window.r1);
+window.scene.add(window.r2);
 
-r1.position.z = 10;
-r2.position.z = -10;
+window.r1.position.z = 10;
+window.r2.position.z = -10;
 
 var angle = 0;
 
 // fonction appelée lors du clic sur le bouton
 function actionClick() {
-    ball.material.color.setHex(0x00ff00);
+    window.ball.material.color.setHex(0x00ff00);
 }
 
 function otherClick() {
-    // change r1 images
-    r1.material = [
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') })
+    // change window.r1 images
+    window.r1.material = [
+        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
+        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
+        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
+        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
+        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
+        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') })
     ];
 }
 
@@ -55,29 +57,29 @@ function change_zoom(width, height) {
     // change fov
     
     r = height / width;
-    camera.position.z = 15 + 2 * r;
-    camera.position.y = 2 + 10 * r;
+    window.camera.position.z = 15 + 2 * r;
+    window.camera.position.y = 2 + 10 * r;
 
-    camera.lookAt(0, 0, 0);
-    camera.updateProjectionMatrix();
+    window.camera.lookAt(0, 0, 0);
+    window.camera.updateProjectionMatrix();
 }
 
 // resize window when resizing
 window.addEventListener('resize', () => {
     w = window.innerWidth;
     h = window.innerHeight;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
+    window.renderer.setSize(w, h);
+    window.camera.aspect = w / h;
+    window.camera.updateProjectionMatrix();
     change_zoom(w, h);
 });
 
 function animate() {
     requestAnimationFrame(animate);
 
-    ball.rotation.z += 0.1;
+    window.ball.rotation.z += 0.1;
 
-    renderer.render(scene, camera);
+    window.renderer.render(window.scene, window.camera);
 }
 
 animate();
@@ -113,6 +115,7 @@ function stopMatch(matchId)
 				console.log("je vais envoyer 42");
 				window.stopFlag = true
 				window.matchSocket.close(3666);
+				window.matchSocket2.close(3666);
 			} 
 			else 
 			{
@@ -120,8 +123,10 @@ function stopMatch(matchId)
 			}
 			console.log("je nai pas plante");
 		}
-		const oldScripts = document.querySelectorAll("script.match-script");			
-		oldScripts.forEach(oldScript => oldScript.remove());
+		console.log("toujours vivant");
+		const oldScripts = document.querySelectorAll("script.match-script");
+		console.log("olscript len", oldScripts.length);			
+		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
 	// }
 	// else
 	// 	console.log("pas spec!!");
@@ -192,10 +197,10 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 	}
 	if (data.yp1 !== undefined && data.yp2 !== undefined)
 {
-		r1.position.x = data.yp1;
-		r2.position.x = data.yp2;
-		ball.position.x = data.ball[0] / 5 - 10;
-		ball.position.z = data.ball[1] / 5 - 10;
+		window.r1.position.x = data.yp1;
+		window.r2.position.x = data.yp2;
+		window.ball.position.x = data.ball[0] / 5 - 10;
+		window.ball.position.z = data.ball[1] / 5 - 10;
 	}
 }
 

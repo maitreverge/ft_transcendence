@@ -28,6 +28,7 @@ function stopMatch(matchId)
 				console.log("je vais envoyer 42");
 				window.stopFlag = true
 				window.matchSocket.close(3666);
+				window.matchSocket2.close(3666);
 			} 
 			else 
 			{
@@ -35,8 +36,10 @@ function stopMatch(matchId)
 			}
 			console.log("je nai pas plante");
 		}
-		const oldScripts = document.querySelectorAll("script.match-script");			
-		oldScripts.forEach(oldScript => oldScript.remove());
+		console.log("toujours vivant");
+		const oldScripts = document.querySelectorAll("script.match-script");
+		console.log("olscript len", oldScripts.length);			
+		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
 	// }
 	// else
 	// 	console.log("pas spec!!");
@@ -88,7 +91,7 @@ function setCommands2(socket) {
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 		
 	const data = JSON.parse(event.data);
-	console.log("match mesage: ", data);
+	// console.log("match mesage: ", data);
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;

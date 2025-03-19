@@ -26,7 +26,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 			(p for p in players if p.get('playerId') == self.playerId)
 			, None)
 		if player:
-			print(f"PLAYER YET EXIST selfid {self.playerId} pid {player.playerId}", flush=True)
+			print(f"PLAYER YET EXIST selfid {self.playerId} pid {player.get('playerId')}", flush=True)
 			await self.close(code=3000)
 			return
 		players.append({
