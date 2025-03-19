@@ -46,25 +46,124 @@ function stopMatch(matchId)
 	
 }
 
-function setCommands(socket) {
+// function setCommands(socket, socket2) {
+	
+// 	const keysPressed = {};
+// 	document.addEventListener("keydown", function(event) {
 
-	document.addEventListener("keydown", function(event) {
-		// console.log("event :", event.key);
-		if (socket.readyState === WebSocket.OPEN)
-		{
-			if (event.key === "ArrowUp") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'up'}));
-			} else if (event.key === "ArrowDown") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'down'}));
-			}
-		} 
-	});
+// 		keysPressed[event.key] = true;
+// 		// console.log("event :", event.key);
+// 		if (socket.readyState === WebSocket.OPEN)
+// 		{
+// 			if (keysPressed[event.key] === true) 
+// 			{
+// 				event.preventDefault();
+// 				socket.send(JSON.stringify({
+// 					action: 'move', dir: 'up'}));
+// 			} else if (keysPressed[event.key] === true) 
+// 			{
+// 				event.preventDefault();
+// 				socket.send(JSON.stringify({
+// 					action: 'move', dir: 'down'}));
+// 			}
+// 			if (socket2 && socket2.readyState === WebSocket.OPEN)
+// 			{
+// 				if (keysPressed[event.key] === true) 
+// 				{
+// 					event.preventDefault();
+// 					socket2.send(JSON.stringify({
+// 						action: 'move', dir: 'up'}));
+// 				} else if (keysPressed[event.key] === true) 
+// 				{
+// 					event.preventDefault();
+// 					socket2.send(JSON.stringify({
+// 						action: 'move', dir: 'down'}));
+// 				}
+// 			}
+// 		} 
+// 	});
+// 	document.addEventListener("keyup", event => {
+// 		delete keysPressed[event.key];
+// 	});
+// }
+// function setCommands(socket, socket2) {
+//     const keysPressed = {};
+
+//     document.addEventListener("keydown", function(event) {
+//         keysPressed[event.key] = true; 
+
+//         if (socket.readyState === WebSocket.OPEN) {
+//             if (keysPressed["ArrowUp"]) { 
+//                 event.preventDefault();
+//                 socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
+//             }
+//             if (keysPressed["ArrowDown"]) { 
+//                 event.preventDefault();
+//                 socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
+//             }
+//         }
+
+//         if (socket2 && socket2.readyState === WebSocket.OPEN) {
+//             if (keysPressed["+"]) { 
+//                 event.preventDefault();
+//                 socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
+//             }
+//             if (keysPressed["Enter"]) { 
+//                 event.preventDefault();
+//                 socket2.send(JSON.stringify({ action: 'move', dir: 'down' }));
+//             }
+//         }
+//     });
+
+//     document.addEventListener("keyup", event => {
+//         delete keysPressed[event.key];
+//     });
+// }
+
+function setCommands(socket, socket2) {
+    const keysPressed = {}; // Stocker les touches enfoncées
+    let animationFrameId = null; // Stocke l'ID du requestAnimationFrame
+
+    function sendCommands() {
+        if (socket.readyState === WebSocket.OPEN) {
+            if (keysPressed["ArrowUp"]) {
+                socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
+            }
+            if (keysPressed["ArrowDown"]) {
+                socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
+            }
+        }
+
+        if (socket2 && socket2.readyState === WebSocket.OPEN) {
+            if (keysPressed["+"]) {
+                socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
+            }
+            if (keysPressed["Enter"]) {
+                socket2.send(JSON.stringify({ action: 'move', dir: 'down' }));
+            }
+        }
+
+        animationFrameId = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
+    }
+
+    document.addEventListener("keydown", function(event) {
+        if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
+            keysPressed[event.key] = true;
+        }
+        
+        if (!animationFrameId) { // Démarre l'animation seulement si elle n'est pas déjà en cours
+            animationFrameId = requestAnimationFrame(sendCommands);
+        }
+    });
+
+    document.addEventListener("keyup", function(event) {
+        delete keysPressed[event.key];
+
+        if (Object.keys(keysPressed).length === 0) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+    });
 }
 
 function setCommands2(socket) {
@@ -114,37 +213,39 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 		pads[1].style.top = data.yp2 + "%";
 		pads[2].style.left = data.ball[0] + "%";
 		pads[2].style.top = data.ball[1] + "%";
+		pads[3].innerText = data.score[0] + " | " + data.score[1];
 	}
 }
 
-function onMatchWsMessage2(event, pads, [waiting, end], waitingState) {
+// function onMatchWsMessage2(event, pads, [waiting, end], waitingState) {
 		
-	const data = JSON.parse(event.data);
+// 	const data = JSON.parse(event.data);
 
-	if (data.state == "end")
-	{	
-		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
-		end.classList.add("end");
-	}
-	if (waitingState[0] != data.state) 
-	{
-		waitingState[0] = data.state;	
-		if (waiting) 
-		{
-			if (data.state == "waiting")			
-				waiting.classList.remove("no-waiting");
-			else			
-				waiting.classList.add("no-waiting");			
-		}			
-	}
-	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
-	{
-		pads[0].style.top = data.yp1 + "%";
-		pads[1].style.top = data.yp2 + "%";
-		pads[2].style.top = data.ball[0] + "%";
-		pads[2].style.top = data.ball[1] + "%";
-	}
-}
+// 	if (data.state == "end")
+// 	{	
+// 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
+// 		end.classList.add("end");
+// 	}
+// 	if (waitingState[0] != data.state) 
+// 	{
+// 		waitingState[0] = data.state;	
+// 		if (waiting) 
+// 		{
+// 			if (data.state == "waiting")			
+// 				waiting.classList.remove("no-waiting");
+// 			else			
+// 				waiting.classList.add("no-waiting");			
+// 		}			
+// 	}
+// 	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
+// 	{
+// 		pads[0].style.top = data.yp1 + "%";
+// 		pads[1].style.top = data.yp2 + "%";
+// 		pads[2].style.top = data.ball[0] + "%";
+// 		pads[2].style.top = data.ball[1] + "%";
+// 		pads[3].innerText = data.score[0] + " | " + data.score[1];
+// 	}
+// }
 
 function sequelInitMatchWs(socket) {
 
@@ -152,13 +253,14 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("p1"),
 		document.getElementById("p2"),
 		document.getElementById("ball"),
+		document.getElementById("score")
 	];
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
 	socket.onmessage = event => onMatchWsMessage(
 		event, pads, [waiting, end], waitingState);
-	setCommands(socket);
+	
 	const spec = document.getElementById("spec")
 	if (spec)
 	{
@@ -168,6 +270,7 @@ function sequelInitMatchWs(socket) {
 			spec.style.display = "none";
 	}
 	initSecPlayer();
+	setCommands(socket, window.matchSocket2);
 }
 
 function initSecPlayer() {
@@ -187,7 +290,7 @@ function initSecPlayer() {
 	window.matchSocket2.onclose = (event) => {
 		console.log("Connexion Match disconnected 😈 2nd Player");
 	};
-	setCommands2(window.matchSocket2);
+	// setCommands2(window.matchSocket2);
 }
 
 function initMatchWs() {

@@ -201,6 +201,7 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 		window.r2.position.x = data.yp2;
 		window.ball.position.x = data.ball[0] / 5 - 10;
 		window.ball.position.z = data.ball[1] / 5 - 10;
+		document.getElementById("score")?.innerText = data.score[0] + " | " + data.score[1];
 	}
 }
 

@@ -28,7 +28,7 @@ class Pong:
 		self.watch_task = None
 		self.ball = [50, 90]
 		self.vect = [1, 1]
-		
+		self.score = [0, 0]
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -154,16 +154,21 @@ class Pong:
 					self.player2["dir"] = None
 				self.ball[0] += self.vect[0]
 				self.ball[1] += self.vect[1]
-				if self.ball[0] >= 100:
-					self.vect[0] = -self.vect[0]
-				if self.ball[0] == 0 :
-					self.vect[0] = -self.vect[0]
+				# if self.ball[0] >= 100:
+				# 	self.vect[0] = -self.vect[0]
+				# if self.ball[0] == 0 :
+				# 	self.vect[0] = -self.vect[0]
 
 				if self.ball[1] >= 100:
 					self.vect[1] = -self.vect[1]
 				if self.ball[1] == 0 :
 					self.vect[1] = -self.vect[1]
-
+				if self.ball[0] >= 100:
+					self.score[1] += 1
+					self.ball[0], self.ball[1] = 50, 50
+				if self.ball[0] <= 0:
+					self.score[0] += 1
+					self.ball[0], self.ball[1] = 50, 50
 				# if self.ball[0] == 1 and self.ball[1] >= self.yp1 and self.ball[1] <= self.yp1 + 10 \
 				# 	or self.ball[0] == 89 and self.ball[1] == self.yp2:
 				# 		self.vect[0] = -self.vect[0]
@@ -184,27 +189,29 @@ class Pong:
 				self.state = State.waiting
 				# print(f"je suis en waiting", flush=True)
 
-			if self.ball[0] >= 100:
-				self.score[1] += 1
-			if self.ball[0] <= 0:
-				self.score[0] += 1
+			
 				# self.sendTask.cancel()
 				# try:
 				# 	await self.sendTask  # Attendre que l'annulation soit complète
 				# except asyncio.CancelledError:
 				# 	print("Tâche annulée avec succès")		
+				
+			if 10 == self.score[0]:
 				self.winner = self.idP1
 				self.state = State.end
 				await self.sendFinalState()
-			elif self.yp2 > 80:
+			if 10 == self.score[1]:
+				self.winner = self.idP2
+				self.state = State.end
+				await self.sendFinalState()
 				# self.sendTask.cancel()
 				# try:
 				# 	await self.sendTask  # Attendre que l'annulation soit complète
 				# except asyncio.CancelledError:
 				# 	print("Tâche annulée avec succès")
-				self.winner = self.idP2
-				self.state = State.end
-				await self.sendFinalState()	
+				# self.winner = self.idP2
+				# self.state = State.end
+				# await self.sendFinalState()	
 
 			# print(f"ACTUAL WINNER:{self.winner}", flush=True)
 			await asyncio.sleep(0.05)
@@ -241,7 +248,8 @@ class Pong:
 							"state": state.name,
 							"yp1": self.yp1,
 							"yp2": self.yp2,
-							"ball": self.ball
+							"ball": self.ball,
+							"score": self.score
 						}))                  
 					except Exception as e:
 						pass				
@@ -254,7 +262,8 @@ class Pong:
 			try:					
 				await p["socket"].send(text_data=json.dumps({
 				"state": self.state.name,
-				"winnerId": self.winner
+				"winnerId": self.winner,
+				"score": self.score
 				}))
 			except Exception as e:
 				pass		
@@ -267,7 +276,8 @@ class Pong:
 				"looserId": self.idP1 if self.winner == self.idP2
 					else self.idP2,
 				"p1Id": self.idP1,
-				"p2Id": self.idP2
+				"p2Id": self.idP2,
+				"score": self.score
 			}) as response:
 				if response.status != 200 and response.status != 201:
 					err = await response.text()
