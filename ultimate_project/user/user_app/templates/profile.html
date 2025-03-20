@@ -31,10 +31,13 @@
               </div>
               <!-- <form method="post" enctype="multipart/form-data" action="user/upload-avatar/"> -->
 				<form
+                  id="upload-avatar-form"
                   class="user"
-                  hx-post="/user/upload-avatar/"
+                  hx-post="/user/upload-profile-picture/"
                   hx-target="#upload-avatar-form"
                   hx-swap="outerHTML"
+                  hx-encoding="multipart/form-data"
+                  enctype="multipart/form-data"
                   hx-indicator="#loading-spinner"
                 >
                 {% csrf_token %}
@@ -46,6 +49,9 @@
                   <div class="input-group-append">
                     <button class="btn btn-primary" type="submit" data-translate="Upload">Upload</button>
                   </div>
+                </div>
+                <div id="loading-spinner" class="htmx-indicator spinner-border text-primary" role="status" style="display:none;">
+                  <span class="sr-only">Loading...</span>
                 </div>
               </form>
               <p data-translate="Add your picture here">

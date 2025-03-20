@@ -622,6 +622,14 @@ async def disable_2fa_proxy(request: Request):
     return await proxy_request("user", "user/disable-2fa/", request)
 
 
+@app.api_route("/user/upload-profile-picture/", methods=["POST"])
+async def upload_avatar_proxy(request: Request):
+    """
+    Proxy requests for uploading an avatar to the user microservice.
+    """
+    return await proxy_request("user", "user/upload-profile-picture/", request)
+
+
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):
     """

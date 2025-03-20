@@ -6,6 +6,8 @@ import twofa_app.views as twofa_views
 from django.views.decorators.csrf import csrf_exempt
 from asgiref.sync import sync_to_async, async_to_sync
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 # Create a view that doesn't get logged
@@ -34,9 +36,18 @@ urlpatterns = [
     path("health/", health_check, name="health_check"),
     # path("debug-headers/", debug_headers, name="debug_headers"),
     path("user/", include("user_management_app.urls")),
-    path("user/profile/", views.profile),
+    path("user/profile/", views.profile, name="profile"),
     path("user/stats/", views.stats),
     path("user/setup-2fa/", async_to_sync(twofa_views.setup_2fa)),
     path("user/verify-2fa/", async_to_sync(twofa_views.verify_2fa)),
     path("user/disable-2fa/", async_to_sync(twofa_views.disable_2fa)),
+    path(
+        "user/upload-profile-picture/",
+        async_to_sync(views.upload_profile_picture),
+        name="upload_profile_picture",
+    ),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

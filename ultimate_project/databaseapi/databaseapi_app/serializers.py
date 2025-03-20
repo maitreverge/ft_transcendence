@@ -4,6 +4,7 @@ from .models import Player, Tournament, Match
 
 class PlayerSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
+    profile_picture_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Player
@@ -16,6 +17,8 @@ class PlayerSerializer(serializers.ModelSerializer):
             "password",
             "two_fa_enabled",
             "_two_fa_secret",
+            "profile_picture",
+            "profile_picture_url",
         ]
         extra_kwargs = {"password": {"write_only": True}}
 
@@ -48,6 +51,14 @@ class PlayerSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+    def get_profile_picture_url(self, obj):
+        if obj.profile_picture:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(obj.profile_picture.url)
+            return obj.profile_picture.url
+        return None
 
 
 class PlayerNestedSerializer(serializers.ModelSerializer):

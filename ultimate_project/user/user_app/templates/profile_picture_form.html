@@ -1,0 +1,49 @@
+{% load static %}
+<form
+  id="upload-avatar-form"
+  class="user"
+  hx-post="/user/upload-profile-picture/"
+  hx-target="#upload-avatar-form"
+  hx-swap="outerHTML"
+  hx-encoding="multipart/form-data"
+  enctype="multipart/form-data"
+  hx-indicator="#loading-spinner"
+>
+  {% csrf_token %}
+  <div class="input-group mb-3">
+    <div class="custom-file">
+      <input type="file" class="custom-file-input" id="profile_picture" name="profile_picture" accept="image/*">
+      <label class="custom-file-label" for="profile_picture" data-translate="Choose file">Choose file</label>
+    </div>
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="submit" data-translate="Upload">Upload</button>
+    </div>
+  </div>
+  <div id="loading-spinner" class="htmx-indicator spinner-border text-primary" role="status" style="display:none;">
+    <span class="sr-only">Loading...</span>
+  </div>
+</form>
+
+<script>
+  // Update the filename display when a file is selected
+  document.getElementById('profile_picture').addEventListener('change', function(e) {
+    // Get the file name
+    var fileName = e.target.files[0] ? e.target.files[0].name : "Choose file";
+    // Update the label
+    var label = document.querySelector('.custom-file-label');
+    label.textContent = fileName;
+  });
+  
+  // Refresh the image above the form
+  document.addEventListener('htmx:afterSwap', function(event) {
+    if (event.detail.target.id === 'upload-avatar-form') {
+      // Force a refresh of the profile image
+      var img = document.querySelector('.card-body .text-center img');
+      if (img && img.src) {
+        // Add a timestamp to bust cache
+        var src = img.src.split('?')[0];
+        img.src = src + '?' + new Date().getTime();
+      }
+    }
+  });
+</script> 

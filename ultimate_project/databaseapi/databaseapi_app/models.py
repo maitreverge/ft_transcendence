@@ -35,6 +35,11 @@ class Player(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)  # needed for admin access
 
+    # Profile picture
+    profile_picture = models.ImageField(
+        upload_to="profile_pictures/", null=True, blank=True
+    )
+
     # 2FA fields
     two_fa_enabled = models.BooleanField(default=False)  # 2FA toggle
     _two_fa_secret = models.CharField(max_length=32, blank=True, null=True)

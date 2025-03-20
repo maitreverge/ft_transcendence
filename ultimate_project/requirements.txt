@@ -10,6 +10,7 @@ mccabe==0.7.0
 mypy-extensions==1.0.0
 packaging==24.2
 pathspec==0.12.1
+Pillow==10.3.0
 platformdirs==4.3.6
 playwright==1.50.0
 pycodestyle==2.12.1

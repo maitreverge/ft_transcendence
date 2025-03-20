@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     f"{NAME}_app",
     "user_management_app",
-    'corsheaders',
+    "corsheaders",
     "twofa_app",
 ]
 
@@ -63,8 +63,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'corsheaders.middleware.CorsMiddleware',  # This must be BEFORE CommonMiddleware
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",  # This must be BEFORE CommonMiddleware
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -132,15 +132,21 @@ STATIC_URL = f"/static/static_files/" if DEBUG else "/static/"
 # Répertoire où collecter les fichiers statiques (après collectstatic)
 STATIC_ROOT = "/app/staticfiles"
 
+# Media files (User uploads)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 # Healthcheck filter
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
         return "/health/" not in record.getMessage()
+
 
 # Logging configuration for healthcheck
 LOGGING = {
