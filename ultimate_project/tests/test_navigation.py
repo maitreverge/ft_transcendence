@@ -75,6 +75,24 @@ def run(playwright: Playwright) -> None:
             f"{base_url}/tournament/simple-match/",
             f"{base_url}/tournament/tournament/"
             ]     
+    
+    # Test de la page d'accueil avec une fausse connexion
+    page.goto(f"{base_url}/login/")
+    page.locator("#username").fill("sylvain_duriff")
+    page.locator("#password").fill("wrong_password")
+    page.locator("#loginButton").click()
+    error_message = page.locator("#register-form")
+    expect(error_message).to_have_text("Invalid credentials")
+
+    # Test de la page d'accueil avec une vraie connexion
+    page.goto(f"{base_url}/login/")
+    page.locator("#username").fill("test")
+    page.locator("#password").fill("password")
+    page.locator("#loginButton").click()
+    expect(page).to_have_url(f"{base_url}/home/")
+
+    error_message = page.locator("#register-form")
+    expect(error_message).to_have_text("Invalid credentials")
 
     for url in urls:
         test_page(url)

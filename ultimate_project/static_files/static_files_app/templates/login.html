@@ -44,6 +44,7 @@
                   <div class="form-group">
                     <input
                       type="submit"
+					  id = "loginButton"
                       hx-push-url="true"
                       class="btn btn-primary btn-user btn-block"
                       value="Login"
@@ -69,35 +70,6 @@
 
                 <hr />
 
-                <!-- !  Google button  -->
-                <!-- <a
-                  hx-boost="false"
-                  href="http://localhost:8000/home/"
-                  class="btn btn-google btn-user btn-block"
-                >
-                  <i class="fab fa-google fa-fw"></i>
-                  Login with Google
-                </a> -->
-
-                <!-- !  Facebook button  -->
-                <!-- <a
-                  hx-boost="false"
-                  href="http://localhost:8000/home/"
-                  class="btn btn-facebook btn-user btn-block"
-                >
-                  <i class="fab fa-facebook-f fa-fw"></i>
-                  Login with Facebook
-                </a>
-                <hr /> -->
-                <!-- <div class="text-center">
-                  <a
-                    class="small"
-                    hx-boost="false"
-                    href="http://localhost:8000/forgot-password"
-                  >
-                    Forgot Password?
-                  </a>
-                </div> -->
                 <div
                   hx-boost="false"
                   hx-trigger="click"
@@ -133,6 +105,7 @@
         const response = JSON.parse(evt.detail.xhr.responseText);
 
         if (response.success) {
+          console.log("SUCCESS")
           evt.detail.shouldSwap = false;
 
           htmx
@@ -155,6 +128,7 @@
             // Set username as global variable as another backup
             window.twoFAUsername = usernameValue;
           } else {
+
             console.error("Username input element not found");
           }
           
@@ -185,10 +159,11 @@
               }, 200);
             });
         } else {
-          evt.detail.innerHTML = response.message;
+          document.getElementById("register-form").innerHTML = response.message;
         }
       } catch (e) {
         console.error("Erreur de traitement de la réponse:", e);
+        document.getElementById("register-form").innerHTML = "TRALALALALALA";
       }
     }
   });
