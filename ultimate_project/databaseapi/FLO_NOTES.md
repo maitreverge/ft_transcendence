@@ -6,6 +6,17 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
+`AVATAR CREATION` :
+
+In user creation : create a default image when creating an user
+
+
+
+`POST 2FA`
+
+injections SQL
+CROSS Injection
+
 `LOGIN 2 FIX`
 FORMULAIRE PAS DE FEEDBACK POUR LOGIN + REGISTER
 bugs de console quand on resgiter avec success
