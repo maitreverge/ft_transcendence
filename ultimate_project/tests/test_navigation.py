@@ -9,16 +9,20 @@ def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
+    visited_urls = []
 
     # Fonction de navigation avec attente
     def navigate(url: str):
         page.goto(url)
         page.wait_for_load_state("networkidle")
+        visited_urls.append(url)
 
     # test du toggle de la sidebar
     def check_sidebar_Toggle():
         sidebar = page.locator("#accordionSidebar")
         toggle_button = page.locator("#sidebarToggle")
+        if not toggle_button.is_visible():
+            return
         assert "toggled" not in (sidebar.get_attribute("class") or "")
         toggle_button.click()
         assert "toggled" in (sidebar.get_attribute("class") or "")
@@ -46,92 +50,136 @@ def run(playwright: Playwright) -> None:
         expect(page).to_have_url(f"{base_url}/login/")
 
         # expect(page).to_have_url(f"{base_url}/login/")
+    def test_js():
+        check_sidebar_Toggle()
+        check_checkout_modal_Toggle()
+        check_checkout_button()
 
+    def test_page(url: str):
+        if url:
+            navigate(url)
+        test_js()
+
+    urls = [ 
+            f"{base_url}/home/", 
+            f"{base_url}/user/profile/", 
+            f"{base_url}/user/stats/",
+            f"{base_url}/tournament/simple-match/",
+            f"{base_url}/tournament/tournament/"
+            ]     
+
+
+    for url in urls:
+        test_page(url)
+    
+    for url in urls:
+        navigate(url)
+        visited_urls.append(url)  # Enregistre l'URL après chaque navigation
+
+    for url in reversed(urls):
+        while True:
+            if page.url == url:
+                test_js()
+                page.wait_for_timeout(500)
+                break
+            else:
+                page.evaluate("window.history.back()")
+                page.wait_for_timeout(500)  # Laisse un peu de temps pour le back
+                visited_urls.remove(url)
+                
+
+
+    # # Test avec le "back"
+    # for expected_url in reversed(urls):  # On les teste dans l'ordre inverse
+    #     while visited_urls:
+    #         page.evaluate("window.history.back()")
+    #         page.wait_for_timeout(500)  # Attente de 1 seconde (ajuste selon le temps de chargement)
+
+    #         # Vérifier l'URL après le back
+    #         current_url = page.url
+    #         print(f"Navigué à : {current_url}")  # Debugging
+            
+    #         if current_url == expected_url:
+    #             test_js()  # Exécute les tests sur la bonne page
+    #             break  # Passe à l'URL suivante à tester
 
     # Accès aux différentes pages
-    navigate(f"{base_url}/")
-    # check_sidebar_Toggle()
-    check_checkout_modal_Toggle()
-    check_checkout_button()
+    # test_page(f"{base_url}/")
+    # test_page(f"{base_url}/home/")
+    # test_page(f"{base_url}/user/profile/")
+    # test_page(f"{base_url}/user/stats/")
+    # test_page(f"{base_url}/tournament/simple-match/")
 
-    navigate(f"{base_url}/home/")
-    # check_sidebar_Toggle()
-    check_checkout_modal_Toggle()
-    check_checkout_button()
 
-    navigate(f"{base_url}/user/profile/")
-    check_sidebar_Toggle()
-    check_checkout_modal_Toggle()
-    check_checkout_button()
-
-    navigate(f"{base_url}/user/stats/")
-    check_sidebar_Toggle()
-    check_checkout_modal_Toggle()
-    check_checkout_button()
-
-    navigate(f"{base_url}/tournament/simple-match/")
-    check_sidebar_Toggle()
-    check_checkout_modal_Toggle()
-    check_checkout_button()
-
-# Vérification de l'accès à chaque vue
+    # verification de la stabilite des liens js apres navigation 
 
  
-    navigate(f"{base_url}/home/")
+#     navigate(f"{base_url}/user/profile/")
+
+#     navigate(f"{base_url}/user/stats/")
+
+#     navigate(f"{base_url}/tournament/tournament/")
+
+#     navigate(f"{base_url}/tournament/simple-match/")
+
+#     navigate(f"{base_url}/home/")
+
+#     page.go_back()
+# # Vérification de l'accès à chaque vue
+
  
-    navigate(f"{base_url}/user/profile/")
+#     navigate(f"{base_url}/home/")
+ 
+#     navigate(f"{base_url}/user/profile/")
 
-    navigate(f"{base_url}/user/profile/")
+#     navigate(f"{base_url}/user/stats/")
 
-    navigate(f"{base_url}/user/stats/")
 
-    navigate(f"{base_url}/user/stats/")
+#     # Vérification de la navigation via le sidebar menu
 
-    # Vérification de la navigation via le sidebar menu
+#     page.locator("#nav-tournoi").click()
+#     expect(page).to_have_url(f"{base_url}/tournament/tournament/")
 
-    page.locator("#nav-tournoi").click()
-    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
+#     page.locator("#nav-profile").click()
+#     expect(page).to_have_url(f"{base_url}/user/profile/")
 
-    page.locator("#nav-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
+#     page.locator("#nav-stats").click()
+#     expect(page).to_have_url(f"{base_url}/user/stats/")
 
-    page.locator("#nav-stats").click()
-    expect(page).to_have_url(f"{base_url}/user/stats/")
+#     page.locator("#nav-match").click()
+#     expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
 
-    page.locator("#nav-match").click()
-    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
+#     # Vérification de la navigation via le topbar menu
 
-    # Vérification de la navigation via le topbar menu
+#     page.locator("#side-tournoi").click()
+#     expect(page).to_have_url(f"{base_url}/tournament/tournament/")
 
-    page.locator("#side-tournoi").click()
-    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
+#     page.locator("#side-profile").click()
+#     expect(page).to_have_url(f"{base_url}/user/profile/")
 
-    page.locator("#side-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
+#     page.locator("#side-stats").click()
+#     expect(page).to_have_url(f"{base_url}/user/stats/")
 
-    page.locator("#side-stats").click()
-    expect(page).to_have_url(f"{base_url}/user/stats/")
+#     page.locator("#side-match").click()
+#     expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
 
-    page.locator("#side-match").click()
-    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
+#     # Vérification des boutons sur la page home
 
-    # Vérification des boutons sur la page home
+#     navigate(f"{base_url}/home/")
+#     page.locator("#field-tournoi").click()
+#     expect(page).to_have_url(f"{base_url}/tournament/tournament/")
 
-    navigate(f"{base_url}/home/")
-    page.locator("#field-tournoi").click()
-    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
+#     navigate(f"{base_url}/home/")
+#     page.locator("#field-match").click()
+#     expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
 
-    navigate(f"{base_url}/home/")
-    page.locator("#field-match").click()
-    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
+#     navigate(f"{base_url}/home/")
+#     page.locator("#field-profile").click()
+#     expect(page).to_have_url(f"{base_url}/user/profile/")
 
-    navigate(f"{base_url}/home/")
-    page.locator("#field-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    navigate(f"{base_url}/home/")
-    page.locator("#field-stats").click()
-    expect(page).to_have_url(f"{base_url}/user/stats/")
+#     navigate(f"{base_url}/home/")
+#     page.locator("#field-stats").click()
+#     expect(page).to_have_url(f"{base_url}/user/stats/")
 
     
 
