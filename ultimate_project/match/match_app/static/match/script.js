@@ -127,9 +127,11 @@ function setCommands(socket, socket2) {
     function sendCommands() {
         if (socket.readyState === WebSocket.OPEN) {
             if (keysPressed["ArrowUp"]) {
+				
                 socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
             }
             if (keysPressed["ArrowDown"]) {
+				
                 socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
             }
         }
@@ -147,6 +149,7 @@ function setCommands(socket, socket2) {
     }
 
     document.addEventListener("keydown", function(event) {
+		event.preventDefault();
         if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
             keysPressed[event.key] = true;
         }

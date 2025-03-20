@@ -27,7 +27,7 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [50, 90]
-		self.vect = [1, 1]
+		self.vect = [0.5, 0.5]
 		self.score = [0, 0]
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
@@ -141,7 +141,7 @@ class Pong:
 						if self.yp1 >= 2:
 							self.yp1 -= 2
 					elif self.player1["dir"] == 'down':
-						if self.yp1 <= 78:
+						if self.yp1 <= 58:
 							self.yp1 += 2
 					self.player1["dir"] = None
 				if  self.player2.get("dir") is not None :
@@ -149,26 +149,38 @@ class Pong:
 						if self.yp2 >= 2:							
 							self.yp2 -= 2
 					elif self.player2["dir"] == 'down':
-						if self.yp2 <= 78:
+						if self.yp2 <= 58:
 							self.yp2 += 2
 					self.player2["dir"] = None
-				self.ball[0] += self.vect[0]
+
+				self.ball[0] += self.vect[0]				
 				self.ball[1] += self.vect[1]
+			
 				# if self.ball[0] >= 100:
 				# 	self.vect[0] = -self.vect[0]
 				# if self.ball[0] == 0 :
 				# 	self.vect[0] = -self.vect[0]
 
+# bord haut et bas
 				if self.ball[1] >= 100:
 					self.vect[1] = -self.vect[1]
-				if self.ball[1] == 0 :
+				if self.ball[1] <= 0 :
 					self.vect[1] = -self.vect[1]
+				if self.ball[1] > 100:
+					self.ball[1] = 99
+				if self.ball[1] < 0:
+					self.ball[1] = 1
+
+# bord droit et gauche
 				if self.ball[0] >= 100:
 					self.score[1] += 1
-					self.ball[0], self.ball[1] = 50, 50
+					self.ball = [50, 50]
+					self.vect = [0.5, 0.5]
 				if self.ball[0] <= 0:
 					self.score[0] += 1
-					self.ball[0], self.ball[1] = 50, 50
+					self.ball = [50, 50]
+					self.vect = [0.5, 0.5]
+
 				# if self.ball[0] == 1 and self.ball[1] >= self.yp1 and self.ball[1] <= self.yp1 + 10 \
 				# 	or self.ball[0] == 89 and self.ball[1] == self.yp2:
 				# 		self.vect[0] = -self.vect[0]
@@ -177,9 +189,19 @@ class Pong:
 				# or self.ball[0] == 89 and self.yp2 <= self.ball[1] <= self.yp2 + 10:
 				# 	self.vect[0] = -self.vect[0]
 
-				if self.ball[0] == 21 and self.yp1 <= self.ball[1] <= self.yp1 + 20 \
-				or self.ball[0] == 79 and self.yp2 <= self.ball[1] <= self.yp2 + 20:
+				if self.ball[0] == 21 and self.yp1 <= self.ball[1] <= self.yp1 + 40 \
+				or self.ball[0] == 79 and self.yp2 <= self.ball[1] <= self.yp2 + 40:
 					self.vect[0] = -self.vect[0]
+					y = (self.ball[1] - self.yp1 - 20) / 20
+					print(f"Y: {y}", flush=True)
+					# if 0 <= y < 0.1:
+					# 	y = 0.5
+					# elif -0.1 < y <= 0:
+					# 	y = -0.5
+					print(f"Y 222: {y}", flush=True)
+					print(f"VECT: {self.vect[1]}", flush=True)
+					self.vect[1] = y
+					print(f"VECT222: {self.vect[1]}", flush=True)
 			else:
 				if self.start_flag:
 					if self.player1:
