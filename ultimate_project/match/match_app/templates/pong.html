@@ -15,13 +15,10 @@
 </div>		
 <div id="match">
 	<h1>Match</h1>	
-	<h1 id="spec" style="display: none">Je suis spectateur</h1>
-
-	<h2>j'ai recu l'identifiant du match par query string</h2>
-	<h2>match ID: {{ matchId }} et Raps {{ rasp }} et Pidom {{ pidom }}
-		et {{ playerId }}</h2>
-	
+	<h1 id="spec" style="display: none">Je suis spectateur</h1>			
+	<div id="score">Score</div>
 	<div id="p1"></div>
+	<div id="ball"></div>
 	<div id="p2"></div>
 	<div id="waiting">Waiting</div>
 	<div id="end" style="display:none"></div>
@@ -30,3 +27,26 @@
 		const matchDiv = document.getElementById('match');
     	if (matchDiv) matchDiv.remove();">Quit Match</button>
 </div>
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+    let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+
+    console.log("Dernière page visitée:", lastVisitedPage);
+    console.log("Page actuelle:", window.location.href);
+
+    // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
+    if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
+        console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
+        
+        // Marque que la redirection a eu lieu pour éviter la boucle infinie
+        sessionStorage.setItem("redirected", "true");
+
+        // Redirige vers la dernière page visitée
+        window.location.href = lastVisitedPage;
+        sessionStorage.setItem("redirected", "true");
+    } else {
+        sessionStorage.removeItem("redirected");
+        console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+    }
+});
+</script>

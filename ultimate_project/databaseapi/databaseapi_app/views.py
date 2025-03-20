@@ -43,3 +43,43 @@ def verify_credentials(request):
         return Response(
             {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
+    
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def check_2fa(request):
+    """
+    Check if 2FA is enabled for a user.
+    """
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    # Verify credentials
+    user = authenticate(username=username, password=password)
+    if not user:
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # Check if 2FA is enabled
+    if not user.two_fa_enabled:
+        return Response({"error": "2FA is not enabled"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    return Response({"success": True}, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def check_2fa_code(request):
+    """
+    Check if a 2FA code is valid for a user.
+    """
+    username = request.data.get("username")
+    code = request.data.get("code")
+
+    # Check if 2FA is enabled
+    user = authenticate(username=username, password=password)
+    if not user:
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # Check if the code is valid
+    if not user.two_fa_enabled:
+        return Response({"error": "2FA is not enabled"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    return Response({"success": True}, status=status.HTTP_200_OK)

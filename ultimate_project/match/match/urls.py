@@ -27,7 +27,8 @@ def health_check(request):
 
 urlpatterns = [
     path("health/", health_check, name="health_check"), 
-    path("match/", views.start_match),
+    path("match/match3d/", views.enter_match3d),
+    path("match/match2d/", views.enter_match),
 	path("match/new-match/", views.new_match),
 	path("match/stop-match/<int:playerId>/<int:matchId>/", views.stop_match),
 ]

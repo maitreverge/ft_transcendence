@@ -1,6 +1,9 @@
 #!/bin/bash
 
-python3 manage.py migrate --run-syncdb
+# python3 manage.py migrate --run-syncdb
+python3 manage.py makemigrations databaseapi_app
+python3 manage.py makemigrations
+python3 manage.py migrate
 
 # Ensure a superuser exists
 python3 manage.py shell -c "

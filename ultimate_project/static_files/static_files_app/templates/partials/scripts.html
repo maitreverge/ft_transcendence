@@ -1,0 +1,49 @@
+{% load static %}
+<script
+  src="https://kit.fontawesome.com/3dd39fb56b.js"
+  crossorigin="anonymous"
+></script>
+<script src="{% static 'static_files/translations.js' %}"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"
+></script>
+<script src="{% static 'static_files/vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'static_files/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'static_files/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<script>
+  // this function is part of the history logic
+  window.addEventListener("beforeunload", () => {
+    console.log("URL sauvegardée avec history.state et sessionStorage");
+    let currentURL = window.location.href;
+    history.replaceState({ lastVisitedPage: currentURL }, "");
+    sessionStorage.setItem("lastVisitedPage", currentURL);
+  });
+
+  // this function helps reloading the scripts after browser navigation
+  console.log("Attachement de l'event popstate...");
+  window.addEventListener("popstate", () => {
+    toggleSidebar(true);
+    console.log("popstate event triggered!");
+    htmx.ajax("GET", window.location.pathname, {
+      target: "body",
+      swap: "outerhtml",
+      headers: { "HX-Login-Success": "true" },
+    });
+  });
+  
+  // this function toggles the sidebar on and off
+  function toggleSidebar(show) {
+    console.log("toggleSidebar called");
+    const sidebar = document.querySelector("#accordionSidebar");
+    if (!sidebar) return;
+    if (show) {
+      sidebar.classList.remove("d-none");
+    } else {
+      sidebar.classList.add("d-none");
+    }
+  }
+</script>

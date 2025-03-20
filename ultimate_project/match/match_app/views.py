@@ -11,11 +11,24 @@ def new_match(request : HttpRequest):
 	pongs.append(pong)
 	return JsonResponse({"matchId": pong.id}, status=201)
 
-def start_match(request : HttpRequest):
+def enter_match(request : HttpRequest):
 
 	return render(
 		request,
 		"pong.html",
+		{           
+			"rasp": os.getenv("rasp", "false"),
+			"pidom": os.getenv("pi_domain", "localhost:8000"),
+			"matchId": int(request.GET.get("matchId", "0")),           
+			"playerId": int(request.GET.get("playerId", "0"))
+		},
+	)
+
+def enter_match3d(request : HttpRequest):
+
+	return render(
+		request,
+		"pong3d.html",
 		{           
 			"rasp": os.getenv("rasp", "false"),
 			"pidom": os.getenv("pi_domain", "localhost:8000"),
@@ -31,10 +44,11 @@ async def stop_match(request : HttpRequest, playerId, matchId):
 			if await p.stop(playerId):  
 				return JsonResponse({"status": "succes"})
 			else:
-				return JsonResponse({"status": "fail"}, status=500)
-	return JsonResponse({"status": "not authorized"}, status=403)
+				return JsonResponse({"status": "fail"}, status=200)
+	return JsonResponse({"status": "not authorized"}, status=200)
 
 def del_pong(pong_id):
+	print("DEL PONG {pong_id}", flush=True)
 	print(pongs, flush=True)
 	pongs[:] = [p for p in pongs if p.id != pong_id]
 	print(pongs, flush=True)

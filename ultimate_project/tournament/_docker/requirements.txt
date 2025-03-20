@@ -5,3 +5,4 @@ channels
 daphne
 whitenoise
 aiohttp
+django-cors-headers

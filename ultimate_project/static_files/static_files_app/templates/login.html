@@ -1,122 +1,195 @@
-<div class="container">
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-
-        <div class="col-xl-10 col-lg-12 col-md-9">
-
-            <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                    <!-- Nested Row within Card Body -->
-                    <div class="row">
-                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                        <div class="col-lg-6">
-                            <div class="p-5">
-                                <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                                </div>
-                                <form class="user" 
-                                method="post" 
-                                action="/auth/login/">
-									{% csrf_token %}
-                                    <div class="form-group">
-                                        <input type="text" 
-                                        class="form-control form-control-user"
-                                        id="username" 
-                                        name="username"
-                                        placeholder="Enter Username...">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" 
-                                        class="form-control form-control-user"
-                                        id="password" 
-                                        name="password" 
-                                        placeholder="Password">
-                                    </div>
-                                    <div class="form-group">
-                                    </div>
-									<div class="form-group">
-										<input 
-                                        type="submit" 
-                                        class="btn btn-primary btn-user btn-block" 
-                                        value="Logiiiiiiiin">
-									</div>
-                                    <hr>
-                                    <a hx-boost="false" 
-                                    href="http://localhost:8000/home/" 
-                                    class="btn btn-google btn-user btn-block">
-                                        <i class="fab fa-google fa-fw"></i> 
-                                        Login with Google
-                                    </a>
-                                    <a hx-boost="false" 
-                                    href="http://localhost:8000/home/" 
-                                    class="btn btn-facebook btn-user btn-block">
-                                        <i class="fab fa-facebook-f fa-fw"></i> 
-                                        Login with Facebook
-                                    </a>
-                                </form>
-                                <hr>
-                                <div hx-boost="false"
-                                    hx-trigger="click"
-                                    hx-push-url="true"
-                                    hx-get="/forgot-password/"
-                                    hx-target="body"
-                                    class="text-center small"
-                                    href="" 
-                                    data-translate="Forgot Password?">Forgot Password?
-                                </div>
-                                <div hx-boost="false"
-                                    hx-trigger="click"
-                                    hx-push-url="true"
-                                    hx-get="/register/"
-                                    hx-target="body"
-                                    class="text-center small"
-                                    href="" 
-                                    data-translate="Create an Account!">Create an Account!
-                                </div>
-                              
-                            </div>
-                        </div>
-                    </div>
+<div class="container" data-page-type="login">
+  <!-- Outer Row -->
+  <div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-12 col-md-9">
+      <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+          <!-- Nested Row within Card Body -->
+          <div class="row">
+            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+            <div class="col-lg-6">
+              <div class="p-5">
+                <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                 </div>
+
+                <!-- Formulaire de connexion HTMX -->
+                <form
+                  class="user"
+                  hx-post="/auth/login/"
+                  hx-target="#register-form"
+                  hx-swap="outerHTML"
+                  hx-indicator="#loading-spinner"
+                >
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      class="form-control form-control-user"
+                      id="username"
+                      name="username"
+                      placeholder="Enter Username..."
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="password"
+                      class="form-control form-control-user"
+                      id="password"
+                      name="password"
+                      placeholder="Password"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="submit"
+                      hx-push-url="true"
+                      class="btn btn-primary btn-user btn-block"
+                      value="Login"
+                    />
+                  </div>
+                </form>
+
+                <!-- Zone de feedback pour les erreurs -->
+                <div
+                  id="register-form"
+                  class="text-center text-danger mt-2"
+                ></div>
+
+                <!-- Loading spinner that shows during HTMX requests -->
+                <div
+                  id="loading-spinner"
+                  class="htmx-indicator text-center my-2"
+                >
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+
+                <hr />
+
+                <!-- !  Google button  -->
+                <!-- <a
+                  hx-boost="false"
+                  href="http://localhost:8000/home/"
+                  class="btn btn-google btn-user btn-block"
+                >
+                  <i class="fab fa-google fa-fw"></i>
+                  Login with Google
+                </a> -->
+
+                <!-- !  Facebook button  -->
+                <!-- <a
+                  hx-boost="false"
+                  href="http://localhost:8000/home/"
+                  class="btn btn-facebook btn-user btn-block"
+                >
+                  <i class="fab fa-facebook-f fa-fw"></i>
+                  Login with Facebook
+                </a>
+                <hr /> -->
+                <!-- <div class="text-center">
+                  <a
+                    class="small"
+                    hx-boost="false"
+                    href="http://localhost:8000/forgot-password"
+                  >
+                    Forgot Password?
+                  </a>
+                </div> -->
+                <div
+                  hx-boost="false"
+                  hx-trigger="click"
+                  hx-push-url="true"
+                  hx-get="/register/"
+                  hx-target="body"
+                  class="text-center small"
+                  href=""
+                  data-translate="Create an Account!"
+                >
+                  Create an Account!
+                </div>
+              </div>
             </div>
-
+          </div>
         </div>
-        <script src="https://unpkg.com/htmx.org@1.9.6"></script>
-
+      </div>
     </div>
-
-		<!-- Add this script before the closing </div> of the container -->
-	<script>
-	document.addEventListener('DOMContentLoaded', function() {
-		const loginForm = document.querySelector('form.user');
-		
-		loginForm.addEventListener('submit', async function(e) {
-			e.preventDefault(); // Prevent normal form submission
-			
-			const formData = new FormData(loginForm);
-			
-			try {
-				const response = await fetch('/auth/login/', {
-					method: 'POST',
-					body: formData,
-					credentials: 'include'  // 🔥 Ensure cookies are included in requests!
-				});
-				
-				const data = await response.json();
-				
-				if (data.success) {
-					// Redirect on success
-					window.location.href = data.redirect_to;
-				} else {
-					alert(data.error || 'Login failed');
-				}
-			} catch (error) {
-				console.error('Login error:', error);
-				alert('An error occurred during login. Please try again.');
-			}
-		});
-	});
-	</script>
-
+  </div>
 </div>
+<!-- Add Animate.css for shake animation -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<!-- Load HTMX first -->
+<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+
+<script>
+  document.addEventListener("htmx:beforeSwap", function (evt) {
+    console.log("document.addEventListener working");
+    console.log("LOGIN SCRIPT");
+    if (evt.detail.target.id === "register-form") {
+      try {
+        console.log("Réponse brute:", evt.detail.xhr.responseText);
+        const response = JSON.parse(evt.detail.xhr.responseText);
+
+        if (response.success) {
+          evt.detail.shouldSwap = false;
+
+          htmx
+            .ajax("GET", "/home/", {
+              target: "body",
+              swap: "outerHTML",
+              headers: { "HX-Login-Success": "true" },
+            })
+            .then(function () {
+              history.pushState(null, "", "/home/");
+            });
+        } else if (response.message === "2FA is enabled") {
+          // Store username for 2FA page
+          const usernameInput = document.getElementById("username");
+          if (usernameInput) {
+            const usernameValue = usernameInput.value;
+            console.log("Storing username for 2FA:", usernameValue);
+            sessionStorage.setItem("2fa_username", usernameValue);
+            
+            // Set username as global variable as another backup
+            window.twoFAUsername = usernameValue;
+          } else {
+            console.error("Username input element not found");
+          }
+          
+          // Redirect to 2FA page
+          evt.detail.shouldSwap = false;
+          console.log("Redirecting to 2FA page");
+          
+          // Get username for the URL
+          const username = usernameInput ? usernameInput.value : '';
+          
+          // Include username in the URL to help with page transitions
+          htmx
+            .ajax("GET", `/two-factor-auth/?username=${encodeURIComponent(username)}`, {
+              target: "body",
+              swap: "outerHTML",
+            })
+            .then(function () {
+              console.log("2FA page loaded, pushing history state");
+              history.pushState(null, "", "/two-factor-auth/");
+              
+              // Extra check to set username after page load
+              setTimeout(function() {
+                const usernameField = document.getElementById('username');
+                if (usernameField && window.twoFAUsername) {
+                  usernameField.value = window.twoFAUsername;
+                  console.log("Username set after page load:", usernameField.value);
+                }
+              }, 200);
+            });
+        } else {
+          evt.detail.innerHTML = response.message;
+        }
+      } catch (e) {
+        console.error("Erreur de traitement de la réponse:", e);
+      }
+    }
+  });
+</script>

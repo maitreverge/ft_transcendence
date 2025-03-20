@@ -4,3 +4,5 @@ uvicorn
 channels
 daphne
 whitenoise
+django-cors-headers
+aiohttp

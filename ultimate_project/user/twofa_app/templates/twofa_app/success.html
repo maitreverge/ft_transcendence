@@ -1,0 +1,28 @@
+{% load static %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 data-translate="2FA Action Complete" class="h3 mb-2 text-gray-800">2FA Action Complete</h1>
+    
+    <div class="row">
+        <div class="col-lg-6 mb-4 mx-auto">
+            <div class="card shadow mb-4 border-left-success">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-check-circle fa-4x text-success"></i>
+                    </div>
+                    <h4 class="mb-3">{{ message }}</h4>
+                    
+                    {% if "disabled" in message %}
+                    <p>Two-factor authentication has been disabled for your account.</p>
+                    {% else %}
+                    <p>Your account is now protected with two-factor authentication.</p>
+                    {% endif %}
+                    
+                    <a href="/user/profile/" class="btn btn-primary btn-user mt-3" hx-get="/user/profile/" hx-target="#main_div" hx-headers='{"HX-Request": "true"}'>
+                        Return to Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
