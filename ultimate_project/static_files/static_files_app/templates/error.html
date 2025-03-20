@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link href="https://ft-trans-static-files.github.io/error-static-files/sb-admin-2.min.css" rel="stylesheet">
+    <link href="https://ft-trans-static-files.github.io/error-static-files/sb-admin-2.min.css" 
+    rel="stylesheet">
 </head>
 <body>
     <div class="text-center my-5">
@@ -24,6 +25,7 @@
     </footer>
 </body>
 <script>
+    // this function is part of the history logic
     window.addEventListener("DOMContentLoaded", () => {
         let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
 
@@ -34,15 +36,14 @@
         }
     });
 
+    // this function helps reloading the scripts after browser navigation
     window.addEventListener("popstate", function(event) {
         let lastVisitedPage = sessionStorage.getItem("lastVisitedPage");
 
         if (lastVisitedPage) {
-            // Si l'utilisateur revient en arrière et qu'il y a une URL enregistrée, rediriger vers cette URL
             console.log("Retour à la dernière page visitée : ", lastVisitedPage);
             window.location.href = lastVisitedPage;
         } else {
-            // Si aucune URL n'est trouvée, on laisse l'utilisateur sur la page actuelle (par exemple la page d'erreur)
             console.log("Aucune URL précédente trouvée, l'utilisateur reste sur la page d'erreur.");
         }
     });

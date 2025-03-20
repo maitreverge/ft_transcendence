@@ -64,25 +64,25 @@
 <script src="{% static 'static_files/vendor/chart.js/Chart.min.js' %}"></script>
 <script src="{% static 'static_files/js/demo/chart-area-demo.js' %}"></script>
 <script src="{% static 'static_files/js/demo/chart-pie-demo.js' %}"></script>
-<script>
+<!-- <script>
     window.addEventListener("DOMContentLoaded", () => {
-    let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+        let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
 
-    console.log("Dernière page visitée:", lastVisitedPage);
-    console.log("Page actuelle:", window.location.href);
+        console.log("Dernière page visitée:", lastVisitedPage);
+        console.log("Page actuelle:", window.location.href);
 
-    // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
-    if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
-        console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
-        
-        // Marque que la redirection a eu lieu pour éviter la boucle infinie
-        sessionStorage.setItem("redirected", "true");
+        // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
+        if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
+            console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
+            
+            // Marque que la redirection a eu lieu pour éviter la boucle infinie
+            sessionStorage.setItem("redirected", "true");
 
-        // Redirige vers la dernière page visitée
-        window.location.href = lastVisitedPage;
-    } else {
-        sessionStorage.removeItem("redirected");
-        console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
-    }
-});
-</script>
+            // Redirige vers la dernière page visitée
+            window.location.href = lastVisitedPage;
+        } else {
+            sessionStorage.removeItem("redirected");
+            console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+        }
+    });
+</script> -->

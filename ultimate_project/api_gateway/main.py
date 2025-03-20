@@ -221,7 +221,7 @@ async def tournament_proxy(path: str, request: Request):
     )
     print(path + str(user_id) + "/")
 
-    if "HX-Request" in request.headers:
+    if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:
         return await proxy_request(
             "tournament", "tournament/" + path + str(user_id) + "/", request
         )
@@ -252,7 +252,7 @@ async def user_proxy(path: str, request: Request):
       - Returns the content from the user microservice.
       - If `path` is "profile/" or "stats/", returns specific content.
     """
-    if "HX-Request" in request.headers:
+    if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:
         return await proxy_request("user", "user/" + path, request)
     elif path == "profile/":
         return await proxy_request("static_files", "/user-profile-wrapper/", request)

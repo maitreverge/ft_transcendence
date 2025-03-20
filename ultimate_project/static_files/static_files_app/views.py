@@ -58,8 +58,9 @@ def profile(request):
     username = request.headers.get("X-Username") or request.session.get("username")
 
     if request.headers.get("HX-Request"):
+        print("********************\nHTMX REQUEST\n********************", flush=True)
         return render(request, "partials/profile.html", {"username": username})
-
+    print("********************\nNORMAL REQUEST\n********************", flush=True)
     obj = {"username": username, "page": "partials/profile.html"}
     return render(request, "index.html", obj)
 
@@ -70,8 +71,10 @@ def stats(request):
     username = request.headers.get("X-Username") or request.session.get("username")
 
     if request.headers.get("HX-Request"):
+        print("********************\nHTMX REQUEST\n********************", flush=True)
         return render(request, "partials/stats.html", {"username": username})
 
+    print("********************\nNORMAL REQUEST\n********************", flush=True)
     obj = {"username": username, "page": "partials/stats.html"}
     return render(request, "index.html", obj)
 
@@ -126,6 +129,7 @@ def user_profile_template(request):
 
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")
+    print("********************\TEMPLATE REQUEST\n********************", flush=True)
 
     return render(
         request,
@@ -143,6 +147,7 @@ def user_profile_template(request):
 @never_cache
 def user_stats_template(request):
     page_html = requests.get("http://user:8004/user/stats/").text
+    print("********************\TEMPLATE REQUEST\n********************", flush=True)
 
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")
