@@ -69,7 +69,6 @@ def run(playwright: Playwright) -> None:
             f"{base_url}/tournament/tournament/"
             ]     
 
-
     for url in urls:
         test_page(url)
     
@@ -135,6 +134,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#field-stats").click()
     expect(page).to_have_url(f"{base_url}/user/stats/")
 
+    # test 404
     
 
     # Fermeture
