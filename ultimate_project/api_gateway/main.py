@@ -218,7 +218,7 @@ async def tournament_proxy(path: str, request: Request):
     )
     print(path + str(user_id) + "/")
 
-    if "HX-Request" in request.headers:
+    if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:
         return await proxy_request(
             "tournament", "tournament/" + path + str(user_id) + "/", request
         )
