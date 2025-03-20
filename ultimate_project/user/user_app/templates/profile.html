@@ -25,13 +25,43 @@
                 <img
                   class="img-fluid px-3 px-sm-4 mt-3 mb-4"
                   style="width: 25rem"
-                  src="{% static 'static_files/img/undraw_posting_photo.svg' %}"
-                  alt="..."
+                  src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'static_files/img/undraw_posting_photo.svg' %}{% endif %}"
+                  alt="Profile picture"
                 />
               </div>
+              <!-- <form method="post" enctype="multipart/form-data" action="user/upload-avatar/"> -->
+				<form
+                  class="user"
+                  hx-post="/user/upload-avatar/"
+                  hx-target="#upload-avatar-form"
+                  hx-swap="outerHTML"
+                  hx-indicator="#loading-spinner"
+                >
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="profile_picture" name="profile_picture" accept="image/*">
+                    <label class="custom-file-label" for="profile_picture" data-translate="Choose file">Choose file</label>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit" data-translate="Upload">Upload</button>
+                  </div>
+                </div>
+              </form>
               <p data-translate="Add your picture here">
                 Add your picture here
               </p>
+              
+              <script>
+                // Update the filename display when a file is selected
+                document.getElementById('profile_picture').addEventListener('change', function(e) {
+                  // Get the file name
+                  var fileName = e.target.files[0] ? e.target.files[0].name : "Choose file";
+                  // Update the label
+                  var label = document.querySelector('.custom-file-label');
+                  label.textContent = fileName;
+                });
+              </script>
             </div>
           </div>
         </div>
