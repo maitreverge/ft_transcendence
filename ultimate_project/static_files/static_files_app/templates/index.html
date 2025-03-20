@@ -2,7 +2,6 @@
 <html>
 
     {% include "partials/head.html" %}
-    
     <body   id="page-top" 
             hx-boost="true" 
             @popstate.window="navigate(window.location.pathname, false)
@@ -42,6 +41,7 @@
                         {% include "partials/home.html" %}
                         {% endif %}
                         
+                        <script src="{% static 'static_files/js/sb-admin-2.min.js' %}"></script>
                     </div> <!-- template suff - DO NOT TOUCH -->
                 
                     {% include "partials/footer.html" %}
@@ -50,9 +50,9 @@
                     {% endif %}
                 
                 </div> <!-- template suff - DO NOT TOUCH -->
-
-                    <!-- include scripts at the end! -->
-                    {% include "partials/scripts.html" %}
+    
+                <!-- include scripts at the end! -->
+                
 
             </div>
         </div>
