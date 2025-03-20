@@ -61,6 +61,13 @@ def run(playwright: Playwright) -> None:
             visited_urls.append(url)  # Enregistre l'URL après chaque navigation
         test_js()
 
+    def test_single_page(url: str):
+        navigate(f"{base_url}/user/profile/")
+        navigate(f"{base_url}{url}")
+        page.evaluate("window.history.back()")
+        page.wait_for_timeout(500)  # Laisse un peu de temps pour le back
+        test_page(page.url) 
+
     urls = [ 
             f"{base_url}/home/", 
             f"{base_url}/user/profile/", 
@@ -88,54 +95,45 @@ def run(playwright: Playwright) -> None:
                 
 
     # Vérification de la navigation via le sidebar menu
+    def test_navigation(locator, expected_url):
+        locator.click()
+        expect(page).to_have_url(expected_url)
+
+    # Liste des tests à effectuer
+    navigation_tests = [
+        ("#nav-tournoi", f"{base_url}/tournament/tournament/"),
+        ("#nav-profile", f"{base_url}/user/profile/"),
+        ("#nav-stats", f"{base_url}/user/stats/"),
+        ("#nav-match", f"{base_url}/tournament/simple-match/"),
+        ("#side-tournoi", f"{base_url}/tournament/tournament/"),
+        ("#side-profile", f"{base_url}/user/profile/"),
+        ("#side-stats", f"{base_url}/user/stats/"),
+        ("#side-match", f"{base_url}/tournament/simple-match/"),
+        ("#field-tournoi", f"{base_url}/tournament/tournament/"),
+        ("#field-match", f"{base_url}/tournament/simple-match/"),
+        ("#field-profile", f"{base_url}/user/profile/"),
+        ("#field-stats", f"{base_url}/user/stats/"),
+    ]
+
+    # Vérification de la navigation via le menu topbar
     navigate(f"{base_url}/home/")
+    for locator, expected_url in navigation_tests[:4]:  # Pour les éléments du menu topbar
+        test_navigation(page.locator(locator), expected_url)
 
-    page.locator("#nav-tournoi").click()
-    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
+    # Vérification de la navigation via le menu latéral
+    for locator, expected_url in navigation_tests[4:8]:  # Pour les éléments du menu latéral
+        test_navigation(page.locator(locator), expected_url)
 
-    page.locator("#nav-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    page.locator("#nav-stats").click()
-    expect(page).to_have_url(f"{base_url}/user/stats/")
-
-    page.locator("#nav-match").click()
-    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
-
-    # Vérification de la navigation via le topbar menu
-
-    page.locator("#side-tournoi").click()
-    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
-
-    page.locator("#side-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    page.locator("#side-stats").click()
-    expect(page).to_have_url(f"{base_url}/user/stats/")
-
-    page.locator("#side-match").click()
-    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
-
-    # Vérification des boutons sur la page home
-
-    navigate(f"{base_url}/home/")
-    page.locator("#field-tournoi").click()
-    expect(page).to_have_url(f"{base_url}/tournament/tournament/")
-
-    navigate(f"{base_url}/home/")
-    page.locator("#field-match").click()
-    expect(page).to_have_url(f"{base_url}/tournament/simple-match/")
-
-    navigate(f"{base_url}/home/")
-    page.locator("#field-profile").click()
-    expect(page).to_have_url(f"{base_url}/user/profile/")
-
-    navigate(f"{base_url}/home/")
-    page.locator("#field-stats").click()
-    expect(page).to_have_url(f"{base_url}/user/stats/")
-
+    # Vérification de la navigation via les boutons sur la page home
+    for locator, expected_url in navigation_tests[8:]:  # Pour les éléments de la page home
+        navigate(f"{base_url}/home/")
+        test_navigation(page.locator(locator), expected_url)
     # test 404
-    
+
+    test_single_page("/home/sylvain_duriff/");
+    test_single_page("/register/")
+
+
 
     # Fermeture
     context.close()
