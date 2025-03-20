@@ -124,7 +124,7 @@
     console.log("LOGIN SCRIPT");
     if (evt.detail.target.id === "register-form") {
       try {
-        console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+        console.log("Réponse brute:", evt.detail.xhr.responseText);
         const response = JSON.parse(evt.detail.xhr.responseText);
 
         if (response.success) {
@@ -140,7 +140,7 @@
               history.pushState(null, "", "/home/");
             });
         } else {
-          evt.detail.innerHTML = response.message; // Afficher erreur de connexion
+          evt.detail.innerHTML = response.message;
         }
       } catch (e) {
         console.error("Erreur de traitement de la réponse:", e);
