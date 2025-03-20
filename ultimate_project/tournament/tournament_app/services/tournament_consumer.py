@@ -16,10 +16,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.send(text_data=json.dumps({
 			"type": "selfAssign", "selfId": self.id})) 
 		await self.send_all("player", players)
-		await self.send_tournaments()
+		await TournamentConsumer.send_tournaments()
 
 	async def disconnect(self, close_code):
-		self.remove_player_in_tournaments()
+		await self.remove_player_in_tournaments()
 		players[:] = [p for p  in players if p.id != self.id]
 		await self.send_all("player", players)
 
@@ -31,8 +31,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	# 				{"playerId": p.id} for p in players
 	# 			]
 	# 		}))
-
-	async def send_tournaments(self):	
+	@staticmethod
+	async def send_tournaments():	
 		print(f"SEND TOURNAMENT", flush=True)	
 		for player in players:
 			await player.send(text_data=json.dumps({
@@ -70,12 +70,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 	async def new_tournament(self):	
 		tournaments.append(Tournament(self.id))
-		await self.send_tournaments()
+		await TournamentConsumer.send_tournaments()
 
-	def remove_player_in_tournaments(self):
+	async def remove_player_in_tournaments(self):
 		for tournament in tournaments:
 			if self in tournament.players:
-				tournament.remove_player(self)
+				# print(f"CLOSE MATCH", flush=True)
+				# await self.send(text_data=json.dumps({"type": "closeMatch"}))
+				await tournament.remove_player(self)
 
 	async def enter_tournament(self, tournament_id):
 
@@ -92,13 +94,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		tournament = next(
 			(t for t in tournaments if t.id == tournament_id), None)		
 		if tournament and self not in tournament.players:
-			self.remove_player_in_tournaments()
+			await self.remove_player_in_tournaments()
 			await tournament.append_player(self)
-		await self.send_tournaments()	
-			
+		await TournamentConsumer.send_tournaments()	
+
+
 	async def quit_tournament(self):
-		self.remove_player_in_tournaments()			
-		await self.send_tournaments()
+		await self.remove_player_in_tournaments()			
+		await TournamentConsumer.send_tournaments()
 
 	@staticmethod
 	async def send_matchs_players_update():

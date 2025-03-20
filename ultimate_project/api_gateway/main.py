@@ -279,8 +279,7 @@ async def stop_match_proxy(path: str, request: Request):
     """
     return await proxy_request("match", "/match/stop-match/" + path, request)
 
-
-@app.api_route("/match/{path:path}", methods=["GET"])
+@app.api_route("/match/match3d/{path:path}", methods=["GET"])
 async def match_proxy(
     path: str,
     request: Request,
@@ -299,7 +298,33 @@ async def match_proxy(
       - Returns the content from the match microservice.
     """
     path = (
-        f"match/?matchId={matchId}&playerId={playerId}"
+        f"match/match3d/?matchId={matchId}&playerId={playerId}"
+        if matchId is not None and playerId is not None
+        else "match/"
+    )
+
+    return await proxy_request("match", path, request)
+
+@app.api_route("/match/match2d/{path:path}", methods=["GET"])
+async def match_proxy(
+    path: str,
+    request: Request,
+    matchId: int = Query(None),
+    playerId: int = Query(None),
+):
+    """
+    Proxy requests to the match microservice.
+
+    - **path**: The path to the resource in the match service.
+    - **request**: The incoming request object.
+    - **Query Parameters**:
+      - `matchId`: The match identifier (optional).
+      - `playerId`: The player identifier (optional).
+    - **Responses**:
+      - Returns the content from the match microservice.
+    """
+    path = (
+        f"match/match2d/?matchId={matchId}&playerId={playerId}"
         if matchId is not None and playerId is not None
         else "match/"
     )

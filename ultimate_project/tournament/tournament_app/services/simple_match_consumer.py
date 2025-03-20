@@ -62,6 +62,13 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			
 	async def invitation(self, selectedId):
 
+		if selectedId == self.id:
+			match_id = await self.start_match(-selectedId)
+			print(f"iwille send confiration back to {self.id} from {selectedId}", flush=True)
+			await self.send_confirmation_back(
+			True, selectedId, selectedId, match_id, self)
+			await SimpleConsumer.match_update()
+			return
 		selectedPlayer = next(
 			(p for p in players if p['playerId'] == selectedId), None)
 		selfSelectedPlayer = next(

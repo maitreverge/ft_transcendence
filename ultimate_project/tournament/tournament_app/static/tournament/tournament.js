@@ -41,6 +41,7 @@ function onTournamentMessage(event, socket) {
 			break;
 		case "tournamentList":
 			console.log("case tournamentlist");
+			updatePlayers(socket, window.playersList);
 			window.tournamentList = data.tournaments; 
 			updateTournaments(socket, data.tournaments);
 			break;
@@ -58,6 +59,14 @@ function onTournamentMessage(event, socket) {
 			updateTournamentsPlayers(window.tournamentList);
 			updateMatchsPlayers(data.pack);			
 			break;
+		// case "closeMatch":
+		// 	console.log("case closematch");
+		// 	if (window.matchSocket && window.matchSocket.readyState === WebSocket.OPEN)
+		// 	{					
+		// 		window.stopFlag = true
+		// 		window.matchSocket.close(3666);
+		// 	}
+		// 	break;
 		default:				
 			break;
 	}
@@ -118,6 +127,8 @@ function create_player_element(socket, playerId) {
 
 function quitTournament(socket) {
 	
+	console.log("QUIT TOURNAMENT");
+
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "quitTournament"						
@@ -156,6 +167,11 @@ function updateTournaments(socket, tournamentsUp) {
 	});
 	tournamentEls.slice().reverse().forEach(tourEl => {
 		if (tournamentsUp.every(el => el.tournamentId != tourEl.id)) {
+			if (tourEl.id == window.actualScriptTid)
+			{
+				const oldScripts = document.querySelectorAll("script.match-script");			
+				oldScripts.forEach(oldScript => oldScript.remove());
+			}
 			tournamentsCont.removeChild(tourEl);		
 		}
 	});
@@ -266,6 +282,12 @@ function newTournament(socket) {
 }
 
 function enterTournament(socket, tournamentId) {
+	const scripts = Array.from(document.getElementsByTagName("script"));
+    
+	if (scripts.some(script => script.className === "match-script")) {
+		console.log("DEJA SCRIPT");
+		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
+	};
 	console.log("entertournement: ", tournamentId);
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
@@ -277,7 +299,7 @@ function enterTournament(socket, tournamentId) {
 function linkMatch(lk) {
 
 	console.log("LINK MATCH ", lk);
-
+	const dim = document.getElementById("dim");
 	const tournament = document.getElementById("tournaments").querySelector(
 		`[id='${lk.tournamentId}']`
 	);
@@ -300,14 +322,33 @@ function linkMatch(lk) {
 	}
 	else
 		localMatch.classList.add("spec-match");
+
 	localMatch.onclick = function() {
-		fetch(`/match/?matchId=${lk.matchId}&playerId=${window.selfId}`)
+		const scripts = Array.from(document.getElementsByTagName("script"));
+		
+		if (scripts.some(script => script.className === "match-script")) {
+			console.log("DEJA SCRIPT");
+			return; // Ne pas exécuter fetch si un script "match-script" existe déjà
+		};
+		if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+		{
+			window.selfMatchId = lk.matchId;
+			// localMatch.classList.add("next-match");
+		}
+		fetch(
+			`/match/match${dim.value}d/` +
+			`?matchId=${lk.matchId}&playerId=${window.selfId}`)
 		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
 			return response.text();
 		})
-		.then(data => loadHtml(data, overlay))
+		.then(data => {
+			const oldScripts = document.querySelectorAll("script.match-script");			
+			oldScripts.forEach(oldScript => oldScript.remove());
+			window.actualScriptTid = lk.tournamentId;
+			loadHtml(data, overlay);
+		})
 		.catch(error => console.log(error))
 	};
 }
@@ -331,8 +372,8 @@ function loadHtml(data, overlay) {
 			newScript.textContent = script.textContent;		
 		document.body.appendChild(newScript); 
 	}
-	const oldScripts = document.querySelectorAll("script.pattern-script");			
-	oldScripts.forEach(oldScript => oldScript.remove());	
+	// const oldScripts = document.querySelectorAll("script.match-script");			
+	// oldScripts.forEach(oldScript => oldScript.remove());	
 }
 
 function matchResult(rsl) {

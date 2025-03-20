@@ -20,12 +20,17 @@ class Pong:
 		self.id = Pong.id
 		self.idP1 = idP1
 		self.idP2 = idP2
-		self.yp1 = 0
-		self.yp2 = 0
+		self.pad_height = 40
+		self.yp1 = self.pad_height / 2
+		self.yp2 = self.pad_height / 2
+		self.pad_width = 10
 		self.winner = None
 		self.max_delay = 900
 		self.send_task = None
 		self.watch_task = None
+		self.ball = [50, 90]
+		self.vect = [2, 2]
+		self.score = [0, 0]
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -130,21 +135,81 @@ class Pong:
 				(p for p in self.myplayers if self.idP2 == p["playerId"]), None)
 
 			if None not in (self.player1, self.player2):
+			
 				self.winner = None
 				self.start_flag = True
 				self.state = State.running
 				if self.player1.get("dir") is not None :
 					if self.player1["dir"] == 'up':
-						self.yp1 -= 1
+						if self.yp1 >= (self.pad_height / 2) + 2:
+							self.yp1 -= 2
 					elif self.player1["dir"] == 'down':
-						self.yp1 += 1
+						if self.yp1 <= 100 - (self.pad_height / 2) - 2:
+							self.yp1 += 2
 					self.player1["dir"] = None
 				if  self.player2.get("dir") is not None :
 					if self.player2["dir"] == 'up':
-						self.yp2 -= 1
+						if self.yp2 >= (self.pad_height / 2) + 2:							
+							self.yp2 -= 2
 					elif self.player2["dir"] == 'down':
-						self.yp2 += 1
+						if self.yp2 <= 100 - (self.pad_height / 2) - 2:
+							self.yp2 += 2
 					self.player2["dir"] = None
+
+				self.ball[0] += self.vect[0]				
+				self.ball[1] += self.vect[1]
+			
+				# if self.ball[0] >= 100:
+				# 	self.vect[0] = -self.vect[0]
+				# if self.ball[0] == 0 :
+				# 	self.vect[0] = -self.vect[0]
+
+# bord haut et bas
+				if self.ball[1] >= 100:
+					self.vect[1] = -self.vect[1]
+				if self.ball[1] <= 0 :
+					self.vect[1] = -self.vect[1]
+				if self.ball[1] > 100:
+					self.ball[1] = 99
+				if self.ball[1] < 0:
+					self.ball[1] = 1
+
+# bord droit et gauche
+				if self.ball[0] >= 100:
+					self.score[1] += 1
+					self.ball = [50, 50]
+					self.vect = [2, 2]
+				if self.ball[0] <= 0:
+					self.score[0] += 1
+					self.ball = [50, 50]
+					self.vect = [2, 2]
+
+				# if self.ball[0] == 1 and self.ball[1] >= self.yp1 and self.ball[1] <= self.yp1 + 10 \
+				# 	or self.ball[0] == 89 and self.ball[1] == self.yp2:
+				# 		self.vect[0] = -self.vect[0]
+				
+				# if self.ball[0] == 1 and self.yp1 <= self.ball[1] <= self.yp1 + 10 \
+				# or self.ball[0] == 89 and self.yp2 <= self.ball[1] <= self.yp2 + 10:
+				# 	self.vect[0] = -self.vect[0]
+				
+				if self.ball[0] == (21 - self.pad_width / 2) and (self.yp1 - (self.pad_height / 2) <= self.ball[1] <= self.yp1 + (self.pad_height / 2)):
+					self.vect[0] = -self.vect[0]
+					y = (self.ball[1] - self.yp1) / 20
+					print(f"Y: {y}", flush=True)
+		
+					print(f"Y 222: {y}", flush=True)
+					print(f"VECT: {self.vect[1]}", flush=True)
+					self.vect[1] = y
+					print(f"VECT222: {self.vect[1]}", flush=True)
+				if self.ball[0] == (79 - self.pad_width / 2) and (self.yp2 - (self.pad_height / 2) <= self.ball[1] <= self.yp2 + (self.pad_height / 2)):
+					self.vect[0] = -self.vect[0]
+					y = (self.ball[1] - self.yp2) / 20
+					print(f"Y: {y}", flush=True)
+		
+					print(f"Y 222: {y}", flush=True)
+					print(f"VECT: {self.vect[1]}", flush=True)
+					self.vect[1] = y
+					print(f"VECT222: {self.vect[1]}", flush=True)
 			else:
 				if self.start_flag:
 					if self.player1:
@@ -154,24 +219,30 @@ class Pong:
 				self.state = State.waiting
 				# print(f"je suis en waiting", flush=True)
 
-			if self.yp1 > 80:
+			
 				# self.sendTask.cancel()
 				# try:
 				# 	await self.sendTask  # Attendre que l'annulation soit complète
 				# except asyncio.CancelledError:
 				# 	print("Tâche annulée avec succès")		
+				
+			if 10 == self.score[0]:
 				self.winner = self.idP1
 				self.state = State.end
 				await self.sendFinalState()
-			elif self.yp2 > 80:
+			if 10 == self.score[1]:
+				self.winner = self.idP2
+				self.state = State.end
+				await self.sendFinalState()
 				# self.sendTask.cancel()
 				# try:
 				# 	await self.sendTask  # Attendre que l'annulation soit complète
 				# except asyncio.CancelledError:
 				# 	print("Tâche annulée avec succès")
-				self.winner = self.idP2
-				self.state = State.end
-				await self.sendFinalState()	
+				# self.winner = self.idP2
+				# self.state = State.end
+				# await self.sendFinalState()	
+
 			# print(f"ACTUAL WINNER:{self.winner}", flush=True)
 			await asyncio.sleep(0.05)
 		# self.stop_tasks()
@@ -206,7 +277,9 @@ class Pong:
 						await p["socket"].send(text_data=json.dumps({
 							"state": state.name,
 							"yp1": self.yp1,
-							"yp2": self.yp2
+							"yp2": self.yp2,
+							"ball": self.ball,
+							"score": self.score
 						}))                  
 					except Exception as e:
 						pass				
@@ -219,7 +292,8 @@ class Pong:
 			try:					
 				await p["socket"].send(text_data=json.dumps({
 				"state": self.state.name,
-				"winnerId": self.winner
+				"winnerId": self.winner,
+				"score": self.score
 				}))
 			except Exception as e:
 				pass		
@@ -232,7 +306,8 @@ class Pong:
 				"looserId": self.idP1 if self.winner == self.idP2
 					else self.idP2,
 				"p1Id": self.idP1,
-				"p2Id": self.idP2
+				"p2Id": self.idP2,
+				"score": self.score
 			}) as response:
 				if response.status != 200 and response.status != 201:
 					err = await response.text()

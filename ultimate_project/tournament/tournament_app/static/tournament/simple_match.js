@@ -72,6 +72,8 @@ function receiveInvitation(socket, applicantId) {
 
 function loadHtml(data, target) {
 
+	const oldScripts = document.querySelectorAll("script.match-script");			
+	oldScripts.forEach(oldScript => oldScript.remove());	
 	const overlay = document.getElementById(target);
 	overlay.innerHTML = data;
 	const scripts = overlay.getElementsByTagName("script");
@@ -88,20 +90,21 @@ function loadHtml(data, target) {
 		newScript.textContent = script.textContent;		
 		document.body.appendChild(newScript); 
 	}
-	const oldScripts = document.querySelectorAll("script.match-script");			
-	oldScripts.forEach(oldScript => oldScript.remove());	
 }
 
 function setSelfMatchId() {
 
 	const matchsContainer = document.getElementById("matchs");
 	const matchElements = [...matchsContainer.children];
-		
+	const dim = document.getElementById("dim");
+
     matchElements.forEach(match => {		
 		if (match.id == window.selfMatchId)
 			match.classList.add("self-match");					
-		match.onclick = function() {
-			fetch(`/match/?matchId=${match.id}&playerId=${window.selfId}`)
+        match.onclick = function() {
+			fetch(
+				`/match/match${dim.value}d/` +
+				`?matchId=${match.id}&playerId=${window.selfId}`)
 			.then(response => {
 				if (!response.ok) 
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
@@ -264,6 +267,11 @@ function sendPlayerClick(socket, event, selected)
 		}));
 }
 
+function selfInvitation(event, socket)
+{
+	event.stopPropagation();
+}
+
 function addPlayerToContainer(socket, container, playerId) {
 
 	const div = document.createElement("div");
@@ -271,15 +279,15 @@ function addPlayerToContainer(socket, container, playerId) {
 	div.textContent = `user: ${playerId}`;
 	div.id = playerId;	
 	if (playerId === window.selfId)
-	{
 		div.classList.add("self-player");
-		div.onclick = event => {
-			event.stopPropagation();
-			alert("you can't choose yourself");
-		}		
-	}
-	else	
-		div.onclick = event =>	sendPlayerClick(socket, event, div);	
+	// 	div.onclick = event => {
+	// 		selfInvitation(event, socket)
+	// 		event.stopPropagation();
+	// 		alert("you can't choose yourself");
+	// 	}		
+	// }
+	// else	
+	div.onclick = event => sendPlayerClick(socket, event, div);	
     container.appendChild(div);
 }
 
