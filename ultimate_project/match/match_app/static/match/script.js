@@ -191,7 +191,8 @@ function setCommands2(socket) {
 }
 
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
-		
+	
+	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);
 	if (data.state == "end")
@@ -210,14 +211,22 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 				waiting.classList.add("no-waiting");			
 		}			
 	}
+	match = document.getElementById("match");
+	const rect = match.getBoundingClientRect();
+	// console.log(" w ", rect.width, " h ", rect.height);
 	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
 	{
 		pads[0].style.top = data.yp1 + "%";
 		pads[1].style.top = data.yp2 + "%";
-		pads[2].style.left = data.ball[0] + "%";
-		pads[2].style.top = data.ball[1] + "%";
+		// pads[2].style.left = data.ball[0] + "%";
+		// pads[2].style.top = data.ball[1] + "%";
+		// pads[0].style.transform = `translateY(${data.yp1}%)`;
+		// pads[1].style.transform = `translateY(${data.yp2}%)`;
+		pads[2].style.transform = `translate(${data.ball[0] * (rect.width / 100)}%, ${data.ball[1] * (rect.height / 100)}%)`;
 		pads[3].innerText = data.score[0] + " | " + data.score[1];
 	}
+	// });
+		
 }
 
 // function onMatchWsMessage2(event, pads, [waiting, end], waitingState) {

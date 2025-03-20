@@ -5,6 +5,7 @@ import asyncio
 import json
 import aiohttp
 from enum import Enum
+import math
 
 class State(Enum):
 	waiting = "waiting"
@@ -29,7 +30,7 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [50, 90]
-		self.vect = [2, 2]
+		self.vect = [1 / math.sqrt(2), 1 / math.sqrt(2)]
 		self.score = [0, 0]
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
@@ -178,11 +179,11 @@ class Pong:
 				if self.ball[0] >= 100:
 					self.score[1] += 1
 					self.ball = [50, 50]
-					self.vect = [2, 2]
+					self.vect = [1 / math.sqrt(2), 1 / math.sqrt(2)]
 				if self.ball[0] <= 0:
 					self.score[0] += 1
 					self.ball = [50, 50]
-					self.vect = [2, 2]
+					self.vect = [1 / math.sqrt(2), 1 / math.sqrt(2)]
 
 				# if self.ball[0] == 1 and self.ball[1] >= self.yp1 and self.ball[1] <= self.yp1 + 10 \
 				# 	or self.ball[0] == 89 and self.ball[1] == self.yp2:
@@ -192,24 +193,47 @@ class Pong:
 				# or self.ball[0] == 89 and self.yp2 <= self.ball[1] <= self.yp2 + 10:
 				# 	self.vect[0] = -self.vect[0]
 				
-				if self.ball[0] == (21 - self.pad_width / 2) and (self.yp1 - (self.pad_height / 2) <= self.ball[1] <= self.yp1 + (self.pad_height / 2)):
-					self.vect[0] = -self.vect[0]
-					y = (self.ball[1] - self.yp1) / 20
+				if ((21 - self.pad_width / 2 - 0.5) <= self.ball[0] <= (21 - self.pad_width / 2 + 0.5)) and \
+					(self.yp1 - (self.pad_height / 2) <= self.ball[1] <= self.yp1 + (self.pad_height / 2)):
+					# self.vect[0] = -self.vect[0]
+					# y = (self.ball[1] - self.yp1) / 20
+					print(f"selfY 222: {self.vect[1]}", flush=True)
+					print(f"selfX 222: {self.vect[0]}", flush=True)
+					tmp = self.vect[0]
+					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
+					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+					x = math.sqrt(x)
+					if tmp > 0:
+						x = -x
+					print(f"Y 222: {y}", flush=True)
+					print(f"X 222: {x}", flush=True)
+					# print(f"Y 222: {y}", flush=True)
+					# print(f"VECT: {self.vect[1]}", flush=True)
+					self.vect[0] = x
+					self.vect[1] = y
+					# print(f"VECT222: {self.vect[1]}", flush=True)
+				if  ((79 - self.pad_width / 2 - 0.5) <= self.ball[0] <= (79 - self.pad_width / 2 + 0.5)) and \
+						(self.yp2 - (self.pad_height / 2) <= self.ball[1] <= self.yp2 + (self.pad_height / 2)):
+					print(f"selfY 222: {self.vect[1]}", flush=True)
+					print(f"selfX 222: {self.vect[0]}", flush=True)
+					# self.vect[0] = -self.vect[0]
+					tmp = self.vect[0]
+					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
+					
 					print(f"Y: {y}", flush=True)
+					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+					x = math.sqrt(x)
+					if tmp > 0:
+						x = -x
+					# else
+					# 	x = -x
 		
 					print(f"Y 222: {y}", flush=True)
-					print(f"VECT: {self.vect[1]}", flush=True)
+					print(f"X 222: {x}", flush=True)
+					# print(f"VECT: {self.vect[1]}", flush=True)
+					self.vect[0] = x
 					self.vect[1] = y
-					print(f"VECT222: {self.vect[1]}", flush=True)
-				if self.ball[0] == (79 - self.pad_width / 2) and (self.yp2 - (self.pad_height / 2) <= self.ball[1] <= self.yp2 + (self.pad_height / 2)):
-					self.vect[0] = -self.vect[0]
-					y = (self.ball[1] - self.yp2) / 20
-					print(f"Y: {y}", flush=True)
-		
-					print(f"Y 222: {y}", flush=True)
-					print(f"VECT: {self.vect[1]}", flush=True)
-					self.vect[1] = y
-					print(f"VECT222: {self.vect[1]}", flush=True)
+					# print(f"VECT222: {self.vect[1]}", flush=True)
 			else:
 				if self.start_flag:
 					if self.player1:
