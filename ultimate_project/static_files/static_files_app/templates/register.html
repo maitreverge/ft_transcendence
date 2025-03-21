@@ -134,6 +134,12 @@
               </div>
               <hr />
 
+			<!-- Zone de feedback pour les erreurs -->
+			<div
+			id="feedback-errors"
+			class="text-center text-danger mt-2"
+		></div>
+
               <!-- !  Google button  -->
               <!-- <a
                 hx-boost="false"
@@ -338,7 +344,9 @@
 				  history.pushState(null, "", "/home/");
 				});
 			} else {
-			  evt.detail.innerHTML = response.message; // Afficher erreur de connexion
+			document.getElementById("feedback-errors").innerHTML = response.message;
+			  // Afficher erreur de connexion
+
 			}
 		  } catch (e) {
 			console.error("Erreur de traitement de la réponse:", e);

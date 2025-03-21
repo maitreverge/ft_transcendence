@@ -487,35 +487,12 @@ async def register_fastAPI(
 
     # Regex patterns for input validation
     name_pattern = r'^[a-zA-ZÀ-ÿ0-9-]+(?!--)$'
-    username_pattern = r'^[a-zA-Z0-9_-]+(?!--)$'
-    password_pattern = r'^[a-zA-Z0-9_-?!$€%&*()]+(?!--)$'
-
-    # Validate username
-    if not re.match(name_pattern, username):
-        return JSONResponse(
-            content={
-                "success": False,
-                "message": "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
-            },
-            status_code=400,
-        )
-
-    # Validate password 
-    if not re.match(name_pattern, password):
-        return JSONResponse(
-            content={
-                "success": False,
-                "message": "Le mot de passe ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
-            },
-            status_code=400,
-        )
-
     # Validate first name
     if not re.match(name_pattern, first_name):
         return JSONResponse(
             content={
                 "success": False,
-                "message": "Le prénom ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
+                "message": "Forbidden characters in first name. Allowed characters: a-z, A-Z, 0-9, -, _",
             },
             status_code=400,
         )
@@ -525,10 +502,33 @@ async def register_fastAPI(
         return JSONResponse(
             content={
                 "success": False,
-                "message": "Le nom ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
+                "message": "Forbidden characters in last name. Allowed characters: a-z, A-Z, 0-9, -, _",
             },
             status_code=400,
         )
+
+    username_pattern = r'^[a-zA-Z0-9_-]+(?!--)$'
+    # Validate username
+    if not re.match(username_pattern, username):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Forbidden characters in username. Allowed characters: a-z, A-Z, 0-9, -, _",
+            },
+            status_code=400,
+        )
+
+    password_pattern = r'^[a-zA-Z0-9_-?!$€%&*()]+(?!--)$'
+    # Validate password 
+    if not re.match(password_pattern, password):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Forbidden characters in password. Allowed characters: a-z, A-Z, 0-9, -, _, !, ?, $, €, %, &, *, (, )",
+            },
+            status_code=400,
+        )
+
 
     # Check if username already exists first (industry standard to check one field at a time)
     try:
