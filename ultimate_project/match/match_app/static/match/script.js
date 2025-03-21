@@ -189,6 +189,46 @@ function setCommands2(socket) {
 		} 
 	});
 }
+let currentX = 0, currentY = 0;
+let targetX = 0, targetY = 0;
+
+let actualPads = [0, 0]
+let targetPads = [0, 0]
+const speed = 0.3; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+
+function animate(pads) {
+    currentX += (targetX - currentX) * speed;
+    currentY += (targetY - currentY) * speed;
+
+	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
+	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
+	// console.log("ANIMATION");
+    pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
+	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
+	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
+	// pads[2].style.left = currentX + "%";
+	// pads[2].style.top = currentY + "%";
+    requestAnimationFrame(()=>animate(pads));
+}
+
+// Appelle animate une seule fois au début
+
+
+// À chaque message WebSocket :
+// function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
+//     const data = JSON.parse(event.data);
+//     const matchRect = document.getElementById("match").getBoundingClientRect();
+
+//     if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined) {
+//         pads[0].style.top = data.yp1 + "%";
+//         pads[1].style.top = data.yp2 + "%";
+        
+//         targetX = data.ball[0] * (matchRect.width / 100);
+//         targetY = data.ball[1] * (matchRect.height / 100);
+
+//         pads[3].innerText = data.score[0] + " | " + data.score[1];
+//     }
+// }
 
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	
@@ -212,19 +252,35 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 		}			
 	}
 	match = document.getElementById("match");
-	const rect = match.getBoundingClientRect();
+	const matchRect = match.getBoundingClientRect();
 	// console.log(" w ", rect.width, " h ", rect.height);
-	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
-	{
-		pads[0].style.top = data.yp1 + "%";
-		pads[1].style.top = data.yp2 + "%";
-		// pads[2].style.left = data.ball[0] + "%";
-		// pads[2].style.top = data.ball[1] + "%";
-		// pads[0].style.transform = `translateY(${data.yp1}%)`;
-		// pads[1].style.transform = `translateY(${data.yp2}%)`;
-		pads[2].style.transform = `translate(${data.ball[0] * (rect.width / 100)}%, ${data.ball[1] * (rect.height / 100)}%)`;
-		pads[3].innerText = data.score[0] + " | " + data.score[1];
-	}
+	// console.log(" ball 0 ", data.ball[0], " ball1 ", data.ball[1]);
+	// console.log("data: ", `${data.ball[0] * (rect.width / 100)}`, `${data.ball[1] * (rect.height / 100)}}`);
+	// if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
+	// {
+	// 	pads[0].style.top = data.yp1 + "%";
+	// 	pads[1].style.top = data.yp2 + "%";
+	// 	// pads[2].style.left = data.ball[0] + "%";
+	// 	// pads[2].style.top = data.ball[1] + "%";
+	// 	// pads[0].style.transform = `translateY(${data.yp1}%)`;
+	// 	// pads[1].style.transform = `translateY(${data.yp2}%)`;
+	// 	pads[2].style.transform = `translate(${data.ball[0] * (rect.width / 100)}px, ${data.ball[1] * (rect.height / 100)}px)`;
+	// 	pads[3].innerText = data.score[0] + " | " + data.score[1];
+	// }
+	
+    if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined) {
+        // pads[0].style.top = data.yp1 + "%";
+        // pads[1].style.top = data.yp2 + "%";
+        
+		targetPads[0] = data.yp1 * (matchRect.height / 100);
+		targetPads[1] = data.yp2 * (matchRect.height / 100);
+
+        targetX = data.ball[0] * (matchRect.width / 100);
+        targetY = data.ball[1] * (matchRect.height / 100);
+		// targetX = data.ball[0];
+        // targetY = data.ball[1];
+        pads[3].innerText = data.score[0] + " | " + data.score[1];
+    }
 	// });
 		
 }
@@ -270,6 +326,7 @@ function sequelInitMatchWs(socket) {
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
+	requestAnimationFrame(()=>animate(pads));
 	socket.onmessage = event => onMatchWsMessage(
 		event, pads, [waiting, end], waitingState);
 	
