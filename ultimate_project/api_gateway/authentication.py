@@ -486,7 +486,7 @@ async def register_fastAPI(
     print(f"🔐 Tentative d'inscription pour {username}", flush=True)
 
     # Regex patterns for input validation
-    name_pattern = r'^[a-zA-ZÀ-ÿ0-9-]+(?!--)$'
+    name_pattern = r'^(?!.*--)[a-zA-ZÀ-ÿ0-9\-]+$'
     # Validate first name
     if not re.match(name_pattern, first_name):
         return JSONResponse(
@@ -507,7 +507,7 @@ async def register_fastAPI(
             status_code=400,
         )
 
-    username_pattern = r'^[a-zA-Z0-9_-]+(?!--)$'
+    username_pattern = r'^(?!.*--)[a-zA-Z0-9_\-]+$'
     # Validate username
     if not re.match(username_pattern, username):
         return JSONResponse(
@@ -518,7 +518,7 @@ async def register_fastAPI(
             status_code=400,
         )
 
-    password_pattern = r'^[a-zA-Z0-9_-?!$€%&*()]+(?!--)$'
+    password_pattern = r'^(?!.*--)[a-zA-Z0-9_\-?!$€%&*()]+$'
     # Validate password 
     if not re.match(password_pattern, password):
         return JSONResponse(
