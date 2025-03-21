@@ -29,7 +29,7 @@ class Pong:
 		self.max_delay = 900
 		self.send_task = None
 		self.watch_task = None
-		self.ball = [50, 90]
+		self.ball = [50, 50]
 		self.vect = [1 / math.sqrt(2), 1 / math.sqrt(2)]
 		self.score = [0, 0]
 		# asyncio.run(self.end())
@@ -166,14 +166,17 @@ class Pong:
 				# 	self.vect[0] = -self.vect[0]
 
 # bord haut et bas
-				if self.ball[1] >= 100:
+				if self.ball[1] >= 98:
 					self.vect[1] = -self.vect[1]
+					self.ball[1] = 98
 				if self.ball[1] <= 0 :
+					self.ball[1] = 0
 					self.vect[1] = -self.vect[1]
-				if self.ball[1] > 100:
-					self.ball[1] = 99
-				if self.ball[1] < 0:
-					self.ball[1] = 1
+
+				# if self.ball[1] > 100:
+				# 	self.ball[1] = 99
+				# if self.ball[1] < 0:
+				# 	self.ball[1] = 1
 
 # bord droit et gauche
 				if self.ball[0] >= 100:
@@ -193,27 +196,50 @@ class Pong:
 				# or self.ball[0] == 89 and self.yp2 <= self.ball[1] <= self.yp2 + 10:
 				# 	self.vect[0] = -self.vect[0]
 				
-				if ((21 - self.pad_width / 2 - 0.5) <= self.ball[0] <= (21 - self.pad_width / 2 + 0.5)) and \
+				if (self.ball[0] <= 15) and \
 					(self.yp1 - (self.pad_height / 2) <= self.ball[1] <= self.yp1 + (self.pad_height / 2)):
+					
+					new_vect = [0, 0]
+					new_vect[0] = 15 - self.ball[0]
+					new_vect[1] = self.cross_product(self.vect[0], self.vect[1], new_vect[0])
+					self.ball[0] += new_vect[0]				
+					self.ball[1] += new_vect[1]
+					await asyncio.sleep(0.05)
 					# self.vect[0] = -self.vect[0]
 					# y = (self.ball[1] - self.yp1) / 20
-					print(f"selfY 222: {self.vect[1]}", flush=True)
-					print(f"selfX 222: {self.vect[0]}", flush=True)
-					tmp = self.vect[0]
+					# print(f"selfY 222: {self.vect[1]}", flush=True)
+					# print(f"selfX 222: {self.vect[0]}", flush=True)
+					sub_vect = self.substract_vect(self.vect, new_vect)
+
+					tmp = sub_vect[0]
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
-					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+					x = (sub_vect[0] ** 2) + (sub_vect[1] ** 2) - (y ** 2)
 					x = math.sqrt(x)
 					if tmp > 0:
 						x = -x
+					self.ball[0] += x			
+					self.ball[1] += y
+					await asyncio.sleep(0.05)
+					self.vect[0] = -self.vect[0] + 0.5
+					self.vect[1] = self.vect[1] + 0.5
+					# tmp = self.vect[0]
+					# y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
+					# x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+					# x = math.sqrt(x)
+					# if tmp > 0:
+					# 	x = -x
+
 					print(f"Y 222: {y}", flush=True)
 					print(f"X 222: {x}", flush=True)
 					# print(f"Y 222: {y}", flush=True)
 					# print(f"VECT: {self.vect[1]}", flush=True)
-					self.vect[0] = x
-					self.vect[1] = y
+					# self.vect[0] = x + 0.5
+					# self.vect[1] = y + 0.5
 					# print(f"VECT222: {self.vect[1]}", flush=True)
-				if  ((79 - self.pad_width / 2 - 0.5) <= self.ball[0] <= (79 - self.pad_width / 2 + 0.5)) and \
+				
+				if  (self.ball[0] >= 83) and \
 						(self.yp2 - (self.pad_height / 2) <= self.ball[1] <= self.yp2 + (self.pad_height / 2)):
+				
 					print(f"selfY 222: {self.vect[1]}", flush=True)
 					print(f"selfX 222: {self.vect[0]}", flush=True)
 					# self.vect[0] = -self.vect[0]
@@ -278,6 +304,15 @@ class Pong:
 		# 	*[t for t in tasks if t], return_exceptions=True)
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
+	def cross_product(self, x, y, nx):
+		return nx * y / x
+	
+	def substract_vect(self, vect_a, vect_b):
+		new_vect = [0, 0]
+		new_vect[0] = vect_a[0] - vect_b[0]
+		new_vect[1] = vect_a[1] - vect_b[1]
+		return new_vect
+	
 	async def watch_dog(self):
 		delay = 0
 		while self.state != State.end:			

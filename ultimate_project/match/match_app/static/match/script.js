@@ -323,6 +323,10 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("ball"),
 		document.getElementById("score")
 	];
+	match = document.getElementById("match");
+	const matchRect = match.getBoundingClientRect();
+	pads[2].style.width = (matchRect.width / 100) * 2;
+	pads[2].style.height = (matchRect.width / 100) * 2;
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
