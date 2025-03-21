@@ -229,7 +229,9 @@
 
 <script>
 	// HTMX event listeners for debugging
-	document.addEventListener("DOMContentLoaded", function () {
+	// document.addEventListener("DOMContentLoaded", function () {
+	initScript();
+	function initScript() {
 	  const firstNameInput = document.getElementById("first_name");
 	  const lastNameInput = document.getElementById("last_name");
 	  const usernameInput = document.getElementById("username");
@@ -319,6 +321,7 @@
   
 		return isFormValid;
 	  }
+	}; // end scrip
   
 	  // Form submission validation
 	  form.addEventListener("htmx:beforeSwap", function (evt) {
@@ -344,6 +347,7 @@
 				  history.pushState(null, "", "/home/");
 				});
 			} else {
+
 			document.getElementById("feedback-errors").innerHTML = response.message;
 			  // Afficher erreur de connexion
 
@@ -353,6 +357,5 @@
 		  }
 		}
 	  });
-	});
 
 </script>
