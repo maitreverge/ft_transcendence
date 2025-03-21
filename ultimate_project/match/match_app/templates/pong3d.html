@@ -5,7 +5,14 @@
 <head>
     <title>Test</title>
     <style>
-        body { margin: 0; }
+        body { 
+            margin: 0; 
+        }
+        #scene-container {
+            width: 80vw;
+            height: 80vh;
+            border: 2px solid white;
+        }
     </style>
     <script class="match-script">
         window.rasp = "{{ rasp }}"; 
@@ -17,11 +24,9 @@
 </div>
 
 <body>
-    <div id="container"></div>
-    <button id="action", onclick="actionClick()">Action</button>
-    <button id="other", onclick="otherClick()">Other</button>
+    <div id="scene-container"></div>
+    <button id="upgrade", onclick="actionUpgrade()">upgrade</button>
     <script class="match-script" src="{% static 'match/script3d.js' %}"></script>
-  
-	<div id="waiting">Waiting</div>
-	<div id="end" style="display:none"></div>
+
+    <div id="end" style="display:none"></div>
 </body>

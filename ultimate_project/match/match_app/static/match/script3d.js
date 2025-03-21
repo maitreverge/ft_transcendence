@@ -1,15 +1,17 @@
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+var container = document.getElementById('scene-container');
 
-const textureLoader = new THREE.TextureLoader();
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
 
-const rgeo = new THREE.BoxGeometry(5, 1, 1);
-const sgeo = new THREE.SphereGeometry(1, 32, 32);
+var textureLoader = new THREE.TextureLoader();
 
-const rmat = [
+var rgeo = new THREE.BoxGeometry(5, 1, 1);
+var sgeo = new THREE.SphereGeometry(1, 32, 32);
+
+var rmat = [
     new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
     new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
     new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
@@ -18,12 +20,12 @@ const rmat = [
     new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') })
 ];
 
-const smat = new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
+var smat = new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
 
-const r1 = new THREE.Mesh(rgeo, rmat);
-const r2 = new THREE.Mesh(rgeo, rmat);
+var r1 = new THREE.Mesh(rgeo, rmat);
+var r2 = new THREE.Mesh(rgeo, rmat);
 
-const ball = new THREE.Mesh(sgeo, smat);
+var ball = new THREE.Mesh(sgeo, smat);
 
 scene.add(ball);
 scene.add(r1);
@@ -32,23 +34,32 @@ scene.add(r2);
 r1.position.z = 10;
 r2.position.z = -10;
 
-var angle = 0;
+var upgrade_lvl = 0;
 
-// fonction appelée lors du clic sur le bouton
-function actionClick() {
-    ball.material.color.setHex(0x00ff00);
-}
-
-function otherClick() {
-    // change r1 images
-    r1.material = [
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: textureLoader.load('/img1.png') })
-    ];
+// function call on button click
+function actionUpgrade() {
+	switch (upgrade_lvl) {
+		case 0:
+    		ball.material.color.setHex(0x00ff00);
+			break;
+		case 1:
+			ball.material.color.setHex(0xff0000);
+			break;
+		case 2:
+			ball.material.color.setHex(0x0000ff);
+			break;
+		case 3:
+			// reset the color
+			ball.material.color.setHex(0xffffff);
+			ball.material.map = textureLoader.load('https://media.tenor.com/YkyhmCCJd_0AAAAM/aaaa.gif');
+			// print the image size in the console
+			console.log("Image size: " + ball.material.map.image.width + "x" + ball.material.map.image.height);
+			break;
+		default:
+			ball.material.color.setHex(0xffffff);
+			break;
+	}
+	upgrade_lvl++;
 }
 
 function change_zoom(width, height) {
@@ -120,7 +131,7 @@ function stopMatch(matchId)
 			}
 			console.log("je nai pas plante");
 		}
-		const oldScripts = document.querySelectorAll("script.match-script");			
+		var oldScripts = document.querySelectorAll("script.match-script");			
 		oldScripts.forEach(oldScript => oldScript.remove());
 	// }
 	// else
@@ -129,7 +140,6 @@ function stopMatch(matchId)
 }
 
 function setCommands(socket) {
-
 	document.addEventListener("keydown", function(event) {
 		console.log("event :", event.key);
 		if (socket.readyState === WebSocket.OPEN)
@@ -150,7 +160,6 @@ function setCommands(socket) {
 }
 
 function setCommands2(socket) {
-
 	document.addEventListener("keydown", function(event) {
 		// console.log("event :", event.key);
 		if (socket.readyState === WebSocket.OPEN)
@@ -171,8 +180,7 @@ function setCommands2(socket) {
 }
 
 function onMatchWsMessage(event, [waiting, end], waitingState) {
-		
-	const data = JSON.parse(event.data);
+	var data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);
 	if (data.state == "end")
 	{	
@@ -200,14 +208,13 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 }
 
 function sequelInitMatchWs(socket) {
-
-	const [waiting, end] = [		
+	var [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
 	socket.onmessage = event => onMatchWsMessage(
 		event, [waiting, end], waitingState);
 	setCommands(socket);
-	const spec = document.getElementById("spec")
+	var spec = document.getElementById("spec")
 	if (spec)
 	{
 		if (window.selfMatchId != window.matchId)
@@ -219,7 +226,6 @@ function sequelInitMatchWs(socket) {
 }
 
 function initSecPlayer() {
-
 	if (window.rasp == "true")
 		window.matchSocket2 = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
