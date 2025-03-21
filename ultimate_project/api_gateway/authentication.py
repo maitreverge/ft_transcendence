@@ -5,7 +5,7 @@ import jwt
 import datetime
 import os
 import pyotp
-
+import re
 router = APIRouter()
 
 # Clé secrète pour signer les JWT
@@ -484,6 +484,51 @@ async def register_fastAPI(
     Register a new user and return a JWT token.
     """
     print(f"🔐 Tentative d'inscription pour {username}", flush=True)
+
+    # Regex patterns for input validation
+    name_pattern = r'^[a-zA-ZÀ-ÿ0-9-]+(?!--)$'
+    username_pattern = r'^[a-zA-Z0-9_-]+(?!--)$'
+    password_pattern = r'^[a-zA-Z0-9_-?!$€%&*()]+(?!--)$'
+
+    # Validate username
+    if not re.match(name_pattern, username):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
+            },
+            status_code=400,
+        )
+
+    # Validate password 
+    if not re.match(name_pattern, password):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Le mot de passe ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
+            },
+            status_code=400,
+        )
+
+    # Validate first name
+    if not re.match(name_pattern, first_name):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Le prénom ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
+            },
+            status_code=400,
+        )
+
+    # Validate last name
+    if not re.match(name_pattern, last_name):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Le nom ne peut contenir que des lettres, chiffres, tirets et underscores et ne peut pas se terminer par '--'",
+            },
+            status_code=400,
+        )
 
     # Check if username already exists first (industry standard to check one field at a time)
     try:

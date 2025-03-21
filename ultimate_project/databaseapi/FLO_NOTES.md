@@ -6,6 +6,21 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
+`STABILIZATION`:
+
+## BASE REQUIREMENTS
+
+🟧 Bouton Back and Forward (notaament dans un match)
+✅ Pong contre soi-meme
+✅ Tournoi 
+🟧 Mettre des alias a chaque debut de tournoi
+🟧 Injections SQL / XSS
+🟧 HTTPS (wss)
+🟧 Secure routes API
+🟧
+🟧
+✅
+
 `AVATAR CREATION` :
 
 In user creation : create a default image when creating an user
