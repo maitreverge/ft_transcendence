@@ -194,7 +194,7 @@ let targetX = 0, targetY = 0;
 
 let actualPads = [0, 0]
 let targetPads = [0, 0]
-const speed = 0.3; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+const speed = 1; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 
 function animate(pads) {
     currentX += (targetX - currentX) * speed;
