@@ -543,7 +543,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Ce nom d'utilisateur est déjà pris.",
+                        "message": "Username already taken.",
                     },
                     status_code=400,
                 )
@@ -552,7 +552,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Ce nom d'utilisateur est déjà pris.",
+                        "message": "Username already taken.",
                     },
                     status_code=400,
                 )
@@ -568,7 +568,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Cette adresse email est déjà utilisée.",
+                        "message": "Email adress already taken.",
                     },
                     status_code=400,
                 )
@@ -577,7 +577,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Cette adresse email est déjà utilisée.",
+                        "message": "Email adress already taken.",
                     },
                     status_code=400,
                 )
