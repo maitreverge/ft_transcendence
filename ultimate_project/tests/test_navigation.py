@@ -90,24 +90,27 @@ def run(playwright: Playwright) -> None:
         page.locator("#loginButton").click()
         expect(page).to_have_url(f"{base_url}/home/")
     
-    def new_valid_page():
+    def new_valid_page(page):
         # Correct register credentials
-        page.goto(f"{base_url}/register/")
-
         correct_first_name = "Sylvain"
         correct_last_name = "Duriff"
         correct_email = "example@hehe.com"
         correct_username = "sylvain_duriff"
         correct_password = "password"
+
+        # Fill
         page.locator("#first_name").fill(correct_first_name)
         page.locator("#last_name").fill(correct_last_name)
         page.locator("#username").fill(correct_username)
         page.locator("#email").fill(correct_email)
         page.locator("#password").fill(correct_password)
-        page.locator("#repeat-password").fill(correct_password)
+        page.locator("#repeat_password").fill(correct_password)
 
     
     def test_register(base_url: str):
+
+        page.goto(f"{base_url}/register/")
+        
         # Shitty register credentials
         incorrect_first_name = "??|"
         incorrect_last_name = "??|"
@@ -116,7 +119,7 @@ def run(playwright: Playwright) -> None:
         incorrect_password = "///"
 
         # Test incorrect first name
-        new_valid_page()
+        new_valid_page(page)
         page.locator("#first_name").fill(incorrect_first_name)
         page.locator("#register-button").click()
         error_message = page.locator("#register-form")
@@ -136,9 +139,9 @@ def run(playwright: Playwright) -> None:
             ]     
     
 
-    test_login(base_url)
-
     test_register(base_url)
+
+    test_login(base_url)
 
     # for url in urls:
     #     test_page(url)
