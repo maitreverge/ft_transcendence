@@ -1,23 +1,58 @@
 {% load static %}
-<div id="pattern-cont">
-	<div style="display:none;">
-		<head>
-			<link rel="stylesheet" href="{% static 'tournament/pattern.css' %}">
-		</head>
-	</div>	
-	<div id="pattern">
-		<h1 	
-			style="width:50px;
-			height:50px;
-			background-color: rgb(250, 8, 32);"
-		></h1>
-		<div id="matchs-cont">
-			<div id="m1" class="pattern-match"> match</div>
-			<br>
-			<div id="m2" class="pattern-match"> match</div>
-			<div id="m3" class="pattern-match"> match</div>
-			<br>			
-		</div>	
-		<div id="overlay-match"></div>
-	</div>
+
+<div style="display:none;">
+	<head>
+		<link rel="stylesheet" href="{% static 'tournament/pattern.css' %}">
+	</head>
+</div>	
+<div id="pattern">	
+	<div id="matchs-cont">
+		<div id="firstline">
+			<div id="m1" class="pattern-match">match
+				<div class="pattern-pl-cont">
+					<div id="pl1" class="pattern-pl">p1</div>
+					<div id="pl2" class="pattern-pl">p2</div>
+				</div>
+				<div id="specs"></div>
+			</div>
+		</div>
+		<div id="secline">
+			<div id="m2" class="pattern-match">match
+				<div class="pattern-pl-cont">
+					<div id="pl1" class="pattern-pl">p1</div>
+					<div id="pl2" class="pattern-pl">p2</div>
+				</div>
+				<div id="specs"></div>
+			</div>
+			<div id="m3" class="pattern-match">match
+				<div class="pattern-pl-cont">
+					<div id="pl1" class="pattern-pl">p1</div>
+					<div id="pl2" class="pattern-pl">p2</div>
+				</div>
+				<div id="specs"></div>			
+			</div>	
+		</div>			
+	<div id="overlay-match"></div>
 </div>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+
+    console.log("Dernière page visitée:", lastVisitedPage);
+    console.log("Page actuelle:", window.location.href);
+
+    // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
+    if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
+        console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
+        
+        // Marque que la redirection a eu lieu pour éviter la boucle infinie
+        sessionStorage.setItem("redirected", "true");
+
+        // Redirige vers la dernière page visitée
+        window.location.href = lastVisitedPage;
+    } else {
+        sessionStorage.removeItem("redirected");
+        console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+    }
+});
+</script>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="https://ft-trans-static-files.github.io/error-static-files/sb-admin-2.min.css" 
+    rel="stylesheet">
+</head>
+<body>
+    <div class="text-center my-5">
+        <div class="error mx-auto" data-text="{{ status_code }}">{{ status_code }}</div>
+        <p class="lead text-gray-800 mb-5">{{ error_message }}</p>
+        <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
+
+    </div>
+    <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>Copyright &copy; Pong 42</span>
+            </div>
+        </div>
+    </footer>
+</body>
+<script>
+    // this function is part of the history logic
+    window.addEventListener("DOMContentLoaded", () => {
+        let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+
+        if (lastVisitedPage) {
+            console.log("Dernière page visitée avant l'erreur : " + lastVisitedPage);
+        } else {
+            console.log("Aucune page précédente trouvée.");
+        }
+    });
+
+    // this function helps reloading the scripts after browser navigation
+    window.addEventListener("popstate", function(event) {
+        let lastVisitedPage = sessionStorage.getItem("lastVisitedPage");
+
+        if (lastVisitedPage) {
+            console.log("Retour à la dernière page visitée : ", lastVisitedPage);
+            window.location.href = lastVisitedPage;
+        } else {
+            console.log("Aucune URL précédente trouvée, l'utilisateur reste sur la page d'erreur.");
+        }
+    });
+</script>
+</html>

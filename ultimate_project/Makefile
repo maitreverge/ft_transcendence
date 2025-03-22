@@ -1,17 +1,18 @@
 # all : calls all the compose
 all: create_volume
-	-docker compose up --build
+	-docker compose -f docker-compose.yaml -f docker-compose.override.yaml up --build
 
 # all : calls only the classic compose
 prod: clean 
 	-docker compose -f docker-compose.yaml up --build
 
 clean:
-	-docker stop $$(docker ps -qa)
-	-docker rm $$(docker ps -qa)
-# -docker rmi $$(docker images -qa)
-	-docker volume rm $$(docker volume ls -q)
-	-echo y | docker network rm $$(docker network ls -q)
+	-test -n "$$(docker ps -qa)" && docker stop $$(docker ps -qa)
+	-test -n "$$(docker ps -qa)" && docker rm $$(docker ps -qa)
+	-test -n "$$(docker volume ls -q)" && docker volume rm $$(docker volume ls -q)    
+	-echo y | docker network rm $$(docker network ls --filter "type=custom" -q)
+	docker image prune -f
+
 	rm -rf staticfiles/*
 
 re: clean all

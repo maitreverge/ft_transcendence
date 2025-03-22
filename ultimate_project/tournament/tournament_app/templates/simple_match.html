@@ -1,0 +1,50 @@
+{% load static %}
+<div style="display:none;">
+	<head>
+		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
+		<script>
+			window.rasp = "{{ rasp }}"; 
+			window.pidom = "{{ pidom }}";
+            window.user_id = "{{ user_id }}";								
+		</script>
+		<script src="{% static 'tournament/simple_match.js' %}"
+				onload="initSimpleMatch()"></script>
+	</head>
+</div>	
+<div id="simple-selections">
+	<h1>Simple - Selections</h1>
+	<h2 id ="myh1">
+		Je dois choisir un joueur et entrer dans le match!
+	</h2>
+	<h2 id="player">Je suis le joueur ...</h2>
+	<label for="dim">Selectionner le nombre de dimension</label>
+	<select id="dim">
+		<option value="2">2D</option>
+		<option value="3">3D</option>
+	</select>
+	<div id="players"></div>
+	<div id="matchs"></div>
+	<div id="overlay-match"></div>
+</div>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+
+    console.log("Dernière page visitée:", lastVisitedPage);
+    console.log("Page actuelle:", window.location.href);
+
+    // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
+    if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
+        console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
+        
+        // Marque que la redirection a eu lieu pour éviter la boucle infinie
+        sessionStorage.setItem("redirected", "true");
+
+        // Redirige vers la dernière page visitée
+        window.location.href = lastVisitedPage;
+    } else {
+        sessionStorage.removeItem("redirected");
+        console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+    }
+});
+</script>   
