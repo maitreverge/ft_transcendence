@@ -12,10 +12,10 @@
             </div>
             <!-- Formulaire de création de compte HTMX -->
             <form
-              id="register-form"
+              id="registration-form"
               class="user"
               hx-post="/auth/register/"
-              hx-target="#register-form"
+              hx-target="#register-error-message"
               hx-swap="outerHTML"
               hx-indicator="#loading-spinner"
             >
@@ -110,7 +110,7 @@
                 </div>
               </div>
 
-              <!-- Zone de feedback pour les erreurs -->
+              <!-- ! Email error feedback -->
               <div
                 id="email-error"
                 class="text-danger small mb-3"
@@ -127,49 +127,27 @@
               >
                 Register Account
               </button>
-              <div id="loading-spinner" class="htmx-indicator text-center my-2">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-              </div>
-              <hr />
+			
+			<!-- ! END FORM  -->
+			</form>
 
-			<!-- Zone de feedback pour les erreurs -->
+			<!-- ! Feedback error from the backend -->
 			<div
-			id="feedback-errors"
-			class="text-center text-danger mt-2"
-		></div>
+				id="register-form"
+				class="text-center text-danger mt-2"
+			></div>
 
-              <!-- !  Google button  -->
-              <!-- <a
-                hx-boost="false"
-                href="http://localhost:8000/home/"
-                class="btn btn-google btn-user btn-block"
-              >
-                <i class="fab fa-google fa-fw"></i>
-                Register with Google
-              </a> -->
+			<!-- ! Spinning button  -->
+			<div id="loading-spinner" class="htmx-indicator text-center my-2">
+				<div class="spinner-border text-primary" role="status">
+				<span class="sr-only">Loading...</span>
+				</div>
+			</div>
 
-              <!-- !  Facebook button  -->
-              <!-- <a
-                hx-boost="false"
-                href="http://localhost:8000/home/"
-                class="btn btn-facebook btn-user btn-block"
-              >
-                <i class="fab fa-facebook-f fa-fw"></i>
-                Register with Facebook
-              </a>
-              <hr />
-              <div class="text-center">
-                <a
-                  hx-boost="false"
-                  class="small"
-                  href="http://localhost:8000/forgot-password"
-                >
-                  Forgot Password?
-                </a>
-              </div> -->
-            </form>
+			<!-- ! Horizontal Line Separator -->
+			<hr />
+			
+			<!-- ! Link towards login  -->
             <div
               hx-boost="false"
               hx-trigger="click"
@@ -189,7 +167,7 @@
   </div>
 </div>
 
-<!-- Add JavaScript for client-side validation -->
+
 <style>
   /* Custom validation styles */
   .is-invalid {
@@ -224,11 +202,7 @@
   }
 </style>
 
-<!-- Load HTMX first -->
-<script src="https://unpkg.com/htmx.org@1.9.6"></script>
-
 <script>
-	// HTMX event listeners for debugging
 	// document.addEventListener("DOMContentLoaded", function () {
 	initScript();
 	function initScript() {
@@ -320,16 +294,15 @@
 		registerButton.disabled = !isFormValid;
   
 		return isFormValid;
-	  }
-	}; // end scrip
-  
+	}
+}; // End Checking Script
+	
 	  // Form submission validation
 	  form.addEventListener("htmx:beforeSwap", function (evt) {
-		console.log("document.addEventListener working");
+		  console.log("REGISTER FORM LISTENNING");
 		console.log(evt.detail.target.id);
-		console.log("after");
   
-		if (evt.detail.target.id === "register-form") {
+		if (evt.detail.target.id === "register-error-message") {
 		  try {
 			console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
 			const response = JSON.parse(evt.detail.xhr.responseText);
@@ -347,15 +320,15 @@
 				  history.pushState(null, "", "/home/");
 				});
 			} else {
-
-			document.getElementById("feedback-errors").innerHTML = response.message;
-			  // Afficher erreur de connexion
-
+				
+				document.getElementById("register-error-message").innerHTML = response.message;
+				// Afficher erreur de connexion
+				
 			}
-		  } catch (e) {
+		} catch (e) {
 			console.error("Erreur de traitement de la réponse:", e);
-		  }
 		}
-	  });
+	}
+});
 
 </script>

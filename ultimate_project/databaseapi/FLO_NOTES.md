@@ -17,7 +17,7 @@
 🟧 Injections SQL / XSS
 🟧 HTTPS (wss)
 🟧 Secure routes API
-🟧
+🟧 Changer le mot de passe d'admin
 🟧
 ✅
 

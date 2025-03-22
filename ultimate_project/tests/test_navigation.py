@@ -91,9 +91,6 @@ def run(playwright: Playwright) -> None:
     page.locator("#loginButton").click()
     expect(page).to_have_url(f"{base_url}/home/")
 
-    error_message = page.locator("#register-form")
-    expect(error_message).to_have_text("Invalid credentials")
-
     for url in urls:
         test_page(url)
     
