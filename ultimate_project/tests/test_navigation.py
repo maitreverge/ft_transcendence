@@ -66,7 +66,54 @@ def run(playwright: Playwright) -> None:
         navigate(f"{base_url}{url}")
         page.evaluate("window.history.back()")
         page.wait_for_timeout(500)  # Laisse un peu de temps pour le back
-        test_page(page.url) 
+        test_page(page.url)
+    
+    # ! IMPORTANT : For register AND login testing purposes, you need to create a user with the following credentials :
+    # !  USERNAME : test
+    # !  EMAIL : test@test.com
+    # !  PASSWORD : password
+
+    def test_login(base_url: str):
+
+        # Test de la page d'accueil avec une fausse connexion
+        page.goto(f"{base_url}/login/")
+        page.locator("#username").fill("sylvain_duriff")
+        page.locator("#password").fill("wrong_password")
+        page.locator("#loginButton").click()
+        error_message = page.locator("#login-form")
+        expect(error_message).to_have_text("Invalid credentials")
+
+        # Test de la page d'accueil avec une vraie connexion
+        page.goto(f"{base_url}/login/")
+        page.locator("#username").fill("test")
+        page.locator("#password").fill("password")
+        page.locator("#loginButton").click()
+        expect(page).to_have_url(f"{base_url}/home/")
+    
+    def correct_fill_register():
+        # Correct register credentials
+        correct_first_name = "Sylvain"
+        correct_last_name = "Duriff"
+        correct_email = "example@hehe.com"
+        correct_username = "sylvain_duriff"
+        correct_password = "password"
+        page.locator("#username").fill("sylvain_duriff")
+
+    
+    def test_register(base_url: str):
+
+        # Shitty register credentials
+        incorrect_first_name = "??|"
+        incorrect_last_name = "??|"
+        incorrect_email = "example@hehe"
+        incorrect_username = "test"
+        incorrect_password = "///"
+
+
+        page.goto(f"{base_url}/register/")
+        page.locator("#username").fill("sylvain_duriff")
+
+
 
     urls = [ 
             f"{base_url}/home/", 
@@ -76,20 +123,10 @@ def run(playwright: Playwright) -> None:
             f"{base_url}/tournament/tournament/"
             ]     
     
-    # Test de la page d'accueil avec une fausse connexion
-    page.goto(f"{base_url}/login/")
-    page.locator("#username").fill("sylvain_duriff")
-    page.locator("#password").fill("wrong_password")
-    page.locator("#loginButton").click()
-    error_message = page.locator("#login-form")
-    expect(error_message).to_have_text("Invalid credentials")
 
-    # Test de la page d'accueil avec une vraie connexion
-    page.goto(f"{base_url}/login/")
-    page.locator("#username").fill("test")
-    page.locator("#password").fill("password")
-    page.locator("#loginButton").click()
-    expect(page).to_have_url(f"{base_url}/home/")
+    test_login(base_url)
+
+    test_register(base_url)
 
     for url in urls:
         test_page(url)
