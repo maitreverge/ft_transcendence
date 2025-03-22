@@ -216,8 +216,6 @@
 	  const passwordError = document.getElementById("password-error");
 	  const registerButton = document.getElementById("register-button");
 	  const form = document.querySelector("form.user");
-	  
-	  // Password strength elements
 	  const strengthBar = document.getElementById("password-strength-bar");
 	  const strengthText = document.getElementById("password-strength-text");
   
@@ -289,21 +287,6 @@
 		strengthText.textContent = "Password strength: " + strength.message;
 	  }
 	  
-	  // Add event listener for password strength
-	  passwordInput.addEventListener("input", updatePasswordStrength);
-  
-	  // Check email format
-	  emailInput.addEventListener("blur", function () {
-		if (emailInput.value && !validateEmail(emailInput.value)) {
-		  emailError.style.display = "block";
-		  emailInput.classList.add("is-invalid");
-		} else {
-		  emailError.style.display = "none";
-		  emailInput.classList.remove("is-invalid");
-		}
-		validateForm();
-	  });
-  
 	  // Check if passwords match
 	  function checkPasswords() {
 		if (passwordInput.value && repeatPasswordInput.value) {
@@ -317,23 +300,7 @@
 		}
 		return passwordInput.value === repeatPasswordInput.value;
 	  }
-  
-	  repeatPasswordInput.addEventListener("input", function () {
-		checkPasswords();
-		validateForm();
-	  });
-  
-	  passwordInput.addEventListener("input", function () {
-		checkPasswords();
-		validateForm();
-	  });
-  
-	  // Add input event listeners to all required fields
-	  firstNameInput.addEventListener("input", validateForm);
-	  lastNameInput.addEventListener("input", validateForm);
-	  usernameInput.addEventListener("input", validateForm);
-	  emailInput.addEventListener("input", validateForm);
-  
+	  
 	  // Validate the entire form and enable/disable the register button
 	  function validateForm() {
 		const isFirstNameValid = firstNameInput.value.trim() !== "";
@@ -349,7 +316,7 @@
 		} else {
 		  emailInput.classList.remove("is-invalid");
 		}
-
+  
 		const isFormValid =
 		  isFirstNameValid &&
 		  isLastNameValid &&
@@ -357,21 +324,39 @@
 		  isEmailValid &&
 		  isPasswordValid &&
 		  doPasswordsMatch;
-  
-		// console.log("Form validation:", {
-		//   isFirstNameValid,
-		//   isLastNameValid,
-		//   isUsernameValid,
-		//   isEmailValid,
-		//   isPasswordValid,
-		//   doPasswordsMatch,
-		//   isFormValid,
-		// });
-  
+		
+		// Disable the register button is the full form is not valid
 		registerButton.disabled = !isFormValid;
-  
 		return isFormValid;
 	}
+	
+	// Add input event listeners to all required fields
+	  firstNameInput.addEventListener("input", validateForm);
+	  lastNameInput.addEventListener("input", validateForm);
+	  usernameInput.addEventListener("input", validateForm);
+	//   emailInput.addEventListener("input", validateForm);
+	//   emailInput.addEventListener("blur", function () {
+		emailInput.addEventListener("input", function () {
+		if (emailInput.value && !validateEmail(emailInput.value)) {
+		  emailError.style.display = "block";
+		  emailInput.classList.add("is-invalid");
+		} else {
+		  emailError.style.display = "none";
+		  emailInput.classList.remove("is-invalid");
+		}
+		validateForm();
+	});
+	
+	passwordInput.addEventListener("input", function () {
+	  updatePasswordStrength();
+	  checkPasswords();
+	  validateForm();
+	});
+	repeatPasswordInput.addEventListener("input", function () {
+	  checkPasswords();
+	  validateForm();
+	});
+
 	
 	// Form submission validation
 	//   form.addEventListener("htmx:beforeSwap", function (evt) {
