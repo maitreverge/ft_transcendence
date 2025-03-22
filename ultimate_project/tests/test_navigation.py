@@ -90,7 +90,8 @@ def run(playwright: Playwright) -> None:
         page.locator("#loginButton").click()
         expect(page).to_have_url(f"{base_url}/home/")
     
-    def new_valid_page(page):
+
+    def current_register_test(page, target_field: str, incorrect_data: str, expected_error: str):
         # Correct register credentials
         correct_first_name = "Sylvain"
         correct_last_name = "Duriff"
@@ -98,13 +99,27 @@ def run(playwright: Playwright) -> None:
         correct_username = "sylvain_duriff"
         correct_password = "password"
 
-        # Fill
+        # Fill with valid data
         page.locator("#first_name").fill(correct_first_name)
         page.locator("#last_name").fill(correct_last_name)
         page.locator("#username").fill(correct_username)
         page.locator("#email").fill(correct_email)
         page.locator("#password").fill(correct_password)
         page.locator("#repeat_password").fill(correct_password)
+        
+        # Fill with the incorrect data at the targeted field
+        page.locator(f"#{target_field}").fill(incorrect_data)
+        
+        # If testing for password regex, fill the `repeat_password` as well
+        if target_field == "password":
+            page.locator(f"#repeat_password").fill(incorrect_data)
+        
+        # Click the register button
+        page.locator("#register-button").click()
+        error_message = page.locator("#register-form")
+        
+        # Check if the targeted error is the one we expect
+        expect(error_message).to_have_text(expected_error)
 
     
     def test_register(base_url: str):
@@ -115,17 +130,35 @@ def run(playwright: Playwright) -> None:
         incorrect_first_name = "??|"
         incorrect_last_name = "??|"
         incorrect_email = "example@hehe"
-        incorrect_username = "test"
+        incorrect_username = "%&?ааааа" # this `а` is a cyrilic alphabet character 
         incorrect_password = "///"
 
-        # Test incorrect first name
-        new_valid_page(page)
-        page.locator("#first_name").fill(incorrect_first_name)
-        page.locator("#register-button").click()
-        error_message = page.locator("#register-form")
-        expect(error_message).to_have_text("Forbidden characters in first name. Allowed characters: a-z, A-Z, 0-9, -, _")
+        taken_username = "test"
+        taken_email = "test@test.com"
 
+        # Expected error messages from the backend
+        expected_error_firstname = "Forbidden characters in first name. Allowed characters: a-z, A-Z, 0-9, -, _"
+        expected_error_lastname = "Forbidden characters in last name. Allowed characters: a-z, A-Z, 0-9, -, _"
+        expected_error_username = "Forbidden characters in username. Allowed characters: a-z, A-Z, 0-9, -, _"
+        expected_error_password = "Forbidden characters in password. Allowed characters: a-z, A-Z, 0-9, -, _, !, ?, $, €, %, &, *, (, )"
+        expected_error_taken_username = "Username already taken."
+        expected_error_taken_email = "Email adress already taken."
+        
+        ## ! TESTING BACKEND REGEX FOR REJECTING FIELDS WITH NON ACCEPTED CHARACTERS
+        # Test first name
+        current_register_test(page, "first_name", incorrect_first_name, expected_error_firstname)
+        # Test last name
+        current_register_test(page, "last_name", incorrect_last_name, expected_error_lastname)
+        # Test wrong username name
+        current_register_test(page, "username", incorrect_username, expected_error_username)
+        # Test wrong password
+        current_register_test(page, "password", incorrect_password, expected_error_password)
 
+        ## ! TESTTING ALREADY EXISTING USERS / EMAIL
+        # Test already taken username
+        current_register_test(page, "username", taken_username, expected_error_taken_username)
+        # Test already taken email
+        current_register_test(page, "email", taken_email, expected_error_taken_email)
 
 
 
