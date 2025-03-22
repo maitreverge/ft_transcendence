@@ -225,7 +225,16 @@ def run(playwright: Playwright) -> None:
         page.locator("#password").fill("password")
         page.locator("#loginButton").click()
         expect(page).to_have_url(f"{base_url}/home/")
-        check_checkout_button()
+        
+        # Loggin out
+        youpiBanane = page.locator("#youpiBanane")
+        logoutButton = page.locator("#logoutButton")
+        modalLogoutButton = page.locator("#modalLogoutButton")
+        assert "show" not in (youpiBanane.get_attribute("class") or "")
+        youpiBanane.click()
+        logoutButton.click()
+        modalLogoutButton.click()
+        expect(page).to_have_url(f"{base_url}/login/")
 
         register_button = page.locator("#register-link")
         register_button.click()
