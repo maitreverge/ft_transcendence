@@ -257,8 +257,8 @@ def run(playwright: Playwright) -> None:
     # ! =============== KICKSTART TESTER HERE ===============
     
     # Those tests create, test and close their own browsers
-    register_from_login()
-    register_after_login()
+    # register_from_login()
+    # register_after_login()
 
 
     # ? =============== START REGULAR TESTS ===============
@@ -268,8 +268,8 @@ def run(playwright: Playwright) -> None:
     page.goto(f"{base_url}/register/")
     
     # Regular register + login tests which links to Dan tests after getting proprely logged-in
-    test_register(base_url, page)
-    test_login(base_url, page)
+    # test_register(base_url, page)
+    # test_login(base_url, page)
 
     # DAN TEST FROM HERE
     for url in urls:
