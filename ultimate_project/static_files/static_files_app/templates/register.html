@@ -12,17 +12,16 @@
             </div>
             <!-- Formulaire de création de compte HTMX -->
             <form
-              id="registration-form"
               class="user"
               hx-post="/auth/register/"
-              hx-target="#register-error-message"
+              hx-target="#register-form"
               hx-swap="outerHTML"
               hx-indicator="#loading-spinner"
             >
               <!-- HTMX loading indicator -->
-              <div class="htmx-indicator" style="display: none">
+              <!-- <div class="htmx-indicator" style="display: none">
                 Processing registration...
-              </div>
+              </div> -->
 
               <!-- First Name et Last Name -->
               <div class="form-group row">
@@ -83,9 +82,10 @@
                     placeholder="Password"
                     required
                   />
-                  <!-- Password strength indicator -->
+                  
+				  <!-- ! Password strength indicator -->
                   <div class="mt-2">
-                    <div id="password-strength-meter" class="progress" style="height: 5px;">
+					  <div id="password-strength-meter" class="progress" style="height: 5px;">
                       <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     <small id="password-strength-text" class="form-text mt-1">Password strength: Not entered</small>
@@ -99,7 +99,9 @@
                     name="repeat_password"
                     placeholder="Repeat Password"
                     required
-                  />
+					/>
+
+				<!-- ! Password do not match indicator -->
                   <div
                     id="password-error"
                     class="text-danger small mt-1"
@@ -107,7 +109,8 @@
                   >
                     Passwords do not match
                   </div>
-                </div>
+                
+				</div>
               </div>
 
               <!-- ! Email error feedback -->
@@ -120,13 +123,23 @@
               </div>
 
               <!-- Bouton de création de compte -->
-              <button
+              <!-- <button
                 type="submit"
                 class="btn btn-primary btn-user btn-block"
                 id="register-button"
               >
                 Register Account
-              </button>
+              </button> -->
+
+			  <div class="form-group">
+				<input
+				  type="submit"
+				  id="register-button"
+				  hx-push-url="true"
+				  class="btn btn-primary btn-user btn-block"
+				  value="Register"
+				/>
+			  </div>
 			
 			<!-- ! END FORM  -->
 			</form>
@@ -281,32 +294,33 @@
 		  isPasswordValid &&
 		  doPasswordsMatch;
   
-		console.log("Form validation:", {
-		  isFirstNameValid,
-		  isLastNameValid,
-		  isUsernameValid,
-		  isEmailValid,
-		  isPasswordValid,
-		  doPasswordsMatch,
-		  isFormValid,
-		});
+		// console.log("Form validation:", {
+		//   isFirstNameValid,
+		//   isLastNameValid,
+		//   isUsernameValid,
+		//   isEmailValid,
+		//   isPasswordValid,
+		//   doPasswordsMatch,
+		//   isFormValid,
+		// });
   
 		registerButton.disabled = !isFormValid;
   
 		return isFormValid;
 	}
-}; // End Checking Script
 	
-	  // Form submission validation
-	  form.addEventListener("htmx:beforeSwap", function (evt) {
-		  console.log("REGISTER FORM LISTENNING");
+	// Form submission validation
+	//   form.addEventListener("htmx:beforeSwap", function (evt) {
+		
+	document.addEventListener("htmx:beforeSwap", function (evt) {
+		console.log("REGISTER FORM LISTENNING");
 		console.log(evt.detail.target.id);
-  
-		if (evt.detail.target.id === "register-error-message") {
-		  try {
+
+		if (evt.detail.target.id === "register-form") {
+		try {
 			console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
 			const response = JSON.parse(evt.detail.xhr.responseText);
-  
+			
 			if (response.success) {
 			  evt.detail.shouldSwap = false;
   
@@ -317,18 +331,17 @@
 				  headers: { "HX-Login-Success": "true" },
 				})
 				.then(function () {
-				  history.pushState(null, "", "/home/");
+					history.pushState(null, "", "/home/");
 				});
 			} else {
-				
-				document.getElementById("register-error-message").innerHTML = response.message;
-				// Afficher erreur de connexion
-				
+				// ! Inserting errors from the backend
+				document.getElementById("register-form").innerHTML = response.message;
 			}
 		} catch (e) {
 			console.error("Erreur de traitement de la réponse:", e);
 		}
 	}
 });
+}; // End Checking Script
 
 </script>
