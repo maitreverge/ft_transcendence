@@ -255,17 +255,19 @@ def run(playwright: Playwright) -> None:
             ]     
     
     # ! =============== KICKSTART TESTER HERE ===============
-    # Those two test creates, test and close their own browsers
+    
+    # Those tests create, test and close their own browsers
     register_from_login()
     register_after_login()
 
 
-    # ? START REGULAR TESTS
+    # ? =============== START REGULAR TESTS ===============
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
     page.goto(f"{base_url}/register/")
     
+    # Regular register + login tests which links to Dan tests after getting proprely logged-in
     test_register(base_url, page)
     test_login(base_url, page)
 
