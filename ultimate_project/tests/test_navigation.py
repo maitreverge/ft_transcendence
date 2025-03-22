@@ -81,7 +81,7 @@ def run(playwright: Playwright) -> None:
     page.locator("#username").fill("sylvain_duriff")
     page.locator("#password").fill("wrong_password")
     page.locator("#loginButton").click()
-    error_message = page.locator("#register-form")
+    error_message = page.locator("#login-form")
     expect(error_message).to_have_text("Invalid credentials")
 
     # Test de la page d'accueil avec une vraie connexion

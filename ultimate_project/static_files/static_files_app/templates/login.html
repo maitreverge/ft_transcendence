@@ -17,7 +17,7 @@
                 <form
                   class="user"
                   hx-post="/auth/login/"
-                  hx-target="#register-form"
+                  hx-target="#login-form"
                   hx-swap="outerHTML"
                   hx-indicator="#loading-spinner"
                 >
@@ -54,7 +54,7 @@
 
                 <!-- ! Feedback error from the backend -->
                 <div
-                  id="register-form"
+                  id="login-form"
                   class="text-center text-danger mt-2"
                 ></div>
 
@@ -98,7 +98,7 @@
   document.addEventListener("htmx:beforeSwap", function (evt) {
     console.log("document.addEventListener working");
     console.log("LOGIN FORM LISTENNING");
-    if (evt.detail.target.id === "register-form") {
+    if (evt.detail.target.id === "login-form") {
       try {
         console.log("Réponse brute:", evt.detail.xhr.responseText);
         const response = JSON.parse(evt.detail.xhr.responseText);
@@ -158,11 +158,11 @@
               }, 200);
             });
         } else {
-          document.getElementById("register-form").innerHTML = response.message;
+          document.getElementById("login-form").innerHTML = response.message;
         }
       } catch (e) {
         console.error("Erreur de traitement de la réponse:", e);
-        // document.getElementById("register-form").innerHTML = "TRALALALALALA";
+        // document.getElementById("login-form").innerHTML = "TRALALALALALA";
       }
     }
   });
