@@ -195,21 +195,37 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
 let targets = [[]]
-const speed = 1; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+const speed = 0.5; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
 function animate(pads) {
-	eps = 0.1;
-	if (currentX - targetX >= -eps && currentX - targetX <= eps)
+	eps = 0.002;
+	if ((currentX - targetX >= -eps && currentX - targetX <= eps)
+		|| (currentY - targetY >= -eps && currentY - targetY <= eps))
 	{
-		offsetX = (newTargetX - currentX);
-		targetX = newTargetX;
+		let tar = targets.shift();
+		if (tar) {
+
+			if (currentX - targetX >= -eps && currentX - targetX <= eps)
+				{
+					offsetX = (tar[0] - currentX);
+					targetX = tar[0];
+				}
+				if (currentY - targetY >= -eps && currentY - targetY <= eps)
+					{
+						// offsetY = (newTargetY - currentY);
+						offsetY = (tar[1] - currentY);
+			// targetY = newTargetY;
+			targetY = tar[1];
+			
+		}
+		}
 	}
-	if (currentY - targetY >= -eps && currentY - targetY <= eps)
-	{
-		offsetY = (newTargetY - currentY);
-		targetY = newTargetY;
-	}
+
+	// currentX += (newTargetX - currentX) * speed;
+	
+	// currentY += (newTargetY - currentY) * speed;
+	
     currentX += offsetX * speed;
 	// if (currentX > targetX)
 	// {
@@ -310,7 +326,7 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	
 			newTargetX = data.ball[0] * (matchRect.width / 100);
 			newTargetY = data.ball[1] * (matchRect.height / 100);
-			// targets.push([newTargetX, newTargetY])
+			targets.push([newTargetX, newTargetY])
 		// }
 		
         pads[3].innerText = data.score[0] + " | " + data.score[1];

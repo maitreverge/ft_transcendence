@@ -207,7 +207,7 @@ class Pong:
 				
 					self.ball[0] += new_vect[0]				
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.05)					
+					await asyncio.sleep(0.01)					
 			
 					mag = self.get_magnitude(self.vect) 				
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
@@ -217,7 +217,7 @@ class Pong:
 
 					scl = 1
 					if abs(self.vect[0]) < 1e6 and abs(self.vect[1]) < 1e6:
-						scl = 1.3
+						scl = 1.1
 					self.vect[0] = scl * x
 					self.vect[1] = scl * y 
 				
@@ -237,7 +237,7 @@ class Pong:
 					
 					self.ball[0] += new_vect[0]	
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.05)
+					await asyncio.sleep(0.01)
 									
 					mag = self.get_magnitude(self.vect) 					
 					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
@@ -254,7 +254,7 @@ class Pong:
 					self.flag = False
 
 				
-				await self.bot_bounce(97)
+				await self.bot_bounce(37)
 			
 				
 				await self.top_bounce(0)
@@ -280,7 +280,7 @@ class Pong:
 				self.state = State.end
 				await self.sendFinalState()
 						
-			await asyncio.sleep(0.05)	
+			await asyncio.sleep(0.02)	
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
 	def segments_intersect(self, A, B, C, D, epsilon=1e-9):
@@ -371,7 +371,7 @@ class Pong:
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
 			
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.01)
 			self.vect[1] = -self.vect[1]		
 			self.flag = False
 
@@ -393,7 +393,7 @@ class Pong:
 			
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.01)
 			self.vect[1] = -self.vect[1]
 			self.flag = False
 
