@@ -33,6 +33,7 @@ class Pong:
 		self.rst = [3, -3]
 		self.vect = self.rst
 		self.score = [0, 0]
+		self.mag = None
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -128,7 +129,7 @@ class Pong:
 		self.send_task = self.myEventLoop.create_task(self.sendState())
 		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
 		while self.state in (State.running, State.waiting):		
-			
+			self.flag = True
 			self.myplayers = [p for p in consumer.players
 				if self.id == p["matchId"]]
 			self.player1 = next(
@@ -191,127 +192,68 @@ class Pong:
 					self.score[0] += 1
 					self.ball = [50, 50]
 					self.vect = self.rst
-			
-				# if self.ball[0] == 1 and self.ball[1] >= self.yp1 and self.ball[1] <= self.yp1 + 10 \
-				# 	or self.ball[0] == 89 and self.ball[1] == self.yp2:
-				# 		self.vect[0] = -self.vect[0]
-				
-				# if self.ball[0] == 1 and self.yp1 <= self.ball[1] <= self.yp1 + 10 \
-				# or self.ball[0] == 89 and self.yp2 <= self.ball[1] <= self.yp2 + 10:
-				# 	self.vect[0] = -self.vect[0]
-				
+							
 				if ((self.ball[0] + self.vect[0]) <= 15) and \
 					(self.yp1 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp1 + (self.pad_height / 2)):
-					# (0 <= self.ball[1] <= 100):
-					
+				
 					new_vect = [0, 0]
 					new_vect[0] = 15 - self.ball[0]
-					new_vect[1] = self.scale_vector(self.vect[0], self.vect[1], new_vect[0])
-					self.ball[0] += new_vect[0]				
-					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.05)
-					# self.vect[0] = -self.vect[0]
-					# y = (self.ball[1] - self.yp1) / 20
-					# print(f"selfY 222: {self.vect[1]}", flush=True)
-					# print(f"selfX 222: {self.vect[0]}", flush=True)
-					sub_vect = self.substract_vect(self.vect, new_vect)
-					mag = self.get_magnitude(self.vect) 
+					new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
+
+					if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
+		 				(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
 				
-					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
-					y = y * mag
-					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
-					# x_tmp = x					
-					x = math.sqrt(abs(x))
-					# if x_tmp < 0:
-					# 	x = -x					
-					# if tmp > 0 and x > 0:
-					# x = -x
-					# mag = self.get_magnitude(self.vect)
-					# new_mag = self.get_magnitude([x, y])
-					# rapport = mag / new_mag
+						self.ball[0] += new_vect[0]				
+						self.ball[1] += new_vect[1]
+						await asyncio.sleep(0.05)					
 				
+						mag = self.get_magnitude(self.vect) 				
+						y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
+						y = y * mag
+						x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
+						x = math.sqrt(abs(x))	
+
+						self.vect[0] = 1 * x 			
+						self.vect[1] = 1 * y 
 					
-					self.vect[0] = 1 * x 			
-					self.vect[1] = 1 * y 
-					# self.ball[0] += x			
-					# self.ball[1] += y
-
-					# await asyncio.sleep(0.05)
-					# self.vect[0] = self.vect[0] * 1.1
-					# self.vect[1] = self.vect[1] * 1.1
-
-					# tmp = self.vect[0]
-					# y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
-					# x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
-					# x = math.sqrt(x)
-					# if tmp > 0:
-					# 	x = -x
-
-					# print(f"Y 222: {y}", flush=True)
-					# print(f"X 222: {x}", flush=True)
-					# print(f"Y 222: {y}", flush=True)
-					# print(f"VECT: {self.vect[1]}", flush=True)
-					# self.vect[0] = x + 0.5
-					# self.vect[1] = y + 0.5
-					# print(f"VECT222: {self.vect[1]}", flush=True)
-				
+						self.flag = False
+								
 				if  (self.ball[0] + self.vect[0] >= 83) and \
-						(self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):
-					# (0 <= self.ball[1] <= 100):
-				
-					mag = self.get_magnitude(self.vect)
+						(self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
+					
 					new_vect = [0, 0]
 					new_vect[0] = 83 - self.ball[0]
 					new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
-					self.ball[0] += new_vect[0]				
-					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.05)
-					# sub_vect = self.substract_vect(self.vect, new_vect)
-					mag = self.get_magnitude(self.vect) 
-				
-					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
-					y = y * mag
-					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
-					x = math.sqrt(abs(x))
-					# print(f"selfY 222: {self.vect[1]}", flush=True)
-					# print(f"selfX 222: {self.vect[0]}", flush=True)
-					# mag = self.get_magnitude(self.vect)
-					# new_mag = self.get_magnitude([x, y])
-					# rapport = mag / new_mag
-					self.vect[0] = -1 * x 	
-					self.vect[1] = 1 * y 
-					# self.ball[0] += -x			
-					# self.ball[1] += y
 
-					# await asyncio.sleep(0.05)
-					# self.vect[0] = -self.vect[0]
-					# tmp = self.vect[0]
-					# y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
+					if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
+		 				(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
+
 					
-					# print(f"Y: {y}", flush=True)
-					# x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
-					# if x < 0:
-					# 	x = -x
-					# x = math.sqrt(x)
-					# # if tmp > 0:
-					# 	# x = -x
-					# # else
-					# x = -x
-				
-					# print(f"Y 222: {y}", flush=True)
-					# print(f"X 222: {x}", flush=True)
-					# # print(f"VECT: {self.vect[1]}", flush=True)
-					# self.vect[0] = x
-					# self.vect[1] = y
-					# print(f"VECT222: {self.vect[1]}", flush=True)
+						self.ball[0] += new_vect[0]	
+						self.ball[1] += new_vect[1]
+						await asyncio.sleep(0.05)
+										
+						mag = self.get_magnitude(self.vect) 					
+						y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
+						y = y * mag
+						x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+						x = math.sqrt(abs(x))
+					
+						self.vect[0] = -1 * x 	
+						self.vect[1] = 1 * y 
 
-				if self.ball[1] + self.vect[1] >= 38:
-					await self.bot_bounce(38)
-				if self.ball[1] + self.vect[1] <= 0 :
-					await self.top_bounce(0)
-						
-				self.ball[0] += self.vect[0]				
-				self.ball[1] += self.vect[1]
+					
+						self.flag = False
+
+				
+				await self.bot_bounce(38)
+			
+				
+				await self.top_bounce(0)
+			
+				if (self.flag):	
+					self.ball[0] += self.vect[0]				
+					self.ball[1] += self.vect[1]
 						
 			else:
 				if self.start_flag:
@@ -320,15 +262,7 @@ class Pong:
 					elif self.player2:
 						self.winner = self.idP2
 				self.state = State.waiting
-				# print(f"je suis en waiting", flush=True)
-
-			
-				# self.sendTask.cancel()
-				# try:
-				# 	await self.sendTask  # Attendre que l'annulation soit complète
-				# except asyncio.CancelledError:
-				# 	print("Tâche annulée avec succès")		
-				
+						
 			if 10 == self.score[0]: 
 				self.winner = self.idP1
 				self.state = State.end
@@ -337,46 +271,76 @@ class Pong:
 				self.winner = self.idP2
 				self.state = State.end
 				await self.sendFinalState()
-
-				# self.sendTask.cancel()
-				# try:
-				# 	await self.sendTask  # Attendre que l'annulation soit complète
-				# except asyncio.CancelledError:
-				# 	print("Tâche annulée avec succès")
-				# self.winner = self.idP2
-				# self.state = State.end
-				# await self.sendFinalState()	
-
-			# print(f"ACTUAL WINNER:{self.winner}", flush=True)
-			await asyncio.sleep(0.05)
-		# self.stop_tasks()
-		# tasks = [self.send_task, self.watch_task]
-		# for task in tasks:
-		# 	if task and not task.done() and not task.cancelled():
-		# 		task.cancel()
-		# await asyncio.gather(
-		# 	*[t for t in tasks if t], return_exceptions=True)
+						
+			await asyncio.sleep(0.05)	
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
+	def get_left_bounce_vect(self, left_y):
+		bounce_vect = None
+		if ((self.ball[0] + self.vect[0]) <= left_y) and \
+			(self.yp1 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp1 + (self.pad_height / 2)):
+		
+			bounce_vect = [0, 0]
+			bounce_vect[0] = left_y - self.ball[0]
+			bounce_vect[1] = self.scale_vector(bounce_vect[0], self.vect[1], self.vect[0])
+		return bounce_vect
+
+	def get_right_bounce_vect(self, right_y):
+		bounce_vect = None
+		if  (self.ball[0] + self.vect[0] >= right_y) and \
+			(self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
+				
+			bounce_vect = [0, 0]
+			bounce_vect[0] = right_y - self.ball[0]
+			bounce_vect[1] = self.scale_vector(bounce_vect[0], self.vect[1], self.vect[0])
+		return bounce_vect
+		
+	def get_top_bounce_vect(self, top_y):
+		bounce_vect = None
+		if self.ball[1] + self.vect[1] <= top_y :
+			bounce_vect = [0, 0]
+			bounce_vect[1] = top_y - self.ball[1]
+			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+		return bounce_vect
+
+	def get_bot_bounce_vect(self, bot_y):
+		bounce_vect = None
+		if self.ball[1] + self.vect[1] >= bot_y:	
+			bounce_vect = [0, 0]
+			bounce_vect[1] = bot_y - self.ball[1]
+			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+		return bounce_vect
+		
 	async def top_bounce(self, top_y):
-	
-		bounce_vect = [0, 0]
-		bounce_vect[1] = top_y - self.ball[1]
-		bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
-		self.ball[0] += bounce_vect[0]				
-		self.ball[1] += bounce_vect[1]
-		await asyncio.sleep(0.05)
-		self.vect[1] = -self.vect[1]
+
+		if self.ball[1] + self.vect[1] <= top_y :
+			bounce_vect = [0, 0]
+			bounce_vect[1] = top_y - self.ball[1]
+			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+
+			if (not self.get_left_bounce_vect(15) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(15))) and \
+		 		(not self.get_right_bounce_vect(83) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(83))):
+				self.ball[0] += bounce_vect[0]				
+				self.ball[1] += bounce_vect[1]
+				
+				await asyncio.sleep(0.05)
+				self.vect[1] = -self.vect[1]		
+				self.flag = False
 
 	async def bot_bounce(self, bot_y):
-	
-		bounce_vect = [0, 0]
-		bounce_vect[1] = bot_y - self.ball[1]
-		bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
-		self.ball[0] += bounce_vect[0]				
-		self.ball[1] += bounce_vect[1]
-		await asyncio.sleep(0.05)
-		self.vect[1] = -self.vect[1]
+
+		if self.ball[1] + self.vect[1] >= bot_y:					
+			bounce_vect = [0, 0]
+			bounce_vect[1] = bot_y - self.ball[1]
+			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+
+			if (not self.get_left_bounce_vect(15) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(15))) and \
+		 		(not self.get_right_bounce_vect(83) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(83))):
+				self.ball[0] += bounce_vect[0]				
+				self.ball[1] += bounce_vect[1]
+				await asyncio.sleep(0.05)
+				self.vect[1] = -self.vect[1]
+				self.flag = False
 
 	def get_magnitude(self, vect):
 		return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
