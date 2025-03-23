@@ -29,8 +29,8 @@ class Pong:
 		self.max_delay = 900
 		self.send_task = None
 		self.watch_task = None
-		self.ball = [20, 20]
-		self.rst = [10, -10]
+		self.ball = [50, 50]
+		self.rst = [2, 2]
 		self.vect = self.rst
 		self.score = [0, 0]
 		self.mag = None
@@ -215,8 +215,11 @@ class Pong:
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
 					x = math.sqrt(abs(x))	
 
-					self.vect[0] = 1 * x 			
-					self.vect[1] = 1 * y 
+					scl = 1
+					if abs(self.vect[0]) < 1e6 and abs(self.vect[1]) < 1e6:
+						scl = 1.3
+					self.vect[0] = scl * x
+					self.vect[1] = scl * y 
 				
 					self.flag = False
 								
@@ -241,10 +244,12 @@ class Pong:
 					y = y * mag
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
 					x = math.sqrt(abs(x))
-				
-					self.vect[0] = -1 * x 	
-					self.vect[1] = 1 * y 
-
+					scl = 1
+					if abs(self.vect[0]) < 1e6 and abs(self.vect[1]) < 1e6:
+						scl = 1.3
+					self.vect[0] = -scl * x
+					self.vect[1] = scl * y 
+					print(f"vect: {self.vect}", flush=True)
 				
 					self.flag = False
 
@@ -349,7 +354,13 @@ class Pong:
 		return bounce_vect
 		
 	async def top_bounce(self, top_y):
-
+		
+		if  (self.ball[0] + self.vect[0] >= 83) and \
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (83, self.yp2 - (self.pad_height / 2)), (83, self.yp2 + (self.pad_height / 2))):
+			return 		
+		if ((self.ball[0] + self.vect[0]) <= 15) and \
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (15, self.yp1 - (self.pad_height / 2)), (15, self.yp1 + (self.pad_height / 2))):
+			return 
 		if self.ball[1] + self.vect[1] <= top_y :
 			bounce_vect = [0, 0]
 			bounce_vect[1] = top_y - self.ball[1]
@@ -366,6 +377,12 @@ class Pong:
 
 	async def bot_bounce(self, bot_y):
 
+		if  (self.ball[0] + self.vect[0] >= 83) and \
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (83, self.yp2 - (self.pad_height / 2)), (83, self.yp2 + (self.pad_height / 2))):
+			return 		
+		if ((self.ball[0] + self.vect[0]) <= 15) and \
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (15, self.yp1 - (self.pad_height / 2)), (15, self.yp1 + (self.pad_height / 2))):
+			return 
 		if self.ball[1] + self.vect[1] >= bot_y:					
 			bounce_vect = [0, 0]
 			bounce_vect[1] = bot_y - self.ball[1]
@@ -373,6 +390,7 @@ class Pong:
 
 			# if (not self.get_left_bounce_vect(15) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(15))) and \
 			# 	(not self.get_right_bounce_vect(83) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(83))):
+			
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
 			await asyncio.sleep(0.05)
