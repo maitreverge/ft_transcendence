@@ -30,8 +30,8 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [50, 50]
-		self.rst = [2, 2]
-		self.vect = self.rst
+		self.rst = [1, 1]
+		self.vect = self.rst.copy()
 		self.score = [0, 0]
 		self.mag = None
 		# asyncio.run(self.end())
@@ -187,11 +187,11 @@ class Pong:
 				if self.ball[0] >= 100:
 					self.score[1] += 1
 					self.ball = [50, 50]
-					self.vect = self.rst
+					self.vect = self.rst.copy()
 				if self.ball[0] <= 0:
 					self.score[0] += 1
 					self.ball = [50, 50]
-					self.vect = self.rst
+					self.vect = self.rst.copy()
 							
 				if ((self.ball[0] + self.vect[0]) <= 15) and \
 					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (15, self.yp1 - (self.pad_height / 2)), (15, self.yp1 + (self.pad_height / 2))):
@@ -246,7 +246,7 @@ class Pong:
 					x = math.sqrt(abs(x))
 					scl = 1
 					if abs(self.vect[0]) < 1e6 and abs(self.vect[1]) < 1e6:
-						scl = 1.3
+						scl = 1.1
 					self.vect[0] = -scl * x
 					self.vect[1] = scl * y 
 					print(f"vect: {self.vect}", flush=True)
@@ -254,7 +254,7 @@ class Pong:
 					self.flag = False
 
 				
-				await self.bot_bounce(38)
+				await self.bot_bounce(97)
 			
 				
 				await self.top_bounce(0)
