@@ -30,7 +30,7 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [20, 20]
-		self.rst = [3, -3]
+		self.rst = [10, -10]
 		self.vect = self.rst
 		self.score = [0, 0]
 		self.mag = None
@@ -194,56 +194,59 @@ class Pong:
 					self.vect = self.rst
 							
 				if ((self.ball[0] + self.vect[0]) <= 15) and \
-					(self.yp1 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp1 + (self.pad_height / 2)):
+					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (15, self.yp1 - (self.pad_height / 2)), (15, self.yp1 + (self.pad_height / 2))):
+
+					# (self.yp1 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp1 + (self.pad_height / 2)):
 				
 					new_vect = [0, 0]
 					new_vect[0] = 15 - self.ball[0]
 					new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
 
-					if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
-		 				(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
+					# if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
+		 			# 	(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
 				
-						self.ball[0] += new_vect[0]				
-						self.ball[1] += new_vect[1]
-						await asyncio.sleep(0.05)					
-				
-						mag = self.get_magnitude(self.vect) 				
-						y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
-						y = y * mag
-						x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
-						x = math.sqrt(abs(x))	
+					self.ball[0] += new_vect[0]				
+					self.ball[1] += new_vect[1]
+					await asyncio.sleep(0.05)					
+			
+					mag = self.get_magnitude(self.vect) 				
+					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
+					y = y * mag
+					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
+					x = math.sqrt(abs(x))	
 
-						self.vect[0] = 1 * x 			
-						self.vect[1] = 1 * y 
-					
-						self.flag = False
+					self.vect[0] = 1 * x 			
+					self.vect[1] = 1 * y 
+				
+					self.flag = False
 								
 				if  (self.ball[0] + self.vect[0] >= 83) and \
-						(self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
+					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (83, self.yp2 - (self.pad_height / 2)), (83, self.yp2 + (self.pad_height / 2))):
+						# (self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
 					
 					new_vect = [0, 0]
 					new_vect[0] = 83 - self.ball[0]
 					new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
 
-					if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
-		 				(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
+					# if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
+		 			# 	(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
 
 					
-						self.ball[0] += new_vect[0]	
-						self.ball[1] += new_vect[1]
-						await asyncio.sleep(0.05)
-										
-						mag = self.get_magnitude(self.vect) 					
-						y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
-						y = y * mag
-						x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
-						x = math.sqrt(abs(x))
-					
-						self.vect[0] = -1 * x 	
-						self.vect[1] = 1 * y 
+					self.ball[0] += new_vect[0]	
+					self.ball[1] += new_vect[1]
+					await asyncio.sleep(0.05)
+									
+					mag = self.get_magnitude(self.vect) 					
+					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
+					y = y * mag
+					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+					x = math.sqrt(abs(x))
+				
+					self.vect[0] = -1 * x 	
+					self.vect[1] = 1 * y 
 
-					
-						self.flag = False
+				
+					self.flag = False
 
 				
 				await self.bot_bounce(38)
@@ -275,6 +278,38 @@ class Pong:
 			await asyncio.sleep(0.05)	
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
+	def segments_intersect(self, A, B, C, D, epsilon=1e-9):
+		def orientation(p, q, r):
+			# Déterminant orienté
+			val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+			if abs(val) < epsilon:
+				return 0  # colinéaire
+			return 1 if val > 0 else 2  # 1: horaire, 2: anti-horaire
+
+		def on_segment(p, q, r):
+			# Vérifie si q est sur le segment [p, r]
+			return (
+				min(p[0], r[0]) - epsilon <= q[0] <= max(p[0], r[0]) + epsilon and
+				min(p[1], r[1]) - epsilon <= q[1] <= max(p[1], r[1]) + epsilon
+			)
+
+		o1 = orientation(A, B, C)
+		o2 = orientation(A, B, D)
+		o3 = orientation(C, D, A)
+		o4 = orientation(C, D, B)
+
+		# Cas général
+		if o1 != o2 and o3 != o4:
+			return True
+
+		# Cas particuliers (colinéaires)
+		if o1 == 0 and on_segment(A, C, B): return True
+		if o2 == 0 and on_segment(A, D, B): return True
+		if o3 == 0 and on_segment(C, A, D): return True
+		if o4 == 0 and on_segment(C, B, D): return True
+
+		return False
+
 	def get_left_bounce_vect(self, left_y):
 		bounce_vect = None
 		if ((self.ball[0] + self.vect[0]) <= left_y) and \
@@ -288,7 +323,9 @@ class Pong:
 	def get_right_bounce_vect(self, right_y):
 		bounce_vect = None
 		if  (self.ball[0] + self.vect[0] >= right_y) and \
-			(self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
+			self.segments_intersect(self.vect[0], self.vect[1], self.yp2 - (self.pad_height / 2), self.yp2 + (self.pad_height / 2)):
+
+			# (self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
 				
 			bounce_vect = [0, 0]
 			bounce_vect[0] = right_y - self.ball[0]
@@ -318,14 +355,14 @@ class Pong:
 			bounce_vect[1] = top_y - self.ball[1]
 			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
 
-			if (not self.get_left_bounce_vect(15) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(15))) and \
-		 		(not self.get_right_bounce_vect(83) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(83))):
-				self.ball[0] += bounce_vect[0]				
-				self.ball[1] += bounce_vect[1]
-				
-				await asyncio.sleep(0.05)
-				self.vect[1] = -self.vect[1]		
-				self.flag = False
+			# if (not self.get_left_bounce_vect(15) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(15))) and \
+			# 	(not self.get_right_bounce_vect(83) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(83))):
+			self.ball[0] += bounce_vect[0]				
+			self.ball[1] += bounce_vect[1]
+			
+			await asyncio.sleep(0.05)
+			self.vect[1] = -self.vect[1]		
+			self.flag = False
 
 	async def bot_bounce(self, bot_y):
 
@@ -334,29 +371,29 @@ class Pong:
 			bounce_vect[1] = bot_y - self.ball[1]
 			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
 
-			if (not self.get_left_bounce_vect(15) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(15))) and \
-		 		(not self.get_right_bounce_vect(83) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(83))):
-				self.ball[0] += bounce_vect[0]				
-				self.ball[1] += bounce_vect[1]
-				await asyncio.sleep(0.05)
-				self.vect[1] = -self.vect[1]
-				self.flag = False
+			# if (not self.get_left_bounce_vect(15) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(15))) and \
+			# 	(not self.get_right_bounce_vect(83) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(83))):
+			self.ball[0] += bounce_vect[0]				
+			self.ball[1] += bounce_vect[1]
+			await asyncio.sleep(0.05)
+			self.vect[1] = -self.vect[1]
+			self.flag = False
 
 	def get_magnitude(self, vect):
 		return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
 		
 	# def scale_vector(self, nx,  x, y, nx):
 	# 	return nx * y / x
-	
+
 	def scale_vector(self, m1, m2, div):
 		return m1 * m2 / div
-	
+
 	def substract_vect(self, vect_a, vect_b):
 		new_vect = [0, 0]
 		new_vect[0] = vect_a[0] - vect_b[0]
 		new_vect[1] = vect_a[1] - vect_b[1]
 		return new_vect
-	
+
 	async def watch_dog(self):
 		delay = 0
 		while self.state != State.end:			
@@ -401,7 +438,7 @@ class Pong:
 				}))
 			except Exception as e:
 				pass		
-	
+
 		async with aiohttp.ClientSession() as session:
 			async with session.post(
 				"http://tournament:8001/tournament/match-result/", json={
