@@ -191,14 +191,37 @@ function setCommands2(socket) {
 }
 let currentX = 0, currentY = 0;
 let targetX = 0, targetY = 0;
-
+let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
+let targets = [[]]
 const speed = 1; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
-
+let offsetX = 0
+let offsetY = 0
 function animate(pads) {
-    currentX += (targetX - currentX) * speed;
-    currentY += (targetY - currentY) * speed;
+	eps = 0.1;
+	if (currentX - targetX >= -eps && currentX - targetX <= eps)
+	{
+		offsetX = (newTargetX - currentX);
+		targetX = newTargetX;
+	}
+	if (currentY - targetY >= -eps && currentY - targetY <= eps)
+	{
+		offsetY = (newTargetY - currentY);
+		targetY = newTargetY;
+	}
+    currentX += offsetX * speed;
+	// if (currentX > targetX)
+	// {
+	// 	currentX = targetX;
+	// 	targetX = newTargetX;
+	// }
+	currentY += offsetY * speed;
+	// if (currentY > targetY)
+	// {
+	// 	currentY = targetY;
+	// 	targetY = newTargetY;
+	// }
 
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
@@ -275,10 +298,21 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 		targetPads[0] = data.yp1 * (matchRect.height / 100);
 		targetPads[1] = data.yp2 * (matchRect.height / 100);
 
-        targetX = data.ball[0] * (matchRect.width / 100);
-        targetY = data.ball[1] * (matchRect.height / 100);
-		// targetX = data.ball[0];
-        // targetY = data.ball[1];
+        // newTargetX = data.ball[0] * (matchRect.width / 100);
+        // newTargetY = data.ball[1] * (matchRect.height / 100);
+		// eps = 1
+		// console.log("targetx ", targetX, " currentx ", currentX, " targety ", targetY, " currentY ", currentY);
+		// if ((targetX - currentX >= -eps && targetX - currentX <= eps)
+		// 	 &&
+		// 	(targetY - currentY >= -eps && targetY - currentY <= eps)
+		// )			
+		// {
+	
+			newTargetX = data.ball[0] * (matchRect.width / 100);
+			newTargetY = data.ball[1] * (matchRect.height / 100);
+			// targets.push([newTargetX, newTargetY])
+		// }
+		
         pads[3].innerText = data.score[0] + " | " + data.score[1];
     }
 	// });

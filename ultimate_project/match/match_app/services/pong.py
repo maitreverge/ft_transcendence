@@ -29,8 +29,9 @@ class Pong:
 		self.max_delay = 900
 		self.send_task = None
 		self.watch_task = None
-		self.ball = [50, 50]
-		self.vect = [-1 / math.sqrt(2), -1 / math.sqrt(2)]
+		self.ball = [20, 20]
+		self.rst = [3, -3]
+		self.vect = self.rst
 		self.score = [0, 0]
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
@@ -166,28 +167,31 @@ class Pong:
 				# 	self.vect[0] = -self.vect[0]
 
 # bord haut et bas
-				if self.ball[1] >= 98:
-					self.vect[1] = -self.vect[1]
-					self.ball[1] = 98
-				if self.ball[1] <= 0 :
-					self.ball[1] = 0
-					self.vect[1] = -self.vect[1]
-
+				
+				# 	self.vect[1] = -self.vect[1]
+				# 	self.ball[1] = 38
+				# # if self.ball[1] >= 98:
+				# # 	self.vect[1] = -self.vect[1]
+				# # 	self.ball[1] = 98
+			
+				# 	self.ball[1] = 0
+				# 	self.vect[1] = -self.vect[1]
+			
 				# if self.ball[1] > 100:
 				# 	self.ball[1] = 99
 				# if self.ball[1] < 0:
 				# 	self.ball[1] = 1
 
 # bord droit et gauche
-				# if self.ball[0] >= 100:
-				# 	self.score[1] += 1
-				# 	self.ball = [50, 50]
-				# 	self.vect = [-1 / math.sqrt(2), -1 / math.sqrt(2)]
-				# if self.ball[0] <= 0:
-				# 	self.score[0] += 1
-				# 	self.ball = [50, 50]
-				# 	self.vect = [-1 / math.sqrt(2), -1 / math.sqrt(2)]
-
+				if self.ball[0] >= 100:
+					self.score[1] += 1
+					self.ball = [50, 50]
+					self.vect = self.rst
+				if self.ball[0] <= 0:
+					self.score[0] += 1
+					self.ball = [50, 50]
+					self.vect = self.rst
+			
 				# if self.ball[0] == 1 and self.ball[1] >= self.yp1 and self.ball[1] <= self.yp1 + 10 \
 				# 	or self.ball[0] == 89 and self.ball[1] == self.yp2:
 				# 		self.vect[0] = -self.vect[0]
@@ -197,7 +201,7 @@ class Pong:
 				# 	self.vect[0] = -self.vect[0]
 				
 				if ((self.ball[0] + self.vect[0]) <= 15) and \
-					(self.yp1 - (self.pad_height / 2) <= self.ball[1] <= self.yp1 + (self.pad_height / 2)):
+					(self.yp1 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp1 + (self.pad_height / 2)):
 					# (0 <= self.ball[1] <= 100):
 					
 					new_vect = [0, 0]
@@ -211,24 +215,28 @@ class Pong:
 					# print(f"selfY 222: {self.vect[1]}", flush=True)
 					# print(f"selfX 222: {self.vect[0]}", flush=True)
 					sub_vect = self.substract_vect(self.vect, new_vect)
-
-					tmp = sub_vect[0]
+					mag = self.get_magnitude(self.vect) 
+				
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
-					x = (sub_vect[0] ** 2) + (sub_vect[1] ** 2) - (y ** 2)
-					# x_tmp = x
-					if x < 0:
-						x = -x
-					x = math.sqrt(x)
+					y = y * mag
+					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+					# x_tmp = x					
+					x = math.sqrt(abs(x))
 					# if x_tmp < 0:
 					# 	x = -x					
 					# if tmp > 0 and x > 0:
 					# x = -x
-					self.vect[0] = 1 * x * new_vect[1]				
-					self.vect[1] = 1 * y * new_vect[1]
-					self.ball[0] += x			
-					self.ball[1] += y
+					# mag = self.get_magnitude(self.vect)
+					# new_mag = self.get_magnitude([x, y])
+					# rapport = mag / new_mag
+				
+					
+					self.vect[0] = 1 * x 			
+					self.vect[1] = 1 * y 
+					# self.ball[0] += x			
+					# self.ball[1] += y
 
-					await asyncio.sleep(0.05)
+					# await asyncio.sleep(0.05)
 					# self.vect[0] = self.vect[0] * 1.1
 					# self.vect[1] = self.vect[1] * 1.1
 
@@ -239,8 +247,8 @@ class Pong:
 					# if tmp > 0:
 					# 	x = -x
 
-					print(f"Y 222: {y}", flush=True)
-					print(f"X 222: {x}", flush=True)
+					# print(f"Y 222: {y}", flush=True)
+					# print(f"X 222: {x}", flush=True)
 					# print(f"Y 222: {y}", flush=True)
 					# print(f"VECT: {self.vect[1]}", flush=True)
 					# self.vect[0] = x + 0.5
@@ -248,30 +256,34 @@ class Pong:
 					# print(f"VECT222: {self.vect[1]}", flush=True)
 				
 				if  (self.ball[0] + self.vect[0] >= 83) and \
-						(self.yp2 - (self.pad_height / 2) <= self.ball[1] <= self.yp2 + (self.pad_height / 2)):
+						(self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):
 					# (0 <= self.ball[1] <= 100):
 				
-
+					mag = self.get_magnitude(self.vect)
 					new_vect = [0, 0]
 					new_vect[0] = 83 - self.ball[0]
-					new_vect[1] = self.scale_vector(self.vect[0], self.vect[1], new_vect[0])
+					new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
 					self.ball[0] += new_vect[0]				
 					self.ball[1] += new_vect[1]
 					await asyncio.sleep(0.05)
-					sub_vect = self.substract_vect(self.vect, new_vect)
+					# sub_vect = self.substract_vect(self.vect, new_vect)
+					mag = self.get_magnitude(self.vect) 
+				
 					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
-					x = (sub_vect[0] ** 2) + (sub_vect[1] ** 2) - (y ** 2)
-					if x < 0:
-						x = -x
-					x = math.sqrt(x)
-					print(f"selfY 222: {self.vect[1]}", flush=True)
-					print(f"selfX 222: {self.vect[0]}", flush=True)
-					self.vect[0] = -1 * x * new_vect[1]			
-					self.vect[1] = 1 * y * new_vect[1]
-					self.ball[0] += -x			
-					self.ball[1] += y
+					y = y * mag
+					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
+					x = math.sqrt(abs(x))
+					# print(f"selfY 222: {self.vect[1]}", flush=True)
+					# print(f"selfX 222: {self.vect[0]}", flush=True)
+					# mag = self.get_magnitude(self.vect)
+					# new_mag = self.get_magnitude([x, y])
+					# rapport = mag / new_mag
+					self.vect[0] = -1 * x 	
+					self.vect[1] = 1 * y 
+					# self.ball[0] += -x			
+					# self.ball[1] += y
 
-					await asyncio.sleep(0.05)
+					# await asyncio.sleep(0.05)
 					# self.vect[0] = -self.vect[0]
 					# tmp = self.vect[0]
 					# y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
@@ -293,10 +305,14 @@ class Pong:
 					# self.vect[1] = y
 					# print(f"VECT222: {self.vect[1]}", flush=True)
 
+				if self.ball[1] + self.vect[1] >= 38:
+					await self.bot_bounce(38)
+				if self.ball[1] + self.vect[1] <= 0 :
+					await self.top_bounce(0)
+						
 				self.ball[0] += self.vect[0]				
 				self.ball[1] += self.vect[1]
 						
-				
 			else:
 				if self.start_flag:
 					if self.player1:
@@ -342,8 +358,34 @@ class Pong:
 		# 	*[t for t in tasks if t], return_exceptions=True)
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
-	def scale_vector(self, x, y, nx):
-		return nx * y / x
+	async def top_bounce(self, top_y):
+	
+		bounce_vect = [0, 0]
+		bounce_vect[1] = top_y - self.ball[1]
+		bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+		self.ball[0] += bounce_vect[0]				
+		self.ball[1] += bounce_vect[1]
+		await asyncio.sleep(0.05)
+		self.vect[1] = -self.vect[1]
+
+	async def bot_bounce(self, bot_y):
+	
+		bounce_vect = [0, 0]
+		bounce_vect[1] = bot_y - self.ball[1]
+		bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+		self.ball[0] += bounce_vect[0]				
+		self.ball[1] += bounce_vect[1]
+		await asyncio.sleep(0.05)
+		self.vect[1] = -self.vect[1]
+
+	def get_magnitude(self, vect):
+		return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
+		
+	# def scale_vector(self, nx,  x, y, nx):
+	# 	return nx * y / x
+	
+	def scale_vector(self, m1, m2, div):
+		return m1 * m2 / div
 	
 	def substract_vect(self, vect_a, vect_b):
 		new_vect = [0, 0]
@@ -365,7 +407,7 @@ class Pong:
 
 	async def sendState(self):		
 		while self.state != State.end:	
-			print(f"{self.ball}", flush=True)
+			# print(f"{self.ball}", flush=True)
 			self.myplayers = [p for p in consumer.players
 				if self.id == p["matchId"]]
 			for p in self.myplayers:
