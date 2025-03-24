@@ -3,9 +3,16 @@
 # !  EMAIL : test@test.com
 # !  PASSWORD : password
 
+# And also another user with the following credentials :
+# !  USERNAME : test_2fa
+# !  EMAIL : test2@test.com
+# !  PASSWORD : password
+
+# ! 2FA USER SECRET : S3EF2KESUQR45MRTL7MXDSJVI6JQDG4R
+
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
-
+from two_fa_playright import test_login_2fa, test_register_2fa
 
 def run(playwright: Playwright) -> None:
     base_url = "http://localhost:8000"
@@ -259,6 +266,8 @@ def run(playwright: Playwright) -> None:
     # Those tests create, test and close their own browsers
     register_from_login()
     register_after_login()
+    test_login_2fa(playwright)
+    # test_register_2fa(playwright) # ! NOT YET READY
 
 
     # ? =============== START REGULAR TESTS ===============

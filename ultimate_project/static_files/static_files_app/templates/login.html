@@ -94,9 +94,7 @@
   </div>
 </div>
 <!-- Add Animate.css for shake animation -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-<!-- Load HTMX first -->
-<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
 
 <script>
   document.addEventListener("htmx:beforeSwap", function (evt) {
@@ -162,11 +160,22 @@
               }, 200);
             });
         } else {
-          document.getElementById("login-form").innerHTML = response.message;
+			// ! UNSAFE METHOD
+		// document.getElementById("login-form").innerHTML = response.message;
+
+          // Sanitize the message using DOMPurify before setting content
+          const messageElement = document.getElementById("login-form");
+          const sanitizedMessage = DOMPurify.sanitize(response.message);
+          
+		  //   // Use textContent for plain text or innerHTML with sanitized content
+		    if (sanitizedMessage.includes("<") && sanitizedMessage.includes(">")) {
+			messageElement.innerHTML = sanitizedMessage;
+          } else {
+            messageElement.textContent = sanitizedMessage;
+          }
         }
       } catch (e) {
         console.error("Erreur de traitement de la réponse:", e);
-        // document.getElementById("login-form").innerHTML = "TRALALALALALA";
       }
     }
   });
