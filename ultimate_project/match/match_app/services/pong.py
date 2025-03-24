@@ -249,12 +249,12 @@ class Pong:
 						scl = 1.1
 					self.vect[0] = -scl * x
 					self.vect[1] = scl * y 
-					print(f"vect: {self.vect}", flush=True)
+					# print(f"vect: {self.vect}", flush=True)
 				
 					self.flag = False
 
 				
-				await self.bot_bounce(37)
+				await self.bot_bounce(36)
 			
 				
 				await self.top_bounce(0)

@@ -199,53 +199,79 @@ const speed = 0.5; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
 function animate(pads) {
-	eps = 0.002;
-	if ((currentX - targetX >= -eps && currentX - targetX <= eps)
-		|| (currentY - targetY >= -eps && currentY - targetY <= eps))
-	{
-		let tar = targets.shift();
-		if (tar) {
+	// console.log("pads");
+	eps = 0.5;
+	// let tar = targets.shift();
+	// console.log(tar);
+	// // if (Math.abs(currentX - targetX) < eps || Math.abs(currentY - targetY) < eps)
+	// // {
+	// 	console.log("animate");
+	// 	console.log(tar);
+	// 	// if (tar) {
 
-			if (currentX - targetX >= -eps && currentX - targetX <= eps)
-				{
-					offsetX = (tar[0] - currentX);
-					targetX = tar[0];
-				}
-				if (currentY - targetY >= -eps && currentY - targetY <= eps)
-					{
-						// offsetY = (newTargetY - currentY);
-						offsetY = (tar[1] - currentY);
-			// targetY = newTargetY;
-			targetY = tar[1];
-			
-		}
-		}
-	}
+	// 		// if (currentX - targetX >= -eps && currentX - targetX <= eps)
+	// 		// {
+	// 			offsetX = (tar[0] - currentX);
+	// 			targetX = tar[0];
+	// 		// }
+	// 		// if (currentY - targetY >= -eps && currentY - targetY <= eps)
+	// 		// {
+	// 			// offsetY = (newTargetY - currentY);
+	// 			offsetY = (tar[1] - currentY);
+	// 			// targetY = newTargetY;
+	// 			targetY = tar[1];			
+	// 		// }
+	// 	// }
+	// 	// else
+		// 	console.log("notar");
+	// }
 
 	// currentX += (newTargetX - currentX) * speed;
 	
 	// currentY += (newTargetY - currentY) * speed;
+		// Si on a atteint la cible précédente
+		// if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
+		// 	// const tar = targets.shift();
+		// 	// if (tar) {
+		// 		// targetX = tar[0];
+		// 		// targetY = tar[1];
+		// 		targetX = newTargetX;
+		// 		targetY = newTargetY;
+		// 	// }
+		// }
 	
-    currentX += offsetX * speed;
+		// Met à jour les déplacements vers la cible actuelle
+	// 	const offsetX = targetX - currentX;
+	// 	const offsetY = targetY - currentY;
+    // currentX += offsetX * speed;
 	// if (currentX > targetX)
 	// {
 	// 	currentX = targetX;
 	// 	targetX = newTargetX;
 	// }
-	currentY += offsetY * speed;
+	// currentY += offsetY * speed;
 	// if (currentY > targetY)
 	// {
 	// 	currentY = targetY;
 	// 	targetY = newTargetY;
 	// }
 
-	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
-	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
-	// console.log("ANIMATION");
-    pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
-	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
-	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
-	// pads[2].style.left = currentX + "%";
+	// currentX = newTargetX;
+	// currentY = newTargetY;
+	const tar = targets.shift();
+	if (tar)
+	{
+
+		currentX = tar[0];
+		currentY = tar[1];
+		actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
+		actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
+		// console.log("ANIMATION");
+		pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
+		pads[0].style.transform = `translateY(${actualPads[0]}px)`;
+		pads[1].style.transform = `translateY(${actualPads[1]}px)`;
+		// pads[2].style.left = currentX + "%";
+	}
 	// pads[2].style.top = currentY + "%";
     requestAnimationFrame(()=>animate(pads));
 }
@@ -326,7 +352,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	
 			newTargetX = data.ball[0] * (matchRect.width / 100);
 			newTargetY = data.ball[1] * (matchRect.height / 100);
-			targets.push([newTargetX, newTargetY])
+			targets.push([newTargetX, newTargetY]);
+			// console.log(targets);
 		// }
 		
         pads[3].innerText = data.score[0] + " | " + data.score[1];
