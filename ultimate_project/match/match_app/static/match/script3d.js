@@ -260,7 +260,7 @@ function initMatchWs() {
 			`?playerId=${window.playerId}`);
 	else	
 		window.matchSocket = new WebSocket(
-			`ws://localhost:8443/ws/match/${window.matchId}/` +
+			`wss://localhost:8443/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`);
 	window.matchSocket.onopen = () => {
 		console.log("Connexion Match établie 😊");
