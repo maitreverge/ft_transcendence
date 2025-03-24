@@ -358,22 +358,34 @@ function animate(pads) {
 	if (sensX === "right")
 	{
 		if (currentX > targetX)
+		{
+			currentY = targetY
 			currentX = targetX;
+		}
 	}
 	else 
 	{
 		if (currentX < targetX)
+		{
+			currentY = targetY
 			currentX = targetX;
+		}
 	}
 	if (sensY === "up")
 	{
 		if (currentY < targetY)
-			currentY = targetY;
+		{
+			currentY = targetY
+			currentX = targetX;
+		}
 	}
 	else 
 	{
 		if (currentY > targetY)
-			currentY = targetY;
+		{
+			currentY = targetY
+			currentX = targetX;
+		}
 	}
 	
 	// currentX += (targetX - currentX) * speed;

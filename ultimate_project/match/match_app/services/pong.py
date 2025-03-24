@@ -204,10 +204,10 @@ class Pong:
 
 					# if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
 		 			# 	(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
-				
+					
 					self.ball[0] += new_vect[0]				
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.01)					
+					await asyncio.sleep(0.10)					
 			
 					mag = self.get_magnitude(self.vect) 				
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
@@ -234,10 +234,10 @@ class Pong:
 					# if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
 		 			# 	(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
 
-					
+					# await asyncio.sleep(0.05)	
 					self.ball[0] += new_vect[0]	
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.01)
+					await asyncio.sleep(0.10)
 									
 					mag = self.get_magnitude(self.vect) 					
 					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
@@ -369,7 +369,7 @@ class Pong:
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
 			
-			await asyncio.sleep(0.01)
+			await asyncio.sleep(0.10)
 			self.vect[1] = -self.vect[1]		
 			self.flag = False
 
@@ -391,7 +391,7 @@ class Pong:
 			
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.10)
 			self.vect[1] = -self.vect[1]
 			self.flag = False
 
