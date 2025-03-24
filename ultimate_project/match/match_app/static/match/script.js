@@ -314,6 +314,11 @@ function animate3(pads) {
 
 	requestAnimationFrame(() => animate(pads));
 }
+let exCurrentX = 0, exCurrentY = 0;
+let sensX = "left";
+let sensY = "down";
+let exSensX = "left";
+let exSensY = "down";
 function animate(pads) {
 	const eps = 0.5; // tolérance de distance avant de prendre un nouveau point
 
@@ -327,10 +332,52 @@ function animate(pads) {
 	// 	}
 	
 	// }
-		targetX = newTargetX;
-		targetY = newTargetY;
-	currentX += (targetX - currentX) * speed;
-	currentY += (targetY - currentY) * speed;
+	
+	if (targetX != newTargetX && targetY != newTargetY)
+	{
+		exCurrentX = currentX;
+		exCurrentY = currentY;
+		if (targetX <= newTargetX)
+			sensX = "right";
+		else
+			sensX = "left";
+		if (targetY >= newTargetY)
+			sensY = "up";
+		else
+			sensY = "down";
+		
+
+		exSensX = sensX;
+		exSensY = sensY;
+	}
+	targetX = newTargetX;
+	targetY = newTargetY;
+		
+	currentX += (targetX - exCurrentX) * speed;
+	currentY += (targetY - exCurrentY) * speed;
+	if (sensX === "right")
+	{
+		if (currentX > targetX)
+			currentX = targetX;
+	}
+	else 
+	{
+		if (currentX < targetX)
+			currentX = targetX;
+	}
+	if (sensY === "up")
+	{
+		if (currentY < targetY)
+			currentY = targetY;
+	}
+	else 
+	{
+		if (currentY > targetY)
+			currentY = targetY;
+	}
+	
+	// currentX += (targetX - currentX) * speed;
+	// currentY += (targetY - currentY) * speed;
 	// Interpolation pour les pads
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
