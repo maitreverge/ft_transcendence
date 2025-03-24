@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
 let targets = []
-const speed = 1/3; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+const speed = 1/6; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
 function animate2(pads) {
