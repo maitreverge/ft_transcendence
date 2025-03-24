@@ -377,7 +377,7 @@ function initSimpleMatch() {
 		);
 	else
 		window.simpleMatchSocket = new WebSocket(
-			`ws://localhost:8000/ws/tournament/${window.user_id}/`
+			`wss://localhost:8443/ws/tournament/${window.user_id}/`
 		);
 	window.simpleMatchSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
