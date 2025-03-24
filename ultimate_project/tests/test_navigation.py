@@ -10,7 +10,7 @@
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
-from two_fa_playright import test_login_2fa
+from two_fa_playright import test_login_2fa, test_register_2fa
 
 def run(playwright: Playwright) -> None:
     base_url = "http://localhost:8000"
@@ -265,6 +265,7 @@ def run(playwright: Playwright) -> None:
     register_from_login()
     register_after_login()
     test_login_2fa(playwright)
+    test_register_2fa(playwright)
 
 
     # ? =============== START REGULAR TESTS ===============
