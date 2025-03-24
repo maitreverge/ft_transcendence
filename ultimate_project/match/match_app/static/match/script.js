@@ -194,13 +194,13 @@ let targetX = 0, targetY = 0;
 let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
-let targets = [[]]
-const speed = 0.5; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+let targets = []
+const speed = 1; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
-function animate(pads) {
+function animate2(pads) {
 	// console.log("pads");
-	eps = 0.5;
+	eps = 0.1;
 	// let tar = targets.shift();
 	// console.log(tar);
 	// // if (Math.abs(currentX - targetX) < eps || Math.abs(currentY - targetY) < eps)
@@ -262,8 +262,10 @@ function animate(pads) {
 	if (tar)
 	{
 
-		currentX = tar[0];
-		currentY = tar[1];
+		// currentX = tar[0];
+		// currentY = tar[1];
+		currentX += (tar[0] - currentX) * speed;
+		currentY += (tar[1] - currentY) * speed;
 		actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 		actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
 		// console.log("ANIMATION");
@@ -274,6 +276,42 @@ function animate(pads) {
 	}
 	// pads[2].style.top = currentY + "%";
     requestAnimationFrame(()=>animate(pads));
+}
+function animate(pads) {
+	const eps = 0.5; // tolérance de distance avant de prendre un nouveau point
+
+	// Si on est proche de la cible, on passe au suivant
+	// console.log(Math.abs(currentX - targetX));
+	// if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
+	// 	const tar = targets.shift();
+	// 	if (tar) {
+	// 		console.log("je dois passer ici a chaque refresh serveur");
+	// 		targetX = tar[0];
+	// 		targetY = tar[1];
+	// 	}
+	// }
+
+	// Interpolation fluide vers la cible actuelle
+	// currentX += (targetX - currentX) * speed;
+	// currentY += (targetY - currentY) * speed;
+	// const tar = targets.shift();
+	// if (tar) {
+
+	// 	currentX = tar[0];
+	// 	currentY = tar[1];
+	// }
+	currentX = newTargetX;
+	currentY = newTargetY;
+	// Interpolation pour les pads
+	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
+	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
+
+	// Appliquer le style
+	pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
+	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
+	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
+
+	requestAnimationFrame(() => animate(pads));
 }
 
 // Appelle animate une seule fois au début
@@ -296,7 +334,9 @@ function animate(pads) {
 // }
 
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
+	match = document.getElementById("match");
 	
+
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);
@@ -318,6 +358,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	}
 	match = document.getElementById("match");
 	const matchRect = match.getBoundingClientRect();
+	pads[2].style.width = (matchRect.width / 100) * 2;
+	pads[2].style.height = (matchRect.height / 100) * 2;
 	// console.log(" w ", rect.width, " h ", rect.height);
 	// console.log(" ball 0 ", data.ball[0], " ball1 ", data.ball[1]);
 	// console.log("data: ", `${data.ball[0] * (rect.width / 100)}`, `${data.ball[1] * (rect.height / 100)}}`);
@@ -352,7 +394,7 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	
 			newTargetX = data.ball[0] * (matchRect.width / 100);
 			newTargetY = data.ball[1] * (matchRect.height / 100);
-			targets.push([newTargetX, newTargetY]);
+			// targets.push([newTargetX, newTargetY]);
 			// console.log(targets);
 		// }
 		
@@ -400,10 +442,6 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("ball"),
 		document.getElementById("score")
 	];
-	match = document.getElementById("match");
-	const matchRect = match.getBoundingClientRect();
-	pads[2].style.width = (matchRect.width / 100) * 2;
-	pads[2].style.height = (matchRect.width / 100) * 2;
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
