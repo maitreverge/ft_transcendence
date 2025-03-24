@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
 let targets = []
-const speed = 1/6; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+const speed = 1/24; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
 function animate2(pads) {
@@ -319,10 +319,11 @@ let sensX = "left";
 let sensY = "down";
 let exSensX = "left";
 let exSensY = "down";
+let bounce = false;
 function animate(pads) {
 	const eps = 0.5; // tolérance de distance avant de prendre un nouveau point
 
-	console.log("ANIMATE");
+	// console.log("ANIMATE");
 	// if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
 	// 	const tar = targets.shift();
 	// 	if (tar) {
@@ -332,7 +333,7 @@ function animate(pads) {
 	// 	}
 	
 	// }
-	
+
 	if (targetX != newTargetX && targetY != newTargetY)
 	{
 		exCurrentX = currentX;
@@ -346,12 +347,21 @@ function animate(pads) {
 		else
 			sensY = "down";
 		
-
+		if (exSensX != sensX || exSensY != sensY)
+			bounce = true;
 		exSensX = sensX;
 		exSensY = sensY;
 	}
-	targetX = newTargetX;
-	targetY = newTargetY;
+	if (!bounce)
+	{
+		targetX = newTargetX;
+		targetY = newTargetY;
+	}
+	else
+	{
+		if (currentX === targetX || currentY === targetY)
+			bounce = false;
+	}
 		
 	currentX += (targetX - exCurrentX) * speed;
 	currentY += (targetY - exCurrentY) * speed;
@@ -359,7 +369,8 @@ function animate(pads) {
 	{
 		if (currentX > targetX)
 		{
-			currentY = targetY
+			console.log("yop");
+			currentY = targetY;
 			currentX = targetX;
 		}
 	}
@@ -367,7 +378,8 @@ function animate(pads) {
 	{
 		if (currentX < targetX)
 		{
-			currentY = targetY
+			console.log("yep");
+			currentY = targetY;
 			currentX = targetX;
 		}
 	}
@@ -375,7 +387,8 @@ function animate(pads) {
 	{
 		if (currentY < targetY)
 		{
-			currentY = targetY
+			console.log("yip");
+			currentY = targetY;
 			currentX = targetX;
 		}
 	}
@@ -383,7 +396,8 @@ function animate(pads) {
 	{
 		if (currentY > targetY)
 		{
-			currentY = targetY
+			console.log("yup");
+			currentY = targetY;
 			currentX = targetX;
 		}
 	}
@@ -423,7 +437,7 @@ function animate(pads) {
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	match = document.getElementById("match");
 	
-	console.log("SERVEUR");
+	// console.log("SERVEUR");
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);

@@ -207,7 +207,7 @@ class Pong:
 					
 					self.ball[0] += new_vect[0]				
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.10)					
+					await asyncio.sleep(0.05)					
 			
 					mag = self.get_magnitude(self.vect) 				
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
@@ -237,7 +237,7 @@ class Pong:
 					# await asyncio.sleep(0.05)	
 					self.ball[0] += new_vect[0]	
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.10)
+					await asyncio.sleep(0.05)
 									
 					mag = self.get_magnitude(self.vect) 					
 					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
@@ -369,7 +369,7 @@ class Pong:
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
 			
-			await asyncio.sleep(0.10)
+			await asyncio.sleep(0.05)
 			self.vect[1] = -self.vect[1]		
 			self.flag = False
 
@@ -391,7 +391,7 @@ class Pong:
 			
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
-			await asyncio.sleep(0.10)
+			await asyncio.sleep(0.05)
 			self.vect[1] = -self.vect[1]
 			self.flag = False
 
