@@ -359,6 +359,9 @@
 	  validateForm();
 	});
 
+	
+	// Form submission validation
+	//   form.addEventListener("htmx:beforeSwap", function (evt) {
 		
 	document.addEventListener("htmx:beforeSwap", function (evt) {
 		console.log("REGISTER FORM LISTENNING");
@@ -383,18 +386,7 @@
 				});
 			} else {
 				// ! Inserting errors from the backend
-				// document.getElementById("register-form").innerHTML = response.message;
-
-				// Sanitize the message using DOMPurify before setting content
-				const messageElement = document.getElementById("register-form");
-				const sanitizedMessage = DOMPurify.sanitize(response.message);
-				
-				// // Use textContent for plain text or innerHTML with sanitized content
-				if (sanitizedMessage.includes("<") && sanitizedMessage.includes(">")) {	
-					messageElement.innerHTML = sanitizedMessage;
-				} else {
-					messageElement.textContent = sanitizedMessage;
-				}
+				document.getElementById("register-form").innerHTML = response.message;
 			}
 		} catch (e) {
 			console.error("Erreur de traitement de la réponse:", e);
