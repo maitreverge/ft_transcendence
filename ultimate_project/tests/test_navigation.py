@@ -10,7 +10,7 @@
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
-from two_fa_playright import test_2fa
+from two_fa_playright import test_login_2fa
 
 def run(playwright: Playwright) -> None:
     base_url = "http://localhost:8000"
@@ -262,9 +262,9 @@ def run(playwright: Playwright) -> None:
     # ! =============== KICKSTART TESTER HERE ===============
     
     # Those tests create, test and close their own browsers
-    # register_from_login()
-    # register_after_login()
-    test_2fa(playwright)
+    register_from_login()
+    register_after_login()
+    test_login_2fa(playwright)
 
 
     # ? =============== START REGULAR TESTS ===============

@@ -12,7 +12,7 @@ totp = pyotp.TOTP(secret)
 
 base_url = "http://localhost:8000"
 
-def test_2fa(playwright: Playwright):
+def test_login_2fa(playwright: Playwright):
     # Starting a new window
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
@@ -34,8 +34,8 @@ def test_2fa(playwright: Playwright):
     page.locator("#otp_input").fill("000000")
     page.locator("#otp_verify").click()
     expect(page).to_have_url(f"{base_url}/two-factor-auth/")
-    error_message = page.locator("#otp_input")
-    expect(error_message).to_have_text("Invalid token")
+    error_message = page.locator("#login_error")
+    expect(error_message).to_have_text("Invalid 2FA code")
 
     # Click on the cancel button
     page.locator("#cancel_button").click()
