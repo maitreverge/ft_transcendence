@@ -12,7 +12,7 @@ register_2fa_test_password = "password"
 
 # ! =============== TESTING 2FA ===============
 
-base_url = "http://localhost:8000"
+base_url = "https://localhost:8443"
 
 
 def test_login_2fa(playwright: Playwright):
@@ -21,7 +21,9 @@ def test_login_2fa(playwright: Playwright):
 
     # Starting a new window
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
+    context = browser.new_context(
+        ignore_https_errors=True
+    )
     page = context.new_page()
     page.goto(f"{base_url}/login/")
 
@@ -72,7 +74,9 @@ def test_login_2fa(playwright: Playwright):
 def test_register_2fa(playwright: Playwright):
     # Starting a new window
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
+    context = browser.new_context(
+        ignore_https_errors=True
+    )
     page = context.new_page()
     page.goto(f"{base_url}/register/")
 

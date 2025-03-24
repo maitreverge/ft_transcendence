@@ -15,9 +15,11 @@ import time
 from two_fa_playright import test_login_2fa, test_register_2fa
 
 def run(playwright: Playwright) -> None:
-    base_url = "http://localhost:8000"
+    base_url = "https://localhost:8443"
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
+    context = browser.new_context(
+        ignore_https_errors=True
+    )
     page = context.new_page()
     visited_urls = []
     page.set_default_timeout(6000) # Timeout of 6 seconds for each click
@@ -223,7 +225,9 @@ def run(playwright: Playwright) -> None:
     def register_after_login():
         # Starting a new window
         browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context()
+        context = browser.new_context(
+        ignore_https_errors=True
+    )
         page = context.new_page()
         
         # Register testing comming from within the website
@@ -272,7 +276,9 @@ def run(playwright: Playwright) -> None:
 
     # ? =============== START REGULAR TESTS ===============
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
+    context = browser.new_context(
+        ignore_https_errors=True
+    )
     page = context.new_page()
     page.goto(f"{base_url}/register/")
     
@@ -350,18 +356,20 @@ with sync_playwright() as playwright:
 
 # def run(playwright: Playwright) -> None:
 #     browser = playwright.chromium.launch(headless=False)
-#     context = browser.new_context()
+#     context = browser.new_context(
+    #     ignore_https_errors=True
+    # )
 #     page = context.new_page()
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/")
+#     page.goto("https://localhost:8443/")
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
+#     page.goto("https://localhost:8443/home/")
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/user/profile/")
+#     page.goto("https://localhost:8443/user/profile/")
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/user/stats/")
+#     page.goto("https://localhost:8443/user/stats/")
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/tournament/simple-match/")
+#     page.goto("https://localhost:8443/tournament/simple-match/")
 #     time.sleep(0.4)
 #     page.locator("#nav-home").click()
 #     time.sleep(0.4)
@@ -371,13 +379,13 @@ with sync_playwright() as playwright:
 #     time.sleep(0.4)
 #     page.locator("#nav-stats").click()
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
+#     page.goto("https://localhost:8443/home/")
 #     page.locator("#field-tournament").click()
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
+#     page.goto("https://localhost:8443/home/")
 #     page.locator("#field-profile").click()
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
+#     page.goto("https://localhost:8443/home/")
 #     page.locator("#field-stats").click()
 #     time.sleep(0.4)
 
@@ -398,7 +406,9 @@ with sync_playwright() as playwright:
 
 # def run(playwright: Playwright) -> None:
 #     browser = playwright.chromium.launch(headless=False)
-#     context = browser.new_context()
+#     context = browser.new_context(
+        # ignore_https_errors=True
+    # )
 #     page = context.new_page()
 
 #     # Loguer toutes les requêtes effectuées
@@ -416,7 +426,7 @@ with sync_playwright() as playwright:
 
 #     page.on("response", handle_response)
 
-#     page.goto("http://localhost:8000/")
+#     page.goto("https://localhost:8443/")
 #     time.sleep(0.4)
 #     page.get_by_role("textbox", name="Entrez votre nom").click()
 #     time.sleep(0.4)
@@ -432,13 +442,13 @@ with sync_playwright() as playwright:
 #     time.sleep(0.4)
 #     page.get_by_role("button", name="Close").click()
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/test/")
+#     page.goto("https://localhost:8443/test/")
 #     time.sleep(0.4)
-#     page.goto("http://localhost:8000/match/")
+#     page.goto("https://localhost:8443/match/")
 
 #     # TEST FLO
 #     time.sleep(1)
-#     page.goto("http://localhost:8000/user/")
+#     page.goto("https://localhost:8443/user/")
 #     time.sleep(1)
 #     # TEST FLO
 #     websocket_connected = False
@@ -450,7 +460,7 @@ with sync_playwright() as playwright:
 #         print(f"🔌 WebSocket connectée à : {ws.url}")
 
 #     page.on("websocket", handle_websocket)
-#     page.goto("http://localhost:8000/match/")
+#     page.goto("https://localhost:8443/match/")
 #     try:
 #         if websocket_connected:
 #             print("✅ La connexion WebSocket est réussie.")
