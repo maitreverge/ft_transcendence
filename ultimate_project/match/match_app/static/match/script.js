@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
 let targets = []
-const speed = 1/24; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+const speed = 1/6; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
 function animate2(pads) {
@@ -369,7 +369,7 @@ function animate(pads) {
 	{
 		if (currentX > targetX)
 		{
-			console.log("yop");
+			console.log("yop", currentX, " t ", targetX);
 			currentY = targetY;
 			currentX = targetX;
 		}
@@ -378,25 +378,25 @@ function animate(pads) {
 	{
 		if (currentX < targetX)
 		{
-			console.log("yep");
+			console.log("yep", currentX, " t ", targetX);
 			currentY = targetY;
 			currentX = targetX;
 		}
 	}
-	if (sensY === "up")
+	if (sensY === "down")
 	{
-		if (currentY < targetY)
+		if (currentY > targetY)
 		{
-			console.log("yip");
+			console.log("yip", currentY, " t ", targetY);
 			currentY = targetY;
 			currentX = targetX;
 		}
 	}
 	else 
 	{
-		if (currentY > targetY)
+		if (currentY < targetY)
 		{
-			console.log("yup");
+			console.log("yup", currentY, " t ", targetY);
 			currentY = targetY;
 			currentX = targetX;
 		}
