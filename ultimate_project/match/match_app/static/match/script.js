@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
 let targets = []
-const speed = 1; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+const speed = 1/3; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
 function animate2(pads) {
@@ -230,15 +230,15 @@ function animate2(pads) {
 	
 	// currentY += (newTargetY - currentY) * speed;
 		// Si on a atteint la cible précédente
-		// if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
-		// 	// const tar = targets.shift();
-		// 	// if (tar) {
-		// 		// targetX = tar[0];
-		// 		// targetY = tar[1];
-		// 		targetX = newTargetX;
-		// 		targetY = newTargetY;
-		// 	// }
-		// }
+		if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
+			const tar = targets.shift();
+			if (tar) {
+				targetX = tar[0];
+				targetY = tar[1];
+				// targetX = newTargetX;
+				// targetY = newTargetY;
+			}
+		}
 	
 		// Met à jour les déplacements vers la cible actuelle
 	// 	const offsetX = targetX - currentX;
@@ -258,9 +258,9 @@ function animate2(pads) {
 
 	// currentX = newTargetX;
 	// currentY = newTargetY;
-	const tar = targets.shift();
-	if (tar)
-	{
+	// const tar = targets.shift();
+	// if (tar)
+	// {
 
 		// currentX = tar[0];
 		// currentY = tar[1];
@@ -273,35 +273,36 @@ function animate2(pads) {
 		pads[0].style.transform = `translateY(${actualPads[0]}px)`;
 		pads[1].style.transform = `translateY(${actualPads[1]}px)`;
 		// pads[2].style.left = currentX + "%";
-	}
+	// }
 	// pads[2].style.top = currentY + "%";
     requestAnimationFrame(()=>animate(pads));
 }
-function animate(pads) {
-	const eps = 0.5; // tolérance de distance avant de prendre un nouveau point
+function animate3(pads) {
+	const eps = 0.4; // tolérance de distance avant de prendre un nouveau point
 
 	// Si on est proche de la cible, on passe au suivant
 	// console.log(Math.abs(currentX - targetX));
-	// if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
-	// 	const tar = targets.shift();
-	// 	if (tar) {
-	// 		console.log("je dois passer ici a chaque refresh serveur");
-	// 		targetX = tar[0];
-	// 		targetY = tar[1];
-	// 	}
-	// }
-
+	if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
+		const tar = targets.shift();
+		if (tar) {
+			console.log("je dois passer ici a chaque refresh serveur");
+			targetX = tar[0];
+			targetY = tar[1];
+		}
+	}
+	// targetX = newTargetX;
+	// targetY = newTargetY;
 	// Interpolation fluide vers la cible actuelle
-	// currentX += (targetX - currentX) * speed;
-	// currentY += (targetY - currentY) * speed;
 	// const tar = targets.shift();
 	// if (tar) {
-
+		
 	// 	currentX = tar[0];
 	// 	currentY = tar[1];
 	// }
-	currentX = newTargetX;
-	currentY = newTargetY;
+	currentX += (targetX - currentX) * speed;
+	currentY += (targetY - currentY) * speed;
+	// currentX = newTargetX;
+	// currentY = newTargetY;
 	// Interpolation pour les pads
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
@@ -313,7 +314,34 @@ function animate(pads) {
 
 	requestAnimationFrame(() => animate(pads));
 }
+function animate(pads) {
+	const eps = 0.5; // tolérance de distance avant de prendre un nouveau point
 
+	console.log("ANIMATE");
+	// if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
+	// 	const tar = targets.shift();
+	// 	if (tar) {
+	// 		console.log("je dois passer ici a chaque refresh serveur");
+	// 		targetX = tar[0];
+	// 		targetY = tar[1];
+	// 	}
+	
+	// }
+		targetX = newTargetX;
+		targetY = newTargetY;
+	currentX += (targetX - currentX) * speed;
+	currentY += (targetY - currentY) * speed;
+	// Interpolation pour les pads
+	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
+	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
+
+	// Appliquer le style
+	pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
+	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
+	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
+
+	requestAnimationFrame(() => animate(pads));
+}
 // Appelle animate une seule fois au début
 
 
@@ -336,7 +364,7 @@ function animate(pads) {
 function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	match = document.getElementById("match");
 	
-
+	console.log("SERVEUR");
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);
@@ -394,7 +422,7 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	
 			newTargetX = data.ball[0] * (matchRect.width / 100);
 			newTargetY = data.ball[1] * (matchRect.height / 100);
-			// targets.push([newTargetX, newTargetY]);
+			targets.push([newTargetX, newTargetY]);
 			// console.log(targets);
 		// }
 		
