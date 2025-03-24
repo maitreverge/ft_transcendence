@@ -138,7 +138,20 @@
 						});
 				} else {
 					// Display error message
-					evt.detail.target.innerHTML = response.message;
+
+					// ! UNSAFE METHOD
+					// evt.detail.target.innerHTML = response.message;
+
+					// Sanitize the message using DOMPurify before setting content
+					const messageElement = document.getElementById("login_error");
+					const sanitizedMessage = DOMPurify.sanitize(response.message);
+					
+					// Use textContent for plain text or innerHTML with sanitized content
+					if (sanitizedMessage.includes("<") && sanitizedMessage.includes(">")) {
+						messageElement.innerHTML = sanitizedMessage;
+					} else {
+						messageElement.textContent = sanitizedMessage;
+					}
 				}
 			} catch (e) {
 				console.error("Erreur de traitement de la réponse:", e);
