@@ -3,16 +3,17 @@
 
 <div style="display:none">
 <head>
-    <title>Test</title>
     <style>
-        body { 
-            margin: 0; 
-        }
         #scene-container {
             width: 80vw;
             height: 80vh;
+            margin: 0 auto;
             border: 2px solid white;
         }
+        #upgrade {
+            display: block;
+            margin: 0 auto;
+        }            
     </style>
     <script class="match-script">
         window.rasp = "{{ rasp }}"; 
@@ -24,9 +25,13 @@
 </div>
 
 <body>
-    <div id="scene-container"></div>
+    <br>
     <button id="upgrade", onclick="actionUpgrade()">upgrade</button>
+    <div id="scene-container"></div>
     <script class="match-script" src="{% static 'match/script3d.js' %}"></script>
-
+    <br>
+    <br>
+    <br>
+    <br>
     <div id="end" style="display:none"></div>
 </body>

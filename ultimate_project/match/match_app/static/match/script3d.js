@@ -34,11 +34,30 @@ scene.add(r2);
 r1.position.z = 10;
 r2.position.z = -10;
 
-var upgrade_lvl = 0;
+var upgrade = {
+	user_lvl: 0,
+	points: 0,
+	cooldown: 5,
+}
+
+function actionCooldownUpdate() {
+	// update the html button
+	if (!upgrade.cooldown) {
+		document.getElementById("upgrade").innerHTML = `Upgrade (+${upgrade.points})`;
+	} else if (upgrade.points) {
+		document.getElementById("upgrade").innerHTML = `Upgrade (+${upgrade.points}) ${upgrade.cooldown}s`;
+	} else {
+		document.getElementById("upgrade").innerHTML = `Upgrade ${upgrade.cooldown}s`;
+	}
+}
 
 // function call on button click
 function actionUpgrade() {
-	switch (upgrade_lvl) {
+	if (upgrade.points < 1) {
+		return;
+	}
+	upgrade.points--;
+	switch (upgrade.user_lvl) {
 		case 0:
     		ball.material.color.setHex(0x00ff00);
 			break;
@@ -56,31 +75,91 @@ function actionUpgrade() {
 			console.log("Image size: " + ball.material.map.image.width + "x" + ball.material.map.image.height);
 			break;
 		default:
-			ball.material.color.setHex(0xffffff);
 			break;
 	}
-	upgrade_lvl++;
+	upgrade.user_lvl++;
+	actionCooldownUpdate();
 }
 
-function change_zoom(width, height) {
-    // change fov
-    
-    r = height / width;
-    camera.position.z = 15 + 2 * r;
-    camera.position.y = 2 + 10 * r;
-
-    camera.lookAt(0, 0, 0);
-    camera.updateProjectionMatrix();
+// function call each seconds
+function actionCooldown() {
+	if (upgrade.cooldown > 0) {
+		upgrade.cooldown--;
+	} else {
+		upgrade.cooldown = 5;
+	}
+	if (upgrade.cooldown == 0) {
+		upgrade.points++;
+	}
+	actionCooldownUpdate();
 }
 
-// resize window when resizing
-window.addEventListener('resize', () => {
-    w = window.innerWidth;
-    h = window.innerHeight;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    change_zoom(w, h);
+actionCooldownUpdate();
+setInterval(actionCooldown, 1000);
+
+let isDragging = false;
+let previousMousePosition = { x: 0, y: 0 };
+
+let radius = 15;
+
+let theta = 0; 			// horizontal angle
+let phi = Math.PI / 2;  // vertical angle
+
+container.onmousedown = function (e) {
+	isDragging = true;
+	previousMousePosition = { x: e.clientX, y: e.clientY };
+};
+
+container.onmouseup = function () {
+	isDragging = false;
+};
+
+container.onmousemove = function (e) {
+	if (!isDragging) return;
+
+	let sensitivity = 0.005;
+
+	// update angles based on mouse movement
+	theta -= (e.clientX - previousMousePosition.x) * sensitivity;
+	phi   -= (e.clientY - previousMousePosition.y) * sensitivity;
+
+	phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi));
+
+	// calculate new camera position
+	camera.position.x = radius * Math.sin(phi) * Math.sin(theta);
+	camera.position.z = radius * Math.sin(phi) * Math.cos(theta);
+	camera.position.y = radius * Math.cos(phi);
+
+	camera.lookAt(0, 0, 0);
+
+	previousMousePosition = { x: e.clientX, y: e.clientY };
+};
+
+// if mouse is inside the container and scrolling
+container.onwheel = function (e) {
+	radius -= e.deltaY * 0.01;
+	radius = Math.max(10, Math.min(50, radius));
+
+	camera.position.x = radius * Math.sin(phi) * Math.sin(theta);
+	camera.position.z = radius * Math.sin(phi) * Math.cos(theta);
+	camera.position.y = radius * Math.cos(phi);
+
+	camera.lookAt(0, 0, 0);
+};
+
+container.addEventListener('wheel', function (event) {
+    event.preventDefault();
+}, { passive: false });
+
+container.addEventListener('touchmove', function (event) {
+    event.preventDefault();
+}, { passive: false });
+
+// resize canvas on window resize
+window.addEventListener('resize', function () {
+	renderer.setSize(container.clientWidth, container.clientHeight);
+	camera.aspect = container.clientWidth / container.clientHeight;
+	camera.updateProjectionMatrix();
 });
 
 function animate() {
@@ -91,18 +170,20 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-animate();
+camera.position.z = 15;
+camera.position.y = 2;
+camera.lookAt(0, 0, 0);
 
-change_zoom(window.innerWidth, window.innerHeight);
+animate();
 
 function stopMatch(matchId)
 {
 	if (window.selfMatchId == matchId)
-	{	
+	{
 		fetch(`/match/stop-match/${window.selfId}/${matchId}/`)
 		.then(response => {
-			if (!response.ok) 
-				throw new Error(`Error HTTP! Status: ${response.status}`);		  
+			if (!response.ok)
+				throw new Error(`Error HTTP! Status: ${response.status}`);
 			return response.text();
 		})
 		.then(data => console.log(data))
@@ -116,7 +197,7 @@ function stopMatch(matchId)
 		console.log("jypigequeuedalle");
 		if (!window.matchSocket)
 			console.log("LE WEBSOCKET ETS NULL.");
-		else 
+		else
 		{
 			console.log("je sais pas ce qu eje fou la");
 			if (window.matchSocket.readyState === WebSocket.OPEN)
@@ -124,19 +205,19 @@ function stopMatch(matchId)
 				console.log("je vais envoyer 42");
 				window.stopFlag = true
 				window.matchSocket.close(3666);
-			} 
-			else 
+			}
+			else
 			{
 				console.log("La WebSocket était déjà fermée.");
 			}
 			console.log("je nai pas plante");
 		}
-		var oldScripts = document.querySelectorAll("script.match-script");			
+		var oldScripts = document.querySelectorAll("script.match-script");
 		oldScripts.forEach(oldScript => oldScript.remove());
 	// }
 	// else
 	// 	console.log("pas spec!!");
-	
+
 }
 
 function setCommands(socket) {
@@ -144,18 +225,18 @@ function setCommands(socket) {
 		console.log("event :", event.key);
 		if (socket.readyState === WebSocket.OPEN)
 		{
-			if (event.key === "ArrowUp") 
+			if (event.key === "ArrowUp")
 			{
 				event.preventDefault();
 				socket.send(JSON.stringify({
 					action: 'move', dir: 'up'}));
-			} else if (event.key === "ArrowDown") 
+			} else if (event.key === "ArrowDown")
 			{
 				event.preventDefault();
 				socket.send(JSON.stringify({
 					action: 'move', dir: 'down'}));
 			}
-		} 
+		}
 	});
 }
 
@@ -164,18 +245,18 @@ function setCommands2(socket) {
 		// console.log("event :", event.key);
 		if (socket.readyState === WebSocket.OPEN)
 		{
-			if (event.key === "+") 
+			if (event.key === "+")
 			{
 				event.preventDefault();
 				socket.send(JSON.stringify({
 					action: 'move', dir: 'up'}));
-			} else if (event.key === "Enter") 
+			} else if (event.key === "Enter")
 			{
 				event.preventDefault();
 				socket.send(JSON.stringify({
 					action: 'move', dir: 'down'}));
 			}
-		} 
+		}
 	});
 }
 
@@ -183,20 +264,20 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 	var data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);
 	if (data.state == "end")
-	{	
+	{
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
 		end.classList.add("end");
 	}
-	if (waitingState[0] != data.state) 
+	if (waitingState[0] != data.state)
 	{
-		waitingState[0] = data.state;	
-		if (waiting) 
+		waitingState[0] = data.state;
+		if (waiting)
 		{
-			if (data.state == "waiting")			
+			if (data.state == "waiting")
 				waiting.classList.remove("no-waiting");
-			else			
-				waiting.classList.add("no-waiting");			
-		}			
+			else
+				waiting.classList.add("no-waiting");
+		}
 	}
 	if (data.yp1 !== undefined && data.yp2 !== undefined)
 {
@@ -208,8 +289,8 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 }
 
 function sequelInitMatchWs(socket) {
-	var [waiting, end] = [		
-		document.getElementById("waiting"),	document.getElementById("end")];	
+	var [waiting, end] = [
+		document.getElementById("waiting"),	document.getElementById("end")];
 	let waitingState = ["waiting"];
 	socket.onmessage = event => onMatchWsMessage(
 		event, [waiting, end], waitingState);
@@ -230,7 +311,7 @@ function initSecPlayer() {
 		window.matchSocket2 = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
 			`?playerId=${-window.playerId}`);
-	else	
+	else
 		window.matchSocket2 = new WebSocket(
 			`ws://localhost:8000/ws/match/${window.matchId}/` +
 			`?playerId=${-window.playerId}`);
@@ -258,22 +339,22 @@ function initMatchWs() {
 		window.matchSocket = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`);
-	else	
+	else
 		window.matchSocket = new WebSocket(
 			`ws://localhost:8000/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`);
 	window.matchSocket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};
-	window.matchSocket.onclose = (event) => {	
-		console.log("Connexion Match disconnected 😈");		
+	window.matchSocket.onclose = (event) => {
+		console.log("Connexion Match disconnected 😈");
 		window.antiLoop = false;
 		console.log("CODE: " + event.code);
 		console.log("STOP: " + window.stopFlag);
 		if (event.code !== 3000 && !window.stopFlag)
-		{			
+		{
 			console.log("codepas42");
-			initMatchWs();	
+			initMatchWs();
 		}
 		else
 			console.log("code42");
