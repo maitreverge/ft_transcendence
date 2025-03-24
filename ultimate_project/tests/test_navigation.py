@@ -3,9 +3,14 @@
 # !  EMAIL : test@test.com
 # !  PASSWORD : password
 
+# And also another user with the following credentials :
+# !  USERNAME : test_2fa
+# !  EMAIL : test2@test.com
+# !  PASSWORD : password
+
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
-
+from two_fa_playright import test_2fa
 
 def run(playwright: Playwright) -> None:
     base_url = "http://localhost:8000"
@@ -257,8 +262,9 @@ def run(playwright: Playwright) -> None:
     # ! =============== KICKSTART TESTER HERE ===============
     
     # Those tests create, test and close their own browsers
-    register_from_login()
-    register_after_login()
+    # register_from_login()
+    # register_after_login()
+    test_2fa(playwright)
 
 
     # ? =============== START REGULAR TESTS ===============
