@@ -141,7 +141,39 @@ def run(playwright: Playwright) -> None:
 
         tournament_page_link = page.locator("#nav-tournoi")
         tournament_page_link.click()
-        # navigate(page, urls[2])
+        
+        
+        # Seule la première fenêtre clique sur "Create"
+        if i == 0:
+            try:
+                page.click('button[onclick="newTournament(window.tournamentSocket)"]')
+                print("✔️ Fenêtre 1 : Bouton 'Create' cliqué")
+            except:
+                print("❌ Fenêtre 1 : Bouton 'Create' non trouvé")
+
+        # Chaque fenêtre clique sur son propre élément utilisateur
+        user_id = str(i)  # Chaque joueur a un ID différent
+        try:
+            page.click("#tournaments")
+            print(f"✔️ Fenêtre {i+1} : Clic sur user #{user_id}")
+        except:
+            print(f"❌ Fenêtre {i+1} : User #{user_id} non trouvé")
+
+
+
+        browsers.append(browser)
+        contexts.append(context)
+        pages.append(page)
+
+    for i in range(4):
+        try:
+            page.wait_for_selector('div.pattern-match.next-match')
+            page.click('div.pattern-match.next-match')
+            print(f"✔️ Fenêtre {i+1} : clic sur next_match")
+        except:
+            print(f"❌ Fenêtre {i+1} : next-match non trouvé")
+
+    print("Les 4 navigateurs sont ouverts et prêts à l'interaction.")
     input("Appuyez sur Entrée pour fermer les navigateurs...")
 
     for context in contexts:
