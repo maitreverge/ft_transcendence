@@ -6,6 +6,7 @@ import datetime
 import os
 import pyotp
 import re
+
 router = APIRouter()
 
 # Clé secrète pour signer les JWT
@@ -113,7 +114,7 @@ async def login_fastAPI(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,
+        secure=True,
         samesite="Lax",
         path="/",
         max_age=60 * 60 * 6,
@@ -124,7 +125,7 @@ async def login_fastAPI(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False,
+        secure=True,
         samesite="Lax",
         path="/",
         max_age=60 * 60 * 24 * 7,
@@ -433,7 +434,7 @@ async def verify_2fa_and_login(
             key="access_token",
             value=access_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
@@ -443,7 +444,7 @@ async def verify_2fa_and_login(
             key="refresh_token",
             value=refresh_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 24 * 7,  # 7 days
@@ -486,7 +487,7 @@ async def register_fastAPI(
     print(f"🔐 Tentative d'inscription pour {username}", flush=True)
 
     # Regex patterns for input validation
-    name_pattern = r'^(?!.*--)[a-zA-ZÀ-ÿ0-9\-]+$'
+    name_pattern = r"^(?!.*--)[a-zA-ZÀ-ÿ0-9\-]+$"
     # Validate first name
     if not re.match(name_pattern, first_name):
         return JSONResponse(
@@ -507,7 +508,7 @@ async def register_fastAPI(
             status_code=400,
         )
 
-    username_pattern = r'^(?!.*--)[a-zA-Z0-9_\-]+$'
+    username_pattern = r"^(?!.*--)[a-zA-Z0-9_\-]+$"
     # Validate username
     if not re.match(username_pattern, username):
         return JSONResponse(
@@ -518,8 +519,8 @@ async def register_fastAPI(
             status_code=400,
         )
 
-    password_pattern = r'^(?!.*--)[a-zA-Z0-9_\-?!$€%&*()]+$'
-    # Validate password 
+    password_pattern = r"^(?!.*--)[a-zA-Z0-9_\-?!$€%&*()]+$"
+    # Validate password
     if not re.match(password_pattern, password):
         return JSONResponse(
             content={
@@ -528,7 +529,6 @@ async def register_fastAPI(
             },
             status_code=400,
         )
-
 
     # Check if username already exists first (industry standard to check one field at a time)
     try:
@@ -658,7 +658,7 @@ async def register_fastAPI(
             key="access_token",
             value=access_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
@@ -668,7 +668,7 @@ async def register_fastAPI(
             key="refresh_token",
             value=refresh_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 24 * 7,  # 7 days

@@ -84,7 +84,7 @@ async def token_refresh_middleware(request: Request, call_next):
             key="access_token",
             value=user_info.get("new_access_token"),
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
@@ -221,10 +221,9 @@ async def tournament_proxy(path: str, request: Request):
         user_id = user_info.get("user_id")
     else:
         user_id = 0
-        
-        # return RedirectResponse(url="/login/") # to FIX FLO
-        # return RedirectResponse(url="/login/") # to FIX FLO
 
+        # return RedirectResponse(url="/login/") # to FIX FLO
+        # return RedirectResponse(url="/login/") # to FIX FLO
 
     print(
         "################## NEW USER CREATED #######################",
@@ -291,6 +290,7 @@ async def stop_match_proxy(path: str, request: Request):
     """
     return await proxy_request("match", "/match/stop-match/" + path, request)
 
+
 @app.api_route("/match/match3d/{path:path}", methods=["GET"])
 async def match_proxy(
     path: str,
@@ -316,6 +316,7 @@ async def match_proxy(
     )
 
     return await proxy_request("match", path, request)
+
 
 @app.api_route("/match/match2d/{path:path}", methods=["GET"])
 async def match_proxy(
@@ -435,7 +436,7 @@ async def login_page_route(request: Request, path: str = ""):
                 key="access_token",
                 value=user_info.get("new_access_token"),
                 httponly=True,
-                secure=False,
+                secure=True,
                 samesite="Lax",
                 path="/",
                 max_age=60 * 60 * 6,  # 6 hours
@@ -497,7 +498,7 @@ async def auth_status(request: Request):
             key="access_token",
             value=user_info.get("new_access_token"),
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
@@ -537,7 +538,7 @@ async def register_page_route(request: Request, path: str = ""):
                 key="access_token",
                 value=user_info.get("new_access_token"),
                 httponly=True,
-                secure=False,
+                secure=True,
                 samesite="Lax",
                 path="/",
                 max_age=60 * 60 * 6,  # 6 hours
