@@ -5,13 +5,8 @@ python3 manage.py makemigrations databaseapi_app
 python3 manage.py makemigrations
 python3 manage.py migrate
 
-# Ensure a superuser exists
-python3 manage.py shell -c "
-from django.contrib.auth import get_user_model;
-User = get_user_model()
-if not User.objects.filter(is_superuser=True).exists():
-    User.objects.create_superuser('admin', 'admin@example.com', 'admin')
-"
+# ! Init users DB populate
+python3 manage.py runscript init_users
 
 python3 manage.py makemigrations databaseapi_app
 python3 manage.py makemigrations

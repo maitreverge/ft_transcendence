@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
+    'django_extensions', # For CSV init players
 ]
 
 MIDDLEWARE = [

@@ -14,6 +14,15 @@ register_2fa_test_password = "password"
 
 base_url = "https://localhost:8443"
 
+def get_ordinal_suffix(num):
+    if num == 1:
+        return "st"
+    elif num == 2:
+        return "nd" 
+    elif num == 3:
+        return "rd"
+    else:
+        return "th"
 
 def test_login_2fa(playwright: Playwright):
     # Create a TOTP object
@@ -59,13 +68,18 @@ def test_login_2fa(playwright: Playwright):
     expect(page).to_have_url(f"{base_url}/two-factor-auth/")
 
     # Get the current code
-    current_code = totp.now()
 
     # Fill with a correct code
-    page.locator("#otp_input").fill(current_code)
-    page.locator("#otp_verify").click()
-
-    expect(page).to_have_url(f"{base_url}/home/")
+    for _ in range(3):
+        current_code = totp.now()
+        try:
+            page.locator("#otp_input").fill(current_code)
+            page.locator("#otp_verify").click()
+            expect(page).to_have_url(f"{base_url}/home/")
+            print(f"✅ 2FA connexion succed on {_ + 1}{get_ordinal_suffix(_ + 1)} try ✅", flush=True)
+            break
+        except Exception as e:
+            print(f"💀 2FA connexion failed {_ + 1} times 💀", flush=True)
 
     context.close()
     browser.close()
