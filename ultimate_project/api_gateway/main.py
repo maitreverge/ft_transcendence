@@ -355,7 +355,8 @@ async def redirect_to_home():
     return RedirectResponse(url="/home/")
 
 
-@app.api_route("/api/{path:path}", methods=["GET", "POST"])
+# ! DATABASE API ROUTE
+@app.api_route("/api/{path:path}", methods=["GET", "POST", "DELETE"])
 async def databaseapi_proxy(path: str, request: Request):
     """
     Proxy requests to the database API microservice.
@@ -659,16 +660,39 @@ async def disable_2fa_proxy(request: Request):
 
     return await proxy_request("user", "user/disable-2fa/", request)
 
-@app.api_route("/user/delete-profile/", methods=["GET"])
-@app.api_route("/delete-profile/", methods=["GET"])
-async def setup_2fa_proxy(request: Request):
-    """
-    Proxy requests for 2FA setup to the user microservice.
-    """
-    # print("🔐 Handling setup-2fa request", flush=True)
-    # print(f"🔐 Headers: {request.headers}", flush=True)
 
-    return await proxy_request("user", "user/delete-profile/", request)
+@app.api_route("/user/delete-profile/", methods=["GET", "POST"])
+@app.api_route("/delete-profile/", methods=["GET", "POST"])
+async def delete_profile_proxy(request: Request):
+    """
+    Proxy requests for profile deletion to the user microservice.
+    """
+    print("🗑️ Handling delete-profile request", flush=True)
+    print(f"🗑️ Method: {request.method}", flush=True)
+
+    # Forward the request to the user microservice
+    response = await proxy_request("user", "user/delete-profile/", request)
+
+    # If it's a POST request and deletion was successful, clear JWT cookies
+    if request.method == "POST" and response.status_code == 200:
+        try:
+            # Parse the response content to check for success
+            content = json.loads(response.body.decode())
+            if content.get("success"):
+                print("🗑️ Profile deletion successful, clearing cookies", flush=True)
+
+                # Clear the cookies
+                response.delete_cookie(key="access_token", path="/")
+                response.delete_cookie(key="refresh_token", path="/")
+
+                # Set HX-Redirect header for client-side redirection
+                response.headers["HX-Redirect"] = "/register/"
+
+                print("🗑️ Cookies cleared and redirect set", flush=True)
+        except Exception as e:
+            print(f"🗑️ Error processing deletion response: {str(e)}", flush=True)
+
+    return response
 
 
 @app.api_route("/{path:path}", methods=["GET"])
