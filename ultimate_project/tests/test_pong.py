@@ -21,6 +21,11 @@ def run(playwright: Playwright) -> None:
     # Positions des fenêtres (2 par ligne)
     positions = [(0, 0), (800, 0), (0, 600), (800, 600)]
 
+    urls = [ 
+            f"{base_url}/tournament/simple-match/",
+            f"{base_url}/tournament/tournament/"
+            ]    
+
     for i, (x, y) in enumerate(positions):
         browser = playwright.chromium.launch(
             headless=False,
@@ -29,7 +34,7 @@ def run(playwright: Playwright) -> None:
         context = browser.new_context(ignore_https_errors=True)
         page = context.new_page()
         page.set_default_timeout(6000)
-        page.goto(f"{base_url}/tournament/tournament/")
+        page.goto(urls[1])
         page.wait_for_load_state("networkidle")
 
         # Seule la première fenêtre clique sur "Create"
