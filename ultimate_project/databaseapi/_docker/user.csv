@@ -1,0 +1,7 @@
+first_name, last_name, username, email, password, two_fa_enabled, _two_fa_secret
+admin_first_name, admin_last_name, admin, admin@admin.com, admin, False, None
+Johny, De Che Guevara, user1, user1@hehe.com, password, False, None
+Alberto, Sanchez, user2, user2@hehe.com, password, False, None
+Michael, Scott, user3, user3@hehe.com, password, False, None
+Thanos, The Titan, user4, user4@hehe.com, password, False, None
+Bruce, Wayne, user5, user5@hehe.com, password, False, None
