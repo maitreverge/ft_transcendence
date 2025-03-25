@@ -30,10 +30,11 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [25, 5]
-		self.rst = [0.2, 0.2]
+		self.rst = [5, 5]
 		self.vect = self.rst.copy()
 		self.score = [0, 0]
 		self.mag = None
+		self.has_wall = False
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -129,6 +130,7 @@ class Pong:
 		self.send_task = self.myEventLoop.create_task(self.sendState())
 		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
 		while self.state in (State.running, State.waiting):		
+			self.has_wall = False
 			self.flag = True
 			self.myplayers = [p for p in consumer.players
 				if self.id == p["matchId"]]
@@ -207,8 +209,9 @@ class Pong:
 					
 					self.ball[0] += new_vect[0]				
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.05)					
-			
+					self.has_wall = True
+					await asyncio.sleep(0.01)					
+					# self.has_wall = False
 					mag = self.get_magnitude(self.vect) 				
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
 					y = y * mag
@@ -216,7 +219,7 @@ class Pong:
 					x = math.sqrt(abs(x))	
 
 					scl = 1
-					if abs(self.vect[0]) < 1 and abs(self.vect[1]) < 1:
+					if abs(self.vect[0]) < 15 and abs(self.vect[1]) < 15:
 						scl = 1.5
 					self.vect[0] = scl * x
 					self.vect[1] = scl * y 
@@ -234,18 +237,19 @@ class Pong:
 					# if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
 		 			# 	(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
 
-					# await asyncio.sleep(0.05)	
+					# await asyncio.sleep(0.5)	
 					self.ball[0] += new_vect[0]	
 					self.ball[1] += new_vect[1]
-					await asyncio.sleep(0.05)
-									
+					self.has_wall = True
+					await asyncio.sleep(0.01)
+					# self.has_wall = False				
 					mag = self.get_magnitude(self.vect) 					
 					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
 					y = y * mag
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
 					x = math.sqrt(abs(x))
 					scl = 1
-					if abs(self.vect[0]) < 1 and abs(self.vect[1]) < 1:
+					if abs(self.vect[0]) < 15 and abs(self.vect[1]) < 15:
 						scl = 1.5
 					self.vect[0] = -scl * x
 					self.vect[1] = scl * y 
@@ -278,7 +282,7 @@ class Pong:
 				self.state = State.end
 				await self.sendFinalState()
 						
-			await asyncio.sleep(0.02)	
+			await asyncio.sleep(0.5)	
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
 	def segments_intersect(self, A, B, C, D, epsilon=1e-9):
@@ -368,8 +372,9 @@ class Pong:
 			# 	(not self.get_right_bounce_vect(84) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(84))):
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
-			
-			await asyncio.sleep(0.05)
+			self.has_wall = True
+			await asyncio.sleep(0.01)
+			# self.has_wall = False
 			self.vect[1] = -self.vect[1]		
 			self.flag = False
 
@@ -391,7 +396,9 @@ class Pong:
 			
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
-			await asyncio.sleep(0.05)
+			self.has_wall = True
+			await asyncio.sleep(0.01)
+			# self.has_wall = False
 			self.vect[1] = -self.vect[1]
 			self.flag = False
 
@@ -436,11 +443,12 @@ class Pong:
 							"yp1": self.yp1,
 							"yp2": self.yp2,
 							"ball": self.ball,
-							"score": self.score
+							"score": self.score,
+							"hasWall": self.has_wall
 						}))                  
 					except Exception as e:
 						pass				
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.5)
 
 	async def sendFinalState(self):				
 		self.myplayers = [p for p in consumer.players

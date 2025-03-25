@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0];
 let targetPads = [0, 0];
 let targets = [];
-let speed = 1/6; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+let speed = 1/24; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0;
 let offsetY = 0;
 let offsets = [0, 0];
@@ -433,7 +433,38 @@ function setSpeed() {
 	console.log("speed: ", speed);
 }
 
+let celerity = 0;
+
+function get_magnitude() {
+
+	return Math.sqrt(
+		(Math.abs(targetX - newTargetX) ** 2) +
+		(Math.abs(targetY - newTargetY) ** 2)
+	);
+}
+
+// function hasWall() {
+	
+// 	let wall = false;
+// 	let new_celerity = get_magnitude();
+// 	if (!celerity || new_celerity < celerity)
+// 	{
+// 		console.log("yeeee");
+// 		wall = true;
+// 		celerity = new_celerity;
+// 	}
+// 	return wall;
+// }
+let hasWall = false;
 function animate(pads) {
+
+	// if (hasNewTarget() && hasWall())
+	// {
+	// 	console.log("haswall");
+	// 	// calculateOffset(speed);
+	// 	// offsets = offsets.map(o => o * 2);
+	// 	// beforeBounce = true;				
+	// }
 
 	if (!bounce)
 	{
@@ -441,14 +472,22 @@ function animate(pads) {
 		{		
 			setSense();
 			// setSpeed();			
+			if (hasWall)
+			{
+				// console.log("haswall");
+				calculateOffset(1);
+				reInitTarget();
+				reInitExSense();
+				// offsets = offsets.map(o => o * 200);
+				// beforeBounce = true;				
+			}
 			if (hasSenseSwitched())
 			{
-				// console.log("bounce true");
-				// offsets = offsets.map(o => o * 2);
-				bounce = true;				
+				bounce = true;
 			}
 			else
 			{
+			
 				calculateOffset(speed);
 				reInitTarget();
 				reInitExSense();
@@ -569,7 +608,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 		// 	(targetY - currentY >= -eps && targetY - currentY <= eps)
 		// )			
 		// {
-	
+		// console.log("ICI: ", data.hasWall);
+			hasWall = data.hasWall;
 			newTargetX = data.ball[0] * (matchRect.width / 100);
 			newTargetY = data.ball[1] * (matchRect.height / 100);
 			targets.push([newTargetX, newTargetY]);
