@@ -10,7 +10,87 @@
 
 # ! 2FA USER SECRET : S3EF2KESUQR45MRTL7MXDSJVI6JQDG4R
 
+# from playwright.sync_api import Playwright, sync_playwright
+
+# def run(playwright: Playwright) -> None:
+#     base_url = "https://localhost:8443"
+#     browsers = []
+#     contexts = []
+#     pages = []
+
+#     # Positions des fenêtres (2 par ligne)
+#     positions = [(0, 0), (800, 0), (0, 600), (800, 600)]
+
+#     urls = [ 
+#             f"{base_url}/tournament/simple-match/",
+#             f"{base_url}/tournament/tournament/"
+#             ]    
+
+#     for i, (x, y) in enumerate(positions):
+#         browser = playwright.chromium.launch(
+#             headless=False,
+#             args=[f"--window-position={x},{y}", "--window-size=800,600"]
+#         )
+#         context = browser.new_context(ignore_https_errors=True)
+#         page = context.new_page()
+#         page.set_default_timeout(6000)
+#         page.goto(urls[1])
+#         page.wait_for_load_state("networkidle")
+
+#         # Seule la première fenêtre clique sur "Create"
+#         if i == 0:
+#             try:
+#                 page.click('button[onclick="newTournament(window.tournamentSocket)"]')
+#                 print("✔️ Fenêtre 1 : Bouton 'Create' cliqué")
+#             except:
+#                 print("❌ Fenêtre 1 : Bouton 'Create' non trouvé")
+
+#         # Chaque fenêtre clique sur son propre élément utilisateur
+#         user_id = str(i)  # Chaque joueur a un ID différent
+#         try:
+#             page.click("#tournaments")
+#             print(f"✔️ Fenêtre {i+1} : Clic sur user #{user_id}")
+#         except:
+#             print(f"❌ Fenêtre {i+1} : User #{user_id} non trouvé")
+
+
+
+#         browsers.append(browser)
+#         contexts.append(context)
+#         pages.append(page)
+
+#     for i in range(4):
+#         try:
+#             page.wait_for_selector('div.pattern-match.next-match')
+#             page.click('div.pattern-match.next-match')
+#             print(f"✔️ Fenêtre {i+1} : clic sur next_match")
+#         except:
+#             print(f"❌ Fenêtre {i+1} : next-match non trouvé")
+
+#     print("Les 4 navigateurs sont ouverts et prêts à l'interaction.")
+
+#     input("Appuyez sur Entrée pour fermer les navigateurs...")
+
+#     for context in contexts:
+#         context.close()
+#     for browser in browsers:
+#         browser.close()
+
+# with sync_playwright() as playwright:
+#     run(playwright)
+
+
+# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 from playwright.sync_api import Playwright, sync_playwright
+
+# Fonction de navigation avec attente
+
+
+def navigate(page, url: str):
+    page.goto(url)
+    page.wait_for_load_state("networkidle")
+
 
 def run(playwright: Playwright) -> None:
     base_url = "https://localhost:8443"
@@ -18,14 +98,23 @@ def run(playwright: Playwright) -> None:
     contexts = []
     pages = []
 
+
     # Positions des fenêtres (2 par ligne)
     positions = [(0, 0), (800, 0), (0, 600), (800, 600)]
 
+    # penser a rajouter des urls par le bas!
     urls = [ 
+            f"{base_url}/login/", 
             f"{base_url}/tournament/simple-match/",
             f"{base_url}/tournament/tournament/"
             ]    
 
+    utilisateurs = {
+        "user1": "pass",
+        "user2": "pass",
+        "user3": "pass",
+        "user4": "pass"
+    }
     for i, (x, y) in enumerate(positions):
         browser = playwright.chromium.launch(
             headless=False,
@@ -34,41 +123,25 @@ def run(playwright: Playwright) -> None:
         context = browser.new_context(ignore_https_errors=True)
         page = context.new_page()
         page.set_default_timeout(6000)
-        page.goto(urls[1])
+        page.goto(urls[0])
         page.wait_for_load_state("networkidle")
 
-        # Seule la première fenêtre clique sur "Create"
-        if i == 0:
-            try:
-                page.click('button[onclick="newTournament(window.tournamentSocket)"]')
-                print("✔️ Fenêtre 1 : Bouton 'Create' cliqué")
-            except:
-                print("❌ Fenêtre 1 : Bouton 'Create' non trouvé")
-
-        # Chaque fenêtre clique sur son propre élément utilisateur
-        user_id = str(i)  # Chaque joueur a un ID différent
-        try:
-            page.click("#tournaments")
-            print(f"✔️ Fenêtre {i+1} : Clic sur user #{user_id}")
-        except:
-            print(f"❌ Fenêtre {i+1} : User #{user_id} non trouvé")
 
 
+        username_input = page.locator("input[name='username']")
+        password_input = page.locator("input[name='password']")
+        login_button = page.locator("input[type='submit'][id='loginButton']")
 
-        browsers.append(browser)
-        contexts.append(context)
-        pages.append(page)
+        user_key = list(utilisateurs.keys())[i % len(utilisateurs)]
+        username_input.fill(user_key)
+        password_input.fill(utilisateurs[user_key])
 
-    for i in range(4):
-        try:
-            page.wait_for_selector('div.pattern-match.next-match')
-            page.click('div.pattern-match.next-match')
-            print(f"✔️ Fenêtre {i+1} : clic sur next_match")
-        except:
-            print(f"❌ Fenêtre {i+1} : next-match non trouvé")
+        login_button.click()
+        page.wait_for_load_state("networkidle")  # Attendre la page suivante ou la réponse du serveur
 
-    print("Les 4 navigateurs sont ouverts et prêts à l'interaction.")
-
+        tournament_page_link = page.locator("#nav-tournoi")
+        tournament_page_link.click()
+        # navigate(page, urls[2])
     input("Appuyez sur Entrée pour fermer les navigateurs...")
 
     for context in contexts:
@@ -78,6 +151,20 @@ def run(playwright: Playwright) -> None:
 
 with sync_playwright() as playwright:
     run(playwright)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # def run(playwright: Playwright) -> None:
