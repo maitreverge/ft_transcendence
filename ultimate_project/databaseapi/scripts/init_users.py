@@ -4,9 +4,11 @@ import sys
 from django.contrib.auth import get_user_model
 
 
-INPUT_FILE = "user.csv"
+INPUT_FILE = "_docker/user.csv"
 
 def create_user(current_user):
+
+    # Extract user data from the current_user dictionary
     first_name = current_user["first_name"]
     last_name = current_user["last_name"]
     username = current_user["username"]
@@ -19,15 +21,19 @@ def create_user(current_user):
     
     if username == "admin":
         User.objects.create_superuser(username=username, email=email, password=password, first_name=first_name, last_name=last_name, two_fa_enabled=two_fa_enabled, _two_fa_secret=_two_fa_secret)
+        print(f"⚠️✅✅⚠️  User {username} created  ⚠️✅✅⚠️", flush=True)
     else:
         User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name, two_fa_enabled=two_fa_enabled, _two_fa_secret=_two_fa_secret)
     
-    print(f"User {username} created", flush=True)
+    print(f"✅✅ User {username} created ✅✅", flush=True)
 
-def main():
+# Scripts for manage.py needs a run() function instead of a main
+def run():
+
+    print(f"🚀 Init DB with users 🚀")
 
     if not os.access(INPUT_FILE, os.R_OK):
-        print("Could't find the user.csv", flush=True)
+        print("⛔⛔Could't find the file user.csv ⛔⛔", flush=True)
         sys.exit(1)
     
     with open(INPUT_FILE, 'r') as csv_file:
@@ -49,16 +55,18 @@ def main():
             data.append(row)
 
         for user in data:
-            User_obj = get_user_model()
+            User = get_user_model()
 
             # If the current user does not exists in the data set, create
-            if not User_obj.objects.filter(username=user["username"]).exists():
+            if not User.objects.filter(username=user["username"]).exists():
                 create_user(user)
+            else:
+                print(f"🚷 User {user['username']} already exists in the DB")
             # print(user["username"])
             # print()
         
             # User.objects.create_superuser('admin', 'admin@example.com', 'admin')
     
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     run()

@@ -11,3 +11,4 @@ cryptography
 django-rest-framework
 django-filter
 django-cors-headers
+django-extensions

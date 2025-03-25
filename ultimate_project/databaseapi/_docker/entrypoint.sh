@@ -5,13 +5,24 @@ python3 manage.py makemigrations databaseapi_app
 python3 manage.py makemigrations
 python3 manage.py migrate
 
+# ! OLD SUPER USER SCRIPT CREATION
 # Ensure a superuser exists
-python3 manage.py shell -c "
-from django.contrib.auth import get_user_model;
-User = get_user_model()
-if not User.objects.filter(is_superuser=True).exists():
-    User.objects.create_superuser('admin', 'admin@example.com', 'admin')
-"
+# python3 manage.py shell -c "
+# from django.contrib.auth import get_user_model;
+# User = get_user_model()
+# if not User.objects.filter(is_superuser=True).exists():
+#     User.objects.create_superuser('admin', 'admin@example.com', 'admin')
+# "
+
+# Create users in the user.csv file
+# python3 _docker/init_users.py
+# python3 _docker/init_users.py
+# python3 _docker/init_users.py
+# python3 manage.py shell -c "exec(open('_docker/init_users.py').read())"
+# First, place your script in a scripts directory
+# First make sure django-extensions is installed
+# Then, put your script in a 'scripts' directory in your app
+python3 manage.py runscript init_users
 
 python3 manage.py makemigrations databaseapi_app
 python3 manage.py makemigrations
