@@ -29,7 +29,7 @@ class Pong:
 		self.max_delay = 900
 		self.send_task = None
 		self.watch_task = None
-		self.ball = [50, 50]
+		self.ball = [25, 5]
 		self.rst = [0.2, 0.2]
 		self.vect = self.rst.copy()
 		self.score = [0, 0]

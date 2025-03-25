@@ -192,12 +192,13 @@ function setCommands2(socket) {
 let currentX = 0, currentY = 0;
 let targetX = 0, targetY = 0;
 let newTargetX = 0, newTargetY = 0;
-let actualPads = [0, 0]
-let targetPads = [0, 0]
-let targets = []
+let actualPads = [0, 0];
+let targetPads = [0, 0];
+let targets = [];
 const speed = 1/24; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
-let offsetX = 0
-let offsetY = 0
+let offsetX = 0;
+let offsetY = 0;
+let offsets = [0, 0];
 function animate2(pads) {
 	// console.log("pads");
 	eps = 0.1;
@@ -315,13 +316,13 @@ function animate3(pads) {
 	requestAnimationFrame(() => animate(pads));
 }
 let exCurrentX = 0, exCurrentY = 0;
-let senseX = "left";
-let senseY = "down";
+let senseX = "right";
+let senseY = "up";
 let exSenseX = "right";
 let exSenseY = "down";
 let bounce = false;
 
-function setSens()
+function setSense()
 {
 	if (targetX < newTargetX)
 		senseX = "right";
@@ -346,7 +347,7 @@ function reInitTarget() {
 	targetY = newTargetY;
 }
 
-function reInitExSens() {
+function reInitExSense() {
 
 	exSenseX = senseX;
 	exSenseY = senseY;
@@ -374,24 +375,24 @@ function stopOverMove(snsX, snsY) {
 			// bounce = false;
 		}
 	}
-	// if (snsY === "down")
-	// {
-	// 	if (currentY > targetY)
-	// 	{
-	// 		// console.log("yip", currentY, " t ", targetY);
-	// 		currentY = targetY;
-	// 		currentX = targetX;
-	// 	}
-	// }
-	// else 
-	// {
-	// 	if (currentY < targetY)
-	// 	{
-	// 		// console.log("yup", currentY, " t ", targetY);
-	// 		currentY = targetY;
-	// 		currentX = targetX;
-	// 	}
-	// }
+	if (snsY === "down")
+	{
+		if (currentY > targetY)
+		{
+			// console.log("yip", currentY, " t ", targetY);
+			currentY = targetY;
+			currentX = targetX;
+		}
+	}
+	else 
+	{
+		if (currentY < targetY)
+		{
+			// console.log("yup", currentY, " t ", targetY);
+			currentY = targetY;
+			currentX = targetX;
+		}
+	}
 }
 
 function hasNewTarget() {
@@ -399,16 +400,15 @@ function hasNewTarget() {
 	return targetX != newTargetX || targetY != newTargetY;
 }
 
-function addMoveToCurrent() {
+function addOffsetToCurrent() {
 		
-	currentX += (targetX - exCurrentX) * speed;
-	currentY += (targetY - exCurrentY) * speed;
+	currentX += offsets[0];
+	currentY += offsets[1];
 }
 
 function hasSenseSwitched() {
 
 	return exSenseX !== senseX || exSenseY !== senseY;
-	// return exSenseX !== senseX
 }
 
 function isTargetStrike() {
@@ -416,44 +416,63 @@ function isTargetStrike() {
 	return currentX === targetX && currentY === targetY;
 }
 
+function calculateOffset()
+{
+	offsets[0] = (newTargetX - currentX) * speed;
+	offsets[1] = (newTargetY - currentY) * speed;
+}
+
 function animate(pads) {
 
 	if (!bounce)
 	{
 		if (hasNewTarget())
-		{
-			reInitExCurrent();
-			setSens();			
+		{		
+			setSense();			
 			if (hasSenseSwitched())
 			{
 				console.log("bounce true");
 				bounce = true;				
 			}
+			else
+			{
+				calculateOffset();
+				reInitTarget();
+				reInitExSense();
+			}
 		}		
-		reInitTarget();
 	}	
-	addMoveToCurrent();
+	addOffsetToCurrent();
 	stopOverMove(exSenseX, exSenseY);
 
-	if (isTargetStrike() && bounce)
+	if (isTargetStrike())
 	{
 		console.log("bounce false");
 		bounce = false;
-		reInitExSens();
+		reInitExSense();	
 	}
-	if (!bounce)
-		reInitExSens();
 
 	applyMove(pads);
 }
 
 function applyMove(pads) {
+
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
 	pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
 	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
 	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
 	requestAnimationFrame(() => animate(pads));
+}
+
+function animateZ(pads) {
+	
+	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
+	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
+	pads[2].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
+	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
+	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
+	requestAnimationFrame(() => animateZ(pads));
 }
 // Appelle animate une seule fois au début
 
