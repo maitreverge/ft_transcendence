@@ -670,6 +670,15 @@ async def delete_profile_proxy(request: Request):
     print("🗑️ Handling delete-profile request", flush=True)
     print(f"🗑️ Method: {request.method}", flush=True)
 
+    # Log headers for debugging CSRF issues
+    print(f"🗑️ Headers: {request.headers}", flush=True)
+
+    # For GET requests, make sure we get a fresh CSRF token
+    if request.method == "GET":
+        response = await proxy_request("user", "user/delete-profile/", request)
+        # Ensure Set-Cookie headers are preserved
+        return response
+
     # Forward the request to the user microservice
     response = await proxy_request("user", "user/delete-profile/", request)
 
