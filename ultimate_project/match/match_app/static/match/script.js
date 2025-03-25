@@ -323,14 +323,15 @@ let bounce = false;
 
 function setSens()
 {
-	if (targetX <= newTargetX)
+	if (targetX < newTargetX)
 		senseX = "right";
-	else
+	else if (targetX > newTargetX)
 		senseX = "left";
-	if (targetY >= newTargetY)
+	if (targetY > newTargetY)
 		senseY = "up";
-	else
+	else if (targetY < newTargetY)
 		senseY = "down";
+	// console.log("sx: ", senseX, " sy: ", senseY)
 }
 
 function reInitExCurrent() {
@@ -351,48 +352,46 @@ function reInitExSens() {
 	exSenseY = senseY;
 }
 
-function stopOverMove() {
+function stopOverMove(snsX, snsY) {
 
-	if (exSenseX === "right")
+	if (snsX === "right")
 	{
 		if (currentX > targetX)
 		{
-			console.log("yop", currentX, " t ", targetX);
-			exCurrentY = currentY = targetY;
-			exCurrentX = currentX = targetX;
-			bounce = false;
+			// console.log("yop", currentX, " t ", targetX);
+			currentY = targetY;
+			currentX = targetX;
+			// bounce = false;
 		}
 	}
 	else 
 	{
 		if (currentX < targetX)
 		{
-			console.log("yep", currentX, " t ", targetX);
-			exCurrentY = currentY = targetY;
-			exCurrentX = currentX = targetX;
-			bounce = false;
+			// console.log("yep", currentX, " t ", targetX);
+			currentY = targetY;
+			currentX = targetX;
+			// bounce = false;
 		}
 	}
-	if (exSenseY === "down")
-	{
-		if (currentY > targetY)
-		{
-			console.log("yip", currentY, " t ", targetY);
-			exCurrentY = currentY = targetY;
-			exCurrentX = currentX = targetX;
-			bounce = false;
-		}
-	}
-	else 
-	{
-		if (currentY < targetY)
-		{
-			console.log("yup", currentY, " t ", targetY);
-			exCurrentY = currentY = targetY;
-			exCurrentX = currentX = targetX;
-			bounce = false;
-		}
-	}
+	// if (snsY === "down")
+	// {
+	// 	if (currentY > targetY)
+	// 	{
+	// 		// console.log("yip", currentY, " t ", targetY);
+	// 		currentY = targetY;
+	// 		currentX = targetX;
+	// 	}
+	// }
+	// else 
+	// {
+	// 	if (currentY < targetY)
+	// 	{
+	// 		// console.log("yup", currentY, " t ", targetY);
+	// 		currentY = targetY;
+	// 		currentX = targetX;
+	// 	}
+	// }
 }
 
 function hasNewTarget() {
@@ -408,7 +407,8 @@ function addMoveToCurrent() {
 
 function hasSenseSwitched() {
 
-	return exSenseX !== senseX || exSenseY !== senseY
+	return exSenseX !== senseX || exSenseY !== senseY;
+	// return exSenseX !== senseX
 }
 
 function isTargetStrike() {
@@ -425,19 +425,29 @@ function animate(pads) {
 			reInitExCurrent();
 			setSens();			
 			if (hasSenseSwitched())
+			{
+				console.log("bounce true");
 				bounce = true;				
+			}
 		}		
 		reInitTarget();
 	}	
 	addMoveToCurrent();
-	if (isTargetStrike())
+	stopOverMove(exSenseX, exSenseY);
+
+	if (isTargetStrike() && bounce)
+	{
+		console.log("bounce false");
 		bounce = false;
-	stopOverMove();
-	reInitExSens();
-	applyMove();
+		reInitExSens();
+	}
+	if (!bounce)
+		reInitExSens();
+
+	applyMove(pads);
 }
 
-function applyMove() {
+function applyMove(pads) {
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
 	pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;

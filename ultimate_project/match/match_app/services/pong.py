@@ -217,7 +217,7 @@ class Pong:
 
 					scl = 1
 					if abs(self.vect[0]) < 1e6 and abs(self.vect[1]) < 1e6:
-						scl = 1.00
+						scl = 1.1
 					self.vect[0] = scl * x
 					self.vect[1] = scl * y 
 				
@@ -246,7 +246,7 @@ class Pong:
 					x = math.sqrt(abs(x))
 					scl = 1
 					if abs(self.vect[0]) < 1e6 and abs(self.vect[1]) < 1e6:
-						scl = 1.00
+						scl = 1.1
 					self.vect[0] = -scl * x
 					self.vect[1] = scl * y 
 					# print(f"vect: {self.vect}", flush=True)
