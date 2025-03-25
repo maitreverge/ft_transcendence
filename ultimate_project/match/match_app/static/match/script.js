@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0];
 let targetPads = [0, 0];
 let targets = [];
-const speed = 1/24; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+let speed = 1/6; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0;
 let offsetY = 0;
 let offsets = [0, 0];
@@ -359,6 +359,7 @@ function stopOverMove(snsX, snsY) {
 	{
 		if (currentX > targetX)
 		{
+			// console.log("egalise 10");
 			// console.log("yop", currentX, " t ", targetX);
 			currentY = targetY;
 			currentX = targetX;
@@ -369,6 +370,7 @@ function stopOverMove(snsX, snsY) {
 	{
 		if (currentX < targetX)
 		{
+			// console.log("egalise 20");
 			// console.log("yep", currentX, " t ", targetX);
 			currentY = targetY;
 			currentX = targetX;
@@ -379,6 +381,8 @@ function stopOverMove(snsX, snsY) {
 	{
 		if (currentY > targetY)
 		{
+			// console.log("egalise 1");
+
 			// console.log("yip", currentY, " t ", targetY);
 			currentY = targetY;
 			currentX = targetX;
@@ -388,6 +392,7 @@ function stopOverMove(snsX, snsY) {
 	{
 		if (currentY < targetY)
 		{
+			// console.log("egalise 2");
 			// console.log("yup", currentY, " t ", targetY);
 			currentY = targetY;
 			currentX = targetX;
@@ -397,7 +402,7 @@ function stopOverMove(snsX, snsY) {
 
 function hasNewTarget() {
 
-	return targetX != newTargetX || targetY != newTargetY;
+	return targetX !== newTargetX || targetY !== newTargetY;
 }
 
 function addOffsetToCurrent() {
@@ -416,10 +421,16 @@ function isTargetStrike() {
 	return currentX === targetX && currentY === targetY;
 }
 
-function calculateOffset()
+function calculateOffset(spd)
 {
-	offsets[0] = (newTargetX - currentX) * speed;
-	offsets[1] = (newTargetY - currentY) * speed;
+	offsets[0] = (newTargetX - currentX) * spd;
+	offsets[1] = (newTargetY - currentY) * spd;
+}
+
+function setSpeed() {
+
+	speed = (1 - (1 / ((Math.abs(targetX - newTargetX) * 4) + 1)));
+	console.log("speed: ", speed);
 }
 
 function animate(pads) {
@@ -428,15 +439,17 @@ function animate(pads) {
 	{
 		if (hasNewTarget())
 		{		
-			setSense();			
+			setSense();
+			// setSpeed();			
 			if (hasSenseSwitched())
 			{
-				console.log("bounce true");
+				// console.log("bounce true");
+				// offsets = offsets.map(o => o * 2);
 				bounce = true;				
 			}
 			else
 			{
-				calculateOffset();
+				calculateOffset(speed);
 				reInitTarget();
 				reInitExSense();
 			}
@@ -447,9 +460,11 @@ function animate(pads) {
 
 	if (isTargetStrike())
 	{
-		console.log("bounce false");
+		// console.log("bounce false");
 		bounce = false;
-		reInitExSense();	
+		reInitExSense();
+		// currentX += (newTargetX - currentX) * 0.5;
+		// currentY += (newTargetY - currentY) * 0.5;	
 	}
 
 	applyMove(pads);
@@ -460,13 +475,14 @@ function applyMove(pads) {
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
 	pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
+	pads[4].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
 	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
 	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
 	requestAnimationFrame(() => animate(pads));
 }
 
 function animateZ(pads) {
-	
+
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
 	pads[2].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
@@ -520,6 +536,8 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	const matchRect = match.getBoundingClientRect();
 	pads[2].style.width = (matchRect.width / 100) * 2;
 	pads[2].style.height = (matchRect.height / 100) * 2;
+	pads[4].style.width = (matchRect.width / 100) * 2;
+	pads[4].style.height = (matchRect.height / 100) * 2;
 	// console.log(" w ", rect.width, " h ", rect.height);
 	// console.log(" ball 0 ", data.ball[0], " ball1 ", data.ball[1]);
 	// console.log("data: ", `${data.ball[0] * (rect.width / 100)}`, `${data.ball[1] * (rect.height / 100)}}`);
@@ -600,7 +618,8 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("p1"),
 		document.getElementById("p2"),
 		document.getElementById("ball"),
-		document.getElementById("score")
+		document.getElementById("score"),
+		document.getElementById("ball2")
 	];
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
