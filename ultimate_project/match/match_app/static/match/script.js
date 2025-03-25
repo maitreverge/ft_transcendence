@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0]
 let targetPads = [0, 0]
 let targets = []
-const speed = 1/6; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+const speed = 1/24; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0
 let offsetY = 0
 function animate2(pads) {
@@ -315,63 +315,52 @@ function animate3(pads) {
 	requestAnimationFrame(() => animate(pads));
 }
 let exCurrentX = 0, exCurrentY = 0;
-let sensX = "left";
-let sensY = "down";
-let exSensX = "left";
-let exSensY = "down";
+let senseX = "left";
+let senseY = "down";
+let exSenseX = "right";
+let exSenseY = "down";
 let bounce = false;
-function animate(pads) {
-	const eps = 0.5; // tolérance de distance avant de prendre un nouveau point
 
-	// console.log("ANIMATE");
-	// if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
-	// 	const tar = targets.shift();
-	// 	if (tar) {
-	// 		console.log("je dois passer ici a chaque refresh serveur");
-	// 		targetX = tar[0];
-	// 		targetY = tar[1];
-	// 	}
-	
-	// }
-
-	if (targetX != newTargetX && targetY != newTargetY)
-	{
-		exCurrentX = currentX;
-		exCurrentY = currentY;
-		if (targetX <= newTargetX)
-			sensX = "right";
-		else
-			sensX = "left";
-		if (targetY >= newTargetY)
-			sensY = "up";
-		else
-			sensY = "down";
-		
-		if (exSensX != sensX || exSensY != sensY)
-			bounce = true;
-		exSensX = sensX;
-		exSensY = sensY;
-	}
-	if (!bounce)
-	{
-		targetX = newTargetX;
-		targetY = newTargetY;
-	}
+function setSens()
+{
+	if (targetX <= newTargetX)
+		senseX = "right";
 	else
-	{
-		if (currentX === targetX || currentY === targetY)
-			bounce = false;
-	}
-		
-	currentX += (targetX - exCurrentX) * speed;
-	currentY += (targetY - exCurrentY) * speed;
-	if (sensX === "right")
+		senseX = "left";
+	if (targetY >= newTargetY)
+		senseY = "up";
+	else
+		senseY = "down";
+}
+
+function reInitExCurrent() {
+
+	exCurrentX = currentX;
+	exCurrentY = currentY;
+}
+
+function reInitTarget() {
+
+	targetX = newTargetX;
+	targetY = newTargetY;
+}
+
+function reInitExSens() {
+
+	exSenseX = senseX;
+	exSenseY = senseY;
+}
+
+function stopOverMove() {
+
+	if (exSenseX === "right")
 	{
 		if (currentX > targetX)
 		{
 			console.log("yop", currentX, " t ", targetX);
-			currentY = targetY;
-			currentX = targetX;
+			exCurrentY = currentY = targetY;
+			exCurrentX = currentX = targetX;
+			bounce = false;
 		}
 	}
 	else 
@@ -379,17 +368,19 @@ function animate(pads) {
 		if (currentX < targetX)
 		{
 			console.log("yep", currentX, " t ", targetX);
-			currentY = targetY;
-			currentX = targetX;
+			exCurrentY = currentY = targetY;
+			exCurrentX = currentX = targetX;
+			bounce = false;
 		}
 	}
-	if (sensY === "down")
+	if (exSenseY === "down")
 	{
 		if (currentY > targetY)
 		{
 			console.log("yip", currentY, " t ", targetY);
-			currentY = targetY;
-			currentX = targetX;
+			exCurrentY = currentY = targetY;
+			exCurrentX = currentX = targetX;
+			bounce = false;
 		}
 	}
 	else 
@@ -397,22 +388,61 @@ function animate(pads) {
 		if (currentY < targetY)
 		{
 			console.log("yup", currentY, " t ", targetY);
-			currentY = targetY;
-			currentX = targetX;
+			exCurrentY = currentY = targetY;
+			exCurrentX = currentX = targetX;
+			bounce = false;
 		}
 	}
-	
-	// currentX += (targetX - currentX) * speed;
-	// currentY += (targetY - currentY) * speed;
-	// Interpolation pour les pads
+}
+
+function hasNewTarget() {
+
+	return targetX != newTargetX || targetY != newTargetY;
+}
+
+function addMoveToCurrent() {
+		
+	currentX += (targetX - exCurrentX) * speed;
+	currentY += (targetY - exCurrentY) * speed;
+}
+
+function hasSenseSwitched() {
+
+	return exSenseX !== senseX || exSenseY !== senseY
+}
+
+function isTargetStrike() {
+
+	return currentX === targetX && currentY === targetY;
+}
+
+function animate(pads) {
+
+	if (!bounce)
+	{
+		if (hasNewTarget())
+		{
+			reInitExCurrent();
+			setSens();			
+			if (hasSenseSwitched())
+				bounce = true;				
+		}		
+		reInitTarget();
+	}	
+	addMoveToCurrent();
+	if (isTargetStrike())
+		bounce = false;
+	stopOverMove();
+	reInitExSens();
+	applyMove();
+}
+
+function applyMove() {
 	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
-
-	// Appliquer le style
 	pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
 	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
 	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
-
 	requestAnimationFrame(() => animate(pads));
 }
 // Appelle animate une seule fois au début
