@@ -110,10 +110,10 @@ def run(playwright: Playwright) -> None:
     ]    
 
     utilisateurs = {
-        "user2": "pass",
-        "user3": "pass",
-        "user4": "pass",
-        "user5": "pass"
+        "user2": "password",
+        "user3": "password",
+        "user4": "password",
+        "user5": "password"
     }
 
     for i, (x, y) in enumerate(positions):
