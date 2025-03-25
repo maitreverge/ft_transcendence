@@ -659,6 +659,17 @@ async def disable_2fa_proxy(request: Request):
 
     return await proxy_request("user", "user/disable-2fa/", request)
 
+@app.api_route("/user/delete-profile/", methods=["GET"])
+@app.api_route("/delete-profile/", methods=["GET"])
+async def setup_2fa_proxy(request: Request):
+    """
+    Proxy requests for 2FA setup to the user microservice.
+    """
+    # print("🔐 Handling setup-2fa request", flush=True)
+    # print(f"🔐 Headers: {request.headers}", flush=True)
+
+    return await proxy_request("user", "user/delete-profile/", request)
+
 
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):

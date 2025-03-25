@@ -10,3 +10,6 @@ def index(request):
             "title": "User Management Page",
         },
     )
+
+def delete_profile(request):
+    return render(request, "user_management_app/delete-profile.html")

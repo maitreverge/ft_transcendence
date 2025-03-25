@@ -176,7 +176,12 @@
             </a>
             {% endif %}
             
-            <a href="#" class="btn btn-danger btn-icon-split float-right">
+			<!-- ! DELETE BUTTON PROFILE  -->
+            <a	href="#" class="btn btn-danger btn-icon-split float-right"
+				hx-get="/user/delete-profile/" 
+            	hx-target="#main_div"
+            	hx-headers='{"HX-Request": "true"}'
+				id="delete_profile">
               <span class="icon text-white-50">
                 <i class="fas fa-trash"></i>
               </span>
