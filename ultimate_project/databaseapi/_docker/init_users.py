@@ -1,9 +1,29 @@
 import csv
 import os
 import sys
-import json
+from django.contrib.auth import get_user_model
+
 
 INPUT_FILE = "user.csv"
+
+def create_user(current_user):
+    first_name = current_user["first_name"]
+    last_name = current_user["last_name"]
+    username = current_user["username"]
+    email = current_user["email"]
+    password = current_user["password"]
+    two_fa_enabled = current_user["two_fa_enabled"]
+    _two_fa_secret = current_user["_two_fa_secret"]
+    
+    User = get_user_model()
+    
+    if username == "admin":
+        User.objects.create_superuser(username=username, email=email, password=password, first_name=first_name, last_name=last_name, two_fa_enabled=two_fa_enabled, _two_fa_secret=_two_fa_secret)
+    else:
+        User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name, two_fa_enabled=two_fa_enabled, _two_fa_secret=_two_fa_secret)
+    
+    print(f"User {username} created", flush=True)
+
 def main():
 
     if not os.access(INPUT_FILE, os.R_OK):
@@ -28,11 +48,16 @@ def main():
             
             data.append(row)
 
-        # Pretty print with proper handling of None values
-        # print(json.dumps(data, indent=2, default=str))
-        # print(data)
         for user in data:
-            print(user)
+            User_obj = get_user_model()
+
+            # If the current user does not exists in the data set, create
+            if not User_obj.objects.filter(username=user["username"]).exists():
+                create_user(user)
+            # print(user["username"])
+            # print()
+        
+            # User.objects.create_superuser('admin', 'admin@example.com', 'admin')
     
 
 if __name__ == "__main__":
