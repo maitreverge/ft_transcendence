@@ -30,14 +30,15 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [25, 5]
-		self.rst = [2, 2]
+		self.rst = [1, 1]
 		self.vect = self.rst.copy()
 		self.score = [0, 0]
 		self.mag = None
 		self.has_wall = False
-		self.pad_speed = 8
+		self.pad_speed = 4
 		self.max_speed = 10
 		self.acceleration = 1.1
+		self.max_score = 30
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -282,11 +283,11 @@ class Pong:
 						self.winner = self.idP2
 				self.state = State.waiting
 						
-			if 10 == self.score[0]: 
+			if self.max_score == self.score[0]: 
 				self.winner = self.idP1
 				self.state = State.end
 				await self.sendFinalState()
-			if 10 == self.score[1]:
+			if self.max_score == self.score[1]:
 				self.winner = self.idP2
 				self.state = State.end
 				await self.sendFinalState()
