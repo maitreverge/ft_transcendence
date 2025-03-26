@@ -573,10 +573,17 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	}
 	match = document.getElementById("match");
 	const matchRect = match.getBoundingClientRect();
+	const ballRect = pads[2].getBoundingClientRect();
+	pads[2].style.top = -(matchRect.width / 100);
+	// pads[2].style.left = (matchRect.width / 100) * 2;
 	pads[2].style.width = (matchRect.width / 100) * 2;
-	pads[2].style.height = (matchRect.height / 100) * 2;
+	pads[2].style.height = (matchRect.width / 100) * 2;
 	pads[4].style.width = (matchRect.width / 100) * 2;
 	pads[4].style.height = (matchRect.height / 100) * 2;
+	// pads[0].style.width = (matchRect.width / 100) * 10;
+	// pads[0].style.height = (matchRect.height / 100) * 40;
+	// pads[1].style.width = (matchRect.width / 100) * 10;
+	// pads[1].style.height = (matchRect.height / 100) * 40;
 	// console.log(" w ", rect.width, " h ", rect.height);
 	// console.log(" ball 0 ", data.ball[0], " ball1 ", data.ball[1]);
 	// console.log("data: ", `${data.ball[0] * (rect.width / 100)}`, `${data.ball[1] * (rect.height / 100)}}`);

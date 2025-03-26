@@ -35,6 +35,7 @@ class Pong:
 		self.score = [0, 0]
 		self.mag = None
 		self.has_wall = False
+		self.pad_speed = 8
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -146,19 +147,23 @@ class Pong:
 				self.state = State.running
 				if self.player1.get("dir") is not None :
 					if self.player1["dir"] == 'up':
-						if self.yp1 >= (self.pad_height / 2) + 2:
-							self.yp1 -= 2
+						# if self.yp1 >= (self.pad_height / 2):
+						self.yp1 = max(self.yp1 - self.pad_speed, 0 + (self.pad_height / 2))
+							
 					elif self.player1["dir"] == 'down':
-						if self.yp1 <= 100 - (self.pad_height / 2) - 2:
-							self.yp1 += 2
+						# if self.yp1 <= 100 - (self.pad_height / 2):
+						self.yp1 = min(self.yp1 + self.pad_speed, 100 - (self.pad_height / 2))
+							# self.yp1 += self.pad_speed
 					self.player1["dir"] = None
 				if  self.player2.get("dir") is not None :
 					if self.player2["dir"] == 'up':
-						if self.yp2 >= (self.pad_height / 2) + 2:							
-							self.yp2 -= 2
+						self.yp2 = max(self.yp2 - self.pad_speed, 0 + (self.pad_height / 2))
+						# if self.yp2 >= (self.pad_height / 2):							
+							# self.yp2 -= self.pad_speed
 					elif self.player2["dir"] == 'down':
-						if self.yp2 <= 100 - (self.pad_height / 2) - 2:
-							self.yp2 += 2
+						self.yp2 = min(self.yp2 + self.pad_speed, 100 - (self.pad_height / 2))
+						# if self.yp2 <= 100 - (self.pad_height / 2):
+							# self.yp2 += self.pad_speed
 					self.player2["dir"] = None
 
 				# self.ball[0] += self.vect[0]				
@@ -190,10 +195,12 @@ class Pong:
 					self.score[1] += 1
 					self.ball = [50, 50]
 					self.vect = self.rst.copy()
+					await asyncio.sleep(1)
 				if self.ball[0] <= 0:
 					self.score[0] += 1
 					self.ball = [50, 50]
 					self.vect = self.rst.copy()
+					await asyncio.sleep(1)
 							
 				if ((self.ball[0] + self.vect[0]) <= 16) and \
 					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.yp1 - (self.pad_height / 2)), (16, self.yp1 + (self.pad_height / 2))):
@@ -258,7 +265,7 @@ class Pong:
 					self.flag = False
 
 				
-				await self.bot_bounce(39)				
+				await self.bot_bounce(99)				
 				await self.top_bounce(1)
 			
 				if (self.flag):	
