@@ -6,7 +6,9 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
+FIX LES TEST DES 2FA QUI PLANTES PARFOIS dans playright
 
+Retravailler la securisation des routes dans fastAPI
 
 `STABILIZATION`:
 

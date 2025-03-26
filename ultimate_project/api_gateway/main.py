@@ -220,7 +220,10 @@ async def tournament_proxy(path: str, request: Request):
     if is_auth:
         user_id = user_info.get("user_id")
     else:
-        return RedirectResponse(url="/login/") # to FIX FLO
+        user_id = 0
+        
+        # return RedirectResponse(url="/login/") # to FIX FLO
+        # return RedirectResponse(url="/login/") # to FIX FLO
 
 
     print(
