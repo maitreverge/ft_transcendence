@@ -12,7 +12,7 @@
 
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
-from two_fa_playright import test_login_2fa, test_register_2fa
+from test_2fa import test_login_2fa, test_register_2fa
 
 def run(playwright: Playwright) -> None:
     base_url = "https://localhost:8443"
