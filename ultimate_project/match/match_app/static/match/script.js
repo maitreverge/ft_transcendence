@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0];
 let targetPads = [0, 0];
 let targets = [];
-let speed = 1/24; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+let speed = 1/12; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0;
 let offsetY = 0;
 let offsets = [0, 0];
@@ -472,15 +472,15 @@ function animate(pads) {
 		{		
 			setSense();
 			// setSpeed();			
-			if (hasWall)
-			{
-				// console.log("haswall");
-				calculateOffset(1);
-				reInitTarget();
-				reInitExSense();
-				// offsets = offsets.map(o => o * 200);
-				// beforeBounce = true;				
-			}
+			// if (hasWall)
+			// {
+			// 	// console.log("haswall");
+			// 	calculateOffset(1);
+			// 	reInitTarget();
+			// 	reInitExSense();
+			// 	// offsets = offsets.map(o => o * 200);
+			// 	// beforeBounce = true;				
+			// }
 			if (hasSenseSwitched())
 			{
 				bounce = true;
