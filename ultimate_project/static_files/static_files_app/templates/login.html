@@ -17,7 +17,7 @@
                 <form
                   class="user"
                   hx-post="/auth/login/"
-                  hx-target="#register-form"
+                  hx-target="#login-form"
                   hx-swap="outerHTML"
                   hx-indicator="#loading-spinner"
                 >
@@ -44,61 +44,36 @@
                   <div class="form-group">
                     <input
                       type="submit"
+					  id="loginButton"
                       hx-push-url="true"
                       class="btn btn-primary btn-user btn-block"
                       value="Login"
                     />
                   </div>
-                </form>
+                
+				  
+				  <!-- ! END FORM  -->
+				</form>
 
-                <!-- Zone de feedback pour les erreurs -->
+                <!-- ! Feedback error from the backend -->
                 <div
-                  id="register-form"
+                  id="login-form"
                   class="text-center text-danger mt-2"
                 ></div>
 
-                <!-- Loading spinner that shows during HTMX requests -->
-                <div
-                  id="loading-spinner"
-                  class="htmx-indicator text-center my-2"
-                >
+                <!-- ! Spinning button  -->
+                <div id="loading-spinner" class="htmx-indicator text-center my-2">
                   <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
                   </div>
                 </div>
 
+				<!-- ! Horizontal Line Separator -->
                 <hr />
-
-                <!-- !  Google button  -->
-                <!-- <a
-                  hx-boost="false"
-                  href="http://localhost:8000/home/"
-                  class="btn btn-google btn-user btn-block"
-                >
-                  <i class="fab fa-google fa-fw"></i>
-                  Login with Google
-                </a> -->
-
-                <!-- !  Facebook button  -->
-                <!-- <a
-                  hx-boost="false"
-                  href="http://localhost:8000/home/"
-                  class="btn btn-facebook btn-user btn-block"
-                >
-                  <i class="fab fa-facebook-f fa-fw"></i>
-                  Login with Facebook
-                </a>
-                <hr /> -->
-                <!-- <div class="text-center">
-                  <a
-                    class="small"
-                    hx-boost="false"
-                    href="http://localhost:8000/forgot-password"
-                  >
-                    Forgot Password?
-                  </a>
-                </div> -->
+				
+				<!-- ! Link towards register  -->
                 <div
+					id="register-link"
                   hx-boost="false"
                   hx-trigger="click"
                   hx-push-url="true"
@@ -119,20 +94,19 @@
   </div>
 </div>
 <!-- Add Animate.css for shake animation -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-<!-- Load HTMX first -->
-<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
 
 <script>
   document.addEventListener("htmx:beforeSwap", function (evt) {
     console.log("document.addEventListener working");
-    console.log("LOGIN SCRIPT");
-    if (evt.detail.target.id === "register-form") {
+    console.log("LOGIN FORM LISTENNING");
+    if (evt.detail.target.id === "login-form") {
       try {
         console.log("Réponse brute:", evt.detail.xhr.responseText);
         const response = JSON.parse(evt.detail.xhr.responseText);
 
         if (response.success) {
+          console.log("SUCCESS")
           evt.detail.shouldSwap = false;
 
           htmx
@@ -155,6 +129,7 @@
             // Set username as global variable as another backup
             window.twoFAUsername = usernameValue;
           } else {
+
             console.error("Username input element not found");
           }
           
@@ -185,7 +160,19 @@
               }, 200);
             });
         } else {
-          evt.detail.innerHTML = response.message;
+			// ! UNSAFE METHOD
+		// document.getElementById("login-form").innerHTML = response.message;
+
+          // Sanitize the message using DOMPurify before setting content
+          const messageElement = document.getElementById("login-form");
+          const sanitizedMessage = DOMPurify.sanitize(response.message);
+          
+		  //   // Use textContent for plain text or innerHTML with sanitized content
+		    if (sanitizedMessage.includes("<") && sanitizedMessage.includes(">")) {
+			messageElement.innerHTML = sanitizedMessage;
+          } else {
+            messageElement.textContent = sanitizedMessage;
+          }
         }
       } catch (e) {
         console.error("Erreur de traitement de la réponse:", e);

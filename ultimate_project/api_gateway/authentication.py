@@ -5,7 +5,7 @@ import jwt
 import datetime
 import os
 import pyotp
-
+import re
 router = APIRouter()
 
 # Clé secrète pour signer les JWT
@@ -485,6 +485,51 @@ async def register_fastAPI(
     """
     print(f"🔐 Tentative d'inscription pour {username}", flush=True)
 
+    # Regex patterns for input validation
+    name_pattern = r'^(?!.*--)[a-zA-ZÀ-ÿ0-9\-]+$'
+    # Validate first name
+    if not re.match(name_pattern, first_name):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Forbidden characters in first name. Allowed characters: a-z, A-Z, 0-9, -, _",
+            },
+            status_code=400,
+        )
+
+    # Validate last name
+    if not re.match(name_pattern, last_name):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Forbidden characters in last name. Allowed characters: a-z, A-Z, 0-9, -, _",
+            },
+            status_code=400,
+        )
+
+    username_pattern = r'^(?!.*--)[a-zA-Z0-9_\-]+$'
+    # Validate username
+    if not re.match(username_pattern, username):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Forbidden characters in username. Allowed characters: a-z, A-Z, 0-9, -, _",
+            },
+            status_code=400,
+        )
+
+    password_pattern = r'^(?!.*--)[a-zA-Z0-9_\-?!$€%&*()]+$'
+    # Validate password 
+    if not re.match(password_pattern, password):
+        return JSONResponse(
+            content={
+                "success": False,
+                "message": "Forbidden characters in password. Allowed characters: a-z, A-Z, 0-9, -, _, !, ?, $, €, %, &, *, (, )",
+            },
+            status_code=400,
+        )
+
+
     # Check if username already exists first (industry standard to check one field at a time)
     try:
         # Query for existing users with this username
@@ -498,7 +543,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Ce nom d'utilisateur est déjà pris.",
+                        "message": "Username already taken.",
                     },
                     status_code=400,
                 )
@@ -507,7 +552,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Ce nom d'utilisateur est déjà pris.",
+                        "message": "Username already taken.",
                     },
                     status_code=400,
                 )
@@ -523,7 +568,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Cette adresse email est déjà utilisée.",
+                        "message": "Email adress already taken.",
                     },
                     status_code=400,
                 )
@@ -532,7 +577,7 @@ async def register_fastAPI(
                 return JSONResponse(
                     content={
                         "success": False,
-                        "message": "Cette adresse email est déjà utilisée.",
+                        "message": "Email adress already taken.",
                     },
                     status_code=400,
                 )

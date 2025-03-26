@@ -6,6 +6,25 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
+FIX LES TEST DES 2FA QUI PLANTES PARFOIS dans playright
+
+Retravailler la securisation des routes dans fastAPI
+
+`STABILIZATION`:
+
+## BASE REQUIREMENTS
+
+🟧 Bouton Back and Forward (notaament dans un match)
+✅ Pong contre soi-meme
+✅ Tournoi 
+🟧 Mettre des alias a chaque debut de tournoi
+🟧 Injections SQL / XSS
+🟧 HTTPS (wss)
+🟧 Secure routes API
+🟧 Changer le mot de passe d'admin
+🟧
+✅
+
 `AVATAR CREATION` :
 
 In user creation : create a default image when creating an user

@@ -195,7 +195,7 @@ async def tournament_pattern_proxy(tournament_id, request: Request):
     )
 
 
-user_id = 0
+# user_id = 0
 
 
 @app.api_route("/tournament/{path:path}", methods=["GET"])
@@ -212,8 +212,20 @@ async def tournament_proxy(path: str, request: Request):
       - If `path` is "simple-match/", returns specific content.
     """
 
-    global user_id
-    user_id += 1
+    # global user_id
+    # user_id += 1
+
+    is_auth, user_info = is_authenticated(request)
+
+    if is_auth:
+        user_id = user_info.get("user_id")
+    else:
+        user_id = 0
+        
+        # return RedirectResponse(url="/login/") # to FIX FLO
+        # return RedirectResponse(url="/login/") # to FIX FLO
+
+
     print(
         "################## NEW USER CREATED #######################",
         user_id,

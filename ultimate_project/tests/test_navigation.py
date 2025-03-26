@@ -1,15 +1,16 @@
-# import time
-# from playwright.sync_api import Playwright, sync_playwright
-
 from playwright.sync_api import Playwright, sync_playwright, expect
-
+import time
+from test_2fa import test_login_2fa, test_register_2fa
 
 def run(playwright: Playwright) -> None:
-    base_url = "http://localhost:8000"
+    base_url = "https://localhost:8443"
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context()
+    context = browser.new_context(
+        ignore_https_errors=True
+    )
     page = context.new_page()
     visited_urls = []
+    page.set_default_timeout(6000) # Timeout of 6 seconds for each click
 
     # Fonction de navigation avec attente
     def navigate(url: str):
@@ -66,7 +67,7 @@ def run(playwright: Playwright) -> None:
         navigate(f"{base_url}{url}")
         page.evaluate("window.history.back()")
         page.wait_for_timeout(500)  # Laisse un peu de temps pour le back
-        test_page(page.url) 
+        test_page(page.url)
 
     urls = [ 
             f"{base_url}/home/", 
@@ -75,7 +76,8 @@ def run(playwright: Playwright) -> None:
             f"{base_url}/tournament/simple-match/",
             f"{base_url}/tournament/tournament/"
             ]     
-
+    
+        # DAN TEST FROM HERE
     for url in urls:
         test_page(url)
     
@@ -91,8 +93,7 @@ def run(playwright: Playwright) -> None:
             else:
                 page.evaluate("window.history.back()")
                 page.wait_for_timeout(500)  # Laisse un peu de temps pour le back
-                visited_urls.remove(url)
-                
+                visited_urls.remove(url)           
 
     # Vérification de la navigation via le sidebar menu
     def test_navigation(locator, expected_url):
@@ -128,12 +129,10 @@ def run(playwright: Playwright) -> None:
     for locator, expected_url in navigation_tests[8:]:  # Pour les éléments de la page home
         navigate(f"{base_url}/home/")
         test_navigation(page.locator(locator), expected_url)
+    
     # test 404
-
     test_single_page("/home/sylvain_duriff/");
     test_single_page("/register/")
-
-
 
     # Fermeture
     context.close()
@@ -142,122 +141,3 @@ def run(playwright: Playwright) -> None:
 
 with sync_playwright() as playwright:
     run(playwright)
-
-# def run(playwright: Playwright) -> None:
-#     browser = playwright.chromium.launch(headless=False)
-#     context = browser.new_context()
-#     page = context.new_page()
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/")
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/user/profile/")
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/user/stats/")
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/tournament/simple-match/")
-#     time.sleep(0.4)
-#     page.locator("#nav-home").click()
-#     time.sleep(0.4)
-#     page.locator("#nav-tournament").click()
-#     time.sleep(0.4)
-#     page.locator("#nav-profile").click()
-#     time.sleep(0.4)
-#     page.locator("#nav-stats").click()
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
-#     page.locator("#field-tournament").click()
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
-#     page.locator("#field-profile").click()
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/home/")
-#     page.locator("#field-stats").click()
-#     time.sleep(0.4)
-
-#     # ---------------------
-#     context.close()
-#     browser.close()
-
-
-# with sync_playwright() as playwright:
-#     run(playwright)
-
-
-# # import re
-# from playwright.sync_api import Playwright, sync_playwright  # , expect
-
-# import time
-
-
-# def run(playwright: Playwright) -> None:
-#     browser = playwright.chromium.launch(headless=False)
-#     context = browser.new_context()
-#     page = context.new_page()
-
-#     # Loguer toutes les requêtes effectuées
-#     def handle_request(request):
-#         print(f"➡️ Requête envoyée : {request.url}")
-
-#     # Loguer toutes les réponses reçues
-#     def handle_response(response):
-#         print(f"⬅️ Réponse reçue : {response.url} - Statut: {response.status}")
-#         if response.status == 404:
-#             print(f"❌ Erreur 404 détectée pour : {response.url}")
-
-#     page.on("request", handle_request)
-#     page.on("response", handle_response)
-
-#     page.on("response", handle_response)
-
-#     page.goto("http://localhost:8000/")
-#     time.sleep(0.4)
-#     page.get_by_role("textbox", name="Entrez votre nom").click()
-#     time.sleep(0.4)
-#     page.get_by_role("textbox", name="Entrez votre nom").fill("kapouet")
-#     time.sleep(0.4)
-#     page.get_by_role("button", name="Connexion").click()
-#     time.sleep(0.4)
-#     page.get_by_role("button", name="Tournament").click()
-#     time.sleep(0.4)
-#     page.get_by_role("button", name="Close").click()
-#     time.sleep(0.4)
-#     page.get_by_role("button", name="Simple Match").click()
-#     time.sleep(0.4)
-#     page.get_by_role("button", name="Close").click()
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/test/")
-#     time.sleep(0.4)
-#     page.goto("http://localhost:8000/match/")
-
-#     # TEST FLO
-#     time.sleep(1)
-#     page.goto("http://localhost:8000/user/")
-#     time.sleep(1)
-#     # TEST FLO
-#     websocket_connected = False
-#     time.sleep(0.4)
-
-#     def handle_websocket(ws):
-#         nonlocal websocket_connected
-#         websocket_connected = True
-#         print(f"🔌 WebSocket connectée à : {ws.url}")
-
-#     page.on("websocket", handle_websocket)
-#     page.goto("http://localhost:8000/match/")
-#     try:
-#         if websocket_connected:
-#             print("✅ La connexion WebSocket est réussie.")
-#         else:
-#             raise ValueError("❌ La connexion WebSocket a échoué.")
-#     except ValueError as e:
-#         print(e)
-
-#     # ---------------------
-#     context.close()
-#     browser.close()
-
-
-# with sync_playwright() as playwright:
-#     run(playwright)

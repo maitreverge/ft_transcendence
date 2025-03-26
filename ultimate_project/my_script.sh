@@ -11,3 +11,4 @@ source env/bin/activate
 pip install django
 pip install black flake8
 pip install playwright
+pip install pyotp

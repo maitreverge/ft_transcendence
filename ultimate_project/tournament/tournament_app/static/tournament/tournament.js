@@ -12,7 +12,7 @@ function initTournament() {
 		);
 	else
 		window.tournamentSocket = new WebSocket(
-			`ws://localhost:8000/ws/tournament/tournament/${window.user_id}/`
+			`wss://localhost:8443/ws/tournament/tournament/${window.user_id}/`
 		);
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	

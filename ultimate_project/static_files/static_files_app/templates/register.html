@@ -12,17 +12,12 @@
             </div>
             <!-- Formulaire de création de compte HTMX -->
             <form
-              id="register-form"
               class="user"
               hx-post="/auth/register/"
               hx-target="#register-form"
               hx-swap="outerHTML"
               hx-indicator="#loading-spinner"
             >
-              <!-- HTMX loading indicator -->
-              <div class="htmx-indicator" style="display: none">
-                Processing registration...
-              </div>
 
               <!-- First Name et Last Name -->
               <div class="form-group row">
@@ -83,13 +78,15 @@
                     placeholder="Password"
                     required
                   />
-                  <!-- Password strength indicator -->
+                  
+				  <!-- ! Password strength indicator -->
                   <div class="mt-2">
-                    <div id="password-strength-meter" class="progress" style="height: 5px;">
+					  <div id="password-strength-meter" class="progress" style="height: 5px;">
                       <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                     <small id="password-strength-text" class="form-text mt-1">Password strength: Not entered</small>
                   </div>
+
                 </div>
                 <div class="col-sm-6">
                   <input
@@ -99,7 +96,9 @@
                     name="repeat_password"
                     placeholder="Repeat Password"
                     required
-                  />
+					/>
+
+				<!-- ! Password do not match indicator -->
                   <div
                     id="password-error"
                     class="text-danger small mt-1"
@@ -107,10 +106,11 @@
                   >
                     Passwords do not match
                   </div>
-                </div>
+                
+				</div>
               </div>
 
-              <!-- Zone de feedback pour les erreurs -->
+              <!-- ! Email error feedback -->
               <div
                 id="email-error"
                 class="text-danger small mb-3"
@@ -119,52 +119,38 @@
                 Please enter a valid email address
               </div>
 
-              <!-- Bouton de création de compte -->
-              <button
-                type="submit"
-                class="btn btn-primary btn-user btn-block"
-                id="register-button"
-              >
-                Register Account
-              </button>
-              <div id="loading-spinner" class="htmx-indicator text-center my-2">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="sr-only">Loading...</span>
-                </div>
-              </div>
-              <hr />
+			  <div class="form-group">
+				<input
+				  type="submit"
+				  id="register-button"
+				  hx-push-url="true"
+				  class="btn btn-primary btn-user btn-block"
+				  value="Register"
+				/>
+			  </div>
+			
+			<!-- ! END FORM  -->
+			</form>
 
-              <!-- !  Google button  -->
-              <!-- <a
-                hx-boost="false"
-                href="http://localhost:8000/home/"
-                class="btn btn-google btn-user btn-block"
-              >
-                <i class="fab fa-google fa-fw"></i>
-                Register with Google
-              </a> -->
+			<!-- ! Feedback error from the backend -->
+			<div
+				id="register-form"
+				class="text-center text-danger mt-2"
+			></div>
 
-              <!-- !  Facebook button  -->
-              <!-- <a
-                hx-boost="false"
-                href="http://localhost:8000/home/"
-                class="btn btn-facebook btn-user btn-block"
-              >
-                <i class="fab fa-facebook-f fa-fw"></i>
-                Register with Facebook
-              </a>
-              <hr />
-              <div class="text-center">
-                <a
-                  hx-boost="false"
-                  class="small"
-                  href="http://localhost:8000/forgot-password"
-                >
-                  Forgot Password?
-                </a>
-              </div> -->
-            </form>
+			<!-- ! Spinning button  -->
+			<div id="loading-spinner" class="htmx-indicator text-center my-2">
+				<div class="spinner-border text-primary" role="status">
+				<span class="sr-only">Loading...</span>
+				</div>
+			</div>
+
+			<!-- ! Horizontal Line Separator -->
+			<hr />
+			
+			<!-- ! Link towards login  -->
             <div
+			id="login-link"
               hx-boost="false"
               hx-trigger="click"
               hx-push-url="true"
@@ -183,7 +169,7 @@
   </div>
 </div>
 
-<!-- Add JavaScript for client-side validation -->
+
 <style>
   /* Custom validation styles */
   .is-invalid {
@@ -217,15 +203,11 @@
     font-weight: 500;
   }
 </style>
-<!-- Load HTMX first -->
-<script src="https://unpkg.com/htmx.org@1.9.6"></script>
-
-
-</script>
 
 <script>
-	// HTMX event listeners for debugging
-	document.addEventListener("DOMContentLoaded", function () {
+	// document.addEventListener("DOMContentLoaded", function () {
+	initScript();
+	function initScript() {
 	  const firstNameInput = document.getElementById("first_name");
 	  const lastNameInput = document.getElementById("last_name");
 	  const usernameInput = document.getElementById("username");
@@ -236,6 +218,8 @@
 	  const passwordError = document.getElementById("password-error");
 	  const registerButton = document.getElementById("register-button");
 	  const form = document.querySelector("form.user");
+	  const strengthBar = document.getElementById("password-strength-bar");
+	  const strengthText = document.getElementById("password-strength-text");
   
 	  // Email validation function
 	  function validateEmail(email) {
@@ -243,17 +227,68 @@
 		  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(String(email).toLowerCase());
 	  }
-  
-	  // Check email format
-	  emailInput.addEventListener("blur", function () {
-		if (emailInput.value && !validateEmail(emailInput.value)) {
-		  emailError.style.display = "block";
+	  
+	  // Password strength evaluation function
+	  function evaluatePasswordStrength(password) {
+		if (!password) return { score: 0, message: "Not entered", percentage: 0 };
+		
+		let score = 0;
+		const messages = ["Very weak", "Weak", "Medium", "Strong", "Very strong"];
+		
+		// Length check
+		if (password.length > 7) score += 1;
+		if (password.length > 10) score += 1;
+		
+		// Character diversity checks
+		if (/[a-z]/.test(password)) score += 1; // lowercase
+		if (/[A-Z]/.test(password)) score += 1; // uppercase
+		if (/[0-9]/.test(password)) score += 1; // numbers
+		if (/[^a-zA-Z0-9]/.test(password)) score += 1; // special chars
+		
+		// Cap the score at 4
+		score = Math.min(4, score);
+		
+		// Map score to percentage for the progress bar
+		const percentage = (score / 4) * 100;
+		
+		return {
+			score: score,
+			percentage: percentage,
+			message: messages[score]
+		};
+	  }
+	  
+	  // Update password strength indicator
+	  function updatePasswordStrength() {
+		const password = passwordInput.value;
+		const strength = evaluatePasswordStrength(password);
+		
+		// Update the progress bar
+		strengthBar.style.width = strength.percentage + "%";
+		strengthBar.setAttribute("aria-valuenow", strength.percentage);
+		
+		// Update color based on strength
+		strengthBar.className = "progress-bar";
+		if (password === "") {
+		  // When password is empty, ensure the bar is completely empty
+		  strengthBar.style.width = "0%";
+		  strengthBar.setAttribute("aria-valuenow", 0);
+		} else if (strength.score === 0) {
+			strengthBar.classList.add("bg-secondary");
+		} else if (strength.score === 1) {
+			strengthBar.classList.add("bg-danger");
+		} else if (strength.score === 2) {
+			strengthBar.classList.add("bg-warning");
+		} else if (strength.score === 3) {
+			strengthBar.classList.add("bg-info");
 		} else {
-		  emailError.style.display = "none";
+			strengthBar.classList.add("bg-success");
 		}
-		validateForm();
-	  });
-  
+		
+		// Update text
+		strengthText.textContent = "Password strength: " + strength.message;
+	  }
+	  
 	  // Check if passwords match
 	  function checkPasswords() {
 		if (passwordInput.value && repeatPasswordInput.value) {
@@ -267,23 +302,7 @@
 		}
 		return passwordInput.value === repeatPasswordInput.value;
 	  }
-  
-	  repeatPasswordInput.addEventListener("input", function () {
-		checkPasswords();
-		validateForm();
-	  });
-  
-	  passwordInput.addEventListener("input", function () {
-		checkPasswords();
-		validateForm();
-	  });
-  
-	  // Add input event listeners to all required fields
-	  firstNameInput.addEventListener("input", validateForm);
-	  lastNameInput.addEventListener("input", validateForm);
-	  usernameInput.addEventListener("input", validateForm);
-	  emailInput.addEventListener("input", validateForm);
-  
+	  
 	  // Validate the entire form and enable/disable the register button
 	  function validateForm() {
 		const isFirstNameValid = firstNameInput.value.trim() !== "";
@@ -293,6 +312,13 @@
 		const isPasswordValid = passwordInput.value.trim() !== "";
 		const doPasswordsMatch = checkPasswords();
   
+		// Update email validation visual state
+		if (emailInput.value && !isEmailValid) {
+		  emailInput.classList.add("is-invalid");
+		} else {
+		  emailInput.classList.remove("is-invalid");
+		}
+  
 		const isFormValid =
 		  isFirstNameValid &&
 		  isLastNameValid &&
@@ -300,33 +326,52 @@
 		  isEmailValid &&
 		  isPasswordValid &&
 		  doPasswordsMatch;
-  
-		console.log("Form validation:", {
-		  isFirstNameValid,
-		  isLastNameValid,
-		  isUsernameValid,
-		  isEmailValid,
-		  isPasswordValid,
-		  doPasswordsMatch,
-		  isFormValid,
-		});
-  
+		
+		// Disable the register button is the full form is not valid
 		registerButton.disabled = !isFormValid;
-  
 		return isFormValid;
-	  }
-  
-	  // Form submission validation
-	  form.addEventListener("htmx:beforeSwap", function (evt) {
-		console.log("document.addEventListener working");
+	}
+	
+	// Add input event listeners to all required fields
+	  firstNameInput.addEventListener("input", validateForm);
+	  lastNameInput.addEventListener("input", validateForm);
+	  usernameInput.addEventListener("input", validateForm);
+	//   emailInput.addEventListener("input", validateForm);
+	//   emailInput.addEventListener("blur", function () {
+		emailInput.addEventListener("input", function () {
+		if (emailInput.value && !validateEmail(emailInput.value)) {
+		  emailError.style.display = "block";
+		  emailInput.classList.add("is-invalid");
+		} else {
+		  emailError.style.display = "none";
+		  emailInput.classList.remove("is-invalid");
+		}
+		validateForm();
+	});
+	
+	passwordInput.addEventListener("input", function () {
+	  updatePasswordStrength();
+	  checkPasswords();
+	  validateForm();
+	});
+	repeatPasswordInput.addEventListener("input", function () {
+	  checkPasswords();
+	  validateForm();
+	});
+
+	
+	// Form submission validation
+	//   form.addEventListener("htmx:beforeSwap", function (evt) {
+		
+	document.addEventListener("htmx:beforeSwap", function (evt) {
+		console.log("REGISTER FORM LISTENNING");
 		console.log(evt.detail.target.id);
-		console.log("after");
-  
+
 		if (evt.detail.target.id === "register-form") {
-		  try {
+		try {
 			console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
 			const response = JSON.parse(evt.detail.xhr.responseText);
-  
+			
 			if (response.success) {
 			  evt.detail.shouldSwap = false;
   
@@ -337,18 +382,17 @@
 				  headers: { "HX-Login-Success": "true" },
 				})
 				.then(function () {
-				  history.pushState(null, "", "/home/");
+					history.pushState(null, "", "/home/");
 				});
 			} else {
-			  evt.detail.innerHTML = response.message; // Afficher erreur de connexion
+				// ! Inserting errors from the backend
+				document.getElementById("register-form").innerHTML = response.message;
 			}
-		  } catch (e) {
+		} catch (e) {
 			console.error("Erreur de traitement de la réponse:", e);
-		  }
 		}
-	  });
-	});
-  </script>
+	}
+});
+}; // End Checking Script
 
 </script>
-<!-- No need for explicit initialization anymore, handled in auth.js -->

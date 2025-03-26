@@ -1,184 +1,236 @@
-// const window.scene = new THREE.Scene();
-window.scene = window.scene || new THREE.Scene();
+window.tjs_container = window.tjs_container || document.getElementById('scene-container');
 
-window.camera = window.camera || new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-window.renderer = window.renderer || new THREE.WebGLRenderer({ antialias: true });
-window.renderer.setSize(window.innerWidth, window.innerHeight);
-window.document.body.appendChild(window.renderer.domElement);
+window.tjs_scene = window.tjs_scene || new THREE.Scene();
+window.tjs_camera = window.tjs_camera || new THREE.PerspectiveCamera(75, window.tjs_container.clientWidth / window.tjs_container.clientHeight, 0.1, 1000);
+window.tjs_renderer = window.tjs_renderer || new THREE.WebGLRenderer({ antialias: true });
+window.tjs_renderer.setSize(window.tjs_container.clientWidth, window.tjs_container.clientHeight);
+window.tjs_container.appendChild(window.tjs_renderer.domElement);
 
-window.textureLoader = window.textureLoader || new THREE.TextureLoader();
+window.tjs_textureLoader = window.tjs_textureLoader || new THREE.TextureLoader();
 
-window.rgeo = window.rgeo || new THREE.BoxGeometry(5, 1, 1);
-window.sgeo = window.sgeo || new THREE.SphereGeometry(1, 32, 32);
+window.tjs_rgeo = window.tjs_rgeo || new THREE.BoxGeometry(10, 10, 40 * (60 / 100));
+window.tjs_sgeo = window.tjs_sgeo || new THREE.SphereGeometry(2, 32, 32);
 
-window.rmat = window.rmat || [
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') })
+window.tjs_rmat = window.tjs_rmat || [
+    new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/crate.gif') })
 ];
 
-window.smat = window.smat || new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
+window.tjs_smat = window.tjs_smat || new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
 
-window.r1 = window.r1 || new THREE.Mesh(window.rgeo, window.rmat);
-window.r2 = window.r2 || new THREE.Mesh(window.rgeo, window.rmat);
+window.tjs_r1 = window.tjs_r1 || new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
+window.tjs_r2 = window.tjs_r2 || new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
 
-window.ball = window.ball || new THREE.Mesh(window.sgeo, window.smat);
+window.tjs_ball = window.tjs_ball || new THREE.Mesh(window.tjs_sgeo, window.tjs_smat);
 
-window.scene.add(window.ball);
-window.scene.add(window.r1);
-window.scene.add(window.r2);
+window.tjs_scene.add(window.tjs_ball);
+window.tjs_scene.add(window.tjs_r1);
+window.tjs_scene.add(window.tjs_r2);
 
-window.r1.position.z = 10;
-window.r2.position.z = -10;
+window.tjs_r1.position.z = -20;
+window.tjs_r1.position.x = 5;
 
-var angle = 0;
+window.tjs_r2.position.z = -20;
+window.tjs_r2.position.x = 90;
 
-// fonction appelée lors du clic sur le bouton
-function actionClick() {
-    window.ball.material.color.setHex(0x00ff00);
+window.tjs_ball.position.x = -1;
+window.tjs_ball.position.z = -1;
+
+window.tjs_upgrade = window.tjs_upgrade || {
+	user_lvl: 0,
+	points: 0,
+	cooldown: 5,
 }
 
-function otherClick() {
-    // change window.r1 images
-    window.r1.material = [
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') })
-    ];
+function actionCooldownUpdate() {
+	// update the html button
+	if (!window.tjs_upgrade.cooldown) {
+		document.getElementById("upgrade").innerHTML = `Upgrade (+${window.tjs_upgrade.points})`;
+	} else if (window.tjs_upgrade.points) {
+		document.getElementById("upgrade").innerHTML = `Upgrade (+${window.tjs_upgrade.points}) ${window.tjs_upgrade.cooldown}s`;
+	} else {
+		document.getElementById("upgrade").innerHTML = `Upgrade ${window.tjs_upgrade.cooldown}s`;
+	}
 }
 
-function change_zoom(width, height) {
-    // change fov
-    
-    r = height / width;
-    window.camera.position.z = 15 + 2 * r;
-    window.camera.position.y = 2 + 10 * r;
-
-    window.camera.lookAt(0, 0, 0);
-    window.camera.updateProjectionMatrix();
+// function call on button click
+function actionUpgrade() {
+	if (window.tjs_upgrade.points < 1) {
+		return;
+	}
+	window.tjs_upgrade.points--;
+	switch (window.tjs_upgrade.user_lvl) {
+		case 0:
+    		window.tjs_ball.material.color.setHex(0x00ff00);
+			break;
+		case 1:
+			window.tjs_ball.material.color.setHex(0xff0000);
+			break;
+		case 2:
+			window.tjs_ball.material.color.setHex(0x0000ff);
+			break;
+		case 3:
+			window.tjs_ball.material.color.setHex(0xffffff);
+			window.tjs_ball.material.map = textureLoader.load('https://media.tenor.com/YkyhmCCJd_0AAAAM/aaaa.gif');
+			break;
+		default:
+			break;
+	}
+	window.tjs_upgrade.user_lvl++;
+	actionCooldownUpdate();
 }
 
-// resize window when resizing
-window.addEventListener('resize', () => {
-    w = window.innerWidth;
-    h = window.innerHeight;
-    window.renderer.setSize(w, h);
-    window.camera.aspect = w / h;
-    window.camera.updateProjectionMatrix();
-    change_zoom(w, h);
+// function call each seconds
+function actionCooldown() {
+	if (window.tjs_upgrade.cooldown > 0) {
+		window.tjs_upgrade.cooldown--;
+	} else {
+		window.tjs_upgrade.cooldown = 5;
+	}
+	if (window.tjs_upgrade.cooldown == 0) {
+		window.tjs_upgrade.points++;
+	}
+	actionCooldownUpdate();
+}
+
+actionCooldownUpdate();
+setInterval(actionCooldown, 1000);
+
+window.tjs_isDragging = false;
+window.tjs_previous_mouse = { x: 0, y: 0 };
+
+window.tjs_radius = window.tjs_radius || 15;
+
+window.tjs_theta = window.tjs_theta || 0;         // horizontal angle
+window.tjs_phi = window.tjs_phi || Math.PI / 2;   // vertical angle
+
+window.tjs_container.onmousedown = function (e) {
+	window.tjs_isDragging = true;
+	window.tjs_previous_mouse = { x: e.clientX, y: e.clientY };
+};
+
+window.tjs_container.onmouseup = function () {
+	window.tjs_isDragging = false;
+};
+
+window.tjs_container.onmousemove = function (e) {
+	if (!window.tjs_isDragging)
+        return;
+
+	let sensitivity = 0.005;
+
+	// update angles based on mouse movement
+	window.tjs_theta -= (e.clientX - window.tjs_previous_mouse.x) * sensitivity;
+	window.tjs_phi   -= (e.clientY - window.tjs_previous_mouse.y) * sensitivity;
+
+	window.tjs_phi = Math.max(0.1, Math.min(Math.PI - 0.1, window.tjs_phi));
+
+	// calculate new camera position
+	window.tjs_camera.position.x = window.tjs_radius * Math.sin(window.tjs_phi) * Math.sin(window.tjs_theta);
+	window.tjs_camera.position.z = window.tjs_radius * Math.sin(window.tjs_phi) * Math.cos(window.tjs_theta);
+	window.tjs_camera.position.y = window.tjs_radius * Math.cos(window.tjs_phi);
+
+	window.tjs_camera.lookAt(0, 0, 0);
+
+	window.tjs_previous_mouse = { x: e.clientX, y: e.clientY };
+};
+
+// if mouse is inside the container and scrolling
+window.tjs_container.onwheel = function (e) {
+	window.tjs_radius -= e.deltaY * 0.1;
+	window.tjs_radius = Math.max(10, Math.min(500, window.tjs_radius));
+
+	window.tjs_camera.position.x = window.tjs_radius * Math.sin(window.tjs_phi) * Math.sin(window.tjs_theta);
+	window.tjs_camera.position.z = window.tjs_radius * Math.sin(window.tjs_phi) * Math.cos(window.tjs_theta);
+	window.tjs_camera.position.y = window.tjs_radius * Math.cos(window.tjs_phi);
+
+	window.tjs_camera.lookAt(0, 0, 0);
+};
+
+window.tjs_container.addEventListener('wheel', function (event) {
+    event.preventDefault();
+}, { passive: false });
+
+window.tjs_container.addEventListener('touchmove', function (event) {
+    event.preventDefault();
+}, { passive: false });
+
+// resize canvas on window resize
+window.addEventListener('resize', function () {
+	window.tjs_renderer.setSize(window.tjs_container.clientWidth, window.tjs_container.clientHeight);
+	window.tjs_camera.aspect = window.tjs_container.clientWidth / window.tjs_container.clientHeight;
+	window.tjs_camera.updateProjectionMatrix();
 });
 
 function animate() {
     requestAnimationFrame(animate);
 
-    window.ball.rotation.z += 0.1;
+    window.tjs_ball.rotation.z += 0.1;
 
-    window.renderer.render(window.scene, window.camera);
+    window.tjs_renderer.render(window.tjs_scene, window.tjs_camera);
 }
+
+window.tjs_camera.position.x = 50;
+window.tjs_camera.position.y = 50;
+window.tjs_camera.position.z = 30;
+window.tjs_camera.lookAt(50, 0, 30);
 
 animate();
 
-change_zoom(window.innerWidth, window.innerHeight);
+function setCommands(socket, socket2) {
+    const keysPressed = {}; // Stocker les touches enfoncées
+    let animationFrameId = null; // Stocke l'ID du requestAnimationFrame
 
-function stopMatch(matchId)
-{
-	if (window.selfMatchId == matchId)
-	{	
-		fetch(`/match/stop-match/${window.selfId}/${matchId}/`)
-		.then(response => {
-			if (!response.ok) 
-				throw new Error(`Error HTTP! Status: ${response.status}`);		  
-			return response.text();
-		})
-		.then(data => console.log(data))
-		.catch(error => console.log(error))
-	}
-	else
-		document.getElementById('container').remove()
-	console.log("YOUHOUHOUHOU");
-	// if (window.selfMatchId != window.matchId)
-	// {
-		console.log("jypigequeuedalle");
-		if (!window.matchSocket)
-			console.log("LE WEBSOCKET ETS NULL.");
-		else 
-		{
-			console.log("je sais pas ce qu eje fou la");
-			if (window.matchSocket.readyState === WebSocket.OPEN)
-			{
-				console.log("je vais envoyer 42");
-				window.stopFlag = true
-				window.matchSocket.close(3666);
-				window.matchSocket2.close(3666);
-			} 
-			else 
-			{
-				console.log("La WebSocket était déjà fermée.");
-			}
-			console.log("je nai pas plante");
-		}
-		console.log("toujours vivant");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);			
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-	// }
-	// else
-	// 	console.log("pas spec!!");
-	
-}
+    function sendCommands() {
+        if (socket.readyState === WebSocket.OPEN) {
+            if (keysPressed["ArrowUp"]) {
+                socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
+            }
+            if (keysPressed["ArrowDown"]) {
+                socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
+            }
+        }
 
-function setCommands(socket) {
+        if (socket2 && socket2.readyState === WebSocket.OPEN) {
+            if (keysPressed["+"]) {
+                socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
+            }
+            if (keysPressed["Enter"]) {
+                socket2.send(JSON.stringify({ action: 'move', dir: 'down' }));
+            }
+        }
 
-	document.addEventListener("keydown", function(event) {
-		console.log("event :", event.key);
-		if (socket.readyState === WebSocket.OPEN)
-		{
-			if (event.key === "ArrowUp") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'up'}));
-			} else if (event.key === "ArrowDown") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'down'}));
-			}
-		} 
-	});
-}
+        animationFrameId = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
+    }
 
-function setCommands2(socket) {
+    document.addEventListener("keydown", function(event) {
+		event.preventDefault();
+        if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
+            keysPressed[event.key] = true;
+        }
 
-	document.addEventListener("keydown", function(event) {
-		// console.log("event :", event.key);
-		if (socket.readyState === WebSocket.OPEN)
-		{
-			if (event.key === "+") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'up'}));
-			} else if (event.key === "Enter") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'down'}));
-			}
-		} 
-	});
+        if (!animationFrameId) { // Démarre l'animation seulement si elle n'est pas déjà en cours
+            animationFrameId = requestAnimationFrame(sendCommands);
+        }
+    });
+
+    document.addEventListener("keyup", function(event) {
+        delete keysPressed[event.key];
+
+        if (Object.keys(keysPressed).length === 0) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+    });
 }
 
 function onMatchWsMessage(event, [waiting, end], waitingState) {
-		
 	const data = JSON.parse(event.data);
-	// console.log("match mesage: ", data);
+
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
@@ -195,24 +247,26 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 				waiting.classList.add("no-waiting");			
 		}			
 	}
-	if (data.yp1 !== undefined && data.yp2 !== undefined)
-{
-		window.r1.position.x = data.yp1;
-		window.r2.position.x = data.yp2;
-		window.ball.position.x = data.ball[0] / 5 - 10;
-		window.ball.position.z = data.ball[1] / 5 - 10;
-		document.getElementById("score")?.innerText = data.score[0] + " | " + data.score[1];
+
+	if (data.yp1 !== undefined && data.yp2 !== undefined) {
+        console.log("data.yp1: ", data.yp1);
+
+    	window.tjs_r1.position.z = (60 / 100) * (data.yp1);
+		window.tjs_r2.position.z = (60 / 100) * (data.yp2);
+
+		window.tjs_ball.position.x = (100 / 100) * (data.ball[0] - 1);
+		window.tjs_ball.position.z = (60 / 100) * (data.ball[1] - 1);
 	}
 }
 
 function sequelInitMatchWs(socket) {
-
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
+
 	socket.onmessage = event => onMatchWsMessage(
 		event, [waiting, end], waitingState);
-	setCommands(socket);
+
 	const spec = document.getElementById("spec")
 	if (spec)
 	{
@@ -222,6 +276,7 @@ function sequelInitMatchWs(socket) {
 			spec.style.display = "none";
 	}
 	initSecPlayer();
+	setCommands(socket, window.matchSocket2);
 }
 
 function initSecPlayer() {
@@ -232,7 +287,7 @@ function initSecPlayer() {
 			`?playerId=${-window.playerId}`);
 	else	
 		window.matchSocket2 = new WebSocket(
-			`ws://localhost:8000/ws/match/${window.matchId}/` +
+			`wss://localhost:8443/ws/match/${window.matchId}/` +
 			`?playerId=${-window.playerId}`);
 
 	window.matchSocket2.onopen = () => {
@@ -241,7 +296,7 @@ function initSecPlayer() {
 	window.matchSocket2.onclose = (event) => {
 		console.log("Connexion Match disconnected 😈 2nd Player");
 	};
-	setCommands2(window.matchSocket2);
+	// setCommands2(window.matchSocket2);
 }
 
 function initMatchWs() {
@@ -254,14 +309,16 @@ function initMatchWs() {
     // if (window.matchSocket)
 	// 	window.matchSocket.close();
 	window.antiLoop = true;
+
 	if (window.rasp == "true")
 		window.matchSocket = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`);
 	else	
 		window.matchSocket = new WebSocket(
-			`ws://localhost:8000/ws/match/${window.matchId}/` +
+			`wss://localhost:8443/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`);
+
 	window.matchSocket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};

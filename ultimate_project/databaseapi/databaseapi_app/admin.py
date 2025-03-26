@@ -4,7 +4,7 @@ from .models import Player, Tournament, Match
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ("username", "first_name", "last_name", "is_active")
+    list_display = ("id", "username", "first_name", "last_name", "is_active")
     search_fields = ("email", "first_name", "last_name", "username")
     ordering = ("email",)
 

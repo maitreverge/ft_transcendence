@@ -94,7 +94,7 @@ def match_simple_template(request, user_id):
         {
             "username": username,
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            "pidom": os.getenv("pi_domain", "localhost:8443"),
             # "simpleUsers": consumer.players,
             "page": page_html,
         },
@@ -116,7 +116,7 @@ def tournament_template(request, user_id):
         {
             "username": username,
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            "pidom": os.getenv("pi_domain", "localhost:8443"),
             # "simpleUsers": consumer.players,
             "page": page_html,
         },
@@ -137,7 +137,7 @@ def user_profile_template(request):
         {
             "username": username,
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            "pidom": os.getenv("pi_domain", "localhost:8443"),
             # "simpleUsers": consumer.players,
             "page": page_html,
         },
@@ -158,7 +158,7 @@ def user_stats_template(request):
         {
             "username": username,
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8000"),
+            "pidom": os.getenv("pi_domain", "localhost:8443"),
             # "simpleUsers": consumer.players,
             "page": page_html,
         },
