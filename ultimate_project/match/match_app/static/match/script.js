@@ -189,16 +189,19 @@ function setCommands2(socket) {
 		} 
 	});
 }
-let currentX = 0, currentY = 0;
-let targetX = 0, targetY = 0;
-let newTargetX = 0, newTargetY = 0;
-let actualPads = [0, 0];
-let targetPads = [0, 0];
-let targets = [];
-let speed = 1/16; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
-let offsetX = 0;
-let offsetY = 0;
-let offsets = [0, 0];
+window.currentX = window.currentX || 0
+window.currentY = window.window.currentY || 0;
+window.targetX = window.targetX || 0
+window.targetY = window.window.targetY || 0;
+window.newTargetX = window.newTargetX || 0
+window.newTargetY = window.window.newTargetY || 0;
+window.actualPads = window.actualPads || [0, 0];
+window.targetPads = window.targetPads || [0, 0];
+window.targets = window.targets || [];
+window.speed = window.speed || 1/16; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+window.offsetX = window.offsetX || 0;
+window.offsetY = window.offsetY || 0;
+window.offsets = window.offsets || [0, 0];
 function animate2(pads) {
 	// console.log("pads");
 	eps = 0.1;
@@ -315,12 +318,13 @@ function animate3(pads) {
 
 	requestAnimationFrame(() => animate(pads));
 }
-let exCurrentX = 0, exCurrentY = 0;
-let senseX = "right";
-let senseY = "up";
-let exSenseX = "right";
-let exSenseY = "down";
-let bounce = false;
+window.exCurrentX = window.exCurrentX || 0;
+window.exCurrentY = window.exCurrentY || 0;
+window.senseX = window.senseX || "right";
+window.senseY = window.senseY || "up";
+window.exSenseX = window.exSenseX || "right";
+window.exSenseY = window.exSenseY || "down";
+window.bounce = window.bounce || false;
 
 function setSense()
 {
@@ -433,7 +437,7 @@ function setSpeed() {
 	console.log("speed: ", speed);
 }
 
-let celerity = 0;
+window.celerity = window.celerity || 0;
 
 function get_magnitude() {
 
@@ -455,7 +459,7 @@ function get_magnitude() {
 // 	}
 // 	return wall;
 // }
-let hasWall = false;
+window.hasWall = window.hasWall || false;
 function animate(pads) {
 
 	// if (hasNewTarget() && hasWall())
