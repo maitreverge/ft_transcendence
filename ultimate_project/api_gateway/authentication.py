@@ -1,3 +1,4 @@
+# from django.middleware.csrf import get_token
 from fastapi import APIRouter, Request, Response, HTTPException
 from fastapi.responses import JSONResponse
 import requests
@@ -6,6 +7,8 @@ import datetime
 import os
 import pyotp
 import re
+import secrets
+import hashlib
 
 router = APIRouter()
 
@@ -19,6 +22,11 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 # URL de l'API qui gère la vérification des identifiants
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
 CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
+
+def generate_django_csrf_token():
+    secret = secrets.token_hex(32)  # 32-byte secret key
+    hashed_token = hashlib.sha256(secret.encode()).hexdigest()
+    return hashed_token
 
 
 # @router.post("/auth/login/")
@@ -129,6 +137,18 @@ async def login_fastAPI(
         samesite="Lax",
         path="/",
         max_age=60 * 60 * 24 * 7,
+    )
+
+    # Generate and set CSRF token
+    # csrf_token = secrets.token_urlsafe(64)
+    json_response.set_cookie(
+        key="csrftoken",
+        value=generate_django_csrf_token(),
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+        path="/",
+        max_age=60 * 60 * 6,  # 6 hours, same as access token
     )
 
     # Debug log for headers
@@ -450,6 +470,18 @@ async def verify_2fa_and_login(
             max_age=60 * 60 * 24 * 7,  # 7 days
         )
 
+        # Generate and set CSRF token
+        # csrf_token = secrets.token_urlsafe(64)
+        json_response.set_cookie(
+            key="csrftoken",
+            value=generate_django_csrf_token(),
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours, same as access token
+        )
+
         # Debug log for headers
         print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
 
@@ -672,6 +704,18 @@ async def register_fastAPI(
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 24 * 7,  # 7 days
+        )
+
+        # Generate and set CSRF token
+        # csrf_token = secrets.token_urlsafe(64)
+        json_response.set_cookie(
+            key="csrftoken",
+            value=generate_django_csrf_token(),
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours, same as access token
         )
 
         return json_response

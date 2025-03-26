@@ -5,11 +5,11 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 import logging
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 templates = Jinja2Templates(directory="templates")
 
 
-# from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
 from authentication import (
@@ -28,18 +28,18 @@ app = FastAPI(
 )
 
 # Configure CORS middleware with more permissive settings
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # Allow all origins for development
-#     allow_credentials=True,  # Allow cookies
-#     allow_methods=["*"],  # Allow all HTTP methods
-#     allow_headers=["*"],  # Allow all headers
-#     expose_headers=[
-#         "Content-Type",
-#         "X-CSRFToken",
-#         "Set-Cookie",
-#     ],  # Expose these headers
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=True,  # Allow cookies
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+    expose_headers=[
+        "Content-Type",
+        "X-CSRFToken",
+        "Set-Cookie",
+    ],  # Expose these headers
+)
 
 
 # error page handler
@@ -91,6 +91,32 @@ async def token_refresh_middleware(request: Request, call_next):
         )
 
     return response
+
+
+# CSRF middleware
+# @app.middleware("http")
+# async def csrf_middleware(request: Request, call_next):
+#     """
+#     Middleware that verifies CSRF token for non-GET requests.
+#     """
+#     # Skip CSRF check for GET requests and health checks
+#     if request.method == "GET" or request.url.path == "/health/":
+#         return await call_next(request)
+
+#     # Get CSRF token from cookie
+#     csrf_token = request.cookies.get("csrf_token")
+
+#     # Get CSRF token from header
+#     header_token = request.headers.get("X-CSRFToken")
+
+#     # Verify tokens match
+#     if not csrf_token or not header_token or csrf_token != header_token:
+#         return JSONResponse(
+#             status_code=403,
+#             content={"detail": "Invalid CSRF token"},
+#         )
+
+#     return await call_next(request)
 
 
 # ! DEBUGGING COOKIES MIDDLEWARE.
