@@ -265,8 +265,8 @@ class Pong:
 					self.flag = False
 
 				
-				await self.bot_bounce(99)				
-				await self.top_bounce(1)
+				await self.bot_bounce(100)				
+				await self.top_bounce(0)
 			
 				if (self.flag):	
 					self.ball[0] += self.vect[0]				
