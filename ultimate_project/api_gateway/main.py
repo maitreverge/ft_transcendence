@@ -45,7 +45,7 @@ app = FastAPI(
 # error page handler
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return await proxy_request("static_files", f"error/{exc.status_code}", request)
+    return await proxy_request("static_files", f"error/{exc.status_code}/", request)
 
 
 services = {
@@ -109,7 +109,6 @@ async def debug_cookies_middleware(request: Request, call_next):
         )
 
     return response
-
 
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
@@ -248,7 +247,7 @@ async def tournament_proxy(path: str, request: Request):
     else:
         error_message = "Page Not Found"
 
-        return await proxy_request("static_files", "error", request)
+        return await proxy_request("static_files", "error/", request)
 
 
 @app.api_route("/user/{path:path}", methods=["GET"])

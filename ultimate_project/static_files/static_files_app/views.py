@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 
 # from django.http import HttpResponse
 # from django.template import Context, Template
@@ -220,7 +221,7 @@ def twoFactorAuth(request):
     obj = {"username": username, "page": "two-factor-auth.html"}
     return render(request, "index.html", obj)
 
-
+@csrf_exempt    
 @never_cache
 def error(request, code=404):  # Code 404 par défaut
     username = request.session.get("username")
