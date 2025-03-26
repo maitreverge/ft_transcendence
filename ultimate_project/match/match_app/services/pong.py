@@ -30,7 +30,7 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [25, 5]
-		self.rst = [1, 1]
+		self.rst = [0.5, 0.5]
 		self.vect = self.rst.copy()
 		self.score = [0, 0]
 		self.mag = None
@@ -220,7 +220,7 @@ class Pong:
 					self.ball[0] += new_vect[0]				
 					self.ball[1] += new_vect[1]
 					self.has_wall = True
-					await asyncio.sleep(0.05)					
+					await asyncio.sleep(0.01)					
 					# self.has_wall = False
 					mag = self.get_magnitude(self.vect) 				
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
@@ -251,7 +251,7 @@ class Pong:
 					self.ball[0] += new_vect[0]	
 					self.ball[1] += new_vect[1]
 					self.has_wall = True
-					await asyncio.sleep(0.05)
+					await asyncio.sleep(0.01)
 					# self.has_wall = False				
 					mag = self.get_magnitude(self.vect) 					
 					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
@@ -292,7 +292,7 @@ class Pong:
 				self.state = State.end
 				await self.sendFinalState()
 						
-			await asyncio.sleep(0.05)	
+			await asyncio.sleep(0.01)	
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
 	def segments_intersect(self, A, B, C, D, epsilon=1e-9):
@@ -383,7 +383,7 @@ class Pong:
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
 			self.has_wall = True
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.01)
 			# self.has_wall = False
 			self.vect[1] = -self.vect[1]		
 			self.flag = False
@@ -407,7 +407,7 @@ class Pong:
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
 			self.has_wall = True
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.01)
 			# self.has_wall = False
 			self.vect[1] = -self.vect[1]
 			self.flag = False
@@ -458,7 +458,7 @@ class Pong:
 						}))                  
 					except Exception as e:
 						pass				
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.01)
 
 	async def sendFinalState(self):				
 		self.myplayers = [p for p in consumer.players
