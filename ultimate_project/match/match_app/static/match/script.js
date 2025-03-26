@@ -195,7 +195,7 @@ let newTargetX = 0, newTargetY = 0;
 let actualPads = [0, 0];
 let targetPads = [0, 0];
 let targets = [];
-let speed = 1/12; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
+let speed = 1/16; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
 let offsetX = 0;
 let offsetY = 0;
 let offsets = [0, 0];
@@ -438,8 +438,8 @@ let celerity = 0;
 function get_magnitude() {
 
 	return Math.sqrt(
-		(Math.abs(targetX - newTargetX) ** 2) +
-		(Math.abs(targetY - newTargetY) ** 2)
+		((targetX - newTargetX) ** 2) +
+		((targetY - newTargetY) ** 2)
 	);
 }
 
@@ -481,9 +481,13 @@ function animate(pads) {
 			// 	// offsets = offsets.map(o => o * 200);
 			// 	// beforeBounce = true;				
 			// }
-			if (hasSenseSwitched())
+			// if (hasSenseSwitched())
+			if (hasWall)
 			{
 				bounce = true;
+				calculateOffset(speed);
+				reInitTarget();
+				reInitExSense();
 			}
 			else
 			{

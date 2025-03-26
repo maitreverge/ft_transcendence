@@ -36,6 +36,8 @@ class Pong:
 		self.mag = None
 		self.has_wall = False
 		self.pad_speed = 8
+		self.max_speed = 10
+		self.acceleration = 1.1
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -226,8 +228,8 @@ class Pong:
 					x = math.sqrt(abs(x))	
 
 					scl = 1
-					if abs(self.vect[0]) < 10 and abs(self.vect[1]) < 10:
-						scl = 1.1
+					if abs(self.vect[0]) < self.max_speed and abs(self.vect[1]) < self.max_speed:
+						scl = self.acceleration
 					self.vect[0] = scl * x
 					self.vect[1] = scl * y 
 				
@@ -256,8 +258,8 @@ class Pong:
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
 					x = math.sqrt(abs(x))
 					scl = 1
-					if abs(self.vect[0]) < 10 and abs(self.vect[1]) < 10:
-						scl = 1.1
+					if abs(self.vect[0]) < self.max_speed and abs(self.vect[1]) < self.max_speed:
+						scl = self.acceleration
 					self.vect[0] = -scl * x
 					self.vect[1] = scl * y 
 					# print(f"vect: {self.vect}", flush=True)
@@ -265,8 +267,8 @@ class Pong:
 					self.flag = False
 
 				
-				await self.bot_bounce(100)				
-				await self.top_bounce(0)
+				await self.bot_bounce(39)				
+				await self.top_bounce(1)
 			
 				if (self.flag):	
 					self.ball[0] += self.vect[0]				
@@ -455,7 +457,7 @@ class Pong:
 						}))                  
 					except Exception as e:
 						pass				
-			await asyncio.sleep(0.1)
+			await asyncio.sleep(0.05)
 
 	async def sendFinalState(self):				
 		self.myplayers = [p for p in consumer.players
