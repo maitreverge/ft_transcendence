@@ -30,7 +30,7 @@ class Pong:
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [25, 5]
-		self.rst = [5, 5]
+		self.rst = [2, 2]
 		self.vect = self.rst.copy()
 		self.score = [0, 0]
 		self.mag = None
@@ -219,8 +219,8 @@ class Pong:
 					x = math.sqrt(abs(x))	
 
 					scl = 1
-					if abs(self.vect[0]) < 15 and abs(self.vect[1]) < 15:
-						scl = 1.5
+					if abs(self.vect[0]) < 10 and abs(self.vect[1]) < 10:
+						scl = 1.1
 					self.vect[0] = scl * x
 					self.vect[1] = scl * y 
 				
@@ -249,8 +249,8 @@ class Pong:
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
 					x = math.sqrt(abs(x))
 					scl = 1
-					if abs(self.vect[0]) < 15 and abs(self.vect[1]) < 15:
-						scl = 1.5
+					if abs(self.vect[0]) < 10 and abs(self.vect[1]) < 10:
+						scl = 1.1
 					self.vect[0] = -scl * x
 					self.vect[1] = scl * y 
 					# print(f"vect: {self.vect}", flush=True)
