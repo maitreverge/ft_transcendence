@@ -1,184 +1,231 @@
-// const window.scene = new THREE.Scene();
-window.scene = window.scene || new THREE.Scene();
+var container = document.getElementById('scene-container');
 
-window.camera = window.camera || new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-window.renderer = window.renderer || new THREE.WebGLRenderer({ antialias: true });
-window.renderer.setSize(window.innerWidth, window.innerHeight);
-window.document.body.appendChild(window.renderer.domElement);
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
 
-window.textureLoader = window.textureLoader || new THREE.TextureLoader();
+var textureLoader = new THREE.TextureLoader();
 
-window.rgeo = window.rgeo || new THREE.BoxGeometry(5, 1, 1);
-window.sgeo = window.sgeo || new THREE.SphereGeometry(1, 32, 32);
+var rgeo = new THREE.BoxGeometry(5, 1, 1);
+var sgeo = new THREE.SphereGeometry(1, 32, 32);
 
-window.rmat = window.rmat || [
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
-    new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') })
+var rmat = [
+    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') }),
+    new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') })
 ];
 
-window.smat = window.smat || new THREE.MeshBasicMaterial({ map: window.textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
+var smat = new THREE.MeshBasicMaterial({ map: textureLoader.load('https://threejs.org/examples/textures/crate.gif') });
 
-window.r1 = window.r1 || new THREE.Mesh(window.rgeo, window.rmat);
-window.r2 = window.r2 || new THREE.Mesh(window.rgeo, window.rmat);
+var r1 = new THREE.Mesh(rgeo, rmat);
+var r2 = new THREE.Mesh(rgeo, rmat);
 
-window.ball = window.ball || new THREE.Mesh(window.sgeo, window.smat);
+var ball = new THREE.Mesh(sgeo, smat);
 
-window.scene.add(window.ball);
-window.scene.add(window.r1);
-window.scene.add(window.r2);
+scene.add(ball);
+scene.add(r1);
+scene.add(r2);
 
-window.r1.position.z = 10;
-window.r2.position.z = -10;
+r1.position.z = 10;
+r2.position.z = -10;
 
-var angle = 0;
-
-// fonction appelée lors du clic sur le bouton
-function actionClick() {
-    window.ball.material.color.setHex(0x00ff00);
+var upgrade = {
+	user_lvl: 0,
+	points: 0,
+	cooldown: 5,
 }
 
-function otherClick() {
-    // change window.r1 images
-    window.r1.material = [
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') }),
-        new THREE.MeshBasicMaterial({ map: window.textureLoader.load('/img1.png') })
-    ];
+function actionCooldownUpdate() {
+	// update the html button
+	if (!upgrade.cooldown) {
+		document.getElementById("upgrade").innerHTML = `Upgrade (+${upgrade.points})`;
+	} else if (upgrade.points) {
+		document.getElementById("upgrade").innerHTML = `Upgrade (+${upgrade.points}) ${upgrade.cooldown}s`;
+	} else {
+		document.getElementById("upgrade").innerHTML = `Upgrade ${upgrade.cooldown}s`;
+	}
 }
 
-function change_zoom(width, height) {
-    // change fov
-    
-    r = height / width;
-    window.camera.position.z = 15 + 2 * r;
-    window.camera.position.y = 2 + 10 * r;
-
-    window.camera.lookAt(0, 0, 0);
-    window.camera.updateProjectionMatrix();
+// function call on button click
+function actionUpgrade() {
+	if (upgrade.points < 1) {
+		return;
+	}
+	upgrade.points--;
+	switch (upgrade.user_lvl) {
+		case 0:
+    		ball.material.color.setHex(0x00ff00);
+			break;
+		case 1:
+			ball.material.color.setHex(0xff0000);
+			break;
+		case 2:
+			ball.material.color.setHex(0x0000ff);
+			break;
+		case 3:
+			// reset the color
+			ball.material.color.setHex(0xffffff);
+			ball.material.map = textureLoader.load('https://media.tenor.com/YkyhmCCJd_0AAAAM/aaaa.gif');
+			// print the image size in the console
+			console.log("Image size: " + ball.material.map.image.width + "x" + ball.material.map.image.height);
+			break;
+		default:
+			break;
+	}
+	upgrade.user_lvl++;
+	actionCooldownUpdate();
 }
 
-// resize window when resizing
-window.addEventListener('resize', () => {
-    w = window.innerWidth;
-    h = window.innerHeight;
-    window.renderer.setSize(w, h);
-    window.camera.aspect = w / h;
-    window.camera.updateProjectionMatrix();
-    change_zoom(w, h);
+// function call each seconds
+function actionCooldown() {
+	if (upgrade.cooldown > 0) {
+		upgrade.cooldown--;
+	} else {
+		upgrade.cooldown = 5;
+	}
+	if (upgrade.cooldown == 0) {
+		upgrade.points++;
+	}
+	actionCooldownUpdate();
+}
+
+actionCooldownUpdate();
+setInterval(actionCooldown, 1000);
+
+let isDragging = false;
+let previousMousePosition = { x: 0, y: 0 };
+
+let radius = 15;
+
+let theta = 0; 			// horizontal angle
+let phi = Math.PI / 2;  // vertical angle
+
+container.onmousedown = function (e) {
+	isDragging = true;
+	previousMousePosition = { x: e.clientX, y: e.clientY };
+};
+
+container.onmouseup = function () {
+	isDragging = false;
+};
+
+container.onmousemove = function (e) {
+	if (!isDragging) return;
+
+	let sensitivity = 0.005;
+
+	// update angles based on mouse movement
+	theta -= (e.clientX - previousMousePosition.x) * sensitivity;
+	phi   -= (e.clientY - previousMousePosition.y) * sensitivity;
+
+	phi = Math.max(0.1, Math.min(Math.PI - 0.1, phi));
+
+	// calculate new camera position
+	camera.position.x = radius * Math.sin(phi) * Math.sin(theta);
+	camera.position.z = radius * Math.sin(phi) * Math.cos(theta);
+	camera.position.y = radius * Math.cos(phi);
+
+	camera.lookAt(0, 0, 0);
+
+	previousMousePosition = { x: e.clientX, y: e.clientY };
+};
+
+// if mouse is inside the container and scrolling
+container.onwheel = function (e) {
+	radius -= e.deltaY * 0.01;
+	radius = Math.max(10, Math.min(50, radius));
+
+	camera.position.x = radius * Math.sin(phi) * Math.sin(theta);
+	camera.position.z = radius * Math.sin(phi) * Math.cos(theta);
+	camera.position.y = radius * Math.cos(phi);
+
+	camera.lookAt(0, 0, 0);
+};
+
+container.addEventListener('wheel', function (event) {
+    event.preventDefault();
+}, { passive: false });
+
+container.addEventListener('touchmove', function (event) {
+    event.preventDefault();
+}, { passive: false });
+
+// resize canvas on window resize
+window.addEventListener('resize', function () {
+	renderer.setSize(container.clientWidth, container.clientHeight);
+	camera.aspect = container.clientWidth / container.clientHeight;
+	camera.updateProjectionMatrix();
 });
 
 function animate() {
     requestAnimationFrame(animate);
 
-    window.ball.rotation.z += 0.1;
+    ball.rotation.z += 0.1;
 
-    window.renderer.render(window.scene, window.camera);
+    renderer.render(scene, camera);
 }
+
+camera.position.z = 15;
+camera.position.y = 2;
+camera.lookAt(0, 0, 0);
 
 animate();
 
-change_zoom(window.innerWidth, window.innerHeight);
+function setCommands(socket, socket2) {
+    const keysPressed = {}; // Stocker les touches enfoncées
+    let animationFrameId = null; // Stocke l'ID du requestAnimationFrame
 
-function stopMatch(matchId)
-{
-	if (window.selfMatchId == matchId)
-	{	
-		fetch(`/match/stop-match/${window.selfId}/${matchId}/`)
-		.then(response => {
-			if (!response.ok) 
-				throw new Error(`Error HTTP! Status: ${response.status}`);		  
-			return response.text();
-		})
-		.then(data => console.log(data))
-		.catch(error => console.log(error))
-	}
-	else
-		document.getElementById('container').remove()
-	console.log("YOUHOUHOUHOU");
-	// if (window.selfMatchId != window.matchId)
-	// {
-		console.log("jypigequeuedalle");
-		if (!window.matchSocket)
-			console.log("LE WEBSOCKET ETS NULL.");
-		else 
-		{
-			console.log("je sais pas ce qu eje fou la");
-			if (window.matchSocket.readyState === WebSocket.OPEN)
-			{
-				console.log("je vais envoyer 42");
-				window.stopFlag = true
-				window.matchSocket.close(3666);
-				window.matchSocket2.close(3666);
-			} 
-			else 
-			{
-				console.log("La WebSocket était déjà fermée.");
-			}
-			console.log("je nai pas plante");
-		}
-		console.log("toujours vivant");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);			
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-	// }
-	// else
-	// 	console.log("pas spec!!");
-	
-}
+    function sendCommands() {
+        if (socket.readyState === WebSocket.OPEN) {
+            if (keysPressed["ArrowUp"]) {
+                socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
+            }
+            if (keysPressed["ArrowDown"]) {
+                socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
+            }
+        }
 
-function setCommands(socket) {
+        if (socket2 && socket2.readyState === WebSocket.OPEN) {
+            if (keysPressed["+"]) {
+                socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
+            }
+            if (keysPressed["Enter"]) {
+                socket2.send(JSON.stringify({ action: 'move', dir: 'down' }));
+            }
+        }
 
-	document.addEventListener("keydown", function(event) {
-		console.log("event :", event.key);
-		if (socket.readyState === WebSocket.OPEN)
-		{
-			if (event.key === "ArrowUp") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'up'}));
-			} else if (event.key === "ArrowDown") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'down'}));
-			}
-		} 
-	});
-}
+        animationFrameId = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
+    }
 
-function setCommands2(socket) {
+    document.addEventListener("keydown", function(event) {
+		event.preventDefault();
+        if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
+            keysPressed[event.key] = true;
+        }
 
-	document.addEventListener("keydown", function(event) {
-		// console.log("event :", event.key);
-		if (socket.readyState === WebSocket.OPEN)
-		{
-			if (event.key === "+") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'up'}));
-			} else if (event.key === "Enter") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'down'}));
-			}
-		} 
-	});
+        if (!animationFrameId) { // Démarre l'animation seulement si elle n'est pas déjà en cours
+            animationFrameId = requestAnimationFrame(sendCommands);
+        }
+    });
+
+    document.addEventListener("keyup", function(event) {
+        delete keysPressed[event.key];
+
+        if (Object.keys(keysPressed).length === 0) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+    });
 }
 
 function onMatchWsMessage(event, [waiting, end], waitingState) {
-		
 	const data = JSON.parse(event.data);
-	// console.log("match mesage: ", data);
+
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
@@ -195,24 +242,24 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
 				waiting.classList.add("no-waiting");			
 		}			
 	}
-	if (data.yp1 !== undefined && data.yp2 !== undefined)
-{
-		window.r1.position.x = data.yp1;
-		window.r2.position.x = data.yp2;
-		window.ball.position.x = data.ball[0] / 5 - 10;
-		window.ball.position.z = data.ball[1] / 5 - 10;
-		document.getElementById("score")?.innerText = data.score[0] + " | " + data.score[1];
+
+	if (data.yp1 !== undefined && data.yp2 !== undefined) {
+        console.log("data.yp1: ", data.yp1);
+		window.r1.position.x = data.yp1 - 20;
+		window.r2.position.x = data.yp2 - 20;
+		window.ball.position.z = data.ball[0] / 4 - 10;
+		window.ball.position.x = data.ball[1] / 4 - 6;
 	}
 }
 
 function sequelInitMatchWs(socket) {
-
 	const [waiting, end] = [		
 		document.getElementById("waiting"),	document.getElementById("end")];	
 	let waitingState = ["waiting"];
+
 	socket.onmessage = event => onMatchWsMessage(
 		event, [waiting, end], waitingState);
-	setCommands(socket);
+
 	const spec = document.getElementById("spec")
 	if (spec)
 	{
@@ -222,6 +269,7 @@ function sequelInitMatchWs(socket) {
 			spec.style.display = "none";
 	}
 	initSecPlayer();
+	setCommands(socket, window.matchSocket2);
 }
 
 function initSecPlayer() {
@@ -241,7 +289,7 @@ function initSecPlayer() {
 	window.matchSocket2.onclose = (event) => {
 		console.log("Connexion Match disconnected 😈 2nd Player");
 	};
-	setCommands2(window.matchSocket2);
+	// setCommands2(window.matchSocket2);
 }
 
 function initMatchWs() {
@@ -254,6 +302,7 @@ function initMatchWs() {
     // if (window.matchSocket)
 	// 	window.matchSocket.close();
 	window.antiLoop = true;
+
 	if (window.rasp == "true")
 		window.matchSocket = new WebSocket(
 			`wss://${window.pidom}/ws/match/${window.matchId}/` +
@@ -262,6 +311,7 @@ function initMatchWs() {
 		window.matchSocket = new WebSocket(
 			`wss://localhost:8443/ws/match/${window.matchId}/` +
 			`?playerId=${window.playerId}`);
+
 	window.matchSocket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};

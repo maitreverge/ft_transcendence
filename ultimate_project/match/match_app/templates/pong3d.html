@@ -3,9 +3,17 @@
 
 <div style="display:none">
 <head>
-    <title>Test</title>
     <style>
-        body { margin: 0; }
+        #scene-container {
+            width: 80vw;
+            height: 80vh;
+            margin: 0 auto;
+            border: 2px solid white;
+        }
+        #upgrade {
+            display: block;
+            margin: 0 auto;
+        }            
     </style>
     <script class="match-script">
         window.rasp = "{{ rasp }}"; 
@@ -13,19 +21,17 @@
         window.matchId = "{{ matchId }}"
         window.playerId = "{{ playerId }}";
     </script>
-	<script class="match-script" src="{% static 'match/script3d.js' %}"></script>
 </head>
 </div>
 
 <body>
-    <div id="container"></div>
-    <button id="action", onclick="actionClick()">Action</button>
-    <button id="other", onclick="otherClick()">Other</button>
-	<div id="score">Score</div>  
-	<div id="waiting">Waiting</div>
-	<div id="end" style="display:none"></div>
-	<button onclick="
-		stopMatch('{{matchId}}');
-		const matchDiv = document.getElementById('container');
-		if (matchDiv) matchDiv.remove();">Quit Match</button>
+    <br>
+    <button id="upgrade", onclick="actionUpgrade()">upgrade</button>
+    <div id="scene-container"></div>
+    <script class="match-script" src="{% static 'match/script3d.js' %}"></script>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div id="end" style="display:none"></div>
 </body>
