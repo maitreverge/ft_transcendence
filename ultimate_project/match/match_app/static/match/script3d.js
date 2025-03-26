@@ -247,8 +247,8 @@ function onMatchWsMessage(event, [waiting, end], waitingState) {
         console.log("data.yp1: ", data.yp1);
 		window.r1.position.x = data.yp1 - 20;
 		window.r2.position.x = data.yp2 - 20;
-		window.ball.position.x = data.ball[0] / 5 - 10;
-		window.ball.position.z = data.ball[1] / 2 - 10;
+		window.ball.position.z = data.ball[0] / 4 - 10;
+		window.ball.position.x = data.ball[1] / 4 - 6;
 	}
 }
 
