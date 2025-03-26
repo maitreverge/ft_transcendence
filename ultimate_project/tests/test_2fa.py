@@ -162,5 +162,7 @@ def test_register_2fa(playwright: Playwright):
 
     # expect(page).to_have_url(f"{base_url}/user/profile/")
 
+    print(f"✅ 2FA register succed ✅", flush=True)
+
     context.close()
     browser.close()
