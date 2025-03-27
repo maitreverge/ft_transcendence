@@ -1,6 +1,8 @@
 
 function stopMatch(matchId)
 {
+	if (!matchId)
+		return;
 	if (window.selfMatchId == matchId)
 	{	
 		fetch(`/match/stop-match/${window.selfId}/${matchId}/`)

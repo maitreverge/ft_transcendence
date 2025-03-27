@@ -367,6 +367,7 @@ function onSimpleMatchMessage(event, socket) {
 }
 
 function closeSimpleMatchSocket() {
+	stopMatch(window.selfMatchId);
     if (
 		window.simpleMatchSocket && 
 		window.simpleMatchSocket.readyState === WebSocket.OPEN

@@ -2,6 +2,7 @@
 window.players = []
 
 function initTournament() {
+	stopMatch(window.selfMatchId);
 	if (typeof closeSimpleMatchSocket === 'function') 
 		closeSimpleMatchSocket();
 	else 
