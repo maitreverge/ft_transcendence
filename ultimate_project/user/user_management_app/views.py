@@ -33,7 +33,7 @@ async def delete_profile(request):
 
             # Get form data
             password = request.POST.get("password")
-            token = request.POST.get("token")
+            otp_code = request.POST.get("otp-code")
 
             if not password:
                 return JsonResponse({"error": "Password is required"}, status=400)
@@ -58,7 +58,7 @@ async def delete_profile(request):
 
                 # Check if 2FA is enabled
                 if user.get("two_fa_enabled"):
-                    if not token:
+                    if not otp_code:
                         return JsonResponse(
                             {"error": "2FA code is required"}, status=400
                         )
@@ -71,16 +71,17 @@ async def delete_profile(request):
                         )
 
                     totp = pyotp.TOTP(secret)
-                    if not totp.verify(token):
+                    if not totp.verify(otp_code):
                         return JsonResponse({"error": "Invalid 2FA code"}, status=400)
 
-                # Verify password
-                verify_response = await client.post(
-                    "http://databaseapi:8007/api/check-2fa/",
-                    json={"username": username, "password": password},
+                # AT THIS POINT, 2FA HAS BEEN CHECKED CORRECTLY
+                # ! INCORRECT ROUTE
+                password_response = await client.post(
+                    "http://databaseapi:8007/api/verify-credentials/",
+                    data={"username": username, "password": password},
                 )
 
-                if verify_response.status_code != 200:
+                if password_response.status_code != 200:
                     return JsonResponse({"error": "Invalid password"}, status=400)
 
                 # Delete user

@@ -18,13 +18,13 @@
 						{% csrf_token %}
                         <div class="form-group">
 							<label>Enter your password:</label>
-							<input type="password" name="password" class="form-control form-control-user" 
+							<input id="password "type="password" name="password" class="form-control form-control-user" 
 								placeholder="Enter your password" required>
 						</div>
                         {% if user.two_fa_enabled %}
                         <div class="form-group">
 							<label>Enter your 2FA code:</label>
-							<input type="number" name="token" maxlength="6" class="form-control form-control-user" 
+							<input id="otp-code" type="number" name="token" maxlength="6" class="form-control form-control-user" 
 								placeholder="Enter 6-digit code" required>
 						</div>
                         {% endif %}

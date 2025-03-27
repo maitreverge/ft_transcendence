@@ -78,7 +78,8 @@ def run():
 
             data.append(row)
 
-        new_created_users = 0
+        skipped_created_users = 0
+        created_users = 0
         skipped_users = []
         for user in data:
             User = get_user_model()
@@ -86,13 +87,14 @@ def run():
             # If the current user does not exists in the data set, create
             if not User.objects.filter(username=user["username"]).exists():
                 create_user(user)
-                new_created_users += 1
+                created_users += 1
             else:
                 skipped_users.append(user["username"])
+                skipped_created_users += 1
 
-        if new_created_users:
+        if skipped_created_users:
             print(
                 f"🚷 The following users :🚷\n🚷{skipped_users}🚷\n🚷have not been created. Already exists in the DB🚷"
             )
-        else:
+        if not created_users:
             print(f"🚷 No new users created 🚷")
