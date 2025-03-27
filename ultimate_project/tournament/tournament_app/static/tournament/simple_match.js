@@ -118,35 +118,48 @@ function setSelfMatchId() {
 	});
 }
 
-function movePlayerInMatch(socket, matchElement, match) {
+// function movePlayerInMatch(socket, matchElement, match) {
 	
-	const playersContainer = document.getElementById("players");
-	const playerElements = [...playersContainer.children];
-	const matchPlayerElements = [...matchElement.children];
+// 	const playersContainer = document.getElementById("players");
+// 	const playerElements = [...playersContainer.children];
+// 	const matchPlayerElements = [...matchElement.children];
 
-	if (match.players)
-	{		
-		// match.players.forEach(p => console.log("foriche ", p.playerId))
-		playerElements.slice().reverse().forEach(player => {
+// 	if (match.players)
+// 	{		
+// 		// match.players.forEach(p => console.log("foriche ", p.playerId))
+// 		playerElements.slice().reverse().forEach(player => {
 
-			if (match.players.some(p => p.playerId == player.id) &&
-				matchPlayerElements.every(p => p.id != player.id))
-			{				
-				// const clone = player.cloneNode(true)
-				// clone.onclick = player.onclick;
-				// matchElement.appendChild(clone);	
-				matchElement.appendChild(player);	
-			}		
-		});
-		matchPlayerElements.slice().reverse().forEach(player => {
-			if (match.players.every(el => el.playerId != player.id))
-			{
-				playersContainer.appendChild(player);
-				// addPlayerToContainer(socket, playersContainer, player.id);	
-				// player.remove();			
-			}			
-		});
-	}	
+// 			if (match.players.some(p => p.playerId == player.id) &&
+// 				matchPlayerElements.every(p => p.id != player.id))
+// 			{				
+// 				// const clone = player.cloneNode(true)
+// 				// clone.onclick = player.onclick;
+// 				// matchElement.appendChild(clone);	
+// 				matchElement.appendChild(player);	
+// 			}		
+// 		});
+// 		matchPlayerElements.slice().reverse().forEach(player => {
+// 			if (match.players.every(el => el.playerId != player.id))
+// 			{
+// 				playersContainer.appendChild(player);
+// 				// addPlayerToContainer(socket, playersContainer, player.id);	
+// 				// player.remove();			
+// 			}			
+// 		});
+// 	}	
+// }
+
+function moveSimplePlayerInMatch(matchElement, match) {
+
+	console.log("MOVE SIMPLE PLAYER IN MATCH", match);
+
+	if (!match.players)
+		return;
+	console.log("MOVE SIMPLE PLAYER IN MATCH after return");
+	match.players.forEach(ply => {
+		const winPly = window.simplePlayers.find(el => el.id == ply.playerId);
+		matchElement.appendChild(winPly);
+	});	
 }
 
 function addToMatchs(socket, matchsContainer, match) {
@@ -156,12 +169,12 @@ function addToMatchs(socket, matchsContainer, match) {
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
     matchsContainer.appendChild(div);
-	movePlayerInMatch(socket, div, match)
+	moveSimplePlayerInMatch(div, match);
 }
 
 function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 
-	const playersContainer = document.getElementById("players");
+	// const playersContainer = document.getElementById("players");
 
 	matchElements.slice().reverse().forEach(match => {
 		if (matchs.every(el => el.matchId != match.id)) {
@@ -174,15 +187,17 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 				window.selectedElement = null;
 				window.selfMatchId = null;
 			}
-			[...match.children].forEach(player => {
-				playersContainer.appendChild(player);
-			});
+			// [...match.children].forEach(player => {
+			// 	playersContainer.appendChild(player);
+			// });
 			matchsContainer.removeChild(match);		
 		}
 	});
 }
 
 function updateMatchs(socket, matchs) {
+
+	console.log("UPDATE MATCH", matchs);
 
     const matchsContainer = document.getElementById("matchs");
 	let matchElements = [...matchsContainer.children];
@@ -195,51 +210,51 @@ function updateMatchs(socket, matchs) {
 		else			
 			matchElements.forEach(el => {
 				if (el.id == match.matchId)
-					movePlayerInMatch(socket, el, match);
+					moveSimplePlayerInMatch(el, match);
 			});	
 	});
 	setSelfMatchId();	
 }
 
-function updateSimpleMatchPlayers(plys) {
+// function updateSimpleMatchPlayers(plys) {
 
-	console.log("MATCH SIMPLE PLAYERS UPDATE ", plys);	
+// 	console.log("MATCH SIMPLE PLAYERS UPDATE ", plys);	
 
-	// const tournament = document.getElementById("tournaments").querySelector(
-	// 	`[id='${plys.tournamentId}']`
-	// );
-	// if (!tournament)
-	// 	return;
+// 	// const tournament = document.getElementById("tournaments").querySelector(
+// 	// 	`[id='${plys.tournamentId}']`
+// 	// );
+// 	// if (!tournament)
+// 	// 	return;
 	
-	const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
-	if (!localMatch)
-		return;
+// 	const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
+// 	if (!localMatch)
+// 		return;
 
-	const localP1 = localMatch.querySelector(`#pl1`);
-	const localP2 = localMatch.querySelector(`#pl2`);
-	const specCont = localMatch.querySelector(`#specs`);
+// 	const localP1 = localMatch.querySelector(`#pl1`);
+// 	const localP2 = localMatch.querySelector(`#pl2`);
+// 	const specCont = localMatch.querySelector(`#specs`);
 
-	const specs = [...specCont.children]
+// 	const specs = [...specCont.children]
 
-	plys.players.forEach(player => {	
-		if (specs.every(el => el.id != player.playerId))
-		{		
-			const winPly = window.players.find(el => el.id == player.playerId);
-			if (plys.p1Id == winPly.id)
-			{			
-				localP1.appendChild(winPly);
-			}
-			else if (plys.p2Id == winPly.id)
-			{		
-				localP2.appendChild(winPly);
-			}
-			else
-			{
-				specCont.appendChild(winPly);
-			}
-		}
-	});
-}
+// 	plys.players.forEach(player => {	
+// 		if (specs.every(el => el.id != player.playerId))
+// 		{		
+// 			const winPly = window.players.find(el => el.id == player.playerId);
+// 			if (plys.p1Id == winPly.id)
+// 			{			
+// 				localP1.appendChild(winPly);
+// 			}
+// 			else if (plys.p2Id == winPly.id)
+// 			{		
+// 				localP2.appendChild(winPly);
+// 			}
+// 			else
+// 			{
+// 				specCont.appendChild(winPly);
+// 			}
+// 		}
+// 	});
+// }
 
 function sendConfirmation(socket, applicantId, response) {
 
@@ -396,11 +411,12 @@ function onSimpleMatchMessage(event, socket) {
 			setSelfId(data.selfId);
 			break;
 		case "playerList":
-			window.players2 = data.players;//!
+			window.simplePlayersList = data.players;
 			// updatePlayers(socket, data.players);
 			updateSimplePlayers(socket, data.players);
 			break;
 		case "matchList":
+			updateSimplePlayersCont(window.simplePlayersList);
 			updateMatchs(socket, data.matchs);
 			break;
 		case "invitation":
