@@ -352,7 +352,7 @@ function onSimpleMatchMessage(event, socket) {
 			setSelfId(data.selfId);
 			break;
 		case "playerList":
-			window.players = data.players;
+			window.players2 = data.players;//!
 			updatePlayers(socket, data.players);
 			break;
 		case "matchList":
@@ -366,9 +366,22 @@ function onSimpleMatchMessage(event, socket) {
 	}
 }
 
+function closeSimpleMatchSocket() {
+    if (
+		window.simpleMatchSocket && 
+		window.simpleMatchSocket.readyState === WebSocket.OPEN
+	)
+        window.simpleMatchSocket.close();    
+}
+
 function initSimpleMatch() {
 	
 	console.log("INIT SIMPLE MATCH");
+	if (typeof closeTournamentSocket === 'function') 
+		closeTournamentSocket();
+	else 
+		console.log("closeTournamentSocket is not define");
+	
     if (window.simpleMatchSocket)
         window.simpleMatchSocket.close();
 	if (window.rasp == "true")

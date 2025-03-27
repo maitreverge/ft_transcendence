@@ -2,6 +2,10 @@
 window.players = []
 
 function initTournament() {
+	if (typeof closeSimpleMatchSocket === 'function') 
+		closeSimpleMatchSocket();
+	else 
+		console.log("closeSimpleMatch not define");
 	
 	console.log("INIT TOURNAMENT");
     if (window.tournamentSocket)
@@ -22,6 +26,14 @@ function initTournament() {
 	};	
 	window.tournamentSocket.onmessage = event =>
 		onTournamentMessage(event, window.tournamentSocket);
+}
+
+function closeTournamentSocket() {
+    if (
+		window.tournamentSocket && 
+		window.tournamentSocket.readyState === WebSocket.OPEN
+	)
+	window.tournamentSocket.close();    
 }
 
 function onTournamentMessage(event, socket) {

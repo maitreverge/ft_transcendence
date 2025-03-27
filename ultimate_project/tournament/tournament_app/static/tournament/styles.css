@@ -86,9 +86,16 @@ button {
 	margin:10px;
 }
 
-
-
-
+#players {
+	width: fit-content;
+	height: fit-content;
+	
+	border-style:solid;
+	border-radius:5px;
+	border-width: 5px;
+	border-color: rgb(43, 150, 226);
+	/* background-color: yellow; */
+}
 
 .winner {
 	background-color: rgb(8, 250, 20) !important;		
