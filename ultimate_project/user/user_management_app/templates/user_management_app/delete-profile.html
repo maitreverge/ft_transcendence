@@ -41,6 +41,11 @@
                                 Cancel
                             </a>
 						</div>
+						{% if error %}
+						<div class="text-danger mt-2">
+							<p>{{ error }}</p>
+						</div>
+						{% endif %}
 					</form>
 				</div>
 			</div>

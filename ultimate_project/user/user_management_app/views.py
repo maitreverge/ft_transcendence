@@ -23,20 +23,20 @@ def index(request):
 @ensure_csrf_cookie
 async def delete_profile(request):
     if request.method == "GET":
-        return render(request, "user_management_app/delete-profile.html")
+        return render(request, "user_management_app/delete-profile.html", )
     else:
         try:
             # Get username from headers
             username = request.headers.get("X-Username")
             if not username:
-                return JsonResponse({"error": "User not authenticated"}, status=401)
+                return render(request, "user_management_app/delete-profile.html", {"error" : "User not authenticated"})
 
             # Get form data
             password = request.POST.get("password")
             otp_code = request.POST.get("otp-code")
 
             if not password:
-                return JsonResponse({"error": "Password is required"}, status=400)
+                return render(request, "user_management_app/delete-profile.html", {"error" : "Password is required"})
 
             # Get user data from database API
             async with httpx.AsyncClient() as client:
@@ -45,7 +45,7 @@ async def delete_profile(request):
                 )
                 # ! Should not happen once the route will be locked
                 if response.status_code != 200:
-                    return JsonResponse({"error": "User not found"}, status=404)
+                    return render(request, "user_management_app/delete-profile.html", {"error" : "User not found"})
 
                 # Checking if the user data is a list or a dictionary
                 user_data = response.json()
@@ -54,25 +54,21 @@ async def delete_profile(request):
                 elif isinstance(user_data, dict) and "results" in user_data:
                     user = user_data["results"][0]
                 else:
-                    return JsonResponse({"error": "Invalid user data"}, status=500)
+                    return render(request, "user_management_app/delete-profile.html", {"error" : "Invalid user data"})
 
                 # Check if 2FA is enabled
                 if user.get("two_fa_enabled"):
                     if not otp_code:
-                        return JsonResponse(
-                            {"error": "2FA code is required"}, status=400
-                        )
+                        return render(request, "user_management_app/delete-profile.html", {"error" : "2FA code is required"})
 
                     # Verify 2FA code
                     secret = user.get("_two_fa_secret")
                     if not secret:
-                        return JsonResponse(
-                            {"error": "2FA not properly configured"}, status=500
-                        )
+                        return render(request, "user_management_app/delete-profile.html", {"error" : "2FA not properly configured"})
 
                     totp = pyotp.TOTP(secret)
                     if not totp.verify(otp_code):
-                        return JsonResponse({"error": "Invalid 2FA code"}, status=400)
+                        return render(request, "user_management_app/delete-profile.html", {"error" : "Invalid 2FA code"})
 
                 # AT THIS POINT, 2FA HAS BEEN CHECKED CORRECTLY
                 # ! INCORRECT ROUTE
@@ -82,7 +78,7 @@ async def delete_profile(request):
                 )
 
                 if password_response.status_code != 200:
-                    return JsonResponse({"error": "Invalid password"}, status=400)
+                    return render(request, "user_management_app/delete-profile.html", {"error" : "Invalid password"})
 
                 # Delete user
                 delete_response = await client.delete(
@@ -90,7 +86,7 @@ async def delete_profile(request):
                 )
 
                 if delete_response.status_code != 204:
-                    return JsonResponse({"error": "Failed to delete user"}, status=500)
+                    return render(request, "user_management_app/delete-profile.html", {"error" : "Failed to delete user"})
 
                 # Return success response with redirect URL
                 return JsonResponse({"success": True, "redirect_url": "/register/"})
