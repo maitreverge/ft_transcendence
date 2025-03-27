@@ -75,8 +75,9 @@ def run(playwright: Playwright) -> None:
         final_delete_button.click()
         expect(page).to_have_url(f"{BASE_URL}/user/profile/")
         
-        error_field = page.locator("#error_delete_user")
-        # expect(error_field).to_have_text("Password is required")
+        error_field = page.locator("#error_delete_user").text_content()
+        assert error_field == "Password is required"
+
 
 
 
