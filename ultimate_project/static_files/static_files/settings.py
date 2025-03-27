@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 import logging
 
+SERVER_IP = os.getenv("HOST_IP")
+
 NAME = os.getenv("name")
 
 PI_DOMAIN = os.getenv("pi_domain")

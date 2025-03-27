@@ -9,6 +9,7 @@ services:
   static_files:
     environment:
       - env=dev
+      - HOST_IP=${HOST_IP}
     ports:
       - "${static_files_port}:${static_files_port}"
     volumes:    
@@ -20,6 +21,7 @@ services:
       dockerfile: _docker/Dockerfile
     environment:
       - env=dev
+      - HOST_IP=${HOST_IP}
     ports:
       - "${tournament_port}:${tournament_port}"
     volumes:
@@ -31,6 +33,7 @@ services:
       dockerfile: _docker/Dockerfile
     environment:
       - env=dev
+      - HOST_IP=${HOST_IP}
     env_file:
       - .env
     ports:
@@ -44,6 +47,7 @@ services:
       dockerfile: _docker/Dockerfile
     environment:
       - env=dev
+      - HOST_IP=${HOST_IP}
     ports:
       - "${match_port}:${match_port}"
     volumes:
@@ -66,6 +70,7 @@ services:
       dockerfile: _docker/Dockerfile
     environment:
       - env=dev
+      - HOST_IP=${HOST_IP}
     ports:
       - "${databaseapi_port}:${databaseapi_port}"
     volumes:
@@ -74,6 +79,7 @@ services:
   api_gateway:
     environment:
       - env=dev
+      - HOST_IP=${HOST_IP}
     ports:
       - "${api_gateway_port}:${api_gateway_port}"
     volumes:

@@ -2,3 +2,5 @@ django
 requests    
 uvicorn
 django-cors-headers
+netifaces
+psutil

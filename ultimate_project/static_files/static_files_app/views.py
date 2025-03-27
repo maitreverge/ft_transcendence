@@ -10,7 +10,6 @@ import os
 import static_files.settings as settings
 from django.http import JsonResponse
 
-
 @never_cache
 def index(request):
     # Get username from JWT header if available
@@ -49,7 +48,7 @@ def home(request):
     ):
         return render(request, "partials/home.html", {"username": username})
 
-    obj = {"username": username, "page": "partials/home.html"}
+    obj = {"username": username, "page": "partials/home.html", "server_ip": settings.SERVER_IP}
     return render(request, "index.html", obj)
 
 
