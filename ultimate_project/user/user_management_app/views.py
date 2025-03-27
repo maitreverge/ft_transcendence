@@ -22,53 +22,93 @@ def index(request):
 @require_http_methods(["GET", "POST"])
 @ensure_csrf_cookie
 async def delete_profile(request):
-    if request.method == "GET":
-        return render(request, "user_management_app/delete-profile.html", )
-    else:
-        try:
-            # Get username from headers
-            username = request.headers.get("X-Username")
-            if not username:
-                return render(request, "user_management_app/delete-profile.html", {"error" : "User not authenticated"})
 
-            # Get form data
-            password = request.POST.get("password")
-            otp_code = request.POST.get("otp-code")
+    # Get username from headers
+    username = request.headers.get("X-Username")
+    if not username:
+        return render(
+            request,
+            "user_management_app/delete-profile.html",
+            {"error": "User not authenticated"},
+        )
 
-            if not password:
-                return render(request, "user_management_app/delete-profile.html", {"error" : "Password is required"})
+    # Get user data from database API
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://databaseapi:8007/api/player/?username={username}"
+        )
+        # ! Should not happen once the route will be locked
+        if response.status_code != 200:
+            return render(
+                request,
+                "user_management_app/delete-profile.html",
+                {"user" : user,
+                "error": "User not found"},
+            )
 
-            # Get user data from database API
-            async with httpx.AsyncClient() as client:
-                response = await client.get(
-                    f"http://databaseapi:8007/api/player/?username={username}"
-                )
-                # ! Should not happen once the route will be locked
-                if response.status_code != 200:
-                    return render(request, "user_management_app/delete-profile.html", {"error" : "User not found"})
+        # Checking if the user data is a list or a dictionary
+        user_data = response.json()
+        if isinstance(user_data, list):
+            user = user_data[0]
+        elif isinstance(user_data, dict) and "results" in user_data:
+            user = user_data["results"][0]
+        else:
+            return render(
+                request,
+                "user_management_app/delete-profile.html",
+                {"user" : user,
+                "error": "Invalid user data"},
+            )
 
-                # Checking if the user data is a list or a dictionary
-                user_data = response.json()
-                if isinstance(user_data, list):
-                    user = user_data[0]
-                elif isinstance(user_data, dict) and "results" in user_data:
-                    user = user_data["results"][0]
-                else:
-                    return render(request, "user_management_app/delete-profile.html", {"error" : "Invalid user data"})
+        if request.method == "GET":
+            return render(
+                request,
+                "user_management_app/delete-profile.html",
+                {"user" : user}
+            )
+        else:
+            try:
+
+                # Get form data
+                password = request.POST.get("password")
+                otp_code = request.POST.get("otp-code")
+
+                if not password:
+                    return render(
+                        request,
+                        "user_management_app/delete-profile.html",
+                        {"user" : user,
+                        "error": "Password is required"},
+                    )
 
                 # Check if 2FA is enabled
                 if user.get("two_fa_enabled"):
                     if not otp_code:
-                        return render(request, "user_management_app/delete-profile.html", {"error" : "2FA code is required"})
+                        return render(
+                            request,
+                            "user_management_app/delete-profile.html",
+                            {"user" : user,
+                            "error": "2FA code is required"},
+                        )
 
                     # Verify 2FA code
                     secret = user.get("_two_fa_secret")
                     if not secret:
-                        return render(request, "user_management_app/delete-profile.html", {"error" : "2FA not properly configured"})
+                        return render(
+                            request,
+                            "user_management_app/delete-profile.html",
+                            {"user" : user,
+                            "error": "2FA not properly configured"},
+                        )
 
                     totp = pyotp.TOTP(secret)
                     if not totp.verify(otp_code):
-                        return render(request, "user_management_app/delete-profile.html", {"error" : "Invalid 2FA code"})
+                        return render(
+                            request,
+                            "user_management_app/delete-profile.html",
+                            {"user" : user,
+                            "error": "Invalid 2FA code"},
+                        )
 
                 # AT THIS POINT, 2FA HAS BEEN CHECKED CORRECTLY
                 # ! INCORRECT ROUTE
@@ -78,7 +118,12 @@ async def delete_profile(request):
                 )
 
                 if password_response.status_code != 200:
-                    return render(request, "user_management_app/delete-profile.html", {"error" : "Invalid password"})
+                    return render(
+                        request,
+                        "user_management_app/delete-profile.html",
+                        {"user" : user,
+                        "error": "Invalid password"},
+                    )
 
                 # Delete user
                 delete_response = await client.delete(
@@ -86,10 +131,15 @@ async def delete_profile(request):
                 )
 
                 if delete_response.status_code != 204:
-                    return render(request, "user_management_app/delete-profile.html", {"error" : "Failed to delete user"})
+                    return render(
+                        request,
+                        "user_management_app/delete-profile.html",
+                        {"user" : user,
+                        "error": "Failed to delete user"},
+                    )
 
                 # Return success response with redirect URL
                 return JsonResponse({"success": True, "redirect_url": "/register/"})
 
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=500)
