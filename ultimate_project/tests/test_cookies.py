@@ -47,7 +47,6 @@ def run(playwright: Playwright) -> None:
 
         # Assertions
         assert all(counts[cookie] == 1 for cookie in expected_cookies), "Duplicate or missing cookies found"
-        pass
 
     # ! =============== KICKSTART TESTER HERE ===============
     
