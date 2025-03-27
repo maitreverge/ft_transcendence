@@ -70,7 +70,7 @@ function receiveInvitation(socket, applicantId) {
  *!                           END OF CHANGES
  *========================================================================**/
 
-function loadHtml(data, target) {
+function loadSimpleMatchHtml(data, target) {
 
 	const oldScripts = document.querySelectorAll("script.match-script");			
 	oldScripts.forEach(oldScript => oldScript.remove());	
@@ -110,7 +110,7 @@ function setSelfMatchId() {
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
 				return response.text();
 			})
-			.then(data => loadHtml(data, "overlay-match"))
+			.then(data => loadSimpleMatchHtml(data, "overlay-match"))
 			.catch(error => console.log(error))
 		};					
 	});

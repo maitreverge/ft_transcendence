@@ -243,7 +243,7 @@ function getPattern(tournamentId) {
 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
 		return response.text();
 	})
-	.then(data => {return loadHtml(data, overlay), true})
+	.then(data => {return loadTournamentHtml(data, overlay), true})
 	.catch(error => console.log(error));			
 }
 
@@ -365,13 +365,13 @@ function linkMatch(lk) {
 			const oldScripts = document.querySelectorAll("script.match-script");			
 			oldScripts.forEach(oldScript => oldScript.remove());
 			window.actualScriptTid = lk.tournamentId;
-			loadHtml(data, overlay);
+			loadTournamentHtml(data, overlay);
 		})
 		.catch(error => console.log(error))
 	};
 }
 
-function loadHtml(data, overlay) {
+function loadTournamentHtml(data, overlay) {
 	
 	overlay.innerHTML = data;
 	const scripts = overlay.getElementsByTagName("script");
