@@ -27,10 +27,11 @@ class Tournament():
 			await self.del_tournament()
 
 	async def del_tournament(self):
+		print(f"DEL TOURNAMENT {self.id}", flush=True)
 		from tournament_app.services.tournament_consumer \
 			import tournaments, TournamentConsumer
 		tournaments[:] = [t for t in tournaments if t.id != self.id]
-		TournamentConsumer.send_tournaments()
+		await TournamentConsumer.send_tournaments()
 
 	async def launchTournament(self):
 		self.launch = True

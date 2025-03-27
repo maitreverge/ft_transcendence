@@ -50,6 +50,9 @@ function onTournamentMessage(event, socket) {
 			console.log("case playerlist");
 			window.playersList = data.players;
 			updatePlayers(socket, data.players);
+
+			updateTournamentsPlayers(window.tournamentList);
+			updateMatchsPlayers(window.pack);
 			break;
 		case "tournamentList":
 			console.log("case tournamentlist");
@@ -69,6 +72,7 @@ function onTournamentMessage(event, socket) {
 			console.log("case matchPlayersUpdate");
 			updatePlayersCont(window.playersList)
 			updateTournamentsPlayers(window.tournamentList);
+			window.pack = data.pack;
 			updateMatchsPlayers(data.pack);			
 			break;
 		// case "closeMatch":
@@ -245,6 +249,8 @@ function getPattern(tournamentId) {
 
 function updateTournamentsPlayers(tournamentsUp) {
 
+	if (!tournamentsUp)
+		return;
 	console.log("UPDATE TOURNAMENTS PLAYERS ", tournamentsUp);
 
 	const tournamentsCont = document.getElementById("tournaments");
@@ -421,7 +427,8 @@ function matchResult(rsl) {
 }
 
 function updateMatchsPlayers(pack) {
-	pack.forEach(plys => updateMatchPlayers(plys));
+	if (pack)
+		pack.forEach(plys => updateMatchPlayers(plys));
 }
 
 function updateMatchPlayers(plys) {
