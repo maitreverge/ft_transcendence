@@ -6,6 +6,8 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
+🟧 METTRE LES CHAMPS REQUIRED DANS DELETE-PROFILE.HTMl sur les champs password et otp
+
 🟧 CREER DES TEST AVEC LE CSRF TOKEN	
 
 🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES

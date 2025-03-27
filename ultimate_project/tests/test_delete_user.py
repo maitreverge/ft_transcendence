@@ -61,18 +61,32 @@ def run(playwright: Playwright) -> None:
 
         expect(page).to_have_url(f"{BASE_URL}/home/")
 
-        page.locator("#userDropdown").click()
+        page.locator("#nav-profile").click()
         expect(page).to_have_url(f"{BASE_URL}/user/profile/")
 
         page.locator("#delete_profile").click()
 
-        password_field = page.locator("#password")
-        
-        password_field.fill(PASSWORD)
+        # ! We're on the delete-profile.html
 
-        if user == "2fa":
-            twofa_field = page.locator("#otp-code")
-            twofa_field.fill(totp.now())
+        final_delete_button = page.locator("#delete_profile")
+        password_field = page.locator("#password")
+
+        # ! CASE 1 BOTH EMPTY
+        final_delete_button.click()
+        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+        
+        error_field = page.locator("#error_delete_user")
+        # expect(error_field).to_have_text("Password is required")
+
+
+
+
+        # password_field.fill("nope")
+
+        # if user == "2fa":
+        #     twofa_field = page.locator("#otp-code")
+        #     twofa_field.fill(totp.now())
+        
 
 
 
@@ -85,7 +99,7 @@ def run(playwright: Playwright) -> None:
     delete_user("2fa")
 
 
-    print(f"✅ JTW and csrftoken test PASSED ✅")
+    print(f"✅ DELETE USER TEST ✅")
 
     context.close()
     browser.close()

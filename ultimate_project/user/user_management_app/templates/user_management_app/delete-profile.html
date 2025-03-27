@@ -19,13 +19,13 @@
                         <div class="form-group">
 							<label>Enter your password:</label>
 							<input id="password "type="password" name="password" class="form-control form-control-user" 
-								placeholder="Enter your password" required>
+								placeholder="Enter your password">
 						</div>
                         {% if user.two_fa_enabled %}
                         <div class="form-group">
 							<label>Enter your 2FA code:</label>
 							<input id="otp-code" type="number" name="otp-code" maxlength="6" class="form-control form-control-user" 
-								placeholder="Enter 6-digit code" required>
+								placeholder="Enter 6-digit code">
 						</div>
                         {% endif %}
 						<div class="form-group mt-4">
@@ -43,7 +43,7 @@
 						</div>
 						{% if error %}
 						<div class="text-danger mt-2">
-							<p>{{ error }}</p>
+							<h3 id="error_delete_user" name="error_delete_user">{{ error }}</h3>
 						</div>
 						{% endif %}
 					</form>
