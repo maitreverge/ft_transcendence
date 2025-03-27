@@ -10,8 +10,8 @@
     "Avatar": "Avatar",
     "Add your picture here": "Añade tu foto aquí",
     "Match simple": "Partido simple",
-    "Tournoi": " Torneo",
-    "Profil": " Perfil",
+    "Tournoi": "Torneo",
+    "Profil": "Perfil", 
     "Statistiques": " Estadísticas",
     "Logout": "cerrar sesión",
     "Number of friends": "Número de amigos",
@@ -21,5 +21,9 @@
     "Games lost: ": "Juegos perdidos: ",
     "Ready to Leave?": "¿Listo para salir?",
     "Logout-leave": "Haga clic en \"Cerrar sesión\" a continuación si está listo para finalizar su sesión actual.",
-    "cancel": "cancelar"
+    "cancel": "cancelar",
+
+    "Account settings": "Configuración de la cuenta",
+    "Account": "Cuenta"
+    
 }

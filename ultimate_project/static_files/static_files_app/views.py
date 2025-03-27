@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache
+from django.template.loader import render_to_string
 
 # from django.http import HttpResponse
 # from django.template import Context, Template
@@ -52,8 +53,11 @@ def home(request):
     return render(request, "index.html", obj)
 
 
+# --------------- USER PARTIAL VIEW ----------------
+
+# this two are useless ????? 
 @never_cache
-def profile(request):
+def account(request):
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")
 
@@ -63,7 +67,6 @@ def profile(request):
     print("********************\nNORMAL REQUEST\n********************", flush=True)
     obj = {"username": username, "page": "partials/profile.html"}
     return render(request, "index.html", obj)
-
 
 @never_cache
 def stats(request):
@@ -124,12 +127,23 @@ def tournament_template(request, user_id):
 
 
 @never_cache
-def user_profile_template(request):
-    page_html = requests.get("http://user:8004/user/profile/").text
+def user_account_profile_template(request):
+
+    page_html = requests.get("http://user:8004/user/account/profile/").text
 
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")
-    print("********************\TEMPLATE REQUEST\n********************", flush=True)
+    
+    #pre inject in the account template
+    account_html = render_to_string(
+        "account.html",
+        {
+            "username": username,
+            "page": page_html,  # Inject the profile data
+        },
+    )
+
+    print("********************\nTEMPLATE REQUEST\n********************", flush=True)
 
     return render(
         request,
@@ -139,14 +153,15 @@ def user_profile_template(request):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8443"),
             # "simpleUsers": consumer.players,
-            "page": page_html,
+            "page": account_html,
         },
     )
 
 
 @never_cache
 def user_stats_template(request):
-    page_html = requests.get("http://user:8004/user/stats/").text
+    page_html = requests.get("http://user:8004/user/account/game-stats/").text
+    
     print("********************\TEMPLATE REQUEST\n********************", flush=True)
 
     # Get username from JWT header if available

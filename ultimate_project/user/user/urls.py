@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse, JsonResponse
-import user_app.views as views
+
+import user_app.views as user_views
 import twofa_app.views as twofa_views
 from django.views.decorators.csrf import csrf_exempt
 from asgiref.sync import sync_to_async, async_to_sync
@@ -33,10 +34,46 @@ urlpatterns = [
     # path("admin/", admin.site.urls),
     path("health/", health_check, name="health_check"),
     # path("debug-headers/", debug_headers, name="debug_headers"),
-    path("user/", include("user_management_app.urls")),
-    path("user/profile/", views.profile),
-    path("user/stats/", views.stats),
+   
+   
+    # TO DO
+    # for matchign url to the management app url if any
+    #pth("user/", include("user_management_app.urls")),
+    
+    path("user/account/", user_views.profile),
+    path("user/stats/", user_views.stats),
     path("user/setup-2fa/", async_to_sync(twofa_views.setup_2fa)),
     path("user/verify-2fa/", async_to_sync(twofa_views.verify_2fa)),
     path("user/disable-2fa/", async_to_sync(twofa_views.disable_2fa)),
+    
+    
+    # base url when going into your account
+    path("user/account/profile/", async_to_sync(user_views.profile_tmp)),
+    path("user/account/game-stats/", user_views.stats),
+    
+    
+    
+    
+    
+    #Preparing urls for account manager
+    # 1 -  account info / 2 - Security / 
+    # 3 - game stat
+    # 4 - Confidentialité (show if connected or not / accept firend request or not
+    # delete account)
+    
+    # display as a grid
+    # 1 - 2 
+    # 3 - 4
+    # (1) path("user/account/account-information/", views.profile),
+    # (2) path("user/account/security-settings/", async_to_sync(twofa_views.setup_2fa)),
+    # (3) path("user/account/game_stats/", async_to_sync(twofa_views.setup_2fa)),
+    # (4) path("user/account/security-settings/", async_to_sync(twofa_views.setup_2fa)),
+ 
+    #path("user/account/setup-2fa/", async_to_sync(twofa_views.setup_2fa)),
+    #path("user/account/verify-2fa/", async_to_sync(twofa_views.verify_2fa)),
+    #path("user/account/disable-2fa/", async_to_sync(twofa_views.disable_2fa)),
+    
+    
+    
+   
 ]

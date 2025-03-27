@@ -1,0 +1,15 @@
+- need to be able to update the profile when connected (of course)
+- need to delete profile
+- show stat 
+- show match history
+- directly in accoutn display this
+- handle if connected or not usign just an open websocket
+- user is connected websocket 
+
+Pour lundi 
+
+
+- upload avatar 
+
+-  friend system
+

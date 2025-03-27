@@ -24,23 +24,22 @@
       hx-push-url="true"
       hx-get="/tournament/tournament/"
       hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
+      hx-on="htmx:beforeRequest: toggleSidebar(true);">
       <div class="card bg-warning text-white shadow py-5">
         <div class="card-body" data-translate="Tournoi">> Match</div>
       </div>
     </a>
+   
     <a
       id="field-profile"
       class="col-lg-5 mb-4"
       hx-trigger="click"
       hx-push-url="true"
-      hx-get="/user/profile/"
+      hx-get="/user/account/profile/"
       hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
+      hx-on="htmx:beforeRequest: toggleSidebar(true);">
       <div class="card bg-success text-white shadow py-5">
-        <div class="card-body" data-translate="Profil">> Profil</div>
+        <div class="card-body" data-translate="Account">My Account</div>
       </div>
     </a>
     <a
@@ -48,7 +47,7 @@
       class="col-lg-5 mb-4"
       hx-trigger="click"
       hx-push-url="true"
-      hx-get="/user/stats/"
+      hx-get="/user/account/game-stats/"
       hx-target="#main_div"
       hx-on="htmx:beforeRequest: toggleSidebar(true);"
     >

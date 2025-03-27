@@ -51,9 +51,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    f"{NAME}_app",
+    "corsheaders",
+
+    "user_app",
     "user_management_app",
-    'corsheaders',
     "twofa_app",
 ]
 
@@ -138,10 +139,12 @@ STATIC_ROOT = "/app/staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 # Healthcheck filter
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
         return "/health/" not in record.getMessage()
+
 
 # Logging configuration for healthcheck
 LOGGING = {
@@ -174,7 +177,9 @@ CORS_ALLOW_ORIGINS = [
     "http://localhost:8001",  # Tournament
     "http://localhost:8002",  # Match
     "http://localhost:8003",  # Static files
+    
     # "http://localhost:8004",  # User
+    
     "http://localhost:8005",  # FastAPI
     "http://localhost:8006",  # Authentication
     "http://localhost:8007",  # DatabaseAPI

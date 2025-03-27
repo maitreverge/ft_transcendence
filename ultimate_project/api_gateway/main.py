@@ -8,7 +8,6 @@ from fastapi.staticfiles import StaticFiles
 
 templates = Jinja2Templates(directory="templates")
 
-
 # from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
@@ -111,6 +110,8 @@ async def debug_cookies_middleware(request: Request, call_next):
     return response
 
 
+#function to setup a reverse proxy in FastAPI to redirect to microservice
+
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
         raise HTTPException(status_code=404, detail="Service not found")
@@ -143,6 +144,7 @@ async def proxy_request(service_name: str, path: str, request: Request):
             headers["X-User-ID"] = str(user_info.get("user_id", ""))
             headers["X-Username"] = user_info.get("username", "")
 
+        
         # Log cookies for debugging
         print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
 
@@ -186,6 +188,8 @@ async def proxy_request(service_name: str, path: str, request: Request):
         return fastapi_response
 
 
+# ------------------------ Tournamanent ------------------------
+
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
 async def tournament_pattern_proxy(tournament_id, request: Request):
     print("################## NEW ROUTE USED #######################", flush=True)
@@ -193,9 +197,6 @@ async def tournament_pattern_proxy(tournament_id, request: Request):
     return await proxy_request(
         "tournament", f"tournament/tournament-pattern/{tournament_id}/", request
     )
-
-
-# user_id = 0
 
 
 @app.api_route("/tournament/{path:path}", methods=["GET"])
@@ -251,6 +252,8 @@ async def tournament_proxy(path: str, request: Request):
         return await proxy_request("static_files", "error", request)
 
 
+# ------------------ USER PROXY -----------------------
+
 @app.api_route("/user/{path:path}", methods=["GET"])
 async def user_proxy(path: str, request: Request):
     """
@@ -262,19 +265,31 @@ async def user_proxy(path: str, request: Request):
       - `HX-Request`: If present, the request is treated as an HTMX request.
     - **Responses**:
       - Returns the content from the user microservice.
-      - If `path` is "profile/" or "stats/", returns specific content.
+      - If `path` is "account/" or "stats/", returns specific content.
     """
+
+    # if htmx request
+    print(f"\nPATH GIVEN: user/ + {path}\n")
+    
     if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:
+        print("\nIF NORMAL REQUEST PROXY\n", flush=True,)
         return await proxy_request("user", "user/" + path, request)
-    elif path == "profile/":
-        return await proxy_request("static_files", "/user-profile-wrapper/", request)
-    elif path == "stats/":
+    elif path == "account/profile/":
+        # for non htmx request
+        # when i'm on profile and i refresh will only call the wrapper because http request classic
+        # when refreshing the navigator
+        print("\nIF ACCOUNT IS TEMPLATE CALLED\n", flush=True,)
+        return await proxy_request("static_files", "/user-account-profile-wrapper/", request)
+    elif path == "account/game-stats/":
+        # for non htmx request
         return await proxy_request("static_files", "/user-stats-wrapper/", request)
     else:
+        print("\nPAGE NOT FOUND\n", flush=True,)
         error_message = "Page Not Found"
-
         return await proxy_request("static_files", "error", request)
 
+
+# -------------- MATCH PROXY ------------------
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
 async def stop_match_proxy(path: str, request: Request):
@@ -335,6 +350,7 @@ async def match_proxy(
     - **Responses**:
       - Returns the content from the match microservice.
     """
+    
     path = (
         f"match/match2d/?matchId={matchId}&playerId={playerId}"
         if matchId is not None and playerId is not None
@@ -345,6 +361,7 @@ async def match_proxy(
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)
 
+# -------------------------------------------------------
 
 @app.get("/")
 async def redirect_to_home():
@@ -354,8 +371,12 @@ async def redirect_to_home():
     return RedirectResponse(url="/home/")
 
 
+
+# -------------------- API DATABASE PROXY --------------------
+
 @app.api_route("/api/{path:path}", methods=["GET", "POST"])
 async def databaseapi_proxy(path: str, request: Request):
+    
     """
     Proxy requests to the database API microservice.
 
@@ -411,6 +432,7 @@ async def databaseapi_proxy(path: str, request: Request):
     }
     ```
     """
+
     return await proxy_request("databaseapi", f"api/{path}", request)
 
 
@@ -686,6 +708,9 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8005)
+
+
+# ---------------- Others 
 
 # @app.websocket("/ws/tournament/")
 # async def tournament_websocket_endpoint(websocket: WebSocket):

@@ -74,7 +74,7 @@ def check_2fa_code(request):
     code = request.data.get("code")
 
     # Check if 2FA is enabled
-    user = authenticate(username=username, password=password)
+    user = authenticate(username=username, password=password) # type: ignore
     if not user:
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
     

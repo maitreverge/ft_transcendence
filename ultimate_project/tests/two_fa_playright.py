@@ -114,7 +114,7 @@ def test_register_2fa(playwright: Playwright):
     page.locator("#nav-profile").click()
 
     # ! ============= PROFILE PAGE =============
-    expect(page).to_have_url(f"{base_url}/user/profile/")
+    expect(page).to_have_url(f"{base_url}/user/account/profile/")
 
     # Check is 2FA is not enabled
     expect(page.locator("#disable_2fa")).to_be_hidden()
@@ -160,7 +160,7 @@ def test_register_2fa(playwright: Playwright):
 
     # expect(page.locator("#success_message")).to_have_text("Two-factor authentication has been disabled for your account.")
 
-    # expect(page).to_have_url(f"{base_url}/user/profile/")
+    # expect(page).to_have_url(f"{base_url}/user/account/profile/")
 
     context.close()
     browser.close()

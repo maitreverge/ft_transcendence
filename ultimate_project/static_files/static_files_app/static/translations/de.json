@@ -10,8 +10,9 @@
     "Avatar": "Avatar",
     "Add your picture here": "Fügen Sie hier Ihr Bild hinzu",
     "Match simple": "Einzelspiel",
-    "Tournoi": " Turnier",
-    "Profil": " Profil",
+    "Tournoi": "Turnier",
+    "Profil": "Profil",
+    "Mon compte": "My account",
     "Statistiques": " Statistiken",
     "Logout": "Abmelden",
     "Number of friends": "Anzahl der Freunde",
@@ -21,5 +22,8 @@
     "Games lost: ": "Verlorene Spiele: ",
     "Ready to Leave?": "Bereit zu gehen?",
     "Logout-leave": "Klicken Sie unten auf \"Abmelden\", wenn Sie bereit sind, Ihre aktuelle Sitzung zu beenden.",
-    "cancel": "abbrechen"
+    "cancel": "abbrechen",
+
+    "Account settings": "Kontoeinstellungen",
+    "Account": "Konto"
 }

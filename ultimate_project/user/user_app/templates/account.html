@@ -1,0 +1,44 @@
+{% load static %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" 
+                           href="#" 
+                           hx-get="/user/account/profile/" 
+                           hx-target="#account-content"
+                           hx-push-url="true">
+                            Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" 
+                           href="#" 
+                           hx-get="/user/account/game-stats/" 
+                           hx-target="#account-content"
+                           hx-push-url="true">
+                            Game Stats
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <h1 class="h3 mb-3 text-gray-800">Account Settings</h1>
+            
+            <!-- Content dynamically loaded here -->
+            <div id="account-content">
+                {% if page %}
+                    {% include page %}
+                {% else %}
+                    <p>No page specified.</p>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</div>
