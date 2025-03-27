@@ -1,3 +1,5 @@
+window.simplePlayers = []
+
 /**========================================================================
  * !                              CODE CHANGES
  *   these functions were added.
@@ -199,6 +201,46 @@ function updateMatchs(socket, matchs) {
 	setSelfMatchId();	
 }
 
+function updateSimpleMatchPlayers(plys) {
+
+	console.log("MATCH SIMPLE PLAYERS UPDATE ", plys);	
+
+	// const tournament = document.getElementById("tournaments").querySelector(
+	// 	`[id='${plys.tournamentId}']`
+	// );
+	// if (!tournament)
+	// 	return;
+	
+	const localMatch = tournament.querySelector(`#${plys.localMatchId}`);
+	if (!localMatch)
+		return;
+
+	const localP1 = localMatch.querySelector(`#pl1`);
+	const localP2 = localMatch.querySelector(`#pl2`);
+	const specCont = localMatch.querySelector(`#specs`);
+
+	const specs = [...specCont.children]
+
+	plys.players.forEach(player => {	
+		if (specs.every(el => el.id != player.playerId))
+		{		
+			const winPly = window.players.find(el => el.id == player.playerId);
+			if (plys.p1Id == winPly.id)
+			{			
+				localP1.appendChild(winPly);
+			}
+			else if (plys.p2Id == winPly.id)
+			{		
+				localP2.appendChild(winPly);
+			}
+			else
+			{
+				specCont.appendChild(winPly);
+			}
+		}
+	});
+}
+
 function sendConfirmation(socket, applicantId, response) {
 
 	console.log(`i will send ${response} to applicant: ${applicantId}`);
@@ -272,40 +314,42 @@ function selfInvitation(event, socket)
 	event.stopPropagation();
 }
 
-function addPlayerToContainer(socket, container, playerId) {
+// function addPlayerToContainer(socket, container, playerId) {
 
-	const div = document.createElement("div");
-	div.className = "user";
-	div.textContent = `user: ${playerId}`;
-	div.id = playerId;	
-	if (playerId === window.selfId)
-		div.classList.add("self-player");
-	// 	div.onclick = event => {
-	// 		selfInvitation(event, socket)
-	// 		event.stopPropagation();
-	// 		alert("you can't choose yourself");
-	// 	}		
-	// }
-	// else	
-	div.onclick = event => sendPlayerClick(socket, event, div);	
-    container.appendChild(div);
-}
+// 	const div = document.createElement("div");
+// 	div.className = "user";
+// 	div.textContent = `user: ${playerId}`;
+// 	div.id = playerId;	
+// 	if (playerId === window.selfId)
+// 		div.classList.add("self-player");
+// 	// 	div.onclick = event => {
+// 	// 		selfInvitation(event, socket)
+// 	// 		event.stopPropagation();
+// 	// 		alert("you can't choose yourself");
+// 	// 	}		
+// 	// }
+// 	// else	
+// 	div.onclick = event => sendPlayerClick(socket, event, div);	
+//     container.appendChild(div);
+// }
 
-function updatePlayers(socket, players) {
+// function updatePlayers(socket, players) {
 
-    const playersContainer = document.getElementById("players");
-	let playerElements = [...playersContainer.children];	
+//     const playersContainer = document.getElementById("players");
+// 	let playerElements = [...playersContainer.children];	
   
-	playerElements.slice().reverse().forEach(player => {	
-		if (players.every(el => el.playerId != player.id))		
-			playersContainer.removeChild(player);					
-	});
-	playerElements = [...playersContainer.children];
-	players.forEach(player => {	
-		if (playerElements.every(el => el.id != player.playerId))		
-			addPlayerToContainer(socket, playersContainer, player.playerId);		
-	});	
-}
+// 	playerElements.slice().reverse().forEach(player => {	
+// 		if (players.every(el => el.playerId != player.id))		
+// 			playersContainer.removeChild(player);					
+// 	});
+// 	playerElements = [...playersContainer.children];
+// 	players.forEach(player => {	
+// 		if (playerElements.every(el => el.id != player.playerId))		
+// 			addPlayerToContainer(socket, playersContainer, player.playerId);		
+// 	});	
+// }
+
+
 
 function setSelfId(selfId) {
 
@@ -353,7 +397,8 @@ function onSimpleMatchMessage(event, socket) {
 			break;
 		case "playerList":
 			window.players2 = data.players;//!
-			updatePlayers(socket, data.players);
+			// updatePlayers(socket, data.players);
+			updateSimplePlayers(socket, data.players);
 			break;
 		case "matchList":
 			updateMatchs(socket, data.matchs);
@@ -367,7 +412,9 @@ function onSimpleMatchMessage(event, socket) {
 }
 
 function closeSimpleMatchSocket() {
-	stopMatch(window.selfMatchId);
+
+	if (typeof stopMatch === 'function')
+		stopMatch(window.selfMatchId);
     if (
 		window.simpleMatchSocket && 
 		window.simpleMatchSocket.readyState === WebSocket.OPEN
@@ -375,9 +422,65 @@ function closeSimpleMatchSocket() {
         window.simpleMatchSocket.close();    
 }
 
+function updateSimplePlayers(socket, playersUp)
+{
+	console.log("UPDATE PLAYERS ", playersUp);
+
+	updateSimpleWinPlayers(socket, playersUp);
+	updateSimplePlayersCont(playersUp);
+}
+
+function updateSimpleWinPlayers(socket, playersUp)
+{
+	console.log("UPDATE SIMPLE WIN PLAYERS ", playersUp);
+
+	playersUp.forEach(plyUp => {
+		if (window.simplePlayers.every(el => el.id != plyUp.playerId))
+		{
+			const newPlayerEl = createSimplePlayerElement(socket, plyUp.playerId);
+			window.simplePlayers.push(newPlayerEl);
+		}	
+	});
+	window.simplePlayers = window.simplePlayers.filter(winPly => {
+		if (playersUp.every(el => el.playerId != winPly.id))				
+			return winPly.remove(), false
+		else
+			return true;				
+	});
+}
+
+function updateSimplePlayersCont(playersUp) {
+
+	console.log("UPDATE SIMPLE PLAYERS CONT ", playersUp);
+
+	const playersCont = document.getElementById("players");
+	const playerElements = [...playersCont.children];
+
+	playersUp.forEach(plyUp => {
+		if (playerElements.every(el => el.id != plyUp.playerId))
+		{
+			const winPly = window.simplePlayers.find(el => el.id == plyUp.playerId);
+			playersCont.appendChild(winPly);
+		}	
+	});
+}
+
+function createSimplePlayerElement(socket, playerId) {
+
+	console.log("CREATE PL ELEMENT ", playerId);
+	const div = document.createElement("div");
+	div.className = "user";
+	div.textContent = `user: ${playerId}`;
+	div.id = playerId;	
+	if (playerId === window.selfId)
+		div.classList.add("self-player");
+	div.onclick = event => sendPlayerClick(socket, event, div);	  
+	return div;
+}
+
 function initSimpleMatch() {
 	
-	console.log("INIT SIMPLE MATCH");
+	console.log("INIT SIMPLE MATCH");	
 	if (typeof closeTournamentSocket === 'function') 
 		closeTournamentSocket();
 	else 

@@ -2,7 +2,7 @@
 window.players = []
 
 function initTournament() {
-	stopMatch(window.selfMatchId);
+	
 	if (typeof closeSimpleMatchSocket === 'function') 
 		closeSimpleMatchSocket();
 	else 
@@ -30,6 +30,9 @@ function initTournament() {
 }
 
 function closeTournamentSocket() {
+	
+	if (typeof stopMatch === 'function')
+		stopMatch(window.selfMatchId);
     if (
 		window.tournamentSocket && 
 		window.tournamentSocket.readyState === WebSocket.OPEN
@@ -111,7 +114,7 @@ function updateWinPlayers(socket, playersUp)
 	playersUp.forEach(plyUp => {
 		if (window.players.every(el => el.id != plyUp.playerId))
 		{
-			const newPlayerEl = create_player_element(socket, plyUp.playerId);
+			const newPlayerEl = createPlayerElement(socket, plyUp.playerId);
 			window.players.push(newPlayerEl);
 		}	
 	});
@@ -123,7 +126,7 @@ function updateWinPlayers(socket, playersUp)
 	});
 }
 
-function create_player_element(socket, playerId) {
+function createPlayerElement(socket, playerId) {
 
 	console.log("CREATE PL ELEMENT ", playerId);
 
