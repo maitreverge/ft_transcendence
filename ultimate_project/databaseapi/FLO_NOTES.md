@@ -6,9 +6,13 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
-FIX LES TEST DES 2FA QUI PLANTES PARFOIS dans playright
+🟧 CREER DES TEST AVEC LE CSRF TOKEN	
 
-Retravailler la securisation des routes dans fastAPI
+🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
+
+✅ FIX LES TEST DES 2FA QUI PLANTES PARFOIS dans playright
+
+🟧 Retravailler la securisation des routes dans fastAPI
 
 `STABILIZATION`:
 
