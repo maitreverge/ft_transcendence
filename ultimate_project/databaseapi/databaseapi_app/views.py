@@ -73,7 +73,7 @@ def check_2fa(request):
     return Response({"success": True}, status=status.HTTP_200_OK)
 
 
-# ! POTENTIALLY OLD CLASS
+# ! POTENTIALLY OLD CLASS, DO DELETE WITHIN TESTS
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def check_2fa_code(request):
