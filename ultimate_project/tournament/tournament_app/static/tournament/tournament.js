@@ -302,7 +302,7 @@ function newTournament(socket) {
 
 function enterTournament(socket, tournamentId) {
 	const scripts = Array.from(document.getElementsByTagName("script"));
-    
+    scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
 	if (scripts.some(script => script.className === "match-script")) {
 		console.log("DEJA SCRIPT");
 		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
@@ -344,7 +344,7 @@ function linkMatch(lk) {
 
 	localMatch.onclick = function() {
 		const scripts = Array.from(document.getElementsByTagName("script"));
-		
+		scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
 		if (scripts.some(script => script.className === "match-script")) {
 			console.log("DEJA SCRIPT");
 			return; // Ne pas exécuter fetch si un script "match-script" existe déjà

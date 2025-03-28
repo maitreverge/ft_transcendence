@@ -69,8 +69,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				pass
 
 	async def new_tournament(self):	
-		tournaments.append(Tournament(self.id))
-		await TournamentConsumer.send_tournaments()
+		tournament = Tournament(self.id)
+		tournaments.append(tournament)
+		await self.enter_tournament(tournament.id)
+		# await TournamentConsumer.send_tournaments()
 
 	async def remove_player_in_tournaments(self):
 		for tournament in tournaments:

@@ -2,7 +2,14 @@
 function stopMatch(matchId)
 {
 	if (!matchId)
+	{
+		console.log("matchID EST NULLE");
+		const oldScripts = document.querySelectorAll("script.match-script");
+		console.log("olscript len", oldScripts.length);			
+		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
 		return;
+	}
+		
 	if (window.selfMatchId == matchId)
 	{	
 		fetch(`/match/stop-match/${window.selfId}/${matchId}/`)

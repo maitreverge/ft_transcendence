@@ -6,8 +6,8 @@ window.simplePlayers = []
  *   the function "receiveInvitation" was modified (see below)
  *========================================================================**/
 
-let isPageVisible = !document.hidden;
-let pendingInvitations = [];
+var isPageVisible = isPageVisible || !document.hidden;
+var pendingInvitations = pendingInvitations || [];
 
 document.addEventListener('visibilitychange', () => {
     isPageVisible = !document.hidden;
