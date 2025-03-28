@@ -199,12 +199,12 @@ class Pong:
 
 # bord droit et gauche
 				if self.ball[0] >= 100:
-					self.score[1] += 1
+					self.score[0] += 1
 					self.ball = [50, 50]
 					self.vect = self.rst.copy()
 					await asyncio.sleep(1)
 				if self.ball[0] <= 0:
-					self.score[0] += 1
+					self.score[1] += 1
 					self.ball = [50, 50]
 					self.vect = self.rst.copy()
 					await asyncio.sleep(1)
