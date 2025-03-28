@@ -20,7 +20,7 @@ def enter_match(request: HttpRequest):
         "pong.html",
         {
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8443"),
+            "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "matchId": int(request.GET.get("matchId", "0")),
             "playerId": int(request.GET.get("playerId", "0")),
         },
@@ -34,7 +34,7 @@ def enter_match3d(request: HttpRequest):
         "pong3d.html",
         {
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8443"),
+            "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "matchId": int(request.GET.get("matchId", "0")),
             "playerId": int(request.GET.get("playerId", "0")),
         },

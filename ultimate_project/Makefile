@@ -1,6 +1,6 @@
 # all : calls all the compose
+# bash -c "source ./get_ip.sh"
 all: create_volume
-	bash -c "source ./get_ip.sh"
 	-docker compose -f docker-compose.yaml -f docker-compose.override.yaml up --build
 # all : calls only the classic compose
 prod: clean 
@@ -16,7 +16,7 @@ clean:
 	rm -rf staticfiles/*
 
 re: clean all
-	bash -c "source ./get_ip.sh"
+# bash -c "source ./get_ip.sh"
 
 # Prune does removes volumes, including the DB.
 prune:

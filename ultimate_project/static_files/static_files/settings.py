@@ -14,11 +14,15 @@ from pathlib import Path
 import os
 import logging
 
-SERVER_IP = os.getenv("HOST_IP")
-
 NAME = os.getenv("name")
 
-PI_DOMAIN = os.getenv("pi_domain")
+HOST_IP = os.getenv("HOST_IP")
+
+import os
+
+print("#####################################################################", flush=True)
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,13 +37,13 @@ SECRET_KEY = "django-insecure-\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*", f"{PI_DOMAIN}"]
+ALLOWED_HOSTS = ["*", f"{HOST_IP}"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    f"https://{PI_DOMAIN}",
+    f"https://{HOST_IP}",
 ]
 
 # Application definition
@@ -181,7 +185,7 @@ CORS_ALLOW_ORIGINS = [
     "http://localhost:8006",  # Authentication
     "http://localhost:8007",  # DatabaseAPI
     "https://localhost:8443"  # For secure HTTPS access
-    f"https://{PI_DOMAIN}",  # Production
+    f"https://{HOST_IP}",  # Production
 ]
 CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]

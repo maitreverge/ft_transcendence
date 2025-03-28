@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # ! IMPORTANT : You need to NOT migrate this container.
-source ./set_env.sh \
-
 
 if [ "${env}" = "prod" ]; then \
 	mkdir -p /app/staticfiles && chmod -R 777 /app/staticfiles; \

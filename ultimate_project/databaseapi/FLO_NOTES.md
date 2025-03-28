@@ -156,7 +156,7 @@ CORS_ALLOW_ORIGINS = [
     "http://localhost:8005",  # FastAPI
     "http://localhost:8006",  # Authentication
     "http://localhost:8007",  # DatabaseAPI
-    f"https://{PI_DOMAIN}",  # Production
+    f"https://{HOST_IP}",  # Production
 ]
 CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]
