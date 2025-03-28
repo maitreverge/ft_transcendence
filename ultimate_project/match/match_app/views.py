@@ -14,7 +14,12 @@ def new_match(request: HttpRequest):
 
 
 def enter_match(request: HttpRequest):
+    client_host = request.get_host().split(":")[0]  # Récupère l'IP ou le domaine sans le port
 
+    if client_host in ["127.0.0.1", "localhost"]:
+        pidom = "localhost:8443"
+    else:
+        pidom = os.getenv("HOST_IP", "localhost:8443")
     return render(
         request,
         "pong.html",
