@@ -126,6 +126,7 @@ def tournament_template(request, user_id):
     )
 
 
+
 @never_cache
 def user_account_profile_template(request):
 
@@ -134,15 +135,6 @@ def user_account_profile_template(request):
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")
     
-    #pre inject in the account template
-    account_html = render_to_string(
-        "account.html",
-        {
-            "username": username,
-            "page": page_html,  # Inject the profile data
-        },
-    )
-
     print("********************\nTEMPLATE REQUEST\n********************", flush=True)
 
     return render(
@@ -153,7 +145,7 @@ def user_account_profile_template(request):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("pi_domain", "localhost:8443"),
             # "simpleUsers": consumer.players,
-            "page": account_html,
+            "page": page_html,
         },
     )
 

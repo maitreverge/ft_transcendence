@@ -40,16 +40,14 @@ urlpatterns = [
     # for matchign url to the management app url if any
     #pth("user/", include("user_management_app.urls")),
     
-    path("user/account/", user_views.profile),
-    path("user/stats/", user_views.stats),
     path("user/setup-2fa/", async_to_sync(twofa_views.setup_2fa)),
     path("user/verify-2fa/", async_to_sync(twofa_views.verify_2fa)),
     path("user/disable-2fa/", async_to_sync(twofa_views.disable_2fa)),
     
     
     # base url when going into your account
-    path("user/account/profile/", async_to_sync(user_views.profile_tmp)),
-    path("user/account/game-stats/", user_views.stats),
+    path("user/account/profile/", async_to_sync(user_views.profile)),
+    path("user/account/game-stats/", async_to_sync(user_views.game_stats)),
     
     
     

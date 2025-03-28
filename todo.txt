@@ -6,6 +6,10 @@
 - handle if connected or not usign just an open websocket
 - user is connected websocket 
 
+
+- 
+
+
 Pour lundi 
 
 

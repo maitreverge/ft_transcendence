@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %} -->
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
@@ -7,19 +7,23 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" 
-                           href="#" 
-                           hx-get="/user/account/profile/" 
-                           hx-target="#account-content"
-                           hx-push-url="true">
-                            Profile
+                        href="#" 
+                        hx-get="/user/account/profile/" 
+                        hx-target="#account-content" 
+                        hx-swap="innerHTML" 
+                        hx-push-url="true"
+                        hx-headers='{"X-Inner-Content": "true"}'>
+                        Profile
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" 
-                           href="#" 
-                           hx-get="/user/account/game-stats/" 
-                           hx-target="#account-content"
-                           hx-push-url="true">
+                        href="#" 
+                        hx-get="/user/account/game-stats/" 
+                        hx-target="#account-content" 
+                        hx-swap="innerHTML"
+                        hx-push-url="true"
+                        hx-headers='{"X-Inner-Content": "true"}'>
                             Game Stats
                         </a>
                     </li>

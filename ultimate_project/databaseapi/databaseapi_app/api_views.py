@@ -35,7 +35,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             return super().retrieve(request, *args, **kwargs)
-        except Http404:
+        except Http404:                   
             return Response(
                 {"error": "Player not found"}, 
                 status=status.HTTP_404_NOT_FOUND

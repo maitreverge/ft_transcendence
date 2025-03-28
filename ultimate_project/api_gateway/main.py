@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException, Query, Depends
+import requests
+import os
 import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -109,17 +111,89 @@ async def debug_cookies_middleware(request: Request, call_next):
 
     return response
 
+def handle_full_reload(service_name: str, path: str, request: Request):
+    """
+    Handle full HTTP request reload (for requests with HX-Create-From-Http header).
+    This will perform a full GET request instead of an HTMX partial update.
+    """
+    # Build the full URL
+    base_url = services[service_name].rstrip("/")
+    path = path.lstrip("/")
+    query_params = request.query_params
+    query_string = f"?{query_params}" if query_params else ""
+    url = f"{base_url}/{path}{query_string}"
+
+    print(f"Performing full reload for URL: {url}", flush=True)
+
+    # Handle authentication (assuming the user needs to be authenticated)
+    is_auth, user_info = is_authenticated(request)
+    
+    headers = {key: value for key, value in request.headers.items() if key.lower() not in ["host"]}
+
+    if is_auth and user_info:
+        headers["X-User-ID"] = str(user_info.get("user_id", ""))
+        headers["X-Username"] = user_info.get("username", "")
+
+    # Add the "Host" header
+    headers["Host"] = "localhost"  # Adjust this as needed
+
+    # Perform a classic GET request using `requests.get`
+    try:
+        # Make the request to the URL
+        response = requests.get(url, headers=headers, cookies=request.cookies)
+
+        # Check if the request was successful
+        response.raise_for_status()
+
+    except requests.HTTPError as exc:
+        print(f"Request failed with status code {exc.response.status_code}")
+        raise HTTPException(
+            status_code=exc.response.status_code, detail=exc.response.text
+        )
+    except requests.RequestException as exc:
+        print(f"Request failed: {exc}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+    # Prepare response headers
+    response_headers = {
+        key: value
+        for key, value in response.headers.items()
+        if key.lower() not in ["set-cookie"]
+    }
+    response_headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+    # Return the response content with appropriate headers
+    content_type = response.headers.get("Content-Type", "")
+    fastapi_response = Response(
+        content=response.content,
+        status_code=response.status_code,
+        headers=response_headers,
+        media_type=content_type.split(";")[0].strip() if content_type else None,
+    )
+    return fastapi_response
+
 
 #function to setup a reverse proxy in FastAPI to redirect to microservice
-
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
         raise HTTPException(status_code=404, detail="Service not found")
 
+    if "HX-Create-From-Http" in request.headers:
+        # Treat the request as a full HTTP request (not HTMX)
+        print("Custom header 'HX-Create-From-Http' detected, performing full reload...", flush=True)
+        # Handle full reload (do a complete GET request)
+        return await handle_full_reload(service_name, path, request)
+
     async with httpx.AsyncClient(follow_redirects=True) as client:
         base_url = services[service_name].rstrip("/")
         path = path.lstrip("/")
-        url = f"{base_url}/{path}"
+        
+        # new
+        query_params = request.query_params
+        query_string = f"?{query_params}" if query_params else ""
+        url = f"{base_url}/{path}{query_string}"
+
+        # url = f"{base_url}/{path}"
 
         print(
             "****************************\n",
@@ -153,9 +227,8 @@ async def proxy_request(service_name: str, path: str, request: Request):
         cookies = request.cookies
 
         try:
-            response = await client.request(
-                method, url, headers=headers, content=data, cookies=cookies
-            )
+            response = await client.request(method, url, headers=headers, 
+                content=data, cookies=cookies)
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
             logger.error(f"Request failed with status code {exc.response.status_code}")
@@ -254,6 +327,37 @@ async def tournament_proxy(path: str, request: Request):
 
 # ------------------ USER PROXY -----------------------
 
+from starlette.requests import Request
+from starlette.datastructures import Headers
+
+async def build_htmx_request(request: Request):
+    """
+    Modify the incoming HTTP request and simulate an HTMX request
+    by adding the HX-Request header.
+
+    - **request**: The original incoming HTTP request.
+
+    Returns:
+        A modified request with HX-Request header added.
+    """
+    # Clone the headers of the original request
+    headers = {key: value for key, value in request.headers.items()}
+    
+    # Add or modify headers to simulate an HTMX request
+    headers["HX-Request"] = "true"  # Indicate this is an HTMX request
+    headers["User-Agent"] = request.headers.get("User-Agent")
+    headers["HX-Create-From-Http"] = "true"
+    
+    # Create a new Headers object from the modified headers
+    modified_headers = Headers(headers)
+
+    # Create a new request with the modified headers
+    # Instead of deepcopy, we create a new request with modified headers
+    modified_request = Request(request.scope, request.receive)
+    modified_request._headers = modified_headers  # Set the new headers
+
+    return modified_request
+
 @app.api_route("/user/{path:path}", methods=["GET"])
 async def user_proxy(path: str, request: Request):
     """
@@ -271,22 +375,40 @@ async def user_proxy(path: str, request: Request):
     # if htmx request
     print(f"\nPATH GIVEN: user/ + {path}\n")
     
+    #return await proxy_request("user", "user/" + path, request)
+    
+    # question hwo can going throught the wrapper allow the 
+    # css and eveythign to reload
+    
     if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:
-        print("\nIF NORMAL REQUEST PROXY\n", flush=True,)
+        print("\nNORMAL HTMX REQUEST PROXY\n", flush=True,) # rm
         return await proxy_request("user", "user/" + path, request)
-    elif path == "account/profile/":
+    
+    # buidl htmx
+    # call user_proxy 
+    print(f"\nFORWARDING AS HTMX REQUEST\n", flush=True)
+    
+    htmx_request = await build_htmx_request(request)
+    # Forward the newly built HTMX request to the user service
+    print(f"\nFORWARDING DONE  AS HTMX REQUEST\n", flush=True)
+    
+    return await proxy_request("user", "user/" + path, htmx_request)
+    
+    
+    """ elif path == "account/profile/":
         # for non htmx request
         # when i'm on profile and i refresh will only call the wrapper because http request classic
         # when refreshing the navigator
-        print("\nIF ACCOUNT IS TEMPLATE CALLED\n", flush=True,)
+        # allow to realod the css before serving content ?
+        print("\nACCOUNT IS TEMPLATE CALLED\n", flush=True,) #rm
         return await proxy_request("static_files", "/user-account-profile-wrapper/", request)
     elif path == "account/game-stats/":
         # for non htmx request
         return await proxy_request("static_files", "/user-stats-wrapper/", request)
     else:
-        print("\nPAGE NOT FOUND\n", flush=True,)
+        print("\nPAGE NOT FOUND\n", flush=True,) #rm
         error_message = "Page Not Found"
-        return await proxy_request("static_files", "error", request)
+        return await proxy_request("static_files", "error", request) """
 
 
 # -------------- MATCH PROXY ------------------
@@ -370,11 +492,9 @@ async def redirect_to_home():
     """
     return RedirectResponse(url="/home/")
 
-
-
 # -------------------- API DATABASE PROXY --------------------
 
-@app.api_route("/api/{path:path}", methods=["GET", "POST"])
+@app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def databaseapi_proxy(path: str, request: Request):
     
     """
@@ -432,6 +552,8 @@ async def databaseapi_proxy(path: str, request: Request):
     }
     ```
     """
+    print("\nDATABASE API GATEWAY CALLED\n", flush=True) # rm
+
 
     return await proxy_request("databaseapi", f"api/{path}", request)
 

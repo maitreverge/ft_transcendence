@@ -2,22 +2,35 @@ import os
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-
-
 import httpx
 
 
-
-async def get_user_by_username(username):
+async def get_user_info(username):
     """
     Get user information by username from the database API
     """
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get(
+            print("\nCALLLED GET USER INFO\n", flush=True) # rm
+            
+            # does this go to fastapi container or no ???
+            # becaus if not why have api route in api gateway
+            """ response = await client.get(
                 f"http://databaseapi:8007/api/player/?username={username}"
+            ) """
+            
+            #modify to pass by the api getway instead of diretly calling the 
+            # database api urls
+            response = await client.get(
+                f"http://ctn_api_gateway:8005/api/player/?username={username}"
             )
+            print("\n AFTER GET RESPONSE FROM API\n", flush=True) # rm
 
+            
+            response_text = response.text  # For plain text responses
+            print("\nThe response: ", response_text, "\n", flush=True) #rm
+
+            
             if response.status_code == 200:
                 data = response.json()
 
@@ -40,6 +53,38 @@ async def get_user_by_username(username):
 
 async def profile(request: HttpRequest):
     # Get username from the JWT header
+    
+    print("PROFILE TMP CALLED\n", flush=True) #rm
+    
+    
+    username = request.headers.get("X-Username")
+    
+    print(f"username: {username}\n", flush=True)
+
+    context = {
+        "rasp": os.getenv("rasp", "false"),
+        "pidom": os.getenv("pi_domain", "localhost:8443"),
+    }
+
+    print("PROFILE TMP CALLED\n", flush=True) #rm
+    
+    if username:
+        user = await get_user_info(username)
+        if user:
+            context["user"] = user
+
+    #if htmx request with inner content no need to resent the account html 
+    if request.headers.get("HX-Request"):
+        if request.headers.get("X-Inner-Content") == "true":
+            return render(request, "partials/profile.html", context)
+
+    # If it's a full page loading
+    return render(request, "account.html", 
+                  {**context, "page": "partials/profile.html"})  
+
+
+async def game_stats(request: HttpRequest):
+    
     username = request.headers.get("X-Username")
 
     context = {
@@ -48,98 +93,19 @@ async def profile(request: HttpRequest):
     }
 
     if username:
-        user = await get_user_by_username(username)
+        user = await get_user_info(username)
         if user:
             context["user"] = user
 
-    return render(
-        request,
-        "profile.html",
-        context,
-    )
- 
- 
- 
-   
-async def account_information(request: HttpRequest):
-    # Get username from the JWT header
-    username = request.headers.get("X-Username")
-
-    context = {
-        "rasp": os.getenv("rasp", "false"),
-        "pidom": os.getenv("pi_domain", "localhost:8443"),
-    }
-
-    if username:
-        user = await get_user_by_username(username)
-        if user:
-            context["user"] = user
-
-    return render(
-        request,
-        "account_information.html",
-        context,
-    )
-
-def stats(request: HttpRequest):
-    return render(
-        request,
-        "stats.html",
-        {
-            "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8443"),
-        },
-    )
-
-
-
-
-async def profile_tmp(request: HttpRequest):
-    # Get username from the JWT header
-    username = request.headers.get("X-Username")
-
-    context = {
-        "rasp": os.getenv("rasp", "false"),
-        "pidom": os.getenv("pi_domain", "localhost:8443"),
-    }
-
-    if username:
-        user = await get_user_by_username(username)
-        if user:
-            context["user"] = user
-   
-    """ if user:
-        context.update({
-            "user": user,
+    if request.headers.get("HX-Request"):
+        # Check for custom header indicating inner content request
+        if request.headers.get("X-Inner-Content") == "true":
+            # Only return the inner content (profile or game stats)
+            if "/user/account/game-stats/" in request.path:
+                return render(request, "partials/stats.html", context)
             
-        }) """
-  
-    """ "user_id": user.id,
-    "email": user.email,
-    "first_name": user.first_name,
-    "last_name": user.last_name,
-    "is_active": user.is_active,
-    "is_staff": user.is_staff,
-    "two_fa_enabled": user.two_fa_enabled, """
-
-   
-    return render(
-        request,
-        "account.html",  # Render the account.html template directly
-        {
-            "username": username,
-            "page": "profile.html",  # This could be the path to the profile template
-            **context  # Pass user-related context (such as user data)
-        },
-    )
-
-
-def game_stats(request: HttpRequest):
-    return render(
-        request,
-        "stats.html",
-        {
-            "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8443"),
-        },
-    )
+    return render(request, "account.html", {
+        "username": username,
+        "page": "partials/stats.html",
+        **context
+    })

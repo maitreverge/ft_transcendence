@@ -2,7 +2,7 @@
 <div class="container-fluid">
 
   <!-- Page Heading -->
-  <h1 data-translate="Account settings" class="h3 mb-2 text-gray-800">Account Settings</h1>
+  <h1 data-translate="Profile" class="h3 mb-2 text-gray-800">Profile</h1>
 
   <div>
     <div class="card-body p-0">
@@ -26,11 +26,11 @@
                   class="img-fluid px-3 px-sm-4 mt-3 mb-4"
                   style="width: 25rem"
                   src="{% static 'static_files/img/undraw_posting_photo.svg' %}"
-                  alt="User Avatar"
+                  alt="..."
                 />
               </div>
               <p data-translate="Add your picture here">
-                Add your picture here
+                {{ user.username }}'s Profile Picture
               </p>
             </div>
           </div>
@@ -50,9 +50,9 @@
                     type="text"
                     class="form-control form-control-user"
                     id="exampleFirstName"
-                    data-translate-placeholder="First Name"
+                    data-translate-placeholder="first name"
                     placeholder="First Name"
-                    value="{{ user.first_name }}"
+                    value="{{ user.first_name|default:'' }}"
                   />
                 </div>
                 <div class="col-sm-6">
@@ -60,9 +60,9 @@
                     type="text"
                     class="form-control form-control-user"
                     id="exampleLastName"
-                    data-translate-placeholder="Last Name"
+                    data-translate-placeholder="last name"
                     placeholder="Last Name"
-                    value="{{ user.last_name }}"
+                    value="{{ user.last_name|default:'' }}"
                   />
                 </div>
               </div>
@@ -75,7 +75,7 @@
                     id="exampleDisplayName"
                     data-translate-placeholder="Display Name"
                     placeholder="Display Name"
-                    value="{{ user.username }}"
+                    value="{{ user.username|default:'' }}"
                   />
                 </div>
               </div>
@@ -87,8 +87,8 @@
                   id="exampleInputEmail"
                   data-translate-placeholder="Email Address"
                   placeholder="Email Address"
-                  value="{{ user.email }}"
-                  />
+                  value="{{ user.email|default:'' }}"
+                />
               </div>
 
             </form>
@@ -96,10 +96,9 @@
               <span class="icon text-white-50">
                 <i class="fa-solid fa-arrow-rotate-right"></i>
               </span>
-              <span data-translate="Update profile" class="text">Update Profile</span>
+              <span data-translate="Update profile" class="text">Update profile</span>
             </a>
 
-            <!-- Friends Section -->
             <a
               class="nav-link collapsed"
               href="#"
@@ -133,12 +132,16 @@
                       </tr>
                     </tfoot>
                     <tbody>
-                     <!--  {% for friend in user.friends.all %} -->
+                      {% for friend in user.friends %}
                       <tr>
-                        <!-- <td>{{ friend.username }}</td>
-                        <td>{{ friend.game_score }}</td>
-                        <td>{{ friend.status }}</td> -->
-                        <td><a href="#" class="btn btn-success btn-sm">Play!</a></td>
+                        <td>{{ friend.name }}</td>
+                        <td>{{ friend.score }}</td>
+                        <td>{{ friend.status }}</td>
+                        <td>play!</td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="4" class="text-center">No friends found</td>
                       </tr>
                       {% endfor %}
                     </tbody>
@@ -147,13 +150,14 @@
               </div>
             </div>
 
-            <!-- 2FA Buttons -->
+            
+			<!-- ! 2FA buttons with conditional display -->
             {% if user.two_fa_enabled %}
             <a href="#" class="btn btn-danger btn-icon-split float-right" 
                hx-get="/user/disable-2fa/" 
                hx-target="#main_div"
                hx-headers='{"HX-Request": "true"}'
-               id="disable_2fa">
+			   id="disable_2fa">
               <span class="icon text-white-50">
                 <i class="fas fa-shield-alt"></i>
               </span>
@@ -164,7 +168,7 @@
                hx-get="/user/setup-2fa/" 
                hx-target="#main_div"
                hx-headers='{"HX-Request": "true"}'
-               id="setup_2fa">
+			   id="setup_2fa">
               <span class="icon text-white-50">
                 <i class="fas fa-shield-alt"></i>
               </span>
@@ -172,6 +176,7 @@
             </a>
             {% endif %}
             
+
             <a href="#" class="btn btn-danger btn-icon-split float-right">
               <span class="icon text-white-50">
                 <i class="fas fa-trash"></i>
@@ -185,6 +190,8 @@
     </div>
   </div>
 </div>
+
+
 
 <!-- <script>
     window.addEventListener("DOMContentLoaded", () => {
