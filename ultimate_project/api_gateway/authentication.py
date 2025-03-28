@@ -1,3 +1,4 @@
+# from django.middleware.csrf import get_token
 from fastapi import APIRouter, Request, Response, HTTPException
 from fastapi.responses import JSONResponse
 import requests
@@ -6,6 +7,9 @@ import datetime
 import os
 import pyotp
 import re
+import secrets
+import hashlib
+
 router = APIRouter()
 
 # Clé secrète pour signer les JWT
@@ -18,6 +22,11 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 # URL de l'API qui gère la vérification des identifiants
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
 CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
+
+def generate_django_csrf_token():
+    secret = secrets.token_hex(32)  # 32-byte secret key
+    hashed_token = hashlib.sha256(secret.encode()).hexdigest()
+    return hashed_token
 
 
 # @router.post("/auth/login/")
@@ -113,7 +122,7 @@ async def login_fastAPI(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,
+        secure=True,
         samesite="Lax",
         path="/",
         max_age=60 * 60 * 6,
@@ -124,10 +133,22 @@ async def login_fastAPI(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False,
+        secure=True,
         samesite="Lax",
         path="/",
         max_age=60 * 60 * 24 * 7,
+    )
+
+    # Generate and set CSRF token
+    # csrf_token = secrets.token_urlsafe(64)
+    json_response.set_cookie(
+        key="csrftoken",
+        value=generate_django_csrf_token(),
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+        path="/",
+        max_age=60 * 60 * 6,  # 6 hours, same as access token
     )
 
     # Debug log for headers
@@ -433,7 +454,7 @@ async def verify_2fa_and_login(
             key="access_token",
             value=access_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
@@ -443,10 +464,22 @@ async def verify_2fa_and_login(
             key="refresh_token",
             value=refresh_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 24 * 7,  # 7 days
+        )
+
+        # Generate and set CSRF token
+        # csrf_token = secrets.token_urlsafe(64)
+        json_response.set_cookie(
+            key="csrftoken",
+            value=generate_django_csrf_token(),
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours, same as access token
         )
 
         # Debug log for headers
@@ -486,7 +519,7 @@ async def register_fastAPI(
     print(f"🔐 Tentative d'inscription pour {username}", flush=True)
 
     # Regex patterns for input validation
-    name_pattern = r'^(?!.*--)[a-zA-ZÀ-ÿ0-9\-]+$'
+    name_pattern = r"^(?!.*--)[a-zA-ZÀ-ÿ0-9\-]+$"
     # Validate first name
     if not re.match(name_pattern, first_name):
         return JSONResponse(
@@ -507,7 +540,7 @@ async def register_fastAPI(
             status_code=400,
         )
 
-    username_pattern = r'^(?!.*--)[a-zA-Z0-9_\-]+$'
+    username_pattern = r"^(?!.*--)[a-zA-Z0-9_\-]+$"
     # Validate username
     if not re.match(username_pattern, username):
         return JSONResponse(
@@ -518,8 +551,8 @@ async def register_fastAPI(
             status_code=400,
         )
 
-    password_pattern = r'^(?!.*--)[a-zA-Z0-9_\-?!$€%&*()]+$'
-    # Validate password 
+    password_pattern = r"^(?!.*--)[a-zA-Z0-9_\-?!$€%&*()]+$"
+    # Validate password
     if not re.match(password_pattern, password):
         return JSONResponse(
             content={
@@ -528,7 +561,6 @@ async def register_fastAPI(
             },
             status_code=400,
         )
-
 
     # Check if username already exists first (industry standard to check one field at a time)
     try:
@@ -658,7 +690,7 @@ async def register_fastAPI(
             key="access_token",
             value=access_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
@@ -668,10 +700,22 @@ async def register_fastAPI(
             key="refresh_token",
             value=refresh_token,
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 24 * 7,  # 7 days
+        )
+
+        # Generate and set CSRF token
+        # csrf_token = secrets.token_urlsafe(64)
+        json_response.set_cookie(
+            key="csrftoken",
+            value=generate_django_csrf_token(),
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+            path="/",
+            max_age=60 * 60 * 6,  # 6 hours, same as access token
         )
 
         return json_response

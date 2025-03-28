@@ -8,17 +8,14 @@ function initTournament() {
 	else 
 		console.log("closeSimpleMatch not define");
 	
+	if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        window.pidom = "localhost:8443";
 	console.log("INIT TOURNAMENT");
     if (window.tournamentSocket)
         window.tournamentSocket.close();
-	if (window.rasp == "true")
-		window.tournamentSocket = new WebSocket(
-			`wss://${window.pidom}/ws/tournament/tournament/${window.user_id}/`
-		);
-	else
-		window.tournamentSocket = new WebSocket(
-			`wss://localhost:8443/ws/tournament/tournament/${window.user_id}/`
-		);
+    window.tournamentSocket = new WebSocket(
+        `wss://${window.pidom}/ws/tournament/tournament/${window.user_id}/`
+    );
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
 	}

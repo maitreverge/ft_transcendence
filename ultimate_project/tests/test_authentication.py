@@ -1,15 +1,3 @@
-# ! IMPORTANT : For register AND login testing purposes, you need to create a user with the following credentials :
-# !  USERNAME : test
-# !  EMAIL : test@test.com
-# !  PASSWORD : password
-
-# And also another user with the following credentials :
-# !  USERNAME : test_2fa
-# !  EMAIL : test2@test.com
-# !  PASSWORD : password
-
-# ! 2FA USER SECRET : S3EF2KESUQR45MRTL7MXDSJVI6JQDG4R
-
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
 from test_2fa import test_login_2fa, test_register_2fa

@@ -5,11 +5,11 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 import logging
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 templates = Jinja2Templates(directory="templates")
 
 
-# from fastapi.middleware.cors import CORSMiddleware
 from auth_helpers import block_authenticated_users
 import json
 from authentication import (
@@ -28,24 +28,24 @@ app = FastAPI(
 )
 
 # Configure CORS middleware with more permissive settings
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # Allow all origins for development
-#     allow_credentials=True,  # Allow cookies
-#     allow_methods=["*"],  # Allow all HTTP methods
-#     allow_headers=["*"],  # Allow all headers
-#     expose_headers=[
-#         "Content-Type",
-#         "X-CSRFToken",
-#         "Set-Cookie",
-#     ],  # Expose these headers
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=True,  # Allow cookies
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+    expose_headers=[
+        "Content-Type",
+        "X-CSRFToken",
+        "Set-Cookie",
+    ],  # Expose these headers
+)
 
 
 # error page handler
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return await proxy_request("static_files", f"error/{exc.status_code}", request)
+    return await proxy_request("static_files", f"error/{exc.status_code}/", request)
 
 
 services = {
@@ -84,13 +84,39 @@ async def token_refresh_middleware(request: Request, call_next):
             key="access_token",
             value=user_info.get("new_access_token"),
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
         )
 
     return response
+
+
+# CSRF middleware
+# @app.middleware("http")
+# async def csrf_middleware(request: Request, call_next):
+#     """
+#     Middleware that verifies CSRF token for non-GET requests.
+#     """
+#     # Skip CSRF check for GET requests and health checks
+#     if request.method == "GET" or request.url.path == "/health/":
+#         return await call_next(request)
+
+#     # Get CSRF token from cookie
+#     csrf_token = request.cookies.get("csrf_token")
+
+#     # Get CSRF token from header
+#     header_token = request.headers.get("X-CSRFToken")
+
+#     # Verify tokens match
+#     if not csrf_token or not header_token or csrf_token != header_token:
+#         return JSONResponse(
+#             status_code=403,
+#             content={"detail": "Invalid CSRF token"},
+#         )
+
+#     return await call_next(request)
 
 
 # ! DEBUGGING COOKIES MIDDLEWARE.
@@ -109,7 +135,6 @@ async def debug_cookies_middleware(request: Request, call_next):
         )
 
     return response
-
 
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
@@ -221,10 +246,9 @@ async def tournament_proxy(path: str, request: Request):
         user_id = user_info.get("user_id")
     else:
         user_id = 0
-        
-        # return RedirectResponse(url="/login/") # to FIX FLO
-        # return RedirectResponse(url="/login/") # to FIX FLO
 
+        # return RedirectResponse(url="/login/") # to FIX FLO
+        # return RedirectResponse(url="/login/") # to FIX FLO
 
     print(
         "################## NEW USER CREATED #######################",
@@ -248,7 +272,7 @@ async def tournament_proxy(path: str, request: Request):
     else:
         error_message = "Page Not Found"
 
-        return await proxy_request("static_files", "error", request)
+        return await proxy_request("static_files", "error/", request)
 
 
 @app.api_route("/user/{path:path}", methods=["GET"])
@@ -291,6 +315,7 @@ async def stop_match_proxy(path: str, request: Request):
     """
     return await proxy_request("match", "/match/stop-match/" + path, request)
 
+
 @app.api_route("/match/match3d/{path:path}", methods=["GET"])
 async def match_proxy(
     path: str,
@@ -316,6 +341,7 @@ async def match_proxy(
     )
 
     return await proxy_request("match", path, request)
+
 
 @app.api_route("/match/match2d/{path:path}", methods=["GET"])
 async def match_proxy(
@@ -435,7 +461,7 @@ async def login_page_route(request: Request, path: str = ""):
                 key="access_token",
                 value=user_info.get("new_access_token"),
                 httponly=True,
-                secure=False,
+                secure=True,
                 samesite="Lax",
                 path="/",
                 max_age=60 * 60 * 6,  # 6 hours
@@ -497,7 +523,7 @@ async def auth_status(request: Request):
             key="access_token",
             value=user_info.get("new_access_token"),
             httponly=True,
-            secure=False,
+            secure=True,
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
@@ -537,7 +563,7 @@ async def register_page_route(request: Request, path: str = ""):
                 key="access_token",
                 value=user_info.get("new_access_token"),
                 httponly=True,
-                secure=False,
+                secure=True,
                 samesite="Lax",
                 path="/",
                 max_age=60 * 60 * 6,  # 6 hours

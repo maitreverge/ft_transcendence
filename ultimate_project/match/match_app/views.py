@@ -14,13 +14,18 @@ def new_match(request: HttpRequest):
 
 
 def enter_match(request: HttpRequest):
+    client_host = request.get_host().split(":")[0]  # Récupère l'IP ou le domaine sans le port
 
+    if client_host in ["127.0.0.1", "localhost"]:
+        pidom = "localhost:8443"
+    else:
+        pidom = os.getenv("HOST_IP", "localhost:8443")
     return render(
         request,
         "pong.html",
         {
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8443"),
+            "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "matchId": int(request.GET.get("matchId", "0")),
             "playerId": int(request.GET.get("playerId", "0")),
         },
@@ -34,7 +39,7 @@ def enter_match3d(request: HttpRequest):
         "pong3d.html",
         {
             "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8443"),
+            "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "matchId": int(request.GET.get("matchId", "0")),
             "playerId": int(request.GET.get("playerId", "0")),
         },

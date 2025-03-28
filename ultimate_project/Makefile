@@ -1,7 +1,7 @@
 # all : calls all the compose
 all: create_volume
+	bash -c "source ./get_ip.sh"
 	-docker compose -f docker-compose.yaml -f docker-compose.override.yaml up --build
-
 # all : calls only the classic compose
 prod: clean 
 	-docker compose -f docker-compose.yaml up --build

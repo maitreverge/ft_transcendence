@@ -17,7 +17,7 @@ from datetime import timedelta
 
 NAME = os.getenv("name")
 
-PI_DOMAIN = os.getenv("pi_domain")
+HOST_IP = os.getenv("HOST_IP")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,13 +38,13 @@ FERNET_SECRET_KEY = os.getenv(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*", f"https://{PI_DOMAIN}"]
+ALLOWED_HOSTS = ["*", f"https://{HOST_IP}"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    f"https://{PI_DOMAIN}",
+    f"https://{HOST_IP}",
 ]
 
 
@@ -207,7 +207,7 @@ CORS_ALLOW_ORIGINS = [
     "http://localhost:8005",  # FastAPI
     "http://localhost:8006",  # Authentication
     "http://localhost:8007",  # DatabaseAPI
-    f"https://{PI_DOMAIN}",  # Production
+    f"https://{HOST_IP}",  # Production
 ]
 CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]
@@ -222,14 +222,30 @@ JWT_AUTH = {
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
+CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
+CORS_ALLOW_ORIGINS = [
+    "http://localhost:8000",  # Basic
+    "http://localhost:8001",  # Tournament
+    "http://localhost:8002",  # Match
+    "http://localhost:8003",  # Static files
+    "http://localhost:8004",  # User
+    "http://localhost:8005",  # FastAPI
+    "http://localhost:8006",  # Authentication
+    "http://localhost:8007",  # DatabaseAPI
+    "https://localhost:8443"  # For secure HTTPS access
+    f"https://{HOST_IP}",  # Production
+]
+CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_HEADERS = ["*"]
+
 # Cookie settings
-SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = (
-    "Lax"  # Use 'None' with SESSION_COOKIE_SECURE=True in production
-)
-SESSION_COOKIE_PATH = "/"
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
+SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access (for security)
+SESSION_COOKIE_SAMESITE = "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+
+CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
-CSRF_COOKIE_SAMESITE = "Lax"  # Use 'None' with CSRF_COOKIE_SECURE=True in production
-CSRF_COOKIE_PATH = "/"
+CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
+
+# CSRF Middleware settings
+CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]  # Add your domain(s) here
