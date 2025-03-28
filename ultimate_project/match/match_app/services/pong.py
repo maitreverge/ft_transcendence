@@ -27,7 +27,7 @@ class Pong:
 		self.yp2 = self.pad_height / 2
 		self.pad_width = 10
 		self.winner = None
-		self.max_delay = 100
+		self.max_delay = 30
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [25, 5]
@@ -39,7 +39,7 @@ class Pong:
 		self.pad_speed = 4
 		self.max_speed = 10
 		self.acceleration = 1.1
-		self.max_score = 30
+		self.max_score = 5
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
@@ -229,6 +229,7 @@ class Pong:
 					mag = self.get_magnitude(self.vect) 				
 					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
 					y = y * mag
+					y = max(min(y, 0.9), -0.9)
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
 					x = math.sqrt(abs(x))	
 
@@ -260,6 +261,7 @@ class Pong:
 					mag = self.get_magnitude(self.vect) 					
 					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
 					y = y * mag
+					y = max(min(y, 0.9), -0.9)
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
 					x = math.sqrt(abs(x))
 					scl = 1
