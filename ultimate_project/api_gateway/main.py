@@ -381,7 +381,7 @@ async def redirect_to_home():
 
 
 # ! DATABASE API ROUTE
-@app.api_route("/api/{path:path}", methods=["GET", "POST", "DELETE"])
+@app.api_route("/api/{path:path}", methods=["GET", "POST","PUT", "DELETE"])
 async def databaseapi_proxy(path: str, request: Request):
     """
     Proxy requests to the database API microservice.
@@ -419,24 +419,6 @@ async def databaseapi_proxy(path: str, request: Request):
     - **Responses**:
       - `200 OK`: The user is authenticated and 2FA is not enabled
       - `401 Unauthorized`: The user is authenticated but 2FA is enabled
-
-    ### Response format:
-    ```json
-    {
-        "count": 100,
-        "next": "http://localhost:8005/api/player/?page=2",
-        "previous": null,
-        "results": [
-            {
-                "id": 1,
-                "username": "player1",
-                "email": "player1@example.com",
-                ...
-            },
-            ...
-        ]
-    }
-    ```
     """
     return await proxy_request("databaseapi", f"api/{path}", request)
 
