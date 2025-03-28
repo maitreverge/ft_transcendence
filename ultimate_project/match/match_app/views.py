@@ -13,7 +13,7 @@ def new_match(request: HttpRequest):
     return JsonResponse({"matchId": pong.id}, status=201)
 
 
-def enter_match(    : HttpRequest):
+def enter_match(request: HttpRequest):
 
     return render(
         request,
