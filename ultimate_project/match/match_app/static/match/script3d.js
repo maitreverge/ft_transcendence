@@ -226,15 +226,11 @@ function sequelInitMatchWs(socket) {
 
 function initSecPlayer() {
 
-	if (window.rasp == "true")
-		window.matchSocket2 = new WebSocket(
-			`wss://${window.pidom}/ws/match/${window.matchId}/` +
-			`?playerId=${-window.playerId}`);
-	else	
-		window.matchSocket2 = new WebSocket(
-			`wss://localhost:8443/ws/match/${window.matchId}/` +
-			`?playerId=${-window.playerId}`);
-
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        window.pidom = "localhost:8443";
+    window.matchSocket2 = new WebSocket(
+        `wss://${window.pidom}/ws/match/${window.matchId}/` +
+        `?playerId=${-window.playerId}`);
 	window.matchSocket2.onopen = () => {
 		console.log("Connexion Match établie 2nd Player😊");
 	};
@@ -245,6 +241,8 @@ function initSecPlayer() {
 }
 
 function initMatchWs() {
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        window.pidom = "localhost:8443";
 //si je viens du debut je sui sclosé (et je reviens par boucle) si je viens de onclse je continu normal
 	console.log("INIT MATCH 😊😊😊");
 	console.log("STOP: " + window.stopFlag);
@@ -254,14 +252,9 @@ function initMatchWs() {
     // if (window.matchSocket)
 	// 	window.matchSocket.close();
 	window.antiLoop = true;
-	if (window.rasp == "true")
-		window.matchSocket = new WebSocket(
-			`wss://${window.pidom}/ws/match/${window.matchId}/` +
-			`?playerId=${window.playerId}`);
-	else	
-		window.matchSocket = new WebSocket(
-			`wss://localhost:8443/ws/match/${window.matchId}/` +
-			`?playerId=${window.playerId}`);
+    window.matchSocket = new WebSocket(
+        `wss://${window.pidom}/ws/match/${window.matchId}/` +
+        `?playerId=${window.playerId}`);
 	window.matchSocket.onopen = () => {
 		console.log("Connexion Match établie 😊");
 	};

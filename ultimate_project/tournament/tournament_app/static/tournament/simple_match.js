@@ -368,17 +368,15 @@ function onSimpleMatchMessage(event, socket) {
 
 function initSimpleMatch() {
 	
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        window.pidom = "localhost:8443";
+
 	console.log("INIT SIMPLE MATCH");
     if (window.simpleMatchSocket)
         window.simpleMatchSocket.close();
-	if (window.rasp == "true")
-		window.simpleMatchSocket = new WebSocket(
-			`wss://${window.pidom}/ws/tournament/${window.user_id}/`
-		);
-	else
-		window.simpleMatchSocket = new WebSocket(
-			`wss://localhost:8443/ws/tournament/${window.user_id}/`
-		);
+    window.simpleMatchSocket = new WebSocket(
+        `wss://${window.pidom}/ws/tournament/${window.user_id}/`
+    );
 	window.simpleMatchSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
 	}

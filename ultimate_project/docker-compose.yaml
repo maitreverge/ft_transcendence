@@ -42,8 +42,7 @@ services:
     container_name: ctn_database
     environment:
       name: database
-      HOST_IP: $HOST_IP
-      rasp: true
+      pi_domain: $PI_DOMAIN
       port: $POSTGRES_PORT # really usefull ?
       PGUSER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -107,8 +106,7 @@ services:
       env: prod
       port: ${static_files_port}
       name: static_files
-      HOST_IP: ${HOST_IP}
-      rasp: true
+      pi_domain: ${PI_DOMAIN}
       DJANGO_SETTINGS_MODULE: static_files.settings
     image: img_static_files
     env_file:
@@ -134,8 +132,7 @@ services:
       env: prod
       port: ${api_gateway_port}
       name: api_gateway
-      HOST_IP: ${HOST_IP}
-      rasp: true
+      pi_domain: ${PI_DOMAIN}
       JWT_KEY: ${JWT_KEY}
     image: img_api_gateway
     networks:
