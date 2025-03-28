@@ -27,7 +27,7 @@ class Pong:
 		self.yp2 = self.pad_height / 2
 		self.pad_width = 10
 		self.winner = None
-		self.max_delay = 10
+		self.max_delay = 100
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [25, 5]
