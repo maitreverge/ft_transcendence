@@ -158,7 +158,8 @@ function moveSimplePlayerInMatch(matchElement, match) {
 	console.log("MOVE SIMPLE PLAYER IN MATCH after return");
 	match.players.forEach(ply => {
 		const winPly = window.simplePlayers.find(el => el.id == ply.playerId);
-		matchElement.appendChild(winPly);
+		if (winPly)
+			matchElement.appendChild(winPly);
 	});	
 }
 
@@ -324,10 +325,10 @@ function sendPlayerClick(socket, event, selected)
 		}));
 }
 
-function selfInvitation(event, socket)
-{
-	event.stopPropagation();
-}
+// function selfInvitation(event, socket)
+// {
+// 	event.stopPropagation();
+// }
 
 // function addPlayerToContainer(socket, container, playerId) {
 
@@ -411,8 +412,7 @@ function onSimpleMatchMessage(event, socket) {
 			setSelfId(data.selfId);
 			break;
 		case "playerList":
-			window.simplePlayersList = data.players;
-			// updatePlayers(socket, data.players);
+			window.simplePlayersList = data.players;		
 			updateSimplePlayers(socket, data.players);
 			break;
 		case "matchList":
