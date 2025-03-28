@@ -67,7 +67,7 @@ def run(playwright: Playwright) -> None:
     # Check cookies after logout
     check_cookie(page.url, 1)
 
-    print(f"✅ JTW and csrftoken test PASSED ✅")
+    print(f"✅ COOKIES TESTS PASSED ✅")
 
     context.close()
     browser.close()

@@ -204,5 +204,8 @@ def run(playwright: Playwright) -> None:
     test_register(base_url, page)
     test_login(base_url, page)
 
+    print(f"✅ AUTHENTICATION TESTS PASSED ✅")
+
+
 with sync_playwright() as playwright:
     run(playwright)

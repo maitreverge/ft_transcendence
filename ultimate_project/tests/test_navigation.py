@@ -138,6 +138,9 @@ def run(playwright: Playwright) -> None:
     context.close()
     browser.close()
 
+    print(f"✅ NAVIGATION TEST ✅")
+
+
 
 with sync_playwright() as playwright:
     run(playwright)

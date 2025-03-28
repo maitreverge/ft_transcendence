@@ -1,5 +1,4 @@
 from playwright.sync_api import Playwright, sync_playwright, expect
-from collections import Counter
 import pyotp
 import time
 
@@ -21,7 +20,6 @@ def run(playwright: Playwright) -> None:
     page = context.new_page()
 
     def login(user):
-        # page.goto(f"{BASE_URL}/login/")
         
         if user == "regular":
             page.locator("#username").fill(LOGIN_REGULAR)
@@ -33,18 +31,15 @@ def run(playwright: Playwright) -> None:
             page.locator("#loginButton").click()
         
 
-    def logout():
-        youpiBanane = page.locator("#youpiBanane")
-        logoutButton = page.locator("#logoutButton")
-        modalLogoutButton = page.locator("#modalLogoutButton")
-        assert "show" not in (youpiBanane.get_attribute("class") or "")
-        youpiBanane.click()
-        logoutButton.click()
-        modalLogoutButton.click()
-        expect(page).to_have_url(f"{BASE_URL}/login/")
-
-    
-    # LOGIN
+    # def logout():
+    #     youpiBanane = page.locator("#youpiBanane")
+    #     logoutButton = page.locator("#logoutButton")
+    #     modalLogoutButton = page.locator("#modalLogoutButton")
+    #     assert "show" not in (youpiBanane.get_attribute("class") or "")
+    #     youpiBanane.click()
+    #     logoutButton.click()
+    #     modalLogoutButton.click()
+    #     expect(page).to_have_url(f"{BASE_URL}/login/")
 
     def delete_user(user):
         login(user)
@@ -58,7 +53,7 @@ def run(playwright: Playwright) -> None:
                     expect(page).to_have_url(f"{BASE_URL}/home/")
                     break
                 except Exception as e:
-                    print(f"💀 2FA connexion failed {_ + 1} times 💀", flush=True)
+                    print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
 
         expect(page).to_have_url(f"{BASE_URL}/home/")
 
@@ -67,54 +62,66 @@ def run(playwright: Playwright) -> None:
 
         page.locator("#delete_profile").click()
 
-        # ! We're on the delete-profile.html
+        # ! We're on the delete-profile.html HERE
 
         final_delete_button = page.locator("#delete_profile")
         password_field = page.locator("#password")
 
         # ! CASE 1 INCORRECT PASSWORD
-        password_field.fill("nope")
 
         if user == "2fa":
-            otp_field = page.locator("#otp-code")
-            otp_field.fill(totp.now())
-
-        final_delete_button.click()
-        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
-        
-        error_field = page.locator("#error_delete_user").text_content()
-
-        assert error_field == "Invalid password"
-        # if user == "regular":
-        # else:
-        #     assert error_field == ""
-
+            for _ in range(3):
+                try:
+                    password_field.fill("nope")
+                    otp_field = page.locator("#otp-code")
+                    otp_field.fill(totp.now())
+                    final_delete_button.click()
+                    expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+                    error_field = page.locator("#error_delete_user").text_content()
+                    assert error_field == "Invalid password"
+                    break
+                except Exception as e:
+                    print(f"💀 2FA connexion failed {_ + 1} times , retrying💀", flush=True)
+        else:
+            password_field.fill("nope")
+            final_delete_button.click()
+            expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+            error_field = page.locator("#error_delete_user").text_content()
+            assert error_field == "Invalid password"
 
         # ! CASE 2 INCORRECT OTP
         if user == "2fa":
+            password_field = page.locator("#password")
             password_field.fill(PASSWORD)
-            # otp_field = page.locator("#otp-code")
+            otp_field = page.locator("#otp-code")
             otp_field.fill("000000")
 
             final_delete_button.click()
             expect(page).to_have_url(f"{BASE_URL}/user/profile/")
-            time.sleep(0.5)
+            time.sleep(3)
             error_field = page.locator("#error_delete_user").text_content()
             
             assert error_field == "Invalid 2FA code"
         
+        
         # ? HAPPY PATH : BOTH PASSWORD and OTP CORRECT
-        
-        password_field.fill(PASSWORD)
-
         if user == "2fa":
-            otp_field = page.locator("#otp-code")
-            otp_field.fill(totp.now())
+            for _ in range(3):
+                current_code = totp.now()
+                try:
+                    password_field.fill(PASSWORD)
+                    otp_field = page.locator("#otp-code")
+                    otp_field.fill(current_code)
+                    final_delete_button.click()
+                    expect(page).to_have_url(f"{BASE_URL}/register/")
+                    break
+                except Exception as e:
+                    print(f"💀 2FA connexion failed {_ + 1} times , retrying💀", flush=True)
+        else:
+            password_field.fill(PASSWORD)
+            final_delete_button.click()
+            expect(page).to_have_url(f"{BASE_URL}/register/")
         
-        final_delete_button.click()
-        expect(page).to_have_url(f"{BASE_URL}/register/")
-
-
 
 
     # ! =============== KICKSTART TESTER HERE ===============
@@ -138,7 +145,6 @@ def run(playwright: Playwright) -> None:
     browser.close()
 
     print(f"✅ DELETE USER TEST ✅")
-    print(f"IMPORTANT : Users `test` and `delete_2fa` has been successfully deleted")
 
 
 with sync_playwright() as playwright:

@@ -79,7 +79,7 @@ def test_login_2fa(playwright: Playwright):
             print(f"✅ 2FA connexion succed on {_ + 1}{get_ordinal_suffix(_ + 1)} try ✅", flush=True)
             break
         except Exception as e:
-            print(f"💀 2FA connexion failed {_ + 1} times 💀", flush=True)
+            print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
 
     context.close()
     browser.close()
