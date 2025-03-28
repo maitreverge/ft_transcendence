@@ -47,6 +47,7 @@ async def match_players_update(request: HttpRequest):
 
 @csrf_exempt
 async def match_result(request: HttpRequest):
+    print("MATCH RESULT", flush=True)
     data = json.loads(request.body.decode("utf-8"))
     match_id = data.get("matchId")
     winner_id = data.get("winnerId")
@@ -59,7 +60,9 @@ async def match_result(request: HttpRequest):
         p1["busy"] = None
     if p2:
         p2["busy"] = None
+    print(f"MATCH BEFORE RM match_id:{match_id} matchs: {sm_cons.matchs}", flush=True)
     sm_cons.matchs[:] = [m for m in sm_cons.matchs if m.get("matchId") != match_id]
+    print(f"MATCH AFTER RM {sm_cons.matchs}", flush=True)
     await sm_cons.SimpleConsumer.match_update()
 
     tournament = next(

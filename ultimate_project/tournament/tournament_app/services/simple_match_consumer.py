@@ -61,14 +61,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 				pass
 			
 	async def invitation(self, selectedId):
-
-		if selectedId == self.id:
-			match_id = await self.start_match(-selectedId)
-			print(f"iwille send confiration back to {self.id} from {selectedId}", flush=True)
-			await self.send_confirmation_back(
-			True, selectedId, selectedId, match_id, self)
-			await SimpleConsumer.match_update()
-			return
+	
 		selectedPlayer = next(
 			(p for p in players if p['playerId'] == selectedId), None)
 		selfSelectedPlayer = next(
@@ -77,6 +70,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			(p for p in players if p['playerId'] == self.id), None)
 		applicantPlayer = next(
 			(p for p in players if p['playerId'] == self.id), None)
+		if (await self.self_invitation(selectedId, selectedPlayer)):
+			return
 		if await self.cancel_invitation(
 			applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):		
 			return
@@ -88,7 +83,19 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			return	
 		await self.send_demand(
 			selfSelectedPlayer, selectedPlayer,	applicantPlayer)
-		
+
+	async def self_invitation(self, selectedId, selectedPlayer):
+		if selectedId == self.id:
+			selectedPlayer['busy'] = -selectedId
+			match_id = await self.start_match(-selectedId)
+			print(f"iwille send confiration back to {self.id} from {selectedId}", flush=True)
+			await self.send_confirmation_back(
+				True, selectedId, selectedId, match_id, self)
+			await SimpleConsumer.match_update()
+			return True
+		return False
+
+
 	async def send_back(self, response):		
 		await self.send(text_data=json.dumps({
 			"type": "invitation",
