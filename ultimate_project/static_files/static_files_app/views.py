@@ -45,10 +45,10 @@ def home(request):
         and request.headers.get("HX-Login-Success") != "true"
     ):
         return render(request, "partials/home.html", {"username": username})
-    SERVER_IP = os.getenv('HOST_IP', '127.0.0.42')
-    print("#####################################################################", flush=True)
-    print(f"SERVER_IP: {os.getenv('PATH')}", flush=True)
-    print("#####################################################################", flush=True)
+    # SERVER_IP = os.getenv('HOST_IP', '127.0.0.42')
+    # print("#####################################################################", flush=True)
+    # print(f"SERVER_IP: {os.getenv('PATH')}", flush=True)
+    # print("#####################################################################", flush=True)
 
     obj = {"username": username, "page": "partials/home.html", "server_ip": SERVER_IP}
     return render(request, "index.html", obj)
