@@ -377,6 +377,8 @@ function linkMatch(lk) {
 
 function loadTournamentHtml(data, overlay) {
 	
+	const oldScripts = document.querySelectorAll("script.match-script");			
+	oldScripts.forEach(oldScript => oldScript.remove());	
 	overlay.innerHTML = data;
 	const scripts = overlay.getElementsByTagName("script");
 
@@ -394,8 +396,6 @@ function loadTournamentHtml(data, overlay) {
 			newScript.textContent = script.textContent;		
 		document.body.appendChild(newScript); 
 	}
-	// const oldScripts = document.querySelectorAll("script.match-script");			
-	// oldScripts.forEach(oldScript => oldScript.remove());	
 }
 
 function matchResult(rsl) {

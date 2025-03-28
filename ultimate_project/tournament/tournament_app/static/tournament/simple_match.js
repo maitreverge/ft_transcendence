@@ -513,10 +513,10 @@ function initSimpleMatch() {
 			`wss://localhost:8443/ws/tournament/${window.user_id}/`
 		);
 	window.simpleMatchSocket.onopen = () => {
-		console.log("Connexion Tournament établie 😊");	
+		console.log("Connexion Simple Match établie 😊");	
 	}
 	window.simpleMatchSocket.onclose = () => {
-		console.log("Connexion Tournament disconnected 😈");
+		console.log("Connexion Simple Match disconnected 😈");
 	};	
 	window.simpleMatchSocket.onmessage = event =>
 		onSimpleMatchMessage(event, window.simpleMatchSocket);
