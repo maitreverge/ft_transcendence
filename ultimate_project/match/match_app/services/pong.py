@@ -108,7 +108,7 @@ class Pong:
 		try:
 			self.myEventLoop.run_until_complete(self.launch())  
 		finally:
-			# time.sleep(3)			
+			time.sleep(2)			
 			tasks = [
 				t for t in asyncio.all_tasks(self.myEventLoop) if not t.done()]
 			for task in tasks:
@@ -481,33 +481,33 @@ class Pong:
 		print(f"BEFORE SEND MATCH RESULT", flush=True)
 
 
-		response = requests.post(
-			"http://tournament:8001/tournament/match-result/", json={
-			"matchId": self.id,
-			"winnerId": self.winner,
-			"looserId": self.idP1 if self.winner == self.idP2 else self.idP2,
-			"p1Id": self.idP1,
-			"p2Id": self.idP2,
-			"score": self.score
-		})
+		# response = requests.post(
+		# 	"http://tournament:8001/tournament/match-result/", json={
+		# 	"matchId": self.id,
+		# 	"winnerId": self.winner,
+		# 	"looserId": self.idP1 if self.winner == self.idP2 else self.idP2,
+		# 	"p1Id": self.idP1,
+		# 	"p2Id": self.idP2,
+		# 	"score": self.score
+		# })
 
-		if response.status_code not in [200, 201]:
-			print(f"Error HTTP {response.status_code}: {response.text}")
+		# if response.status_code not in [200, 201]:
+		# 	print(f"Error HTTP {response.status_code}: {response.text}")
 
-		# async with aiohttp.ClientSession() as session:
-		# 	async with session.post(
-		# 		"http://tournament:8001/tournament/match-result/", json={
-		# 		"matchId": self.id,
-		# 		"winnerId": self.winner,
-		# 		"looserId": self.idP1 if self.winner == self.idP2
-		# 			else self.idP2,
-		# 		"p1Id": self.idP1,
-		# 		"p2Id": self.idP2,
-		# 		"score": self.score
-		# 	}) as response:
-		# 		if response.status != 200 and response.status != 201:
-		# 			err = await response.text()
-		# 			print(f"Error HTTP {response.status}: {err}", flush=True)
+		async with aiohttp.ClientSession() as session:
+			async with session.post(
+				"http://tournament:8001/tournament/match-result/", json={
+				"matchId": self.id,
+				"winnerId": self.winner,
+				"looserId": self.idP1 if self.winner == self.idP2
+					else self.idP2,
+				"p1Id": self.idP1,
+				"p2Id": self.idP2,
+				"score": self.score
+			}) as response:
+				if response.status != 200 and response.status != 201:
+					err = await response.text()
+					print(f"Error HTTP {response.status}: {err}", flush=True)
 		print(f"AFTER SEND MATCH RESULT", flush=True)
 		from match_app.views import del_pong
 		del_pong(self.id)			
