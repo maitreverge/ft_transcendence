@@ -732,6 +732,8 @@ function initMatchWs() {
 	console.log("ANTILOPP: " + window.antiLoop);
 	if (window.matchSocket && window.antiLoop)
 		return window.matchSocket.close();
+	if (window.matchSocket2 && window.antiLoop)
+		return window.matchSocket2.close();
     // if (window.matchSocket)
 	// 	window.matchSocket.close();
 	window.antiLoop = true;

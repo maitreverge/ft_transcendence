@@ -80,13 +80,13 @@ class Pong:
 		print(f"le player n'est pas bien autorise a fermer le match", flush=True)
 		return False
 
-	async def stop_tasks(self):
+	# async def stop_tasks(self):
 
-		tasks = [self.send_task, self.watch_task]
-		for task in tasks:
-			if task and not task.done() and not task.cancelled():
-				task.cancel()
-		await asyncio.gather(*[t for t in tasks if t], return_exceptions=True)
+	# 	tasks = [self.send_task, self.watch_task]
+	# 	for task in tasks:
+	# 		if task and not task.done() and not task.cancelled():
+	# 			task.cancel()
+	# 	await asyncio.gather(*[t for t in tasks if t], return_exceptions=True)
 
 	# def stop(self, playerId):
 	# 	print(f"in stop PONG my id is : {self.id}", flush=True)
@@ -106,9 +106,11 @@ class Pong:
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)	
 		try:
-			self.myEventLoop.run_until_complete(self.launch())  
+			self.myEventLoop.create_task(self.launch())
+			self.myEventLoop.run_forever()
+			# self.myEventLoop.run_until_complete(self.launch())  
 		finally:
-			time.sleep(8)			
+			time.sleep(2)			
 			tasks = [
 				t for t in asyncio.all_tasks(self.myEventLoop) if not t.done()]
 			for task in tasks:
