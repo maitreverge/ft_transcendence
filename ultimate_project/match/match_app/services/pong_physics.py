@@ -2,6 +2,26 @@ import math
 import asyncio
 import operator as op
 
+def pad_commands(self, players):
+	
+	self.pad_command(players[0], pad_idx=0)
+	self.pad_command(players[1], pad_idx=1)
+	
+def pad_command(self, player, pad_idx):
+
+	if player.get("dir") is not None :
+		if player["dir"] == 'up':					
+			self.pads_y[pad_idx] = max(
+				self.pads_y[pad_idx] - self.pad_speed,
+				(self.pad_height / 2)
+			)							
+		elif player["dir"] == 'down':					
+			self.pads_y[pad_idx] = min(
+				self.pads_y[pad_idx] + self.pad_speed,
+				100 - (self.pad_height / 2)
+			)					
+		player["dir"] = None
+
 async def bounces(self):
 
 	await self.horz_bounce(op.le, limit=16, pad_y_idx=0, dir=+1)
@@ -106,3 +126,15 @@ def scale_vector(self, m1, m2, div):
 
 def get_magnitude(self, vect):
 	return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
+
+def move_ball(self):
+
+	if (self.flag):	
+		self.ball[0] += self.vect[0]				
+		self.ball[1] += self.vect[1]
+
+# def substract_vect(self, vect_a, vect_b):
+# 	new_vect = [0, 0]
+# 	new_vect[0] = vect_a[0] - vect_b[0]
+# 	new_vect[1] = vect_a[1] - vect_b[1]
+# 	return new_vect
