@@ -167,15 +167,9 @@ class Pong:
 
 		if player.get("dir") is not None :
 			if player["dir"] == 'up':					
-				pad_y = max(
-					pad_y - self.pad_speed,
-					(self.pad_height / 2)
-				)							
+				pad_y = max(pad_y - self.pad_speed,	(self.pad_height / 2))							
 			elif player["dir"] == 'down':					
-				pad_y = min(
-					pad_y + self.pad_speed,
-					100 - (self.pad_height / 2)
-				)					
+				pad_y = min(pad_y + self.pad_speed,	100 - (self.pad_height / 2))					
 			player["dir"] = None
 		return pad_y
 	
