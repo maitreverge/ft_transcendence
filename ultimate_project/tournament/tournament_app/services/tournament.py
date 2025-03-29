@@ -16,17 +16,20 @@ class Tournament():
 		self.n_match = 0
 
 	async def append_player(self, player):
+
 		self.players.append(player)
 		if len(self.players) >= 4 and not self.launch:	
 			await self.launchTournament()	
 				
 	async def remove_player(self, player):
+
 		print(f"REMOVE PLAYER {player.id}", flush=True)
 		self.players[:] = [p for p in self.players if p != player]
 		if not self.players:	
 			await self.del_tournament()
 
 	async def del_tournament(self):
+
 		print(f"DEL TOURNAMENT {self.id}", flush=True)
 		from tournament_app.services.tournament_consumer \
 			import tournaments, TournamentConsumer
@@ -34,11 +37,13 @@ class Tournament():
 		await TournamentConsumer.send_tournaments()
 
 	async def launchTournament(self):
+
 		self.launch = True
 		await self.start_match(self.players[0].id, self.players[1].id, "m2")
 		await self.start_match(self.players[2].id, self.players[3].id, "m3")
 
 	async def start_match(self, p1_id, p2_id, local_match_id):
+
 		print(f"STARTMATCH p1 {p1_id} p2 {p2_id}, localmt {local_match_id}", flush=True)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
@@ -68,6 +73,7 @@ class Tournament():
 
 
 	async def match_result(self, match_id, winner_id, looser_id):
+
 		print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
 		self.n_match += 1
 		match = next(
@@ -98,9 +104,9 @@ class Tournament():
 			print(f"THE FINAL WINNER IS :{winner_id}", flush=True)
 			await self.send_match_result(match_result)
 			self.launch = False
-
 		
 	async def send_link_match(self, link_match):
+
 		print(f"SENDLINKMATCH {link_match}", flush=True)	
 		from tournament_app.services.tournament_consumer import players
 		for player in players:
@@ -108,6 +114,7 @@ class Tournament():
 			await player.send(text_data=json.dumps(link_match))
 
 	async def send_match_result(self, match_result):
+
 		print(f"SENDMATCHRESULT {match_result}", flush=True)
 		from tournament_app.services.tournament_consumer import players
 		for player in players:
@@ -115,6 +122,7 @@ class Tournament():
 			await player.send(text_data=json.dumps(match_result))
 
 	async def match_players_update(self, match_update):
+
 		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)
 		match = next(
 			(m for m in self.matchs
@@ -129,7 +137,8 @@ class Tournament():
 			match['matchPlayersUpdate'] = match_update
 			await self.send_match_players_update()
 
-	async def send_match_players_update(self):		
+	async def send_match_players_update(self):	
+			
 		from tournament_app.services.tournament_consumer \
 			import TournamentConsumer
 		await TournamentConsumer.send_matchs_players_update()

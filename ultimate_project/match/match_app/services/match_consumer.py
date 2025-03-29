@@ -10,6 +10,7 @@ players = []
 class MatchConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
+		
 		print(f"liste des joueurs MATCHs: {players}", flush=True)
 		self.matchId = self.scope["url_route"]["kwargs"]["matchId"]    
 		query_string = self.scope["query_string"].decode() 	
@@ -43,13 +44,15 @@ class MatchConsumer(AsyncWebsocketConsumer):
 		await self.send_players_update()	
 
 	async def disconnect(self, close_code):
+
 		print(f"DISCONNECTE selid {self.playerId} matchid {self.matchId}", flush=True)
 		global players
 		players[:] = [p for p in players if p['socket'] != self]
 		await asyncio.sleep(1)
 		await self.send_players_update()
 
-	async def receive(self, text_data):				
+	async def receive(self, text_data):
+
 		data = json.loads(text_data)	
 		for p in players: 
 			if p['socket'] == self:

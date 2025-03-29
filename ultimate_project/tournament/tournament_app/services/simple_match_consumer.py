@@ -10,6 +10,7 @@ matchs = []
 class SimpleConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
+		
 		await self.accept() 
 		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
 		players[:] = [p for p in players if p.get('playerId') != self.id]
@@ -21,6 +22,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		await SimpleConsumer.send_list('match', matchs)
 
 	async def disconnect(self, close_code):
+
 		global selfPlayers
 		global players
 		player = next(
@@ -36,14 +38,16 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		await SimpleConsumer.send_list('player', players)
 
 	@staticmethod
-	async def send_list(message_type, source):		
+	async def send_list(message_type, source):	
+
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": message_type + "List",			
 				message_type + "s": source
 			}))
 
-	async def receive(self, text_data):		
+	async def receive(self, text_data):	
+
 		data = json.loads(text_data)
 		match data:
 			case {"type": "playerClick", "selectedId": selectedId}:
@@ -82,6 +86,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			selfSelectedPlayer, selectedPlayer,	applicantPlayer)
 
 	async def self_invitation(self, selectedId, selectedPlayer):
+
 		if selectedId == self.id:
 			selectedPlayer['busy'] = -selectedId
 			match_id = await self.start_match(-selectedId)
@@ -92,7 +97,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			return True
 		return False
 
-	async def send_back(self, response):		
+	async def send_back(self, response):	
+
 		await self.send(text_data=json.dumps({
 			"type": "invitation",
 			"subtype": "back",
@@ -117,12 +123,14 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		return False
 
 	def is_busy_with(self, player1, player2_id):
+
 		if player1 and player1.get('busy') \
 			and player1.get('busy') == player2_id:
 			return True
 		return False
 
-	async def send_cancel(self, targetId, target):		
+	async def send_cancel(self, targetId, target):
+
 		await target.send(text_data=json.dumps({
 			"type": "invitation",
 			"subtype": "cancel",
@@ -178,6 +186,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		}))
 
 	async def start_match(self, applicantId):
+
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
     				f"http://match:8002/match/new-match/"
