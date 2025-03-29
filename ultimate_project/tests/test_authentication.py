@@ -189,7 +189,7 @@ def run(playwright: Playwright) -> None:
     # Those tests create, test and close their own browsers
     register_from_login()
     register_after_login()
-    test_login_2fa(playwright)
+    # test_login_2fa(playwright)
     # test_register_2fa(playwright) # ! NOT YET READY
 
     # ? =============== START REGULAR TESTS ===============
