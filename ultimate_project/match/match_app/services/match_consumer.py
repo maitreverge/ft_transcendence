@@ -10,34 +10,20 @@ players = []
 class MatchConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
-		
-		print(f"liste des joueurs MATCHs: {players}", flush=True)
-		self.matchId = self.scope["url_route"]["kwargs"]["matchId"]    
+
+		print(f"CONNECT MATCH CONSUMER: {players}", flush=True)
 		query_string = self.scope["query_string"].decode() 	
 		params = urllib.parse.parse_qs(query_string)
-		self.playerId = int(params.get("playerId", [None])[0])
-		print(f"CONNECT plyid {self.playerId} matchid {self.matchId}", flush=True)
-		pong = next((p for p in pongs if p.id ==  self.matchId), None)
+		self.player_id = int(params.get("playerId", [None])[0])
+		self.match_id = self.scope["url_route"]["kwargs"]["matchId"]    
+		print(f"CMC p:{self.player_id} m:{self.match_id}", flush=True)	
 		await self.accept()
-		if pong and self.playerId < 0 \
-			and self.playerId not in pong.plyIds:
-			print(f"consumer match le joueur negatif nest pas ds la liste des joueurs {self.playerId}", flush=True)
+		if await self.filter_player(self.match_id, self.player_id):
 			await self.close(code=3000)
-			return
-		if pong is None:
-			print(f"MATCH NONE in cnsummermatch id {self.playerId}", flush=True)
-			await self.close(code=3000)
-			return
-		player = next(
-			(p for p in players if p.get('playerId') == self.playerId)
-			, None)
-		if player:
-			print(f"PLAYER YET EXIST selfid {self.playerId} pid {player.get('playerId')}", flush=True)
-			await self.close(code=3000)
-			return
+			return		
 		players.append({
-			'playerId': self.playerId,
-			'matchId': self.matchId,
+			'playerId': self.player_id,
+			'matchId': self.match_id,
 			'socket': self,
 			'dir': None
 		})
@@ -45,11 +31,29 @@ class MatchConsumer(AsyncWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 
-		print(f"DISCONNECTE selid {self.playerId} matchid {self.matchId}", flush=True)
+		print(f"DISCONNECT p:{self.player_id} m:{self.match_id}", flush=True)
 		global players
 		players[:] = [p for p in players if p['socket'] != self]
 		await asyncio.sleep(1)
 		await self.send_players_update()
+
+	async def filter_player(self, match_id, player_id):
+
+		pong = next((p for p in pongs if p.id == match_id), None)
+		if not pong:
+			print(f"MATCH DON'T EXIST p:{player_id} m:{match_id}", flush=True)			
+			return True
+		if pong and \
+			player_id < 0 and \
+			player_id not in pong.plyIds:
+			print(f"2ND PLAYER FILTERED p:{player_id} m:{match_id}", flush=True)			
+			return True
+		player = next(
+			(p for p in players if p.get('playerId') == player_id), None)
+		if player:
+			print(f"PLAYER YET EXIST p:{player_id} m:{match_id}", flush=True)			
+			return True
+		return False
 
 	async def receive(self, text_data):
 
@@ -64,10 +68,10 @@ class MatchConsumer(AsyncWebsocketConsumer):
 			async with session.post(
 				"http://tournament:8001/tournament/match-players-update/",
 				json={
-				"matchId": self.matchId,
+				"matchId": self.match_id,
 				"players": [{
 					key : value for key, value in p.items() if key == 'playerId'
-					} for p in players if p.get('matchId') == self.matchId				
+					} for p in players if p.get('matchId') == self.match_id				
 				]}) as resp:
 					if resp.status != 200 and resp.status != 201:
 						err = await resp.text()
