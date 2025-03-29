@@ -106,7 +106,7 @@ class Pong:
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)	
 		try:
-			self.myEventLoop.create_task(self.launch())
+			self.myEventLoop.create_task(self.launch_game())
 			self.myEventLoop.run_forever()
 			# self.myEventLoop.run_until_complete(self.launch())  
 		finally:
@@ -134,7 +134,52 @@ class Pong:
 	# 	self.myEventLoop.close() 
 	# 	print("in match after RUN", flush=True)
 
-	async def launch(self):
+
+
+	# def applyPadsCommands(self, player, pad_y):
+
+	# 	if self.player1.get("dir") is not None :
+	# 		if self.player1["dir"] == 'up':					
+	# 			self.yp1 = max(
+	# 				self.yp1 - self.pad_speed,
+	# 				(self.pad_height / 2)
+	# 			)							
+	# 		elif self.player1["dir"] == 'down':					
+	# 			self.yp1 = min(
+	# 				self.yp1 + self.pad_speed,
+	# 				100 - (self.pad_height / 2)
+	# 			)					
+	# 		self.player1["dir"] = None
+	# 	if self.player2.get("dir") is not None :
+	# 		if self.player2["dir"] == 'up':
+	# 			self.yp2 = max(
+	# 				self.yp2 - self.pad_speed,
+	# 				(self.pad_height / 2)
+	# 			)						
+	# 		elif self.player2["dir"] == 'down':
+	# 			self.yp2 = min(
+	# 				self.yp2 + self.pad_speed,
+	# 				 100 - (self.pad_height / 2)
+	# 			)					
+	# 		self.player2["dir"] = None
+
+	def applyPadCommand(self, player, pad_y):
+
+		if player.get("dir") is not None :
+			if player["dir"] == 'up':					
+				pad_y = max(
+					pad_y - self.pad_speed,
+					(self.pad_height / 2)
+				)							
+			elif player["dir"] == 'down':					
+				pad_y = min(
+					pad_y + self.pad_speed,
+					100 - (self.pad_height / 2)
+				)					
+			player["dir"] = None
+		return pad_y
+	
+	async def launch_game(self):
 		self.state = State.waiting
 		# self.sendTask = self.myEventLoop.create_task(self.sendState())
 		self.send_task = self.myEventLoop.create_task(self.sendState())
@@ -154,26 +199,28 @@ class Pong:
 				self.winner = None
 				self.start_flag = True
 				self.state = State.running
-				if self.player1.get("dir") is not None :
-					if self.player1["dir"] == 'up':
-						# if self.yp1 >= (self.pad_height / 2):
-						self.yp1 = max(self.yp1 - self.pad_speed, 0 + (self.pad_height / 2))
+				self.yp1 = self.applyPadCommand(self.player1, self.yp1)
+				self.yp2 = self.applyPadCommand(self.player2, self.yp2)
+				# if self.player1.get("dir") is not None :
+				# 	if self.player1["dir"] == 'up':
+				# 		# if self.yp1 >= (self.pad_height / 2):
+				# 		self.yp1 = max(self.yp1 - self.pad_speed, 0 + (self.pad_height / 2))
 							
-					elif self.player1["dir"] == 'down':
-						# if self.yp1 <= 100 - (self.pad_height / 2):
-						self.yp1 = min(self.yp1 + self.pad_speed, 100 - (self.pad_height / 2))
-							# self.yp1 += self.pad_speed
-					self.player1["dir"] = None
-				if  self.player2.get("dir") is not None :
-					if self.player2["dir"] == 'up':
-						self.yp2 = max(self.yp2 - self.pad_speed, 0 + (self.pad_height / 2))
-						# if self.yp2 >= (self.pad_height / 2):							
-							# self.yp2 -= self.pad_speed
-					elif self.player2["dir"] == 'down':
-						self.yp2 = min(self.yp2 + self.pad_speed, 100 - (self.pad_height / 2))
-						# if self.yp2 <= 100 - (self.pad_height / 2):
-							# self.yp2 += self.pad_speed
-					self.player2["dir"] = None
+				# 	elif self.player1["dir"] == 'down':
+				# 		# if self.yp1 <= 100 - (self.pad_height / 2):
+				# 		self.yp1 = min(self.yp1 + self.pad_speed, 100 - (self.pad_height / 2))
+				# 			# self.yp1 += self.pad_speed
+				# 	self.player1["dir"] = None
+				# if  self.player2.get("dir") is not None :
+				# 	if self.player2["dir"] == 'up':
+				# 		self.yp2 = max(self.yp2 - self.pad_speed, 0 + (self.pad_height / 2))
+				# 		# if self.yp2 >= (self.pad_height / 2):							
+				# 			# self.yp2 -= self.pad_speed
+				# 	elif self.player2["dir"] == 'down':
+				# 		self.yp2 = min(self.yp2 + self.pad_speed, 100 - (self.pad_height / 2))
+				# 		# if self.yp2 <= 100 - (self.pad_height / 2):
+				# 			# self.yp2 += self.pad_speed
+				# 	self.player2["dir"] = None
 
 				# self.ball[0] += self.vect[0]				
 				# self.ball[1] += self.vect[1]
