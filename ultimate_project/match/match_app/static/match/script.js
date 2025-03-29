@@ -565,7 +565,7 @@ function animateZ(pads) {
 //     }
 // }
 
-function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
+function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	match = document.getElementById("match");
 	
 	// console.log("SERVEUR");
@@ -575,7 +575,7 @@ function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
 	if (data.state == "end")
 	{	
 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
-		end.classList.add("end");
+		endCont.classList.add("end-cont");
 	}
 	if (waitingState[0] != data.state) 
 	{
@@ -685,12 +685,14 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("score"),
 		document.getElementById("ball2")
 	];
-	const [waiting, end] = [		
-		document.getElementById("waiting"),	document.getElementById("end")];	
+	const [waiting, endCont, end] = [		
+		document.getElementById("waiting"),
+		document.getElementById("end-cont"),
+		document.getElementById("end")];	
 	let waitingState = ["waiting"];
 	requestAnimationFrame(()=>animate(pads));
 	socket.onmessage = event => onMatchWsMessage(
-		event, pads, [waiting, end], waitingState);
+		event, pads, [waiting, endCont, end], waitingState);
 	
 	const spec = document.getElementById("spec")
 	if (spec)

@@ -10,7 +10,7 @@ players = []
 class MyConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
-
+		print(f"liste des joueurs MATCHs: {players}", flush=True)
 		self.matchId = self.scope["url_route"]["kwargs"]["matchId"]    
 		query_string = self.scope["query_string"].decode() 	
 		params = urllib.parse.parse_qs(query_string)
@@ -20,10 +20,11 @@ class MyConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 		if pong and self.playerId < 0 \
 			and self.playerId not in (pong.idP1, pong.idP2):
+			print(f"consumer match le joueur negatif nest pas ds la liste des joueurs {self.playerId}", flush=True)
 			await self.close(code=3000)
 			return
 		if pong is None:
-			print(f"MATCH NONE id {self.playerId}", flush=True)
+			print(f"MATCH NONE in cnsummermatch id {self.playerId}", flush=True)
 			await self.close(code=3000)
 			return
 		player = next(

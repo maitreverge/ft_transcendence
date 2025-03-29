@@ -27,7 +27,7 @@ class Pong:
 		self.yp2 = self.pad_height / 2
 		self.pad_width = 10
 		self.winner = None
-		self.max_delay = 30
+		self.max_delay = 15
 		self.send_task = None
 		self.watch_task = None
 		self.ball = [25, 5]
@@ -108,7 +108,7 @@ class Pong:
 		try:
 			self.myEventLoop.run_until_complete(self.launch())  
 		finally:
-			time.sleep(2)			
+			time.sleep(8)			
 			tasks = [
 				t for t in asyncio.all_tasks(self.myEventLoop) if not t.done()]
 			for task in tasks:
@@ -507,6 +507,7 @@ class Pong:
 				"p2Id": self.idP2,
 				"score": self.score
 			}) as response:
+				print(f"RESPONSE HTTP {response.status}", flush=True)
 				if response.status != 200 and response.status != 201:
 					err = await response.text()
 					print(f"Error HTTP {response.status}: {err}", flush=True)

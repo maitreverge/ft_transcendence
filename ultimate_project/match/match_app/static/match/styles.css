@@ -32,16 +32,24 @@
 }
 
 #match {
-	position: relative;
-	width:100%;
-	height:100%;	
+	position: absolute;
+	top:0;
+	left:0;
+	width:100vw;
+	height:100vh;	
 	background-color: rgb(50, 92, 87);
+	overflow: hidden;
 }
 
 #waiting {
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform: translate(-50%, -50%);
+
 	display:block;
-	width:80%;
-	height:80%;
+	width:fit-content;
+	height:fit-content;
 	background-color: rgb(244, 37, 22);
 }
 
@@ -49,11 +57,21 @@
 	display:none !important;
 }
 
-.end {
-	display:block !important;
-	width:80%;
-	height:80%;
+#end-cont {	
+	width:100%;
+	height:100%;
 	background-color: rgb(244, 118, 22);
+}
+
+.end-cont {
+	display:block !important;	
+}
+
+#end {
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform: translate(-50%, -50%);
 }
 
 #ball {
