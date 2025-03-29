@@ -6,16 +6,16 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 
 pongs = []
 
-
 def new_match(request: HttpRequest):
+    
     pong = Pong(int(request.GET.get("p1")), int(request.GET.get("p2")))
     pongs.append(pong)
     return JsonResponse({"matchId": pong.id}, status=201)
 
-
-def enter_match(request: HttpRequest):
-    client_host = request.get_host().split(":")[0]  # Récupère l'IP ou le domaine sans le port
-
+def enter_match2d(request: HttpRequest):
+    
+    client_host = request.get_host().split(":")[0]
+    
     if client_host in ["127.0.0.1", "localhost"]:
         pidom = "localhost:8443"
     else:
@@ -31,7 +31,6 @@ def enter_match(request: HttpRequest):
         },
     )
 
-
 def enter_match3d(request: HttpRequest):
 
     return render(
@@ -45,7 +44,6 @@ def enter_match3d(request: HttpRequest):
         },
     )
 
-
 async def stop_match(request: HttpRequest, playerId, matchId):
 
     for p in pongs:
@@ -53,11 +51,11 @@ async def stop_match(request: HttpRequest, playerId, matchId):
             if await p.stop(playerId):
                 return JsonResponse({"status": "succes"})
             else:
-                return JsonResponse({"status": "fail"}, status=200)
-    return JsonResponse({"status": "not authorized"}, status=200)
-
+                return JsonResponse({"status": "fail"}, status=400)
+    return JsonResponse({"status": "not authorized"}, status=400)
 
 def del_pong(pong_id):
+    
     print("DEL PONG {pong_id}", flush=True)
     print(pongs, flush=True)
     pongs[:] = [p for p in pongs if p.id != pong_id]
