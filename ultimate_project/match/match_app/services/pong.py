@@ -7,6 +7,7 @@ import aiohttp
 from enum import Enum
 import math
 import requests
+import operator as op
 
 class State(Enum):
 	waiting = "waiting"
@@ -20,19 +21,22 @@ class Pong:
 		# pongs.append(self)
 		Pong.id += 1
 		self.id = Pong.id
-		self.idP1 = idP1
-		self.idP2 = idP2
+		# self.idP1 = idP1
+		# self.idP2 = idP2
+		self.plyIds = [idP1, idP2]
 		self.pad_height = 40
-		self.yp1 = self.pad_height / 2
-		self.yp2 = self.pad_height / 2
+	
+		# self.pads_y[0]
+		self.pads_y = [self.pad_height / 2, self.pad_height / 2]
 		self.pad_width = 10
 		self.winner = None
 		self.max_delay = 15
 		self.send_task = None
 		self.watch_task = None
-		self.ball = [25, 5]
-		self.rst = [1, 1]
-		self.vect = self.rst.copy()
+		self.ball_rst = [25, 5]
+		self.ball = self.ball_rst.copy()
+		self.vect_rst = [1, 1]
+		self.vect = self.vect_rst.copy()
 		self.score = [0, 0]
 		self.mag = None
 		self.has_wall = False
@@ -60,7 +64,7 @@ class Pong:
 
 	async def stop(self, playerId):
 
-		if playerId in (self.idP1, self.idP2): 	
+		if playerId in self.plyIds: 	
 			print(f"le player est bien autorise a fermer le match", flush=True)
 			# self.sendTask.cancel()
 			# try:
@@ -69,11 +73,11 @@ class Pong:
 			# 	print("Tâche annulée avec succès")	 
 			self.state = State.end
 			if self.winner is None and self.start_flag:
-				self.winner = self.idP1	if playerId == self.idP2 \
-					else self.idP2
+				self.winner = self.plyIds[0] \
+					if playerId == self.plyIds[1] else self.plyIds[1]
 			if self.winner is None and not self.start_flag:
-				self.winner = self.idP1	if playerId == self.idP2 \
-					else self.idP2
+				self.winner = self.plyIds[0] \
+					if playerId == self.plyIds[1] else self.plyIds[1]
 			# asyncio.run_coroutine_threadsafe(self.stop_tasks, self.myEventLoop)
 			await self.sendFinalState()
 			return True
@@ -140,39 +144,65 @@ class Pong:
 
 	# 	if self.player1.get("dir") is not None :
 	# 		if self.player1["dir"] == 'up':					
-	# 			self.yp1 = max(
-	# 				self.yp1 - self.pad_speed,
+	# 			self.pads_y[0] = max(
+	# 				self.pads_y[0] - self.pad_speed,
 	# 				(self.pad_height / 2)
 	# 			)							
 	# 		elif self.player1["dir"] == 'down':					
-	# 			self.yp1 = min(
-	# 				self.yp1 + self.pad_speed,
+	# 			self.pads_y[0] = min(
+	# 				self.pads_y[0] + self.pad_speed,
 	# 				100 - (self.pad_height / 2)
 	# 			)					
 	# 		self.player1["dir"] = None
 	# 	if self.player2.get("dir") is not None :
 	# 		if self.player2["dir"] == 'up':
-	# 			self.yp2 = max(
-	# 				self.yp2 - self.pad_speed,
+	# 			self.pads_y[1] = max(
+	# 				self.pads_y[1] - self.pad_speed,
 	# 				(self.pad_height / 2)
 	# 			)						
 	# 		elif self.player2["dir"] == 'down':
-	# 			self.yp2 = min(
-	# 				self.yp2 + self.pad_speed,
+	# 			self.pads_y[1] = min(
+	# 				self.pads_y[1] + self.pad_speed,
 	# 				 100 - (self.pad_height / 2)
 	# 			)					
 	# 		self.player2["dir"] = None
 
-	def applyPadCommand(self, player, pad_y):
+	def applyPadCommand(self, player, pad_index):
 
 		if player.get("dir") is not None :
 			if player["dir"] == 'up':					
-				pad_y = max(pad_y - self.pad_speed,	(self.pad_height / 2))							
+				self.pads_y[pad_index] = max(
+					self.pads_y[pad_index] - self.pad_speed,
+					(self.pad_height / 2)
+				)							
 			elif player["dir"] == 'down':					
-				pad_y = min(pad_y + self.pad_speed,	100 - (self.pad_height / 2))					
+				self.pads_y[pad_index] = min(
+					self.pads_y[pad_index] + self.pad_speed,
+					100 - (self.pad_height / 2)
+				)					
 			player["dir"] = None
-		return pad_y
-	
+			
+	# async def score_point(self, cmp):
+
+	# 	if self.ball[0] >= 100:
+	# 		self.score[0] += 1
+	# 		self.ball = self.ball_rst
+	# 		self.vect = self.vect_rst.copy()
+	# 		await asyncio.sleep(1)
+	# 	if self.ball[0] <= 0:
+	# 		self.score[1] += 1
+	# 		self.ball = self.ball_rst
+	# 		self.vect = self.vect_rst.copy()
+	# 		await asyncio.sleep(1)
+
+	async def score_point(self, cmp, limit, score_index):
+
+		if cmp(self.ball[0], limit):
+			self.score[score_index] += 1
+			self.ball = self.ball_rst.copy()
+			self.vect = self.vect_rst.copy()
+			await asyncio.sleep(1)
+
 	async def launch_game(self):
 		self.state = State.waiting
 		# self.sendTask = self.myEventLoop.create_task(self.sendState())
@@ -184,78 +214,28 @@ class Pong:
 			self.myplayers = [p for p in consumer.players
 				if self.id == p["matchId"]]
 			self.player1 = next(
-				(p for p in self.myplayers if self.idP1 == p["playerId"]), None)
+				(p for p in self.myplayers if self.plyIds[0] == p["playerId"]), None)
 			self.player2 = next(
-				(p for p in self.myplayers if self.idP2 == p["playerId"]), None)
+				(p for p in self.myplayers if self.plyIds[1] == p["playerId"]), None)
 
 			if None not in (self.player1, self.player2):
 			
 				self.winner = None
 				self.start_flag = True
 				self.state = State.running
-				self.yp1 = self.applyPadCommand(self.player1, self.yp1)
-				self.yp2 = self.applyPadCommand(self.player2, self.yp2)
-				# if self.player1.get("dir") is not None :
-				# 	if self.player1["dir"] == 'up':
-				# 		# if self.yp1 >= (self.pad_height / 2):
-				# 		self.yp1 = max(self.yp1 - self.pad_speed, 0 + (self.pad_height / 2))
-							
-				# 	elif self.player1["dir"] == 'down':
-				# 		# if self.yp1 <= 100 - (self.pad_height / 2):
-				# 		self.yp1 = min(self.yp1 + self.pad_speed, 100 - (self.pad_height / 2))
-				# 			# self.yp1 += self.pad_speed
-				# 	self.player1["dir"] = None
-				# if  self.player2.get("dir") is not None :
-				# 	if self.player2["dir"] == 'up':
-				# 		self.yp2 = max(self.yp2 - self.pad_speed, 0 + (self.pad_height / 2))
-				# 		# if self.yp2 >= (self.pad_height / 2):							
-				# 			# self.yp2 -= self.pad_speed
-				# 	elif self.player2["dir"] == 'down':
-				# 		self.yp2 = min(self.yp2 + self.pad_speed, 100 - (self.pad_height / 2))
-				# 		# if self.yp2 <= 100 - (self.pad_height / 2):
-				# 			# self.yp2 += self.pad_speed
-				# 	self.player2["dir"] = None
 
-				# self.ball[0] += self.vect[0]				
-				# self.ball[1] += self.vect[1]
-			
-				# if self.ball[0] >= 100:
-				# 	self.vect[0] = -self.vect[0]
-				# if self.ball[0] == 0 :
-				# 	self.vect[0] = -self.vect[0]
+				self.applyPadCommand(self.player1, pad_index=0)
+				self.applyPadCommand(self.player2, pad_index=1)			
 
-# bord haut et bas
-				
-				# 	self.vect[1] = -self.vect[1]
-				# 	self.ball[1] = 38
-				# # if self.ball[1] >= 98:
-				# # 	self.vect[1] = -self.vect[1]
-				# # 	self.ball[1] = 98
-			
-				# 	self.ball[1] = 0
-				# 	self.vect[1] = -self.vect[1]
-			
-				# if self.ball[1] > 100:
-				# 	self.ball[1] = 99
-				# if self.ball[1] < 0:
-				# 	self.ball[1] = 1
-
+				await self.score_point(op.ge, limit=100, score_index=0)
+				await self.score_point(op.le, limit=0, score_index=1)
 # bord droit et gauche
-				if self.ball[0] >= 100:
-					self.score[0] += 1
-					self.ball = [50, 50]
-					self.vect = self.rst.copy()
-					await asyncio.sleep(1)
-				if self.ball[0] <= 0:
-					self.score[1] += 1
-					self.ball = [50, 50]
-					self.vect = self.rst.copy()
-					await asyncio.sleep(1)
+		
 							
 				if ((self.ball[0] + self.vect[0]) <= 16) and \
-					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.yp1 - (self.pad_height / 2)), (16, self.yp1 + (self.pad_height / 2))):
+					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
 
-					# (self.yp1 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp1 + (self.pad_height / 2)):
+					# (self.pads_y[0] - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.pads_y[0] + (self.pad_height / 2)):
 				
 					new_vect = [0, 0]
 					new_vect[0] = 16 - self.ball[0]
@@ -270,7 +250,7 @@ class Pong:
 					await asyncio.sleep(0.05)					
 					# self.has_wall = False
 					mag = self.get_magnitude(self.vect) 				
-					y = (self.ball[1] - self.yp1) / (self.pad_height / 2) 
+					y = (self.ball[1] - self.pads_y[0]) / (self.pad_height / 2) 
 					y = y * mag
 					y = max(min(y, 0.9), -0.9)
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
@@ -285,8 +265,8 @@ class Pong:
 					self.flag = False
 								
 				if  (self.ball[0] + self.vect[0] >= 84) and \
-					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.yp2 - (self.pad_height / 2)), (84, self.yp2 + (self.pad_height / 2))):
-						# (self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
+					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
+						# (self.pads_y[1] - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.pads_y[1] + (self.pad_height / 2)):			
 					
 					new_vect = [0, 0]
 					new_vect[0] = 84 - self.ball[0]
@@ -302,7 +282,7 @@ class Pong:
 					await asyncio.sleep(0.05)
 					# self.has_wall = False				
 					mag = self.get_magnitude(self.vect) 					
-					y = (self.ball[1] - self.yp2) / (self.pad_height / 2) 
+					y = (self.ball[1] - self.pads_y[1]) / (self.pad_height / 2) 
 					y = y * mag
 					y = max(min(y, 0.9), -0.9)
 					x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
@@ -327,17 +307,17 @@ class Pong:
 			else:
 				if self.start_flag:
 					if self.player1:
-						self.winner = self.idP1 
+						self.winner = self.plyIds[0]
 					elif self.player2:
-						self.winner = self.idP2
+						self.winner = self.plyIds[1]
 				self.state = State.waiting
 						
 			if self.max_score == self.score[0]: 
-				self.winner = self.idP1
+				self.winner = self.plyIds[0]
 				self.state = State.end
 				await self.sendFinalState()
 			if self.max_score == self.score[1]:
-				self.winner = self.idP2
+				self.winner = self.plyIds[1]
 				self.state = State.end
 				await self.sendFinalState()
 						
@@ -379,7 +359,7 @@ class Pong:
 	def get_left_bounce_vect(self, left_y):
 		bounce_vect = None
 		if ((self.ball[0] + self.vect[0]) <= left_y) and \
-			(self.yp1 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp1 + (self.pad_height / 2)):
+			(self.pads_y[0] - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.pads_y[0] + (self.pad_height / 2)):
 		
 			bounce_vect = [0, 0]
 			bounce_vect[0] = left_y - self.ball[0]
@@ -389,9 +369,9 @@ class Pong:
 	def get_right_bounce_vect(self, right_y):
 		bounce_vect = None
 		if  (self.ball[0] + self.vect[0] >= right_y) and \
-			self.segments_intersect(self.vect[0], self.vect[1], self.yp2 - (self.pad_height / 2), self.yp2 + (self.pad_height / 2)):
+			self.segments_intersect(self.vect[0], self.vect[1], self.pads_y[1] - (self.pad_height / 2), self.pads_y[1] + (self.pad_height / 2)):
 
-			# (self.yp2 - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.yp2 + (self.pad_height / 2)):			
+			# (self.pads_y[1] - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.pads_y[1] + (self.pad_height / 2)):			
 				
 			bounce_vect = [0, 0]
 			bounce_vect[0] = right_y - self.ball[0]
@@ -417,10 +397,10 @@ class Pong:
 	async def top_bounce(self, top_y):
 		
 		if  (self.ball[0] + self.vect[0] >= 84) and \
-			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.yp2 - (self.pad_height / 2)), (84, self.yp2 + (self.pad_height / 2))):
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
 			return 		
 		if ((self.ball[0] + self.vect[0]) <= 16) and \
-			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.yp1 - (self.pad_height / 2)), (16, self.yp1 + (self.pad_height / 2))):
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
 			return 
 		if self.ball[1] + self.vect[1] <= top_y :
 			bounce_vect = [0, 0]
@@ -440,10 +420,10 @@ class Pong:
 	async def bot_bounce(self, bot_y):
 
 		if  (self.ball[0] + self.vect[0] >= 84) and \
-			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.yp2 - (self.pad_height / 2)), (84, self.yp2 + (self.pad_height / 2))):
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
 			return 		
 		if ((self.ball[0] + self.vect[0]) <= 16) and \
-			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.yp1 - (self.pad_height / 2)), (16, self.yp1 + (self.pad_height / 2))):
+			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
 			return 
 		if self.ball[1] + self.vect[1] >= bot_y:					
 			bounce_vect = [0, 0]
@@ -483,7 +463,7 @@ class Pong:
 				delay = 0
 			if (delay > self.max_delay):
 				print(f"stopped by wathdog", flush=True)
-				await self.stop(self.idP1)
+				await self.stop(self.plyIds[0])
 				return
 			delay += 1
 			await asyncio.sleep(1.00)
@@ -499,8 +479,8 @@ class Pong:
 					try:												
 						await p["socket"].send(text_data=json.dumps({
 							"state": state.name,
-							"yp1": self.yp1,
-							"yp2": self.yp2,
+							"yp1": self.pads_y[0],
+							"yp2": self.pads_y[1],
 							"ball": self.ball,
 							"score": self.score,
 							"hasWall": self.has_wall
@@ -544,10 +524,10 @@ class Pong:
 				"http://tournament:8001/tournament/match-result/", json={
 				"matchId": self.id,
 				"winnerId": self.winner,
-				"looserId": self.idP1 if self.winner == self.idP2
-					else self.idP2,
-				"p1Id": self.idP1,
-				"p2Id": self.idP2,
+				"looserId": self.plyIds[0] if self.winner == self.plyIds[1]
+					else self.plyIds[1],
+				"p1Id": self.plyIds[0],
+				"p2Id": self.plyIds[1],
 				"score": self.score
 			}) as response:
 				print(f"RESPONSE HTTP {response.status}", flush=True)

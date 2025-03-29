@@ -19,7 +19,7 @@ class MyConsumer(AsyncWebsocketConsumer):
 		pong = next((p for p in pongs if p.id ==  self.matchId), None)
 		await self.accept()
 		if pong and self.playerId < 0 \
-			and self.playerId not in (pong.idP1, pong.idP2):
+			and self.playerId not in pong.plyIds:
 			print(f"consumer match le joueur negatif nest pas ds la liste des joueurs {self.playerId}", flush=True)
 			await self.close(code=3000)
 			return
