@@ -44,7 +44,7 @@ class Tournament():
 
 	async def start_match(self, p1_id, p2_id, local_match_id):
 
-		print(f"STARTMATCH p1 {p1_id} p2 {p2_id}, localmt {local_match_id}", flush=True)
+		print(f"START MATCH p1:{p1_id} p2:{p2_id} lmt:{local_match_id}", flush=True)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
     				f"http://match:8002/match/new-match/?p1={p1_id}&p2={p2_id}"
@@ -138,7 +138,7 @@ class Tournament():
 			await self.send_match_players_update()
 
 	async def send_match_players_update(self):	
-			
+
 		from tournament_app.services.tournament_consumer \
 			import TournamentConsumer
 		await TournamentConsumer.send_matchs_players_update()
