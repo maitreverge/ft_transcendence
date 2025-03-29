@@ -5,9 +5,9 @@ import asyncio
 import json
 import aiohttp
 from enum import Enum
-import math
 import requests
 import operator as op
+import match_app.services.pong_physics as physics
 
 class State(Enum):
 	waiting = "waiting"
@@ -17,6 +17,7 @@ class State(Enum):
 class Pong:
 
 	id = 0
+
 	def __init__(self, idP1, idP2):
 
 		Pong.id += 1
@@ -121,6 +122,40 @@ class Pong:
 			self.myEventLoop.close()
 			print(f"Event loop fermé proprement pour match {self.id}", flush=True)
 
+	async def launch_game(self):
+		
+		self.state = State.waiting
+		self.start_flag = False
+		# self.sendTask = self.myEventLoop.create_task(self.sendState())
+		self.send_task = self.myEventLoop.create_task(self.sendState())
+		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
+
+		while self.state in (State.running, State.waiting):		
+			self.has_wall = False
+			self.flag = True
+			self.users = [p for p in consumer.players
+				if self.id == p["matchId"]]
+			players = [ next(
+				(p for p in self.users if self.plyIds[0] == p["playerId"]),
+				None), next(
+				(p for p in self.users if self.plyIds[1] == p["playerId"]),
+				None)
+			]
+			if None not in players:			
+				self.state = State.running
+				self.winner = None
+				self.start_flag = True
+							
+				self.pad_commands(players)		
+				await self.scores()
+				await self.bounces()										
+				self.move_ball()						
+			else:
+				self.set_waiting_state(players)
+							
+			await asyncio.sleep(0.05)
+
+		print(f"in match after WHILE id:{self.id}", flush=True)
 	# def launchTask(self):
 	# 	self.start_flag = False
 	# 	self.myEventLoop = asyncio.new_event_loop()
@@ -176,109 +211,110 @@ class Pong:
 			self.state = State.end
 			await self.sendFinalState()
 	
-	async def bounces(self):
+	# async def bounces(self):
 
-		await self.horz_bounce(op.le, limit=16, pad_y_idx=0, dir=+1)
-		await self.horz_bounce(op.ge, limit=84, pad_y_idx=1, dir=-1)
-		await self.vert_bounce(op.le, limit=1)
-		await self.vert_bounce(op.ge, limit=99)
+	# 	await self.horz_bounce(op.le, limit=16, pad_y_idx=0, dir=+1)
+	# 	await self.horz_bounce(op.ge, limit=84, pad_y_idx=1, dir=-1)
+	# 	await self.vert_bounce(op.le, limit=1)
+	# 	await self.vert_bounce(op.ge, limit=99)
 		
-	async def vert_bounce(self, cmp, limit):
+	# async def vert_bounce(self, cmp, limit):
 		
-		if self.are_pads_intersecting():
-			return
-		if cmp(self.ball[1] + self.vect[1], limit) :
-			bounce_vect = [0, 0]
-			bounce_vect[1] = limit - self.ball[1]
-			bounce_vect[0] = self.scale_vector(
-				bounce_vect[1], self.vect[0], self.vect[1])		
-			self.ball[0] += bounce_vect[0]				
-			self.ball[1] += bounce_vect[1]
-			self.has_wall = True
-			await asyncio.sleep(0.05)	
-			self.vect[1] = -self.vect[1]		
-			self.flag = False
+	# 	if self.are_pads_intersecting():
+	# 		return
+	# 	if cmp(self.ball[1] + self.vect[1], limit) :
+	# 		bounce_vect = [0, 0]
+	# 		bounce_vect[1] = limit - self.ball[1]
+	# 		bounce_vect[0] = self.scale_vector(
+	# 			bounce_vect[1], self.vect[0], self.vect[1])		
+	# 		self.ball[0] += bounce_vect[0]				
+	# 		self.ball[1] += bounce_vect[1]
+	# 		self.has_wall = True
+	# 		await asyncio.sleep(0.05)	
+	# 		self.vect[1] = -self.vect[1]		
+	# 		self.flag = False
 			
-	async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
+	# async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
-		if self.is_pad_intersecting(cmp, limit, pad_y_idx):			
-			new_vect = [0, 0]
-			new_vect[0] = limit - self.ball[0]
-			new_vect[1] = self.scale_vector(
-				new_vect[0], self.vect[1], self.vect[0])
-			self.ball[0] += new_vect[0]				
-			self.ball[1] += new_vect[1]
-			self.has_wall = True
-			await asyncio.sleep(0.05)				
+	# 	if self.is_pad_intersecting(cmp, limit, pad_y_idx):			
+	# 		new_vect = [0, 0]
+	# 		new_vect[0] = limit - self.ball[0]
+	# 		new_vect[1] = self.scale_vector(
+	# 			new_vect[0], self.vect[1], self.vect[0])
+	# 		self.ball[0] += new_vect[0]				
+	# 		self.ball[1] += new_vect[1]
+	# 		self.has_wall = True
+	# 		await asyncio.sleep(0.05)				
 	
-			mag = self.get_magnitude(self.vect) 				
-			y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
-			y = y * mag
-			y = max(min(y, 0.9), -0.9)
-			x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
-			x = math.sqrt(abs(x))	
+	# 		mag = self.get_magnitude(self.vect) 				
+	# 		y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
+	# 		y = y * mag
+	# 		y = max(min(y, 0.9), -0.9)
+	# 		x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
+	# 		x = math.sqrt(abs(x))	
 
-			scl = 1
-			if abs(self.vect[0]) < self.max_speed and \
-				abs(self.vect[1]) < self.max_speed:
-				scl = self.acceleration
-			self.vect[0] = scl * x * dir
-			self.vect[1] = scl * y 
+	# 		scl = 1
+	# 		if abs(self.vect[0]) < self.max_speed and \
+	# 			abs(self.vect[1]) < self.max_speed:
+	# 			scl = self.acceleration
+	# 		self.vect[0] = scl * x * dir
+	# 		self.vect[1] = scl * y 
 					
-			self.flag = False
+	# 		self.flag = False
 		
-	def are_pads_intersecting(self):
+	# def are_pads_intersecting(self):
 
-		return \
-			self.is_pad_intersecting(op.ge, limit=84, pad_y_idx=1) or \
-			self.is_pad_intersecting(op.le, limit=16, pad_y_idx=0)
+	# 	return \
+	# 		self.is_pad_intersecting(op.ge, limit=84, pad_y_idx=1) or \
+	# 		self.is_pad_intersecting(op.le, limit=16, pad_y_idx=0)
 
-	def is_pad_intersecting(self, cmp, limit, pad_y_idx):
+	# def is_pad_intersecting(self, cmp, limit, pad_y_idx):
 
-		return cmp(self.ball[0] + self.vect[0], limit) and \
-			self.segments_intersect(
-				(self.ball[0], self.ball[1]),
-				(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
-				(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
-				(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
+	# 	return cmp(self.ball[0] + self.vect[0], limit) and \
+	# 		self.segments_intersect(
+	# 			(self.ball[0], self.ball[1]),
+	# 			(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
+	# 			(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
+	# 			(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
 		
-	def segments_intersect(self, A, B, C, D, epsilon=1e-9):
-		def orientation(p, q, r):
-			# Déterminant orienté
-			val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
-			if abs(val) < epsilon:
-				return 0  # colinéaire
-			return 1 if val > 0 else 2  # 1: horaire, 2: anti-horaire
+	# def segments_intersect(self, A, B, C, D, eps=1e-9):
 
-		def on_segment(p, q, r):
-			# Vérifie si q est sur le segment [p, r]
-			return (
-				min(p[0], r[0]) - epsilon <= q[0] <= max(p[0], r[0]) + epsilon and
-				min(p[1], r[1]) - epsilon <= q[1] <= max(p[1], r[1]) + epsilon
-			)
+	# 	def orientation(p, q, r):
+	# 		# Déterminant orienté
+	# 		val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+	# 		if abs(val) < eps:
+	# 			return 0  # colinéaire
+	# 		return 1 if val > 0 else 2  # 1: horaire, 2: anti-horaire
 
-		o1 = orientation(A, B, C)
-		o2 = orientation(A, B, D)
-		o3 = orientation(C, D, A)
-		o4 = orientation(C, D, B)
+	# 	def on_segment(p, q, r):
+	# 		# Vérifie si q est sur le segment [p, r]
+	# 		return (
+	# 			min(p[0], r[0]) - eps <= q[0] <= max(p[0], r[0]) + eps and
+	# 			min(p[1], r[1]) - eps <= q[1] <= max(p[1], r[1]) + eps
+	# 		)
 
-		# Cas général
-		if o1 != o2 and o3 != o4:
-			return True
+	# 	o1 = orientation(A, B, C)
+	# 	o2 = orientation(A, B, D)
+	# 	o3 = orientation(C, D, A)
+	# 	o4 = orientation(C, D, B)
 
-		# Cas particuliers (colinéaires)
-		if o1 == 0 and on_segment(A, C, B): return True
-		if o2 == 0 and on_segment(A, D, B): return True
-		if o3 == 0 and on_segment(C, A, D): return True
-		if o4 == 0 and on_segment(C, B, D): return True
+	# 	# Cas général
+	# 	if o1 != o2 and o3 != o4:
+	# 		return True
 
-		return False
+	# 	# Cas particuliers (colinéaires)
+	# 	if o1 == 0 and on_segment(A, C, B): return True
+	# 	if o2 == 0 and on_segment(A, D, B): return True
+	# 	if o3 == 0 and on_segment(C, A, D): return True
+	# 	if o4 == 0 and on_segment(C, B, D): return True
 
-	def scale_vector(self, m1, m2, div):
-		return m1 * m2 / div
+	# 	return False
+
+	# def scale_vector(self, m1, m2, div):
+	# 	return m1 * m2 / div
 	
-	def get_magnitude(self, vect):
-		return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
+	# def get_magnitude(self, vect):
+	# 	return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
 	
 	def move_ball(self):
 
@@ -294,43 +330,6 @@ class Pong:
 			elif players[1]:
 				self.winner = self.plyIds[1]
 		self.state = State.waiting
-
-	async def launch_game(self):
-		
-		self.state = State.waiting
-		self.start_flag = False
-		# self.sendTask = self.myEventLoop.create_task(self.sendState())
-		self.send_task = self.myEventLoop.create_task(self.sendState())
-		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
-
-		while self.state in (State.running, State.waiting):		
-			self.has_wall = False
-			self.flag = True
-			self.users = [p for p in consumer.players
-				if self.id == p["matchId"]]
-			players = [ next(
-				(p for p in self.users if self.plyIds[0] == p["playerId"]),
-				None), next(
-				(p for p in self.users if self.plyIds[1] == p["playerId"]),
-				None)
-			]
-			if None not in players:			
-				self.state = State.running
-				self.winner = None
-				self.start_flag = True
-							
-				self.pad_commands(players)		
-				await self.scores()
-				await self.bounces()										
-				self.move_ball()						
-			else:
-				self.set_waiting_state(players)
-							
-			await asyncio.sleep(0.05)
-
-		print(f"in match after WHILE id:{self.id}", flush=True)
-		
-
 
 	# def get_left_bounce_vect(self, left_y):
 	# 	bounce_vect = None
@@ -511,3 +510,12 @@ class Pong:
 	# 	new_vect[0] = vect_a[0] - vect_b[0]
 	# 	new_vect[1] = vect_a[1] - vect_b[1]
 	# 	return new_vect		
+
+Pong.bounces = physics.bounces
+Pong.vert_bounce = physics.vert_bounce
+Pong.horz_bounce = physics.horz_bounce
+Pong.are_pads_intersecting = physics.are_pads_intersecting
+Pong.is_pad_intersecting = physics.is_pad_intersecting
+Pong.segments_intersect = physics.segments_intersect
+Pong.scale_vector = physics.scale_vector
+Pong.get_magnitude = physics.get_magnitude
