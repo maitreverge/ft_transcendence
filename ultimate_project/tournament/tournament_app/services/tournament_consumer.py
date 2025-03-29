@@ -15,13 +15,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		players.append(self)
 		await self.send(text_data=json.dumps({
 			"type": "selfAssign", "selfId": self.id})) 
-		await self.send_all("player", players)
+		await self.send_list("player", players)
 		await TournamentConsumer.send_tournaments()
 
 	async def disconnect(self, close_code):
 		await self.remove_player_in_tournaments()
 		players[:] = [p for p  in players if p.id != self.id]
-		await self.send_all("player", players)
+		await self.send_list("player", players)
 
 	# async def send_players(self):		
 	# 	for player in players:
@@ -46,7 +46,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				]
 			}))
 
-	async def send_all(self, message_type, source):		
+	async def send_list(self, message_type, source):		
 		for player in players:
 			await player.send(text_data=json.dumps({
 				"type": message_type + "List",			

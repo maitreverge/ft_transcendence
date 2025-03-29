@@ -7,7 +7,7 @@ import asyncio
 
 players = []
 
-class MyConsumer(AsyncWebsocketConsumer):
+class MatchConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
 		print(f"liste des joueurs MATCHs: {players}", flush=True)

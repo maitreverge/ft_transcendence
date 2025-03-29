@@ -1,6 +1,6 @@
 import threading
 import time
-import match_app.services.consumer as consumer
+import match_app.services.match_consumer as match_consumer
 import asyncio
 import json
 import aiohttp
@@ -134,7 +134,7 @@ class Pong:
 		while self.state in (State.running, State.waiting):		
 			self.has_wall = False
 			self.flag = True
-			self.users = [p for p in consumer.players
+			self.users = [p for p in match_consumer.players
 				if self.id == p["matchId"]]
 			players = [ next(
 				(p for p in self.users if self.plyIds[0] == p["playerId"]),
@@ -196,7 +196,7 @@ class Pong:
 		
 		while self.state != State.end:	
 			# print(f"{self.ball}", flush=True)
-			self.users = [p for p in consumer.players
+			self.users = [p for p in match_consumer.players
 				if self.id == p["matchId"]]
 			for p in self.users:
 				state = self.state
@@ -217,7 +217,7 @@ class Pong:
 	async def sendFinalState(self):	
 		
 		print(f"SEND FINAL STATE", flush=True)			
-		self.users = [p for p in consumer.players
+		self.users = [p for p in match_consumer.players
 			if self.id == p["matchId"]]
 		for p in self.users:
 			print(f"users {p}", flush=True)

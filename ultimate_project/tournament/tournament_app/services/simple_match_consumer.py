@@ -16,15 +16,16 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		players.append({'playerId': self.id, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
 		await self.send(text_data=json.dumps({
-			"type": "selfAssign", "selfId": self.id})) 
+			"type": "selfAssign", "selfId": self.id}))
+		await SimpleConsumer.send_list('player', players)
+		await SimpleConsumer.send_list('match', matchs)
+
+	@staticmethod
+	async def send_list(message_type, source):		
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
-				"type": "playerList",
-				"players": players
-			}))
-			await selfplay['socket'].send(text_data=json.dumps({
-				"type": "matchList",
-	 			"matchs": matchs
+				"type": message_type + "List",			
+				message_type + "s": source
 			}))
 
 	async def disconnect(self, close_code):
@@ -40,11 +41,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 				busy['busy'] = None			
 		selfPlayers[:] = [p for p in selfPlayers if p['socket'] != self]
 		players[:] = [p for p in players if p['playerId'] != self.id]
-		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({
-				"type": "playerList",
-				"players": players
-			}))
+		await SimpleConsumer.send_list('player', players)
 
 	async def receive(self, text_data):		
 		data = json.loads(text_data)
@@ -214,9 +211,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 	@staticmethod
 	async def match_update():
-		print(f"MATCH {matchs}", flush=True)
-		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({
-				"type": "matchList",
-				"matchs": matchs
-			}))
+
+		print(f"SIMPLE MATCH UPDATE {matchs}", flush=True)		
+		await SimpleConsumer.send_list('match', matchs)
+	
