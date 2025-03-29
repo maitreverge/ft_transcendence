@@ -225,7 +225,7 @@ class Pong:
 				await self.score_point(op.le, limit=0, score_index=1)
 				await self.max_score_rise(ply_index=0)
 				await self.max_score_rise(ply_index=1)
-					
+
 				if ((self.ball[0] + self.vect[0]) <= 16) and \
 					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
 
@@ -290,10 +290,9 @@ class Pong:
 				
 					self.flag = False
 
-				
-				await self.bot_bounce(99)				
-				await self.top_bounce(1)
-			
+				await self.top_bot_bounce(op.le, 1)
+				await self.top_bot_bounce(op.ge, 99)
+						
 				if (self.flag):	
 					self.ball[0] += self.vect[0]				
 					self.ball[1] += self.vect[1]
@@ -305,16 +304,7 @@ class Pong:
 					elif self.player2:
 						self.winner = self.plyIds[1]
 				self.state = State.waiting
-						
-			# if self.max_score == self.score[0]: 
-			# 	self.winner = self.plyIds[0]
-			# 	self.state = State.end
-			# 	await self.sendFinalState()
-			# if self.max_score == self.score[1]:
-			# 	self.winner = self.plyIds[1]
-			# 	self.state = State.end
-			# 	await self.sendFinalState()
-						
+							
 			await asyncio.sleep(0.05)	
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
@@ -387,53 +377,78 @@ class Pong:
 			bounce_vect[1] = bot_y - self.ball[1]
 			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
 		return bounce_vect
-		
-	async def top_bounce(self, top_y):
+
+	def are_pads_intersecting(self):
 		
 		if  (self.ball[0] + self.vect[0] >= 84) and \
 			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
-			return 		
+			return True		
 		if ((self.ball[0] + self.vect[0]) <= 16) and \
 			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
-			return 
-		if self.ball[1] + self.vect[1] <= top_y :
+			return True
+		return False
+		
+	async def top_bot_bounce(self, cmp, limit_y):
+		
+		if self.are_pads_intersecting():
+			return
+		if cmp(self.ball[1] + self.vect[1], limit_y) :
 			bounce_vect = [0, 0]
-			bounce_vect[1] = top_y - self.ball[1]
-			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
-
-			# if (not self.get_left_bounce_vect(16) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(16))) and \
-			# 	(not self.get_right_bounce_vect(84) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(84))):
+			bounce_vect[1] = limit_y - self.ball[1]
+			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])		
 			self.ball[0] += bounce_vect[0]				
 			self.ball[1] += bounce_vect[1]
 			self.has_wall = True
-			await asyncio.sleep(0.05)
-			# self.has_wall = False
+			await asyncio.sleep(0.05)	
 			self.vect[1] = -self.vect[1]		
-			self.flag = False
+			self.flag = False	
 
-	async def bot_bounce(self, bot_y):
+	# async def top_bounce(self, top_y):
+		
+	# 	if  (self.ball[0] + self.vect[0] >= 84) and \
+	# 		self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
+	# 		return 		
+	# 	if ((self.ball[0] + self.vect[0]) <= 16) and \
+	# 		self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
+	# 		return 
+	# 	if self.ball[1] + self.vect[1] <= top_y :
+	# 		bounce_vect = [0, 0]
+	# 		bounce_vect[1] = top_y - self.ball[1]
+	# 		bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
 
-		if  (self.ball[0] + self.vect[0] >= 84) and \
-			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
-			return 		
-		if ((self.ball[0] + self.vect[0]) <= 16) and \
-			self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
-			return 
-		if self.ball[1] + self.vect[1] >= bot_y:					
-			bounce_vect = [0, 0]
-			bounce_vect[1] = bot_y - self.ball[1]
-			bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+	# 		# if (not self.get_left_bounce_vect(16) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(16))) and \
+	# 		# 	(not self.get_right_bounce_vect(84) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(84))):
+	# 		self.ball[0] += bounce_vect[0]				
+	# 		self.ball[1] += bounce_vect[1]
+	# 		self.has_wall = True
+	# 		await asyncio.sleep(0.05)
+	# 		# self.has_wall = False
+	# 		self.vect[1] = -self.vect[1]		
+	# 		self.flag = False
 
-			# if (not self.get_left_bounce_vect(16) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(16))) and \
-			# 	(not self.get_right_bounce_vect(84) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(84))):
+	# async def bot_bounce(self, bot_y):
+
+	# 	if  (self.ball[0] + self.vect[0] >= 84) and \
+	# 		self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
+	# 		return 		
+	# 	if ((self.ball[0] + self.vect[0]) <= 16) and \
+	# 		self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
+	# 		return 
+	# 	if self.ball[1] + self.vect[1] >= bot_y:					
+	# 		bounce_vect = [0, 0]
+	# 		bounce_vect[1] = bot_y - self.ball[1]
+	# 		bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
+
+	# 		# if (not self.get_left_bounce_vect(16) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_left_bounce_vect(16))) and \
+	# 		# 	(not self.get_right_bounce_vect(84) or self.get_magnitude(bounce_vect) < self.get_magnitude(self.get_right_bounce_vect(84))):
 			
-			self.ball[0] += bounce_vect[0]				
-			self.ball[1] += bounce_vect[1]
-			self.has_wall = True
-			await asyncio.sleep(0.05)
-			# self.has_wall = False
-			self.vect[1] = -self.vect[1]
-			self.flag = False
+	# 		self.ball[0] += bounce_vect[0]				
+	# 		self.ball[1] += bounce_vect[1]
+	# 		self.has_wall = True
+	# 		await asyncio.sleep(0.05)
+	# 		# self.has_wall = False
+	# 		self.vect[1] = -self.vect[1]
+	# 		self.flag = False
 
 	def get_magnitude(self, vect):
 		return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
