@@ -20,14 +20,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		await SimpleConsumer.send_list('player', players)
 		await SimpleConsumer.send_list('match', matchs)
 
-	@staticmethod
-	async def send_list(message_type, source):		
-		for selfplay in selfPlayers:
-			await selfplay['socket'].send(text_data=json.dumps({
-				"type": message_type + "List",			
-				message_type + "s": source
-			}))
-
 	async def disconnect(self, close_code):
 		global selfPlayers
 		global players
@@ -42,6 +34,14 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		selfPlayers[:] = [p for p in selfPlayers if p['socket'] != self]
 		players[:] = [p for p in players if p['playerId'] != self.id]
 		await SimpleConsumer.send_list('player', players)
+
+	@staticmethod
+	async def send_list(message_type, source):		
+		for selfplay in selfPlayers:
+			await selfplay['socket'].send(text_data=json.dumps({
+				"type": message_type + "List",			
+				message_type + "s": source
+			}))
 
 	async def receive(self, text_data):		
 		data = json.loads(text_data)
@@ -91,7 +91,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			await SimpleConsumer.match_update()
 			return True
 		return False
-
 
 	async def send_back(self, response):		
 		await self.send(text_data=json.dumps({

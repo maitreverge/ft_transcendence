@@ -10,6 +10,7 @@ tournaments : List["Tournament"] = []
 class TournamentConsumer(AsyncWebsocketConsumer):
 
 	async def connect(self):
+
 		await self.accept()
 		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
 		players.append(self)
@@ -19,20 +20,24 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await TournamentConsumer.send_tournaments()
 
 	async def disconnect(self, close_code):
+
 		await self.remove_player_in_tournaments()
 		players[:] = [p for p  in players if p.id != self.id]
 		await self.send_list("player", players)
 
-	# async def send_players(self):		
-	# 	for player in players:
-	# 		await player.send(text_data=json.dumps({
-	# 			"type": "playerList",			
-	# 			"players": [
-	# 				{"playerId": p.id} for p in players
-	# 			]
-	# 		}))
+	async def send_list(self, message_type, source):	
+
+		for player in players:
+			await player.send(text_data=json.dumps({
+				"type": message_type + "List",			
+				message_type + "s": [
+					{message_type + "Id": s.id} for s in source
+				]
+			}))
+			
 	@staticmethod
 	async def send_tournaments():	
+
 		print(f"SEND TOURNAMENT", flush=True)	
 		for player in players:
 			await player.send(text_data=json.dumps({
@@ -46,17 +51,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				]
 			}))
 
-	async def send_list(self, message_type, source):		
-		for player in players:
-			await player.send(text_data=json.dumps({
-				"type": message_type + "List",			
-				message_type + "s": [
-					{message_type + "Id": s.id} for s in source
-				]
-			}))
-
 	async def receive(self, text_data):
-		print(f"receive!", flush=True)
+
+		print(f"RECEIVE", flush=True)
 		data = json.loads(text_data)
 		match data:
 			case {"type": "newTournament"}:
@@ -69,29 +66,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				pass
 
 	async def new_tournament(self):	
+
 		tournament = Tournament(self.id)
 		tournaments.append(tournament)
 		await self.enter_tournament(tournament.id)
-		# await TournamentConsumer.send_tournaments()
-
-	async def remove_player_in_tournaments(self):
-		for tournament in tournaments:
-			if self in tournament.players:
-				# print(f"CLOSE MATCH", flush=True)
-				# await self.send(text_data=json.dumps({"type": "closeMatch"}))
-				await tournament.remove_player(self)
 
 	async def enter_tournament(self, tournament_id):
-
-		# async with aiohttp.ClientSession() as session:
-		# 	async with session.get(				
-    	# 			f"/match/stop-match/${window.selfId}/${matchId}/"
-		# 		) as response:
-		# 		if response.status == 201:
-		# 			data = await response.json()		
-		# 		else:  
-		# 			err = await response.text()
-		# 			print(f"Error HTTP {response.status}: {err}", flush=True) 
 
 		tournament = next(
 			(t for t in tournaments if t.id == tournament_id), None)		
@@ -100,8 +80,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			await tournament.append_player(self)
 		await TournamentConsumer.send_tournaments()	
 
+	async def remove_player_in_tournaments(self):
+
+		for tournament in tournaments:
+			if self in tournament.players:
+				await tournament.remove_player(self)
 
 	async def quit_tournament(self):
+
 		await self.remove_player_in_tournaments()			
 		await TournamentConsumer.send_tournaments()
 
