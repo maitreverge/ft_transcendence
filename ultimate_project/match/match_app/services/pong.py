@@ -18,15 +18,11 @@ class Pong:
 
 	id = 0
 	def __init__(self, idP1, idP2):
-		# pongs.append(self)
+
 		Pong.id += 1
-		self.id = Pong.id
-		# self.idP1 = idP1
-		# self.idP2 = idP2
+		self.id = Pong.id	
 		self.plyIds = [idP1, idP2]
-		self.pad_height = 40
-	
-		# self.pads_y[0]
+		self.pad_height = 40	
 		self.pads_y = [self.pad_height / 2, self.pad_height / 2]
 		self.pad_width = 10
 		self.winner = None
@@ -106,7 +102,7 @@ class Pong:
 	# 	return False
 
 	def launchTask(self):
-		self.start_flag = False
+		
 		self.myEventLoop = asyncio.new_event_loop()
 		asyncio.set_event_loop(self.myEventLoop)	
 		try:
@@ -138,205 +134,114 @@ class Pong:
 	# 	self.myEventLoop.close() 
 	# 	print("in match after RUN", flush=True)
 
-
-
-	# def applyPadsCommands(self, player, pad_y):
-
-	# 	if self.player1.get("dir") is not None :
-	# 		if self.player1["dir"] == 'up':					
-	# 			self.pads_y[0] = max(
-	# 				self.pads_y[0] - self.pad_speed,
-	# 				(self.pad_height / 2)
-	# 			)							
-	# 		elif self.player1["dir"] == 'down':					
-	# 			self.pads_y[0] = min(
-	# 				self.pads_y[0] + self.pad_speed,
-	# 				100 - (self.pad_height / 2)
-	# 			)					
-	# 		self.player1["dir"] = None
-	# 	if self.player2.get("dir") is not None :
-	# 		if self.player2["dir"] == 'up':
-	# 			self.pads_y[1] = max(
-	# 				self.pads_y[1] - self.pad_speed,
-	# 				(self.pad_height / 2)
-	# 			)						
-	# 		elif self.player2["dir"] == 'down':
-	# 			self.pads_y[1] = min(
-	# 				self.pads_y[1] + self.pad_speed,
-	# 				 100 - (self.pad_height / 2)
-	# 			)					
-	# 		self.player2["dir"] = None
-
-	def applyPadCommand(self, player, pad_index):
+	def pad_commands(self, players):
+		
+		self.pad_command(players[0], pad_idx=0)
+		self.pad_command(players[1], pad_idx=1)
+		
+	def pad_command(self, player, pad_idx):
 
 		if player.get("dir") is not None :
 			if player["dir"] == 'up':					
-				self.pads_y[pad_index] = max(
-					self.pads_y[pad_index] - self.pad_speed,
+				self.pads_y[pad_idx] = max(
+					self.pads_y[pad_idx] - self.pad_speed,
 					(self.pad_height / 2)
 				)							
 			elif player["dir"] == 'down':					
-				self.pads_y[pad_index] = min(
-					self.pads_y[pad_index] + self.pad_speed,
+				self.pads_y[pad_idx] = min(
+					self.pads_y[pad_idx] + self.pad_speed,
 					100 - (self.pad_height / 2)
 				)					
 			player["dir"] = None
 
-	async def score_point(self, cmp, limit, score_index):
+	async def scores(self):
+		
+		await self.score_point(op.ge, limit=100, score_idx=0)
+		await self.score_point(op.le, limit=0, score_idx=1)
+		await self.max_score_rise(ply_idx=0)
+		await self.max_score_rise(ply_idx=1)
+		
+	async def score_point(self, cmp, limit, score_idx):
 
 		if cmp(self.ball[0], limit):
-			self.score[score_index] += 1
+			self.score[score_idx] += 1
 			self.ball = self.ball_rst.copy()
 			self.vect = self.vect_rst.copy()
 			await asyncio.sleep(1)
 
-	async def max_score_rise(self, ply_index):
+	async def max_score_rise(self, ply_idx):
 		
-		if self.max_score == self.score[ply_index]: 
-			self.winner = self.plyIds[ply_index]
+		if self.max_score == self.score[ply_idx]: 
+			self.winner = self.plyIds[ply_idx]
 			self.state = State.end
 			await self.sendFinalState()
 	
-	async def horz_bounce(self, cmp, limit, pad_y_index, dir):
-		# if ((self.ball[0] + self.vect[0]) <= 16) and \
-		# 	self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
-		if self.is_pad_intersecting(cmp, limit, pad_y_index):			
+	async def bounces(self):
+
+		await self.horz_bounce(op.le, limit=16, pad_y_idx=0, dir=+1)
+		await self.horz_bounce(op.ge, limit=84, pad_y_idx=1, dir=-1)
+		await self.vert_bounce(op.le, limit=1)
+		await self.vert_bounce(op.ge, limit=99)
+		
+	async def vert_bounce(self, cmp, limit):
+		
+		if self.are_pads_intersecting():
+			return
+		if cmp(self.ball[1] + self.vect[1], limit) :
+			bounce_vect = [0, 0]
+			bounce_vect[1] = limit - self.ball[1]
+			bounce_vect[0] = self.scale_vector(
+				bounce_vect[1], self.vect[0], self.vect[1])		
+			self.ball[0] += bounce_vect[0]				
+			self.ball[1] += bounce_vect[1]
+			self.has_wall = True
+			await asyncio.sleep(0.05)	
+			self.vect[1] = -self.vect[1]		
+			self.flag = False
+			
+	async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
+
+		if self.is_pad_intersecting(cmp, limit, pad_y_idx):			
 			new_vect = [0, 0]
 			new_vect[0] = limit - self.ball[0]
-			new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
+			new_vect[1] = self.scale_vector(
+				new_vect[0], self.vect[1], self.vect[0])
 			self.ball[0] += new_vect[0]				
 			self.ball[1] += new_vect[1]
 			self.has_wall = True
 			await asyncio.sleep(0.05)				
 	
 			mag = self.get_magnitude(self.vect) 				
-			y = (self.ball[1] - self.pads_y[pad_y_index]) / (self.pad_height / 2) 
+			y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
 			y = y * mag
 			y = max(min(y, 0.9), -0.9)
 			x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
 			x = math.sqrt(abs(x))	
 
 			scl = 1
-			if abs(self.vect[0]) < self.max_speed and abs(self.vect[1]) < self.max_speed:
+			if abs(self.vect[0]) < self.max_speed and \
+				abs(self.vect[1]) < self.max_speed:
 				scl = self.acceleration
 			self.vect[0] = scl * x * dir
 			self.vect[1] = scl * y 
-		
+					
 			self.flag = False
+		
+	def are_pads_intersecting(self):
 
-	async def launch_game(self):
-		self.state = State.waiting
-		# self.sendTask = self.myEventLoop.create_task(self.sendState())
-		self.send_task = self.myEventLoop.create_task(self.sendState())
-		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
-		while self.state in (State.running, State.waiting):		
-			self.has_wall = False
-			self.flag = True
-			self.myplayers = [p for p in consumer.players
-				if self.id == p["matchId"]]
-			self.player1 = next(
-				(p for p in self.myplayers if self.plyIds[0] == p["playerId"]), None)
-			self.player2 = next(
-				(p for p in self.myplayers if self.plyIds[1] == p["playerId"]), None)
+		return \
+			self.is_pad_intersecting(op.ge, limit=84, pad_y_idx=1) or \
+			self.is_pad_intersecting(op.le, limit=16, pad_y_idx=0)
 
-			if None not in (self.player1, self.player2):
-			
-				self.winner = None
-				self.start_flag = True
-				self.state = State.running
+	def is_pad_intersecting(self, cmp, limit, pad_y_idx):
 
-				self.applyPadCommand(self.player1, pad_index=0)
-				self.applyPadCommand(self.player2, pad_index=1)			
-
-				await self.score_point(op.ge, limit=100, score_index=0)
-				await self.score_point(op.le, limit=0, score_index=1)
-				await self.max_score_rise(ply_index=0)
-				await self.max_score_rise(ply_index=1)
-				await self.horz_bounce(op.le, limit=16, pad_y_index=0, dir=+1)
-				await self.horz_bounce(op.ge, limit=84, pad_y_index=1, dir=-1)
-				await self.vert_bounce(op.le, limit=1)
-				await self.vert_bounce(op.ge, limit=99)
-				# if ((self.ball[0] + self.vect[0]) <= 16) and \
-				# 	self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
-
-				# 	# (self.pads_y[0] - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.pads_y[0] + (self.pad_height / 2)):
-				
-				# 	new_vect = [0, 0]
-				# 	new_vect[0] = 16 - self.ball[0]
-				# 	new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
-
-				# 	# if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
-		 		# 	# 	(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
-					
-				# 	self.ball[0] += new_vect[0]				
-				# 	self.ball[1] += new_vect[1]
-				# 	self.has_wall = True
-				# 	await asyncio.sleep(0.05)					
-				# 	# self.has_wall = False
-				# 	mag = self.get_magnitude(self.vect) 				
-				# 	y = (self.ball[1] - self.pads_y[0]) / (self.pad_height / 2) 
-				# 	y = y * mag
-				# 	y = max(min(y, 0.9), -0.9)
-				# 	x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
-				# 	x = math.sqrt(abs(x))	
-
-				# 	scl = 1
-				# 	if abs(self.vect[0]) < self.max_speed and abs(self.vect[1]) < self.max_speed:
-				# 		scl = self.acceleration
-				# 	self.vect[0] = scl * x
-				# 	self.vect[1] = scl * y 
-				
-				# 	self.flag = False
-								
-				# if  (self.ball[0] + self.vect[0] >= 84) and \
-				# 	self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (84, self.pads_y[1] - (self.pad_height / 2)), (84, self.pads_y[1] + (self.pad_height / 2))):
-				# 		# (self.pads_y[1] - (self.pad_height / 2) <= self.ball[1] + self.vect[1] <= self.pads_y[1] + (self.pad_height / 2)):			
-					
-				# 	new_vect = [0, 0]
-				# 	new_vect[0] = 84 - self.ball[0]
-				# 	new_vect[1] = self.scale_vector(new_vect[0], self.vect[1], self.vect[0])
-
-				# 	# if (not self.get_top_bounce_vect(0) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_top_bounce_vect(0))) and \
-		 		# 	# 	(not self.get_bot_bounce_vect(38) or self.get_magnitude(new_vect) < self.get_magnitude(self.get_bot_bounce_vect(38))):
-
-				# 	# await asyncio.sleep(0.5)	
-				# 	self.ball[0] += new_vect[0]	
-				# 	self.ball[1] += new_vect[1]
-				# 	self.has_wall = True
-				# 	await asyncio.sleep(0.05)
-				# 	# self.has_wall = False				
-				# 	mag = self.get_magnitude(self.vect) 					
-				# 	y = (self.ball[1] - self.pads_y[1]) / (self.pad_height / 2) 
-				# 	y = y * mag
-				# 	y = max(min(y, 0.9), -0.9)
-				# 	x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)
-				# 	x = math.sqrt(abs(x))
-				# 	scl = 1
-				# 	if abs(self.vect[0]) < self.max_speed and abs(self.vect[1]) < self.max_speed:
-				# 		scl = self.acceleration
-				# 	self.vect[0] = -scl * x
-				# 	self.vect[1] = scl * y 
-				# 	# print(f"vect: {self.vect}", flush=True)
-				
-				# 	self.flag = False
-
-				
-						
-				if (self.flag):	
-					self.ball[0] += self.vect[0]				
-					self.ball[1] += self.vect[1]
-						
-			else:
-				if self.start_flag:
-					if self.player1:
-						self.winner = self.plyIds[0]
-					elif self.player2:
-						self.winner = self.plyIds[1]
-				self.state = State.waiting
-							
-			await asyncio.sleep(0.05)	
-		print(f"in match after WHILE id:{self.id}", flush=True)
-
+		return cmp(self.ball[0] + self.vect[0], limit) and \
+			self.segments_intersect(
+				(self.ball[0], self.ball[1]),
+				(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
+				(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
+				(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
+		
 	def segments_intersect(self, A, B, C, D, epsilon=1e-9):
 		def orientation(p, q, r):
 			# Déterminant orienté
@@ -368,6 +273,64 @@ class Pong:
 		if o4 == 0 and on_segment(C, B, D): return True
 
 		return False
+
+	def scale_vector(self, m1, m2, div):
+		return m1 * m2 / div
+	
+	def get_magnitude(self, vect):
+		return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
+	
+	def move_ball(self):
+
+		if (self.flag):	
+			self.ball[0] += self.vect[0]				
+			self.ball[1] += self.vect[1]
+			
+	def set_waiting_state(self, players):
+
+		if self.start_flag:
+			if players[0]:
+				self.winner = self.plyIds[0]
+			elif players[1]:
+				self.winner = self.plyIds[1]
+		self.state = State.waiting
+
+	async def launch_game(self):
+		
+		self.state = State.waiting
+		self.start_flag = False
+		# self.sendTask = self.myEventLoop.create_task(self.sendState())
+		self.send_task = self.myEventLoop.create_task(self.sendState())
+		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
+
+		while self.state in (State.running, State.waiting):		
+			self.has_wall = False
+			self.flag = True
+			self.users = [p for p in consumer.players
+				if self.id == p["matchId"]]
+			players = [ next(
+				(p for p in self.users if self.plyIds[0] == p["playerId"]),
+				None), next(
+				(p for p in self.users if self.plyIds[1] == p["playerId"]),
+				None)
+			]
+			if None not in players:			
+				self.state = State.running
+				self.winner = None
+				self.start_flag = True
+							
+				self.pad_commands(players)		
+				await self.scores()
+				await self.bounces()										
+				self.move_ball()						
+			else:
+				self.set_waiting_state(players)
+							
+			await asyncio.sleep(0.05)
+
+		print(f"in match after WHILE id:{self.id}", flush=True)
+		
+
 
 	# def get_left_bounce_vect(self, left_y):
 	# 	bounce_vect = None
@@ -407,36 +370,9 @@ class Pong:
 	# 		bounce_vect[0] = self.scale_vector(bounce_vect[1], self.vect[0], self.vect[1])
 	# 	return bounce_vect
 
-	def is_pad_intersecting(self, cmp, limit, pad_y_index):
 
-		return cmp(self.ball[0] + self.vect[0], limit) and \
-			self.segments_intersect(
-				(self.ball[0], self.ball[1]),
-				(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
-				(limit, self.pads_y[pad_y_index] - (self.pad_height / 2)),
-				(limit, self.pads_y[pad_y_index] + (self.pad_height / 2)))
 		
-	def are_pads_intersecting(self):
-
-		return \
-			self.is_pad_intersecting(op.ge, limit=84, pad_y_index=1) or \
-			self.is_pad_intersecting(op.le, limit=16, pad_y_index=0)
-		
-	async def vert_bounce(self, cmp, limit):
-		
-		if self.are_pads_intersecting():
-			return
-		if cmp(self.ball[1] + self.vect[1], limit) :
-			bounce_vect = [0, 0]
-			bounce_vect[1] = limit - self.ball[1]
-			bounce_vect[0] = self.scale_vector(
-				bounce_vect[1], self.vect[0], self.vect[1])		
-			self.ball[0] += bounce_vect[0]				
-			self.ball[1] += bounce_vect[1]
-			self.has_wall = True
-			await asyncio.sleep(0.05)	
-			self.vect[1] = -self.vect[1]		
-			self.flag = False	
+	
 
 	# async def top_bounce(self, top_y):
 		
@@ -485,22 +421,8 @@ class Pong:
 	# 		self.vect[1] = -self.vect[1]
 	# 		self.flag = False
 
-	def get_magnitude(self, vect):
-		return math.sqrt(vect[0] ** 2 + vect[1] ** 2)
-		
-	# def scale_vector(self, nx,  x, y, nx):
-	# 	return nx * y / x
-
-	def scale_vector(self, m1, m2, div):
-		return m1 * m2 / div
-
-	def substract_vect(self, vect_a, vect_b):
-		new_vect = [0, 0]
-		new_vect[0] = vect_a[0] - vect_b[0]
-		new_vect[1] = vect_a[1] - vect_b[1]
-		return new_vect
-
 	async def watch_dog(self):
+		
 		delay = 0
 		while self.state != State.end:			
 			if self.state == State.running:
@@ -513,11 +435,12 @@ class Pong:
 			await asyncio.sleep(1.00)
 
 	async def sendState(self):		
+		
 		while self.state != State.end:	
 			# print(f"{self.ball}", flush=True)
-			self.myplayers = [p for p in consumer.players
+			self.users = [p for p in consumer.players
 				if self.id == p["matchId"]]
-			for p in self.myplayers:
+			for p in self.users:
 				state = self.state
 				if state != State.end:
 					try:												
@@ -534,11 +457,12 @@ class Pong:
 			await asyncio.sleep(0.05)
 
 	async def sendFinalState(self):	
+		
 		print(f"SEND FINAL STATE", flush=True)			
-		self.myplayers = [p for p in consumer.players
+		self.users = [p for p in consumer.players
 			if self.id == p["matchId"]]
-		for p in self.myplayers:
-			print(f"myplayers {p}", flush=True)
+		for p in self.users:
+			print(f"users {p}", flush=True)
 			try:					
 				await p["socket"].send(text_data=json.dumps({
 				"state": self.state.name,
@@ -580,4 +504,10 @@ class Pong:
 					print(f"Error HTTP {response.status}: {err}", flush=True)
 		print(f"AFTER SEND MATCH RESULT", flush=True)
 		from match_app.views import del_pong
-		del_pong(self.id)			
+		del_pong(self.id)
+
+	# def substract_vect(self, vect_a, vect_b):
+	# 	new_vect = [0, 0]
+	# 	new_vect[0] = vect_a[0] - vect_b[0]
+	# 	new_vect[1] = vect_a[1] - vect_b[1]
+	# 	return new_vect		
