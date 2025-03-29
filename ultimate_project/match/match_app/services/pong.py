@@ -181,19 +181,6 @@ class Pong:
 					100 - (self.pad_height / 2)
 				)					
 			player["dir"] = None
-			
-	# async def score_point(self, cmp):
-
-	# 	if self.ball[0] >= 100:
-	# 		self.score[0] += 1
-	# 		self.ball = self.ball_rst
-	# 		self.vect = self.vect_rst.copy()
-	# 		await asyncio.sleep(1)
-	# 	if self.ball[0] <= 0:
-	# 		self.score[1] += 1
-	# 		self.ball = self.ball_rst
-	# 		self.vect = self.vect_rst.copy()
-	# 		await asyncio.sleep(1)
 
 	async def score_point(self, cmp, limit, score_index):
 
@@ -203,6 +190,13 @@ class Pong:
 			self.vect = self.vect_rst.copy()
 			await asyncio.sleep(1)
 
+	async def max_score_rise(self, ply_index):
+		
+		if self.max_score == self.score[ply_index]: 
+			self.winner = self.plyIds[ply_index]
+			self.state = State.end
+			await self.sendFinalState()
+	
 	async def launch_game(self):
 		self.state = State.waiting
 		# self.sendTask = self.myEventLoop.create_task(self.sendState())
@@ -229,9 +223,9 @@ class Pong:
 
 				await self.score_point(op.ge, limit=100, score_index=0)
 				await self.score_point(op.le, limit=0, score_index=1)
-# bord droit et gauche
-		
-							
+				await self.max_score_rise(ply_index=0)
+				await self.max_score_rise(ply_index=1)
+					
 				if ((self.ball[0] + self.vect[0]) <= 16) and \
 					self.segments_intersect((self.ball[0], self.ball[1]), (self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]), (16, self.pads_y[0] - (self.pad_height / 2)), (16, self.pads_y[0] + (self.pad_height / 2))):
 
@@ -312,14 +306,14 @@ class Pong:
 						self.winner = self.plyIds[1]
 				self.state = State.waiting
 						
-			if self.max_score == self.score[0]: 
-				self.winner = self.plyIds[0]
-				self.state = State.end
-				await self.sendFinalState()
-			if self.max_score == self.score[1]:
-				self.winner = self.plyIds[1]
-				self.state = State.end
-				await self.sendFinalState()
+			# if self.max_score == self.score[0]: 
+			# 	self.winner = self.plyIds[0]
+			# 	self.state = State.end
+			# 	await self.sendFinalState()
+			# if self.max_score == self.score[1]:
+			# 	self.winner = self.plyIds[1]
+			# 	self.state = State.end
+			# 	await self.sendFinalState()
 						
 			await asyncio.sleep(0.05)	
 		print(f"in match after WHILE id:{self.id}", flush=True)
