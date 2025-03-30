@@ -6,3 +6,4 @@ Requests==2.32.3
 starlette==0.46.1
 uvicorn==0.34.0
 jinja2
+python-multipart
