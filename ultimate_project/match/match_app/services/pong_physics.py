@@ -43,7 +43,7 @@ async def vert_bounce(self, cmp, limit):
 		self.has_wall = True
 		await asyncio.sleep(0.05)	
 		self.vect[1] = -self.vect[1]		
-		self.flag = False
+		self.wall_flag = False
 		
 async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
@@ -65,13 +65,12 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		x = math.sqrt(abs(x))	
 
 		scl = 1
-		if abs(self.vect[0]) < self.max_speed and \
-			abs(self.vect[1]) < self.max_speed:
-			scl = self.acceleration
+		if abs(self.vect[0]) < self.max_ball_speed and \
+			abs(self.vect[1]) < self.max_ball_speed:
+			scl = self.ball_acceleration
 		self.vect[0] = scl * x * dir
-		self.vect[1] = scl * y 
-				
-		self.flag = False
+		self.vect[1] = scl * y 				
+		self.wall_flag = False
 	
 def are_pads_intersecting(self):
 
@@ -129,7 +128,7 @@ def get_magnitude(self, vect):
 
 def move_ball(self):
 
-	if (self.flag):	
+	if (self.wall_flag):	
 		self.ball[0] += self.vect[0]				
 		self.ball[1] += self.vect[1]
 
