@@ -3,7 +3,7 @@ source tests/utils.sh
 
 echo "Running Playwright tests..."
 python3 tests/test_authentication.py
-python3 tests/test_2fa.py #! NOT READY YET
+python3 tests/test_2fa.py
 python3 tests/test_cookies.py
 python3 tests/test_delete_user.py
 python3 tests/test_navigation.py
