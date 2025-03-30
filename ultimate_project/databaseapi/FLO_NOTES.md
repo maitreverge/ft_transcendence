@@ -30,7 +30,7 @@
 ✅ Tournoi 
 🟧 Mettre des alias a chaque debut de tournoi
 🟧 Injections SQL / XSS
-🟧 HTTPS (wss)
+✅ HTTPS (wss)
 🟧 Secure routes API
 🟧 Changer le mot de passe d'admin
 🟧

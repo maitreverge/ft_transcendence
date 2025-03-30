@@ -33,16 +33,10 @@ def run(playwright: Playwright) -> None:
         else:
             return "th"
 
-    def test_login_2fa(playwright: Playwright):
+    def test_login_2fa():
         # Create a TOTP object
         totp = pyotp.TOTP(test_2fa_secret)
 
-        # Starting a new window
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context(
-            ignore_https_errors=True
-        )
-        page = context.new_page()
         page.goto(f"{base_url}/login/")
 
         # ! ============= LOGIN PAGE =============
@@ -90,17 +84,14 @@ def run(playwright: Playwright) -> None:
             except Exception as e:
                 print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
 
-        context.close()
-        browser.close()
-
 
     def test_register_2fa(playwright: Playwright):
         # Starting a new window
-        browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context(
-            ignore_https_errors=True
-        )
-        page = context.new_page()
+        # browser = playwright.chromium.launch(headless=False)
+        # context = browser.new_context(
+        #     ignore_https_errors=True
+        # )
+        # page = context.new_page()
         page.goto(f"{base_url}/register/")
 
         # ! ============= REGISTER PAGE =============
@@ -171,11 +162,17 @@ def run(playwright: Playwright) -> None:
 
         # expect(page).to_have_url(f"{base_url}/user/profile/")
         
-        # ! =============== KICKSTART TESTER HERE ===============
+    # ! =============== KICKSTART TESTER HERE ===============
+    
     test_login_2fa()
 
-
-    print(f"✅ 2FA register succed ✅", flush=True)
+    test_register_2fa()
 
     context.close()
     browser.close()
+
+    print(f"✅ 2FA register succed ✅", flush=True)
+
+
+with sync_playwright() as playwright:
+    run(playwright)
