@@ -45,6 +45,10 @@ class Pong:
 		self.max_ball_speed = 10
 		self.ball_acceleration = 1.1
 
+		self.bounce_delay = 0.05
+		self.send_delay = 0.05
+		self.gear_delay = 0.05
+
 		self.send_task = None
 		self.watch_task = None
 		# asyncio.run(self.end())
@@ -121,8 +125,7 @@ class Pong:
 			print(f"Event loop fermé proprement pour match {self.id}", flush=True)
 
 	async def launch_game(self):
-		
-	
+			
 		# self.sendTask = self.myEventLoop.create_task(self.sendState())
 		self.send_task = self.myEventLoop.create_task(self.sendState())
 		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
@@ -133,9 +136,8 @@ class Pong:
 			if None not in self.players:			
 				await self.run_game()						
 			else:
-				self.set_waiting_state(self.players)
-							
-			await asyncio.sleep(0.05)
+				self.set_waiting_state(self.players)							
+			await asyncio.sleep(self.gear_delay)
 
 		print(f"in match after WHILE id:{self.id}", flush=True)
 
@@ -156,7 +158,7 @@ class Pong:
 		self.winner = None
 		self.start_flag = True
 		self.wall_flag = True
-		
+
 		self.pad_commands(self.players)		
 		await self.scores()
 		await self.bounces()										
@@ -226,7 +228,7 @@ class Pong:
 						}))                  
 					except Exception as e:
 						pass				
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(self.send_delay)
 
 	async def sendFinalState(self):	
 		
