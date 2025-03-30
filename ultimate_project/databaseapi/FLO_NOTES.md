@@ -6,9 +6,14 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
-🟧 METTRE LES CHAMPS REQUIRED DANS DELETE-PROFILE.HTMl sur les champs password et otp
 
-🟧 CREER DES TEST AVEC LE CSRF TOKEN	
+🟧
+
+🟧 Tester le multi login sur la branche `prevent_double_auth`
+
+🟧 TESTER LE WORKLOW : Register -> turn on 2FA -> Logout -> Login -> 2FA -> Disable 2fa -> Logout -> Login -> delete user -> Login
+
+✅ CREER DES TEST AVEC LE CSRF TOKEN	
 
 🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
 
