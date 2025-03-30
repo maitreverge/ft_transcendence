@@ -32,10 +32,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
 	async def disconnect(self, close_code):
 
 		print(f"DISCONNECT p:{self.player_id} m:{self.match_id}", flush=True)
-	
-		# players[:] = [p for p in players if p['socket'] != self]
+			
 		players[:] = [p for p in players if p['playerId'] != self.player_id]
-		# await asyncio.sleep(1)
 		await self.send_players_update()
 
 	async def filter_player(self, match_id, player_id):
