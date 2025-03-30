@@ -79,8 +79,6 @@ def run(playwright: Playwright) -> None:
         # ! ============= TWO-FA PAGE =============
         expect(page).to_have_url(f"{BASE_URL}/two-factor-auth/")
 
-        # Get the current code
-
         # Fill with a correct code
         for _ in range(3):
             current_code = totp.now()
@@ -142,13 +140,10 @@ def run(playwright: Playwright) -> None:
             try:
                 # Wait for the input field to be visible and fill it
                 otp_input = page.locator("#otp_input")
-                # otp_input.wait_for(state="visible", timeout=5000)
                 otp_input.fill(register_totp.now())
 
                 # Wait for the verify button to be visible and clickable
                 verify_button = page.locator("#otp_verify")
-                # verify_button.wait_for(state="visible", timeout=5000)
-                # verify_button.wait_for(state="enabled", timeout=5000)
                 verify_button.click()
 
                 # Wait for success message to be visible
@@ -175,31 +170,40 @@ def run(playwright: Playwright) -> None:
         expect(page).to_have_url(f"{BASE_URL}/home/")
 
         # Go to profile page
-        page.locator("#nav-profile").click()
+        # ! Sometimes, the website is a bit slow, so try-catch 
+        for _ in range(5):
+            try:
+                page.locator("#nav-profile").click()
+                expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+                
+                expect(page.locator("#disable_2fa")).to_be_enabled()
+                expect(page.locator("#setup_2fa")).to_be_hidden()
+                break
+            except Exception as e:
+                print(f"💀 Failing to go to profile on {_ + 1} try, retrying 💀", flush=True)
 
         # ! ============= PROFILE PAGE =============
-        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
-
-        time.sleep(2)
-
-        # Check is 2FA is not enabled
-        expect(page.locator("#disable_2fa")).to_be_enabled()
-        expect(page.locator("#setup_2fa")).to_be_hidden()
 
         # Click on setup 2FA
         page.locator("#disable_2fa").click()
 
-        for _ in range(3):
+        # ! TEST INCORRECT INPUT
+        otp_input = page.locator("#token")
+        otp_input.fill("000000")
+        verify_button = page.locator("#otp_verify")
+        verify_button.click()
+
+        error_message = page.locator("#error")
+        expect(error_message).to_have_text("Invalid 2FA code")
+
+        # ! TRY CORRECT INPUT
+        for _ in range(2):
             try:
                 # Wait for the input field to be visible and fill it
-                otp_input = page.locator("#otp_input_disable")
+                otp_input = page.locator("#token")
                 # otp_input.wait_for(state="visible", timeout=5000)
                 otp_input.fill(register_totp.now())
 
-                # Wait for the verify button to be visible and clickable
-                verify_button = page.locator("#otp_verify")
-                # verify_button.wait_for(state="visible", timeout=5000)
-                # verify_button.wait_for(state="enabled", timeout=5000)
                 verify_button.click()
 
                 # Wait for success message to be visible
@@ -211,22 +215,51 @@ def run(playwright: Playwright) -> None:
                 log_message = page.locator("#log_message")
                 log_message.wait_for(state="visible", timeout=5000)
                 expect(log_message).to_have_text(
-                    "2FA has been successfully disabled!"
+                    "Two-factor authentication has been disabled for your account."
                 )
                 break
             except Exception as e:
                 print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
+        
+        logout()
 
 
-        # # Click on disable 2FA
-        # page.locator("#disable_2fa").click()
+        # ! Login without the 2FA
+        page.goto(f"{BASE_URL}/login/")
+        expect(page).to_have_url(f"{BASE_URL}/login/")
+        page.locator("#username").fill(REGISTER_USERNAME)
+        page.locator("#password").fill(PASSWORD)
+        page.locator("#loginButton").click()
 
-        # page.locator("#otp_input").fill(totp.now())
-        # page.locator("#otp_verify").click()
+        expect(page).to_have_url(f"{BASE_URL}/home/")
 
-        # expect(page.locator("#success_message")).to_have_text("Two-factor authentication has been disabled for your account.")
+        # ! DELETE THE USET TO AVOID DUPLICATES
 
-        # expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+        page.locator("#nav-profile").click()
+        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+
+        page.locator("#delete_profile").click()
+
+        # ! We're on the delete-profile.html HERE
+
+        final_delete_button = page.locator("#delete_profile")
+        password_field = page.locator("#password")
+
+        password_field.fill(PASSWORD)
+        final_delete_button.click()
+        expect(page).to_have_url(f"{BASE_URL}/register/")
+
+        # Last try to login to check if the user has been correctly deleted
+        page.goto(f"{BASE_URL}/login/")
+        expect(page).to_have_url(f"{BASE_URL}/login/")
+        page.locator("#username").fill(REGISTER_USERNAME)
+        page.locator("#password").fill(PASSWORD)
+        page.locator("#loginButton").click()
+
+        expect(page).to_have_url(f"{BASE_URL}/login/")
+        
+        error_message = page.locator("#login-form")
+        expect(error_message).to_have_text("Invalid credentials")
 
     # ! =============== KICKSTART TESTER HERE ===============
 
