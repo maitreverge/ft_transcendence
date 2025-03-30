@@ -3,12 +3,13 @@ import time
 import pyotp
 
 # test_2fa user secret
-test_2fa_secret = "S3EF2KESUQR45MRTL7MXDSJVI6JQDG4R"
+LOGIN_SECRET = "S3EF2KESUQR45MRTL7MXDSJVI6JQDG4R"
 
 
 BASE_URL = "https://localhost:8443"
 
 REGISTER_USERNAME = "register-2fa-test"
+LOGIN_USERNAME = "test_2fa"
 REGISTER_EMAIL = "register-2fa-test@test.com"
 PASSWORD = "password"
 
@@ -41,17 +42,17 @@ def run(playwright: Playwright) -> None:
         else:
             return "th"
 
-    def test_login_2fa():
+    def test_login_2fa(username, input_secret):
         # Create a TOTP object
-        totp = pyotp.TOTP(test_2fa_secret)
+        totp = pyotp.TOTP(input_secret)
 
         page.goto(f"{BASE_URL}/login/")
 
         # ! ============= LOGIN PAGE =============
         # Fill in the username and password
         expect(page).to_have_url(f"{BASE_URL}/login/")
-        page.locator("#username").fill("test_2fa")
-        page.locator("#password").fill("password")
+        page.locator("#username").fill(username)
+        page.locator("#password").fill(PASSWORD)
         page.locator("#loginButton").click()
 
         # ! ============= TWO-FA PAGE =============
@@ -71,8 +72,8 @@ def run(playwright: Playwright) -> None:
         expect(page).to_have_url(f"{BASE_URL}/login/")
 
         # Fill in the username and password
-        page.locator("#username").fill("test_2fa")
-        page.locator("#password").fill("password")
+        page.locator("#username").fill(username)
+        page.locator("#password").fill(PASSWORD)
         page.locator("#loginButton").click()
 
         # ! ============= TWO-FA PAGE =============
@@ -95,7 +96,7 @@ def run(playwright: Playwright) -> None:
             except Exception as e:
                 print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
         
-        logout()
+        # logout()
 
     def test_register_2fa():
 
@@ -134,7 +135,7 @@ def run(playwright: Playwright) -> None:
 
         EXTRACTED_SECRET = page.locator("#secret_key").text_content()
         print(f"🐛🐛🐛 CURRENT 2FA : {EXTRACTED_SECRET}", flush=True)
-        totp = pyotp.TOTP(EXTRACTED_SECRET)
+        register_totp = pyotp.TOTP(EXTRACTED_SECRET)
 
         # TRY TO SETUP 2FA
         for _ in range(3):
@@ -142,7 +143,7 @@ def run(playwright: Playwright) -> None:
                 # Wait for the input field to be visible and fill it
                 otp_input = page.locator("#otp_input")
                 # otp_input.wait_for(state="visible", timeout=5000)
-                otp_input.fill(totp.now())
+                otp_input.fill(register_totp.now())
 
                 # Wait for the verify button to be visible and clickable
                 verify_button = page.locator("#otp_verify")
@@ -167,6 +168,56 @@ def run(playwright: Playwright) -> None:
         
         logout()
 
+        # LOGIN THE CREATED USER WITH 2FA
+        test_login_2fa(REGISTER_USERNAME, EXTRACTED_SECRET)
+
+        # ! ============= HOME PAGE =============
+        expect(page).to_have_url(f"{BASE_URL}/home/")
+
+        # Go to profile page
+        page.locator("#nav-profile").click()
+
+        # ! ============= PROFILE PAGE =============
+        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+
+        time.sleep(2)
+
+        # Check is 2FA is not enabled
+        expect(page.locator("#disable_2fa")).to_be_enabled()
+        expect(page.locator("#setup_2fa")).to_be_hidden()
+
+        # Click on setup 2FA
+        page.locator("#disable_2fa").click()
+
+        for _ in range(3):
+            try:
+                # Wait for the input field to be visible and fill it
+                otp_input = page.locator("#otp_input_disable")
+                # otp_input.wait_for(state="visible", timeout=5000)
+                otp_input.fill(register_totp.now())
+
+                # Wait for the verify button to be visible and clickable
+                verify_button = page.locator("#otp_verify")
+                # verify_button.wait_for(state="visible", timeout=5000)
+                # verify_button.wait_for(state="enabled", timeout=5000)
+                verify_button.click()
+
+                # Wait for success message to be visible
+                success_message = page.locator("#twofa_success_message")
+                success_message.wait_for(state="visible", timeout=5000)
+                expect(success_message).to_have_text("2FA Action Complete")
+
+                # Wait for log message to be visible
+                log_message = page.locator("#log_message")
+                log_message.wait_for(state="visible", timeout=5000)
+                expect(log_message).to_have_text(
+                    "2FA has been successfully disabled!"
+                )
+                break
+            except Exception as e:
+                print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
+
+
         # # Click on disable 2FA
         # page.locator("#disable_2fa").click()
 
@@ -179,7 +230,8 @@ def run(playwright: Playwright) -> None:
 
     # ! =============== KICKSTART TESTER HERE ===============
 
-    test_login_2fa()
+    test_login_2fa(LOGIN_USERNAME, LOGIN_SECRET)
+    logout()
 
     test_register_2fa()
 
