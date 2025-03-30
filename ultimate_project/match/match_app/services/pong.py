@@ -51,6 +51,9 @@ class Pong:
 
 		self.send_task = None
 		self.watch_task = None
+
+		self.users = None
+		self.players = None
 		# asyncio.run(self.end())
 		threading.Thread(target=self.launchTask, daemon=True).start()
 

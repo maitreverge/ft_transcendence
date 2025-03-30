@@ -55,8 +55,15 @@ async def stop_match(request: HttpRequest, playerId, matchId):
     return JsonResponse({"status": "not authorized"}, status=400)
 
 def del_pong(pong_id):
-    
-    print("DEL PONG {pong_id}", flush=True)
-    print(pongs, flush=True)
-    pongs[:] = [p for p in pongs if p.id != pong_id]
-    print(pongs, flush=True)
+
+	print("DEL PONG {pong_id}", flush=True)
+	from match_app.services.match_consumer import players
+     
+	pong = next((p for p in pongs if p.id == pong_id), None) 
+	if pong: 
+		players[:] = [
+			p for p in players if not any(
+				po for po in pong.players if p['playerId'] == po['playerId']
+		)]	
+		pongs[:] = [p for p in pongs if p.id != pong_id]
+
