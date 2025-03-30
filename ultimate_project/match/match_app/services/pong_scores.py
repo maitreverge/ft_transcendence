@@ -21,6 +21,5 @@ async def max_score_rise(self, ply_idx):
 	from match_app.services.pong import State
 	
 	if self.max_score == self.score[ply_idx]: 
-		self.winner = self.plyIds[ply_idx]
-		self.state = State.end
+		self.winner = self.plyIds[ply_idx]		
 		await self.sendFinalState()

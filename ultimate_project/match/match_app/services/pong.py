@@ -104,33 +104,50 @@ class Pong:
 	# 	self.myEventLoop.close() 
 	# 	print("in match after RUN", flush=True)
 	
-	def launchTask(self):
+	# def launchTask(self):
 		
-		self.myEventLoop = asyncio.new_event_loop()
-		asyncio.set_event_loop(self.myEventLoop)	
+	# 	self.myEventLoop = asyncio.new_event_loop()
+	# 	asyncio.set_event_loop(self.myEventLoop)	
+	# 	try:
+	# 		# self.myEventLoop.create_task(self.launch_game())
+	# 		# self.myEventLoop.run_forever()
+
+	# 		self.myEventLoop.run_until_complete(self.launch())  
+	# 	finally:
+	# 		time.sleep(2)			
+	# 		tasks = [
+	# 			t for t in asyncio.all_tasks(self.myEventLoop) if not t.done()]
+	# 		for task in tasks:
+	# 			task.cancel()
+	# 		self.myEventLoop.run_until_complete(
+	# 			asyncio.gather(*tasks, return_exceptions=True))
+	# 		self.myEventLoop.stop()
+	# 		self.myEventLoop.close()
+	# 		print(f"Event loop fermé proprement pour match {self.id}", flush=True)
+
+		# self.launch_task = self.myEventLoop.create_task(self.launch_game())
+		# self.send_task = self.myEventLoop.create_task(self.sendState())
+		# self.watch_task = self.myEventLoop.create_task(self.watch_dog())
+
+	def launchTask(self):
+
+		myEventLoop = asyncio.new_event_loop()
+		asyncio.set_event_loop(myEventLoop)
+		tasks = [
+			myEventLoop.create_task(self.launch_game()),
+			myEventLoop.create_task(self.sendState()),
+			myEventLoop.create_task(self.watch_dog()),	
+		]
 		try:
-			self.myEventLoop.create_task(self.launch_game())
-			self.myEventLoop.run_forever()
-			# self.myEventLoop.run_until_complete(self.launch())  
-		finally:
-			time.sleep(2)			
-			tasks = [
-				t for t in asyncio.all_tasks(self.myEventLoop) if not t.done()]
-			for task in tasks:
-				task.cancel()
-			self.myEventLoop.run_until_complete(
+			myEventLoop.run_until_complete(
 				asyncio.gather(*tasks, return_exceptions=True))
-			self.myEventLoop.stop()
-			self.myEventLoop.close()
+		finally:
+			myEventLoop.close()
 			print(f"Event loop fermé proprement pour match {self.id}", flush=True)
 
 	async def launch_game(self):
 			
-		# self.sendTask = self.myEventLoop.create_task(self.sendState())
-		self.send_task = self.myEventLoop.create_task(self.sendState())
-		self.watch_task = self.myEventLoop.create_task(self.watch_dog())
-
-		while self.state in (State.running, State.waiting):		
+		while self.state != State.end:		
 			self.has_wall = False	
 			self.get_users()		
 			if None not in self.players:			
@@ -195,7 +212,7 @@ class Pong:
 			# 	await self.sendTask  # Attendre que l'annulation soit complète
 			# except asyncio.CancelledError:
 			# 	print("Tâche annulée avec succès")	 
-			self.state = State.end
+			# self.state = State.end
 			if self.winner is None and self.start_flag:
 				self.winner = self.plyIds[0] \
 					if playerId == self.plyIds[1] else self.plyIds[1]
@@ -230,8 +247,9 @@ class Pong:
 						pass				
 			await asyncio.sleep(self.send_delay)
 
-	async def sendFinalState(self):	
-		
+	async def sendFinalState(self):
+
+		self.state = State.end
 		print(f"SEND FINAL STATE", flush=True)			
 		self.users = [p for p in match_consumer.players
 			if self.id == p["matchId"]]
