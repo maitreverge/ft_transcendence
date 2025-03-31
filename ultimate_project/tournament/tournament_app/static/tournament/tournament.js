@@ -17,7 +17,7 @@ function initTournament() {
     if (window.tournamentSocket)
         window.tournamentSocket.close();
     window.tournamentSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/`
+        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.userName}/`
     );
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	

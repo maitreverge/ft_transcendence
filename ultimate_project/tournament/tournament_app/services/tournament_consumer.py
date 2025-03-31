@@ -12,7 +12,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 
 		await self.accept()
-		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
+		self.id = self.scope["url_route"]["kwargs"]["user_id"]
+		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		players.append(self)
 		# await self.send(text_data=json.dumps({
 		# 	"type": "selfAssign", "selfId": self.id})) 

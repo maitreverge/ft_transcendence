@@ -511,7 +511,7 @@ function initSimpleMatch() {
     if (window.simpleMatchSocket)
         window.simpleMatchSocket.close();
     window.simpleMatchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/${window.selfId}/`
+        `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.userName}/`
     );
 	window.simpleMatchSocket.onopen = () => {
 		console.log("Connexion Simple Match établie 😊");	
