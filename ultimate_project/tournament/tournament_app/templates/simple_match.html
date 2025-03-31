@@ -5,7 +5,8 @@
 		<script>
 			window.rasp = "{{ rasp }}"; 
 			window.pidom = "{{ pidom }}";
-            window.user_id = "{{ user_id }}";								
+            window.selfId = "{{ user_id }}";
+			window.selfName = "{{ user_name }}";							
 		</script>
 		<script src="{% static 'tournament/simple_match.js' %}"
 				onload="initSimpleMatch()"></script>

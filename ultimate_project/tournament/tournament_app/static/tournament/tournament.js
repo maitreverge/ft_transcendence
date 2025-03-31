@@ -17,7 +17,7 @@ function initTournament() {
     if (window.tournamentSocket)
         window.tournamentSocket.close();
     window.tournamentSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/tournament/${window.user_id}/`
+        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/`
     );
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
@@ -47,9 +47,9 @@ function onTournamentMessage(event, socket) {
 	
 	switch (data.type)
 	{
-		case "selfAssign":
-			setSelfId(data.selfId);
-			break;
+		// case "selfAssign":
+		// 	setSelfId(data.selfId);
+		// 	break;
 		case "playerList":
 			console.log("case playerlist");
 			window.playersList = data.players;
@@ -92,12 +92,12 @@ function onTournamentMessage(event, socket) {
 	}
 }
 
-function setSelfId(selfId) {
+// function setSelfId(selfId) {
 
-	window.selfId = selfId;	
-	document.getElementById("player").innerText = 
-		"Je suis le joueur " + window.selfId;	
-}
+// 	window.selfId = selfId;	
+// 	document.getElementById("player").innerText = 
+// 		"Je suis le joueur " + window.selfId;	
+// }
 
 function updatePlayers(socket, playersUp)
 {
@@ -134,7 +134,7 @@ function createPlayerElement(socket, playerId) {
 	div.className = "user";
 	div.textContent = `user: ${playerId}`;
 	div.id = playerId;	
-	if (playerId === window.selfId)
+	if (playerId == window.selfId)
 	{
 		div.classList.add("self-player");
 		div.onclick = event => {

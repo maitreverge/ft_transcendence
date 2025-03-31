@@ -367,12 +367,12 @@ function sendPlayerClick(socket, event, selected)
 
 
 
-function setSelfId(selfId) {
+// function setSelfId(selfId) {
 
-	window.selfId = selfId;	
-	document.getElementById("player").innerText = 
-		"Je suis le joueur " + window.selfId;	
-}
+// 	window.selfId = selfId;	
+// 	document.getElementById("player").innerText = 
+// 		"Je suis le joueur " + window.selfId + " " + window.user_name;	
+// }
 
 function invitation(socket, data) {
 
@@ -408,9 +408,9 @@ function onSimpleMatchMessage(event, socket) {
 	
 	switch (data.type)
 	{
-		case "selfAssign":
-			setSelfId(data.selfId);
-			break;
+		// case "selfAssign":
+		// 	setSelfId(data.selfId);
+		// 	break;
 		case "playerList":
 			window.simplePlayersList = data.players;		
 			updateSimplePlayers(socket, data.players);
@@ -488,7 +488,7 @@ function createSimplePlayerElement(socket, playerId) {
 	div.className = "user";
 	div.textContent = `user: ${playerId}`;
 	div.id = playerId;	
-	if (playerId === window.selfId)
+	if (playerId == window.selfId)
 		div.classList.add("self-player");
 	div.onclick = event => sendPlayerClick(socket, event, div);	  
 	return div;
@@ -511,7 +511,7 @@ function initSimpleMatch() {
     if (window.simpleMatchSocket)
         window.simpleMatchSocket.close();
     window.simpleMatchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/${window.user_id}/`
+        `wss://${window.pidom}/ws/tournament/${window.selfId}/`
     );
 	window.simpleMatchSocket.onopen = () => {
 		console.log("Connexion Simple Match établie 😊");	
