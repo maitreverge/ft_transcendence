@@ -106,6 +106,10 @@
 	height:85vh;	
 	background-color: rgb(50, 92, 87);
 	overflow: hidden;
+    background-image: url('SylvainDurifOmbaya.gif');
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 #rules-overlay {
