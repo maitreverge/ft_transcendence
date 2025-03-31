@@ -23,10 +23,11 @@ def run(playwright: Playwright) -> None:
     page = context.new_page()
 
     def logout():
+        time.sleep(1)
         youpiBanane = page.locator("#youpiBanane")
         logoutButton = page.locator("#logoutButton")
         modalLogoutButton = page.locator("#modalLogoutButton")
-        # assert "show" not in (youpiBanane.get_attribute("class") or "")
+        assert "show" not in (youpiBanane.get_attribute("class") or "")
         youpiBanane.click()
         logoutButton.click()
         modalLogoutButton.click()
