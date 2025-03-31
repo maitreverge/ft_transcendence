@@ -9,6 +9,8 @@ tournaments : List["Tournament"] = []
 
 class TournamentConsumer(AsyncWebsocketConsumer):
 
+	id = 0
+
 	async def connect(self):
 
 		await self.accept()
@@ -58,6 +60,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		print(f"RECEIVE", flush=True)
 		data = json.loads(text_data)
 		match data:
+			case {"type": "newPlayer"}:
+				await self.new_player()
 			case {"type": "newTournament"}:
 				await self.new_tournament()
 			case {"type": "enterTournament", "tournamentId": tournament_id}:		
@@ -66,7 +70,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				await self.quit_tournament()
 			case _:
 				pass
-
+	
+	async def new_player(self):
+		
+		TournamentConsumer.id -= 1
+		await self.send(text_data=json.dumps({
+			"type": "newPlayerId",			
+			"playerId": TournamentConsumer.id
+		}))
+		
 	async def new_tournament(self):	
 
 		tournament = Tournament(self.id)

@@ -24,7 +24,18 @@
 		<option value="2">2D</option>
 		<option value="3">3D</option>
 	</select>
-	<button onclick="newTournament(window.tournamentSocket)">Create</button>
+	<input
+		id="player-name"
+		type="text"
+		maxlength="50"
+		pattern=".{1,50}"
+		required
+		placeholder="enter a name"
+		oninput="sanitizeInput(this)"
+	/>
+
+	<button onclick="newPlayer(window.tournamentSocket)">Create Player</button>
+	<button onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
 	<div id="tournaments"></div>
 </div>
 <script>

@@ -50,6 +50,9 @@ function onTournamentMessage(event, socket) {
 		// case "selfAssign":
 		// 	setSelfId(data.selfId);
 		// 	break;
+		case "newPlayerId":
+			connectNewPlayer(data.playerId);
+		break;
 		case "playerList":
 			console.log("case playerlist");
 			window.playersList = data.players;
@@ -90,6 +93,11 @@ function onTournamentMessage(event, socket) {
 		default:				
 			break;
 	}
+}
+
+function connectNewPlayer(playerId) {
+	
+	console.log("CONNECT NEW PLAYER ", playerId);
 }
 
 // function setSelfId(selfId) {
@@ -294,6 +302,25 @@ function updateLinkMatchAndResult(tournamentsUp) {
 				updateMatchPlayers(matchUp.matchPlayersUpdate);
 		});
 	});
+}
+
+function sanitizeInput(input) {
+  input.value = input.value.replace(/[<>]/g, "");
+}
+
+function newPlayer(socket) {
+
+	const playerName = document.getElementById("player-name").value;
+	if (playerName.trim() === "")
+	{
+		alert("enter a name!");
+		return;
+	}
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "newPlayer",
+			playerName: playerName			
+		}));
 }
 
 function newTournament(socket) {
