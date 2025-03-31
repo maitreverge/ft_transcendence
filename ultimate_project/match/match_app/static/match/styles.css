@@ -97,3 +97,16 @@
 	border-radius: 50%;
 	background-color: rgb(244, 22, 22);
 }
+
+#quit-match-button {
+    position: fixed; /* Toujours visible même en scrollant */
+    top: 10px; 
+    right: 10px; 
+    z-index: 1000; /* Assure qu'il est au-dessus de tout */
+    background-color: red;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

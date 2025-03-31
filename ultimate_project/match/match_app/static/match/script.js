@@ -574,7 +574,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	// console.log("match mesage: ", data);
 	if (data.state == "end")
 	{	
-		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
+        end.innerHTML = `The winner is: ${data.winnerId} <br> Score: ${data.score[0]} : ${data.score[1]} ` + end.innerHTML;
 		endCont.classList.add("end-cont");
 	}
 	if (waitingState[0] != data.state) 
