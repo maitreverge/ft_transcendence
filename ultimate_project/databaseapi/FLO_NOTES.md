@@ -3,12 +3,43 @@
 🟧
 ⚠️
 --------------------------------------------------------------------------------
+									LAST DEV WEEK
+--------------------------------------------------------------------------------
+
+🟧 Test and stabilize multi-users connection 
+
+🟧 Write tests about it once merged with Thomas 
+
+🟧 Beautify register / login / 2fa landing pages
+
+🟧 Find a way to lock the database as well
+
+🟧 Lock all the routes
+
+--------------------------------------------------------------------------------
 									TOUDOU
 --------------------------------------------------------------------------------
 
-FIX LES TEST DES 2FA QUI PLANTES PARFOIS dans playright
+<<<<<<< HEAD
+=======
 
-Retravailler la securisation des routes dans fastAPI
+
+🟧 METTRE LES CHAMPS REQUIRED DANS DELETE-PROFILE.HTMl sur les champs password et otp
+>>>>>>> flo_prevent_double_auth
+
+🟧 
+
+🟧 Tester le multi login sur la branche `prevent_double_auth`
+
+🟧 TESTER LE WORKLOW : Register -> turn on 2FA -> Logout -> Login -> 2FA -> Disable 2fa -> Logout -> Login -> delete user -> Login
+
+✅ CREER DES TEST AVEC LE CSRF TOKEN	
+
+🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
+
+✅ FIX LES TEST DES 2FA QUI PLANTES PARFOIS dans playright
+
+🟧 Retravailler la securisation des routes dans fastAPI
 
 `STABILIZATION`:
 
@@ -19,7 +50,7 @@ Retravailler la securisation des routes dans fastAPI
 ✅ Tournoi 
 🟧 Mettre des alias a chaque debut de tournoi
 🟧 Injections SQL / XSS
-🟧 HTTPS (wss)
+✅ HTTPS (wss)
 🟧 Secure routes API
 🟧 Changer le mot de passe d'admin
 🟧

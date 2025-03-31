@@ -99,17 +99,17 @@
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
 
 <script>
-  document.addEventListener("htmx:beforeSwap", function (evt) {
+document.addEventListener("htmx:beforeSwap", function (evt) {
     console.log("document.addEventListener working");
     console.log("LOGIN FORM LISTENNING");
     if (evt.detail.target.id === "login-form") {
-      try {
+    	try {
         console.log("Réponse brute:", evt.detail.xhr.responseText);
         const response = JSON.parse(evt.detail.xhr.responseText);
-
+		
         if (response.success) {
-          console.log("SUCCESS")
-          evt.detail.shouldSwap = false;
+        console.log("SUCCESS")
+        evt.detail.shouldSwap = false;
 
           htmx
             .ajax("GET", "/home/", {
@@ -162,19 +162,11 @@
               }, 200);
             });
         } else {
-			// ! UNSAFE METHOD
-		// document.getElementById("login-form").innerHTML = response.message;
-
           // Sanitize the message using DOMPurify before setting content
           const messageElement = document.getElementById("login-form");
           const sanitizedMessage = DOMPurify.sanitize(response.message);
           
-		  //   // Use textContent for plain text or innerHTML with sanitized content
-		    if (sanitizedMessage.includes("<") && sanitizedMessage.includes(">")) {
-			messageElement.innerHTML = sanitizedMessage;
-          } else {
-            messageElement.textContent = sanitizedMessage;
-          }
+		  messageElement.textContent = sanitizedMessage;
         }
       } catch (e) {
         console.error("Erreur de traitement de la réponse:", e);
