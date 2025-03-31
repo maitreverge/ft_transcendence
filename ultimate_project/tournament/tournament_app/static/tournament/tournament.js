@@ -17,7 +17,7 @@ function initTournament() {
     if (window.tournamentSocket)
         window.tournamentSocket.close();
     window.tournamentSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.userName}/`
+        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/`
     );
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");	
@@ -114,7 +114,8 @@ function updateWinPlayers(socket, playersUp)
 	playersUp.forEach(plyUp => {
 		if (window.players.every(el => el.id != plyUp.playerId))
 		{
-			const newPlayerEl = createPlayerElement(socket, plyUp.playerId);
+			const newPlayerEl = createPlayerElement(
+				socket, plyUp.playerId, plyUp.playerName);
 			window.players.push(newPlayerEl);
 		}	
 	});
@@ -126,13 +127,13 @@ function updateWinPlayers(socket, playersUp)
 	});
 }
 
-function createPlayerElement(socket, playerId) {
+function createPlayerElement(socket, playerId, playerName) {
 
 	console.log("CREATE PL ELEMENT ", playerId);
 
 	const div = document.createElement("div");
 	div.className = "user";
-	div.textContent = `user: ${playerId}`;
+	div.textContent = playerName;
 	div.id = playerId;	
 	if (playerId == window.selfId)
 	{
@@ -359,7 +360,7 @@ function linkMatch(lk) {
 		}
 		fetch(
 			`/match/match${dim.value}d/` +
-			`?matchId=${lk.matchId}&playerId=${window.selfId}`)
+			`?matchId=${lk.matchId}&playerId=${window.selfId}&playerName=${window.selfName}`)
 		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  

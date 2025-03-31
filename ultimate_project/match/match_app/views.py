@@ -41,6 +41,7 @@ def enter_match3d(request: HttpRequest):
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "matchId": int(request.GET.get("matchId", "0")),
             "playerId": int(request.GET.get("playerId", "0")),
+            "playerName": int(request.GET.get("playerName", "0")),
         },
     )
 

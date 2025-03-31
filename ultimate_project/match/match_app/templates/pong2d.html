@@ -6,8 +6,9 @@
 		<script class="match-script">
 			window.rasp = "{{ rasp }}"; 
 			window.pidom = "{{ pidom }}";
-			window.matchId = "{{ matchId }}"
+			window.matchId = "{{ matchId }}";
 			window.playerId = "{{ playerId }}";
+			window.selfName = "{{ playerName }}";
 		</script>
 		<script class="match-script" src="{% static 'match/script.js' %}"
 				onload="initMatchWs()"></script>

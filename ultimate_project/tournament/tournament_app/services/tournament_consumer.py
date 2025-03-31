@@ -32,7 +32,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			await player.send(text_data=json.dumps({
 				"type": message_type + "List",			
 				message_type + "s": [
-					{message_type + "Id": s.id} for s in source
+					{message_type + "Id": s.id, message_type + "Name": s.name}
+						for s in source
 				]
 			}))
 			

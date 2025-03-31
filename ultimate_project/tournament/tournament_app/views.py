@@ -16,7 +16,7 @@ def simple_match(request: HttpRequest, user_id):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "user_id": user_id,
-            "username": request.headers.get("X-Username"),
+            "user_name": request.headers.get("X-Username"),
         },
     )
 
@@ -76,7 +76,7 @@ async def match_result(request: HttpRequest):
 
 def tournament(request: HttpRequest, user_id):
     
-    print(f"dans tournament {user_id}", flush=True) 
+    print(f"dans tournament {user_id}, {request.headers.get('X-Username')}", flush=True) 
     return render(
         request,
         "tournament.html",
@@ -84,7 +84,7 @@ def tournament(request: HttpRequest, user_id):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "user_id": user_id,
-            # "username": request.headers.get("X-Username"),
+            "user_name": request.headers.get("X-Username"),
         },
     )
 
