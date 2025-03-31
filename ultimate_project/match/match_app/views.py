@@ -56,14 +56,17 @@ async def stop_match(request: HttpRequest, playerId, matchId):
 
 def del_pong(pong_id):
 
-	print("DEL PONG {pong_id}", flush=True)
+	print(f"DEL PONG {pong_id}", flush=True)
 	from match_app.services.match_consumer import players
-     
-	pong = next((p for p in pongs if p.id == pong_id), None) 
+		
+	pong = next((p for p in pongs if p.id == pong_id), None)
+	print(players, flush=True)
+	print(pongs, flush=True)
 	if pong: 
 		players[:] = [
 			p for p in players if not any(
-				po for po in pong.players if p['playerId'] == po['playerId']
+				p['playerId'] == po['playerId'] for po in pong.players   
 		)]	
 		pongs[:] = [p for p in pongs if p.id != pong_id]
-
+	print(players, flush=True)
+	print(pongs, flush=True)

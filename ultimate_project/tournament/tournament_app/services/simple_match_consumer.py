@@ -12,9 +12,10 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 		
 		await self.accept() 
-		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
+		self.id = self.scope["url_route"]["kwargs"]["user_id"]
+		name = self.scope["url_route"]["kwargs"]["user_name"]
 		players[:] = [p for p in players if p.get('playerId') != self.id]
-		players.append({'playerId': self.id, 'busy': False})
+		players.append({'playerId': self.id, 'playerName': name, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
 		# await self.send(text_data=json.dumps({
 		# 	"type": "selfAssign", "selfId": self.id}))
