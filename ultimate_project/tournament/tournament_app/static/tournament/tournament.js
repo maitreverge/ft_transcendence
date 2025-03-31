@@ -33,20 +33,21 @@ function initTournament() {
 function connectNewPlayer(playerId, playerName) {
 
 	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
-	const ws = websockets.find(ws => ws.playerName === playerName)	
-	ws.playerId = playerId
-	console.log("ws id ", ws.playerName, ws.playerId)
-	window.tournamentSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/`
+	const ws = websockets.find(ws => ws.playerName === playerName);	
+	ws.playerId = playerId;
+	console.log("ws id ", ws.playerName, ws.playerId);
+	const socket = new WebSocket(
+        `wss://${window.pidom}/ws/tournament/tournament/${playerId}/${playerName}/`
     );
-	window.tournamentSocket.onopen = () => {
-		console.log("Connexion Tournament établie 😊");	
+	ws.socket = socket;
+	socket.onopen = () => {
+		console.log(`Connexion Tournament ${playerName} établie 😊`);	
 	}
-	window.tournamentSocket.onclose = () => {
-		console.log("Connexion Tournament disconnected 😈");
+	socket.onclose = () => {
+		console.log(`Connexion Tournament ${playerName} disconnected 😈`);
 	};	
-	window.tournamentSocket.onmessage = event =>
-		onTournamentMessage(event, window.tournamentSocket);
+	socket.onmessage = event =>
+		{};// onTournamentMessage(event, window.tournamentSocket);	
 } 
 
 function sanitizeInput(input) {
