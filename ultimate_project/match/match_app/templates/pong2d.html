@@ -25,19 +25,17 @@
 	<div id="end-cont" style="display:none">
 	<div id="end"></div>
 	</div>
-    <button id="quit-match-button" onclick="
-        stopMatch('{{matchId}}');
-        const matchDiv = document.getElementById('match');
-        if (matchDiv) matchDiv.remove();
-        const rulesOverlay = document.getElementById('rules-overlay');
-        if (rulesOverlay) rulesOverlay.style.display = 'none';"
-        >Quit Match</button>
 </div>
 <div id="rules-overlay">
     <div id="score">Score</div>
     <p id="inst-right">keys: ↑ / ↓</p>
     <p id="inst-left">keys: enter / +</p>
-    <p>Be the first one to score 5 points.</p>
+    <p>Be the first one to score 5 points.</p><button id="quit-match-button" onclick="
+    stopMatch('{{matchId}}');
+    const matchDiv = document.getElementById('match');
+    if (matchDiv) matchDiv.remove();
+    const rulesOverlay = document.getElementById('rules-overlay');
+    if (rulesOverlay) rulesOverlay.style.display = 'none';">EXIT</button>
 </div>
 <script>
     window.addEventListener("DOMContentLoaded", () => {

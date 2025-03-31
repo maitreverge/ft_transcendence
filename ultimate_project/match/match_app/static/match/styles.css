@@ -89,13 +89,10 @@
 }
 
 #quit-match-button {
-    position: fixed; /* Toujours visible même en scrollant */
-    top: 10px; 
-    right: 10px; 
+    position: relative; /* Toujours visible même en scrollant */
     z-index: 1000; /* Assure qu'il est au-dessus de tout */
     background-color: red;
     color: white;
-    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
