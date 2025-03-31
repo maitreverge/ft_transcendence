@@ -1,5 +1,6 @@
 
 window.players = []
+websockets = []
 
 function initTournament() {
 	
@@ -29,6 +30,53 @@ function initTournament() {
 		onTournamentMessage(event, window.tournamentSocket);
 }
 
+function connectNewPlayer(playerId, playerName) {
+
+	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
+	const ws = websockets.find(ws => ws.playerName === playerName)	
+	ws.playerId = playerId
+	console.log("ws id ", ws.playerName, ws.playerId)
+	window.tournamentSocket = new WebSocket(
+        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/`
+    );
+	window.tournamentSocket.onopen = () => {
+		console.log("Connexion Tournament établie 😊");	
+	}
+	window.tournamentSocket.onclose = () => {
+		console.log("Connexion Tournament disconnected 😈");
+	};	
+	window.tournamentSocket.onmessage = event =>
+		onTournamentMessage(event, window.tournamentSocket);
+} 
+
+function sanitizeInput(input) {
+	input.value = input.value.replace(/[<>]/g, "");
+}
+  
+function newPlayer(socket) {
+  
+	const playerName = document.getElementById("player-name").value;
+	if (playerName.trim() === "")
+	{
+		alert("enter a name!");
+		return;
+	}
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "newPlayer",
+			playerName: playerName			
+		}));
+	websockets.push({playerName: playerName});
+}
+  
+function newTournament(socket) {
+  
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "newTournament"			
+		}));
+}
+
 function closeTournamentSocket() {
 	
 	if (typeof stopMatch === 'function')
@@ -51,7 +99,7 @@ function onTournamentMessage(event, socket) {
 		// 	setSelfId(data.selfId);
 		// 	break;
 		case "newPlayerId":
-			connectNewPlayer(data.playerId);
+			connectNewPlayer(data.playerId, data.playerName);
 		break;
 		case "playerList":
 			console.log("case playerlist");
@@ -93,11 +141,6 @@ function onTournamentMessage(event, socket) {
 		default:				
 			break;
 	}
-}
-
-function connectNewPlayer(playerId) {
-	
-	console.log("CONNECT NEW PLAYER ", playerId);
 }
 
 // function setSelfId(selfId) {
@@ -304,32 +347,7 @@ function updateLinkMatchAndResult(tournamentsUp) {
 	});
 }
 
-function sanitizeInput(input) {
-  input.value = input.value.replace(/[<>]/g, "");
-}
 
-function newPlayer(socket) {
-
-	const playerName = document.getElementById("player-name").value;
-	if (playerName.trim() === "")
-	{
-		alert("enter a name!");
-		return;
-	}
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({
-			type: "newPlayer",
-			playerName: playerName			
-		}));
-}
-
-function newTournament(socket) {
-
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({
-			type: "newTournament"			
-		}));
-}
 
 function enterTournament(socket, tournamentId) {
 	const scripts = Array.from(document.getElementsByTagName("script"));

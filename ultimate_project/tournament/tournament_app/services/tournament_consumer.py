@@ -3,6 +3,7 @@ import json
 from tournament_app.services.tournament import Tournament
 from typing import List
 import aiohttp
+import html
 
 players : List["TournamentConsumer"] = []
 tournaments : List["Tournament"] = []
@@ -60,8 +61,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		print(f"RECEIVE", flush=True)
 		data = json.loads(text_data)
 		match data:
-			case {"type": "newPlayer"}:
-				await self.new_player()
+			case {"type": "newPlayer", "playerName": player_name}:
+				await self.new_player(player_name)
 			case {"type": "newTournament"}:
 				await self.new_tournament()
 			case {"type": "enterTournament", "tournamentId": tournament_id}:		
@@ -71,12 +72,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			case _:
 				pass
 	
-	async def new_player(self):
-		
+	async def new_player(self, player_name):
+
+		player_name = html.escape(player_name)
 		TournamentConsumer.id -= 1
 		await self.send(text_data=json.dumps({
 			"type": "newPlayerId",			
-			"playerId": TournamentConsumer.id
+			"playerId": TournamentConsumer.id,
+			"playerName": player_name
 		}))
 		
 	async def new_tournament(self):	
