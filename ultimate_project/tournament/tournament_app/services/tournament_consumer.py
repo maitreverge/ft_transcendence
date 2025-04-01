@@ -17,6 +17,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 		self.id = self.scope["url_route"]["kwargs"]["user_id"]
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
+		print(f"CONNECT TOURNAMENT {self.id} {self.name}", flush=True)
 		players.append(self)
 		# await self.send(text_data=json.dumps({
 		# 	"type": "selfAssign", "selfId": self.id})) 
@@ -90,6 +91,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 	async def enter_tournament(self, tournament_id):
 
+		print(f"ENTER TOURNAMENT {self.id} {self.name} {tournament_id}", flush=True)
 		tournament = next(
 			(t for t in tournaments if t.id == tournament_id), None)		
 		if tournament and self not in tournament.players:

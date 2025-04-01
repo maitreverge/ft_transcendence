@@ -100,7 +100,7 @@ function enterTournament(socket, tournamentId) {
 		console.log("DEJA SCRIPT");
 		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
 	};
-	console.log("entertournement: ", tournamentId);
+	console.log("entertournement: ", socket, " ", tournamentId);
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "enterTournament",
@@ -217,6 +217,7 @@ function createPlayerElement(socket, playerId, playerName) {
 	div.className = "user";
 	div.textContent = playerName;
 	div.id = playerId;	
+	
 	if (playerId == window.selfId)
 	{
 		div.classList.add("self-player");
@@ -225,7 +226,15 @@ function createPlayerElement(socket, playerId, playerName) {
 			quitTournament(socket);	
 		}		
 	}
+	dragPlayer(div);
 	return div;
+}
+
+function dragPlayer(div) {
+
+	div.draggable = true;
+	div.addEventListener("dragstart",
+		e => {console.log("dans drag"); e.dataTransfer.setData("text/plain", e.target.id);});
 }
 
 function quitTournament(socket) {
@@ -296,19 +305,32 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 
 	console.log("ADD TO TOURNAMENT ", tournamentsContainer, " : ", tournament);
 
-  const div = document.createElement("div");	
-  div.className = "tournament";
-  div.textContent = `tournament: ${tournament.tournamentId}`;
-  div.id = tournament.tournamentId;
-  div.className = "tournament-cont"
-  div.onclick = () => enterTournament(socket, tournament.tournamentId);
-  const overlayPattern = document.createElement("div");
-  overlayPattern.id = "overlay-pattern";
-  const playersCont = document.createElement("div");
-  playersCont.id = "players-cont";
-  div.appendChild(playersCont);
-  div.appendChild(overlayPattern);
-  tournamentsContainer.appendChild(div);	
+	const div = document.createElement("div");	
+	div.className = "tournament";
+	div.textContent = `tournament: ${tournament.tournamentId}`;
+	div.id = tournament.tournamentId;
+	div.className = "tournament-cont"
+	div.onclick = () => enterTournament(socket, tournament.tournamentId);
+	const overlayPattern = document.createElement("div");
+	overlayPattern.id = "overlay-pattern";
+	const playersCont = document.createElement("div");
+	playersCont.id = "players-cont";
+	div.appendChild(playersCont);
+	div.appendChild(overlayPattern);
+	dropTournament(div, tournament.tournamentId);
+	tournamentsContainer.appendChild(div);	
+}
+
+function dropTournament(div, tournamentId) {
+
+	div.addEventListener("dragover", e => e.preventDefault());
+	div.addEventListener("drop", e => {
+		console.log("dans drop");
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		const socket = websockets.find(el => el.playerId == elementId).socket;	
+		enterTournament(socket, tournamentId);
+	});
 }
 
 function getPattern(tournamentId) {
@@ -495,6 +517,7 @@ function matchResult(rsl) {
 }
 
 function updateMatchsPlayers(pack) {
+
 	if (pack)
 		pack.forEach(plys => updateMatchPlayers(plys));
 }
