@@ -106,7 +106,7 @@ function setSelfMatchId() {
         match.onclick = function() {
 			fetch(
 				`/match/match${dim.value}d/` +
-				`?matchId=${match.id}&playerId=${window.selfId}`)
+				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}`)
 			.then(response => {
 				if (!response.ok) 
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
@@ -453,7 +453,8 @@ function updateSimpleWinPlayers(socket, playersUp)
 	playersUp.forEach(plyUp => {
 		if (window.simplePlayers.every(el => el.id != plyUp.playerId))
 		{
-			const newPlayerEl = createSimplePlayerElement(socket, plyUp.playerId);
+			const newPlayerEl = createSimplePlayerElement(
+				socket, plyUp.playerId, plyUp.playerName);
 			window.simplePlayers.push(newPlayerEl);
 		}	
 	});
@@ -481,12 +482,12 @@ function updateSimplePlayersCont(playersUp) {
 	});
 }
 
-function createSimplePlayerElement(socket, playerId) {
+function createSimplePlayerElement(socket, playerId, playerName) {
 
 	console.log("CREATE PL ELEMENT ", playerId);
 	const div = document.createElement("div");
 	div.className = "user";
-	div.textContent = `user: ${playerId}`;
+	div.textContent = playerName;
 	div.id = playerId;	
 	if (playerId == window.selfId)
 		div.classList.add("self-player");
@@ -511,7 +512,7 @@ function initSimpleMatch() {
     if (window.simpleMatchSocket)
         window.simpleMatchSocket.close();
     window.simpleMatchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.userName}/`
+        `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
     );
 	window.simpleMatchSocket.onopen = () => {
 		console.log("Connexion Simple Match établie 😊");	

@@ -6,8 +6,9 @@
 		<script class="match-script">
 			window.rasp = "{{ rasp }}"; 
 			window.pidom = "{{ pidom }}";
-			window.matchId = "{{ matchId }}"
+			window.matchId = "{{ matchId }}";
 			window.playerId = "{{ playerId }}";
+			window.selfName = "{{ playerName }}";
 		</script>
 		<script class="match-script" src="{% static 'match/script.js' %}"
 				onload="initMatchWs()"></script>
@@ -50,8 +51,7 @@
         // Marque que la redirection a eu lieu pour éviter la boucle infinie
         sessionStorage.setItem("redirected", "true");
 
-        // Redirige vers la dernière page visitée
-                sessionStorage.setItem("redirected", "true");
+        sessionStorage.setItem("redirected", "true");
     } else {
         sessionStorage.removeItem("redirected");
         console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
