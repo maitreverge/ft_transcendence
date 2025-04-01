@@ -22,9 +22,9 @@ def enter_match2d(request: HttpRequest):
 		pidom = os.getenv("HOST_IP", "localhost:8443")
 	print("ICIIIIIIIIII", flush=True)
 	print(f"{int(request.GET.get('playerId', '0'))}, "
-		f"{int(request.GET.get('playerName', '0'))}, "
+		f"{request.GET.get('playerName', '0')}, "
 		f"{int(request.GET.get('player2Id', '0'))}, "
-		f"{int(request.GET.get('player2Name', '0'))}",
+		f"{request.GET.get('player2Name', '0')}",
 		flush=True)
 
 	return render(
@@ -35,9 +35,9 @@ def enter_match2d(request: HttpRequest):
 			"pidom": os.getenv("HOST_IP", "localhost:8443"),
 			"matchId": int(request.GET.get("matchId", "0")),
 			"playerId": int(request.GET.get("playerId", "0")),
-			"playerName": int(request.GET.get("playerName", "0")),
+			"playerName": request.GET.get("playerName", "0"),
 			"player2Id": int(request.GET.get("player2Id", "0")),
-			"player2Name": int(request.GET.get("player2Name", "0")),
+			"player2Name": request.GET.get("player2Name", "0"),
 		},
 	)
 

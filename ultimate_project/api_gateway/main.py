@@ -349,9 +349,9 @@ async def match_proxy(
     request: Request,
     matchId: int = Query(None),
     playerId: int = Query(None),
-    playerName: int = Query(None),
+    playerName: str = Query(None),
     player2Id: int = Query(None),
-    player2Name: int = Query(None)    
+    player2Name: str = Query(None)    
 ):
     """
     Proxy requests to the match microservice.

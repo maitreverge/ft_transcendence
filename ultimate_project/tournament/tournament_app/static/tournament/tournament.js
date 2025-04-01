@@ -496,7 +496,7 @@ function linkMatch(lk) {
 	if (!tournament)
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
-	overlay.style = "transform:translateX(200px);"
+	overlay.style = "transform:translate(-200px, 200px);"
 	const localMatch = tournament.querySelector(`#${lk.localMatchId}`);
 	if (!localMatch)
 		return;
