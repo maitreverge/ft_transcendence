@@ -328,8 +328,13 @@ function dropTournament(div, tournamentId) {
 		console.log("dans drop");
 		e.preventDefault();
 		const elementId = e.dataTransfer.getData("text/plain");
-		const socket = websockets.find(el => el.playerId == elementId).socket;	
-		enterTournament(socket, tournamentId);
+		const socket = websockets.find(el => el.playerId == elementId);	
+		if (!socket)
+		{
+			alert("not your player");
+			return;
+		}
+		enterTournament(socket.socket, tournamentId);
 	});
 }
 
@@ -400,10 +405,6 @@ function updateLinkMatchAndResult(tournamentsUp) {
 	});
 }
 
-
-
-
-
 function linkMatch(lk) {
 
 	console.log("LINK MATCH ", lk);
@@ -421,8 +422,8 @@ function linkMatch(lk) {
 	const localP2 = localMatch.querySelector(`#pl2`);
 	if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
 		return;
-	localP1.innerText = lk.p1Id;
-	localP2.innerText = lk.p2Id;
+	localP1.innerText = lk.p1Name;
+	localP2.innerText = lk.p2Name;
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
 	{
 		window.selfMatchId = lk.matchId;

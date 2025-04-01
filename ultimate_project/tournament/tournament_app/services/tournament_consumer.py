@@ -15,7 +15,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 
 		await self.accept()
-		self.id = self.scope["url_route"]["kwargs"]["user_id"]
+		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		print(f"CONNECT TOURNAMENT {self.id} {self.name}", flush=True)
 		players.append(self)

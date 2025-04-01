@@ -39,12 +39,13 @@ class Tournament():
 	async def launchTournament(self):
 
 		self.launch = True
-		await self.start_match(self.players[0].id, self.players[1].id, "m2")
-		await self.start_match(self.players[2].id, self.players[3].id, "m3")
+		await self.start_match(self.players[0].id, self.players[0].name, self.players[1].id, self.players[1].name, "m2")
+		await self.start_match(self.players[2].id, self.players[2].name, self.players[3].id, self.players[3].name, "m3")
+		# await self.start_match(self.players[2].id, self.players[3].id, "m3")
 
-	async def start_match(self, p1_id, p2_id, local_match_id):
+	async def start_match(self, p1_id, p1_name, p2_id, p2_name, local_match_id):
 
-		print(f"START MATCH p1:{p1_id} p2:{p2_id} lmt:{local_match_id}", flush=True)
+		print(f"START MATCH p1:{p1_id} {p1_name} p2:{p2_id} {p2_name} lmt:{local_match_id}", flush=True)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
     				f"http://match:8002/match/new-match/?p1={p1_id}&p2={p2_id}"
@@ -58,7 +59,9 @@ class Tournament():
 						"localMatchId": local_match_id,			
 						"matchId": match_id,
 						"p1Id": p1_id,
-						"p2Id": p2_id
+						"p2Id": p2_id,
+						"p1Name": p1_name,
+						"p2Name": p2_name,
 					}
 					match = {
 						"matchId": match_id,						
@@ -75,6 +78,9 @@ class Tournament():
 	async def match_result(self, match_id, winner_id, looser_id):
 
 		print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
+
+		winner = next((p for p in self.players if p.id == winner_id), None)
+		looser = next((p for p in self.players if p.id == looser_id), None)	
 		self.n_match += 1
 		match = next(
 			(m for m in self.matchs if m.get('matchId') == match_id), None)
@@ -87,7 +93,9 @@ class Tournament():
 				"p1Id": match.get('linkMatch', {}).get('p1Id'),
 				"p2Id": match.get('linkMatch', {}).get('p2Id'),
 				"winnerId": winner_id,
-				"looserId": looser_id			
+				"looserId": looser_id,
+				"winnerName": winner.name,
+				"looserName": looser.name			
 			}
 			match['matchResult'] = match_result
 			match['matchPlayersUpdate'] = None
@@ -97,7 +105,10 @@ class Tournament():
 		elif self.n_match == 2:
 			link_match = await self.start_match(
 				self.matchs[0].get('matchResult', {}).get('winnerId'),
-				self.matchs[1].get('matchResult', {}).get('winnerId'), "m1")			
+				self.matchs[0].get('matchResult', {}).get('winnerName'),
+				self.matchs[1].get('matchResult', {}).get('winnerId'),
+				self.matchs[1].get('matchResult', {}).get('winnerName'),
+				"m1")			
 			await self.send_match_result(match_result)
 			await self.send_link_match(link_match)
 		elif self.n_match == 3:
