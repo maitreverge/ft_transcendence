@@ -62,7 +62,7 @@ Besoin d'une date butoire cette semaine pour que je puisse reprendre mon travail
 
 🟧 
 
-🟧 
+🟧 DELETE LE BASH MIGRATION.DELETE.SH DANS LE MAKEFILE
 
 🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES ==> VOIR AVEC MERGE THOMAS
 
