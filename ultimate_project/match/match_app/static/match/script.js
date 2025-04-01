@@ -574,7 +574,14 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	// console.log("match mesage: ", data);
 	if (data.state == "end")
 	{	
-        end.innerHTML = `The winner is: ${data.winnerId} <br> Score: ${data.score[0]} : ${data.score[1]} ` + end.innerHTML;
+        end.innerHTML = `The winner is: ${data.winnerId} <br> 
+        Score: ${data.score[0]} : ${data.score[1]}
+                <img src="https://media1.tenor.com/m/Xd5ZJk8TV84AAAAd/christ-cosmique.gif" 
+             alt="Winner GIF" 
+             class="winner-gif">
+
+             ` 
+        + end.innerHTML;
 		endCont.classList.add("end-cont");
 	}
 	if (waitingState[0] != data.state) 

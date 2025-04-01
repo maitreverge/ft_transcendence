@@ -149,3 +149,43 @@
     right: 10px;
     font-size: 1.2em;
 }
+
+#end {
+    font-weight: bold;
+    font-size: 30px;
+    color: gold;
+    text-align: center;
+    padding: 20px;
+    border: 3px solid gold;
+    border-radius: 10px;
+    background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.8), 
+                0px 0px 30px rgba(255, 165, 0, 0.5);
+    text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
+    animation: glow 1.5s infinite alternate, colorShift 3s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0px 0px 10px rgba(255, 215, 0, 0.8),
+                    0px 0px 20px rgba(255, 165, 0, 0.5);
+    }
+    100% {
+        box-shadow: 0px 0px 20px rgba(0, 174, 255, 1),
+                    0px 0px 40px rgba(0, 140, 255, 0.7);
+    }
+}
+
+@keyframes colorShift {
+    0% {
+        color: gold;
+        border-color: gold;
+        text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
+    }
+    100% {
+        color: #00aaff; /* Bleu électrique */
+        border-color: #00aaff;
+        text-shadow: 2px 2px 5px rgba(0, 140, 255, 0.7);
+    }
+}
+
