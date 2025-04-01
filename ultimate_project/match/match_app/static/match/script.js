@@ -158,7 +158,7 @@ function setCommands(socket, socket2) {
     }
 
     document.addEventListener("keydown", function(event) {
-		event.preventDefault();
+		// event.preventDefault();
         if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
             keysPressed[event.key] = true;
         }
