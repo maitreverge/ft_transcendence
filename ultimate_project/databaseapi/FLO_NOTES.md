@@ -6,6 +6,8 @@
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
 
+🟧 Create a worklofo to delete the DB at 42
+
 🟧 Test and stabilize multi-users connection 
 
 🟧 Write tests about it once merged with Thomas 
@@ -20,12 +22,9 @@
 									TOUDOU
 --------------------------------------------------------------------------------
 
-<<<<<<< HEAD
-=======
 
 
 🟧 METTRE LES CHAMPS REQUIRED DANS DELETE-PROFILE.HTMl sur les champs password et otp
->>>>>>> flo_prevent_double_auth
 
 🟧 
 
