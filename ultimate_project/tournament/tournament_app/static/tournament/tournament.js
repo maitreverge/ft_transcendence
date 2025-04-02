@@ -53,6 +53,9 @@ function connectNewPlayer(playerId, playerName) {
 	}
 	socket.onclose = () => {
 		console.log(`Connexion Tournament ${playerName} disconnected 😈`);
+		console.log(websockets);
+		websockets = websockets.filter(ws => ws.socket !== socket);
+		console.log(websockets);
 	};	
 	socket.onmessage = event =>
 		{};// onTournamentMessage(event, window.tournamentSocket);	
@@ -239,6 +242,16 @@ function createPlayerElement(socket, playerId, playerName) {
 			quitTournament(socket);	
 		}		
 	}
+	else 
+		div.onclick =  event => {
+			event.stopPropagation();
+			const ws = websockets.find(ws => ws.playerId == playerId);
+			if (!ws)
+				alert("not your player WOMAN");
+			else
+				ws.socket.close();	
+			console.log(websockets);
+		}		
 	dragPlayer(div);
 	return div;
 }
