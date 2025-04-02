@@ -328,10 +328,96 @@ function dropTournament(div, tournamentId) {
 		console.log("dans drop");
 		e.preventDefault();
 		const elementId = e.dataTransfer.getData("text/plain");
-		const socket = websockets.find(el => el.playerId == elementId).socket;	
-		enterTournament(socket, tournamentId);
+		const socket = websockets.find(el => el.playerId == elementId);	
+		if (!socket)
+		{
+			alert("not your player");
+			return;
+		}
+		enterTournament(socket.socket, tournamentId);
 	});
 }
+
+function dropMatch(lk, div, overlay) {
+
+	div.addEventListener("dragover", e => e.preventDefault());
+	div.addEventListener("drop", e => {
+		console.log("dans drop");
+		e.preventDefault();
+		e.stopPropagation();
+		const elementId = e.dataTransfer.getData("text/plain");
+
+		const socket = websockets.find(el => el.playerId == elementId);	
+		if (!socket)
+		{
+			alert("not your player MAN");
+			return;
+		}
+		// enterTournament(socket.socket, tournamentId);
+		
+		enterMatch(lk, div, overlay, socket.playerId, socket.playerName)
+	});
+}
+
+function enterMatch(lk, div, overlay, playerId, playerName) {
+	const scripts = Array.from(document.getElementsByTagName("script"));
+	scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
+	if (scripts.some(script => script.className === "match-script")) {
+		console.log("DEJA SCRIPT");
+		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
+	};
+	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+	{
+		window.selfMatchId = lk.matchId;
+		// localMatch.classList.add("next-match");
+	}
+
+	const wss = websockets.filter(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
+	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+		wss.push({playerId: window.selfId, playerName: window.selfName});
+	let player2Id = 0;
+	let player2Name = "";
+
+	// if (wss.length == 0)
+
+	// else
+	if (wss.length >= 1)
+	{
+		playerId = wss[0].playerId;
+		playerName = wss[0].playerName;
+	}
+	if (wss.length == 2)
+	{
+		player2Id = wss[1].playerId;
+		player2Name = wss[1].playerName;
+	}
+	// if (le joueur 1 est user et user2 est fantom ou linverse)
+	// if (le joueur 1 et 2 sont fantom)
+	// if (le joueur 1 est user , et aucun ds fantom)
+	// if (le joueur 1 est fantom et aucun autre ds fantom ni user) 
+	// if (lk.p1Id || )	
+	fetch(
+		`/match/match${dim.value}d/` +
+		`?matchId=${lk.matchId}` +
+		`&playerId=${playerId}&playerName=${playerName}` +
+		`&player2Id=${player2Id}&player2Name=${player2Name}`
+	)
+	.then(response => {
+		if (!response.ok) 
+			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+		return response.text();
+	})
+	.then(data => {
+		// if ([...div.children].some(el => el.id == lk.p1Id) && [...div.children].some(el => el.id == lk.p2Id))
+		// {
+			const oldScripts = document.querySelectorAll("script.match-script");			
+			oldScripts.forEach(oldScript => oldScript.remove());
+			window.actualScriptTid = lk.tournamentId;//?
+			loadTournamentHtml(data, overlay);
+		// }
+	})
+	.catch(error => console.log(error))
+};
 
 function getPattern(tournamentId) {
 
@@ -400,10 +486,6 @@ function updateLinkMatchAndResult(tournamentsUp) {
 	});
 }
 
-
-
-
-
 function linkMatch(lk) {
 
 	console.log("LINK MATCH ", lk);
@@ -414,6 +496,7 @@ function linkMatch(lk) {
 	if (!tournament)
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
+	overlay.style = "transform:translate(-200px, 200px);"
 	const localMatch = tournament.querySelector(`#${lk.localMatchId}`);
 	if (!localMatch)
 		return;
@@ -421,8 +504,8 @@ function linkMatch(lk) {
 	const localP2 = localMatch.querySelector(`#pl2`);
 	if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
 		return;
-	localP1.innerText = lk.p1Id;
-	localP2.innerText = lk.p2Id;
+	localP1.innerText = lk.p1Name;
+	localP2.innerText = lk.p2Name;
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
 	{
 		window.selfMatchId = lk.matchId;
@@ -459,6 +542,7 @@ function linkMatch(lk) {
 		})
 		.catch(error => console.log(error))
 	};
+	dropMatch(lk, localMatch, overlay)
 }
 
 function loadTournamentHtml(data, overlay) {

@@ -709,7 +709,8 @@ function sequelInitMatchWs(socket) {
 		else
 			spec.style.display = "none";
 	}
-	initSecPlayer();
+	if (window.player2Id)
+		initSecPlayer();
 	setCommands(socket, window.matchSocket2);
 }
 
@@ -722,7 +723,7 @@ function initSecPlayer() {
 
     window.matchSocket2 = new WebSocket(
         `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${-window.playerId}`);
+        `?playerId=${window.player2Id}`);
 	window.matchSocket2.onopen = () => {
 		console.log("Connexion Match établie 2nd Player😊");
 	};
