@@ -354,12 +354,14 @@ function sendPlayerClick(socket, event, selected)
 	if (!window.busyElement)
 		window.busyElement = selected;
 	window.busyElement.classList.add("invitation-waiting")
+	let name = selected.name;
 	if (selected.id == window.selfId)
-		window.player2Name = document.getElementById("match-player-name").value;
+		name = document.getElementById("match-player-name").value;
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
-			selectedId: Number(selected.id)			
+			selectedId: Number(selected.id),
+			selectedName: name
 		}));
 }
 
@@ -529,7 +531,8 @@ function createSimplePlayerElement(socket, playerId, playerName) {
 	const div = document.createElement("div");
 	div.className = "user";
 	div.textContent = playerName;
-	div.id = playerId;	
+	div.id = playerId;
+	div.name = playerName;	
 	if (playerId == window.selfId)
 		div.classList.add("self-player");
 	div.onclick = event => sendPlayerClick(socket, event, div);	  

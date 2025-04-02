@@ -572,10 +572,15 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);
-	const winnerId = data.winnerId == window.playerId ? window.selfName : window.player2Name;
+	
+	//! TO OPTI
+	const leftNameElement = document.getElementById("inst-left");
+	const rightNameElement = document.getElementById("inst-right");
+	leftNameElement.innerText = data.names[0];
+	rightNameElement.innerText = data.names[1];
 	if (data.state == "end")
 	{	
-        end.innerHTML = `The winner is: ${winnerId} <br> 
+        end.innerHTML = `The winner is: ${data.winnerName} <br> 
         Score: ${data.score[0]} : ${data.score[1]}
                 <img src="https://media1.tenor.com/m/Xd5ZJk8TV84AAAAd/christ-cosmique.gif" 
              alt="Winner GIF" 
@@ -710,7 +715,7 @@ function sequelInitMatchWs(socket) {
 		else
 			spec.style.display = "none";
 	}
-	console.log("BEFORE INIT SEC !!!!!! ", window.player2Id, typeof(window.player2Id) );
+	console.log("BEFORE INIT SEC !!!!!! ", window.player2Id, typeof(window.player2Id));
 	if (window.player2Id != 0)
 	{
 		console.log("INIT SEC !!!!!! ", window.player2Id);

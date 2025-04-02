@@ -16,9 +16,10 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		
 		await self.accept() 
 		self.id = self.scope["url_route"]["kwargs"]["user_id"]
-		name = self.scope["url_route"]["kwargs"]["user_name"]
+		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		players[:] = [p for p in players if p.get('playerId') != self.id]
-		players.append({'playerId': self.id, 'playerName': name, 'busy': False})
+		players.append(
+			{'playerId': self.id, 'playerName': self.name, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
 		# await self.send(text_data=json.dumps({
 		# 	"type": "selfAssign", "selfId": self.id}))
@@ -54,8 +55,12 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 		data = json.loads(text_data)
 		match data:			
-			case {"type": "playerClick", "selectedId": selectedId}:
-				await self.invitation(selectedId)				
+			case {
+				"type": "playerClick",
+		 		"selectedId": selectedId,
+				"selectedName": selectedName
+			}:
+				await self.invitation(selectedId, selectedName)				
 			case {
 				"type": "confirmation",
 				"response": response,
@@ -65,7 +70,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			case _:
 				pass
 
-	async def invitation(self, selectedId):
+	async def invitation(self, selectedId, selectedName):
 	
 		selectedPlayer = next(
 			(p for p in players if p['playerId'] == selectedId), None)
@@ -75,7 +80,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			(p for p in players if p['playerId'] == self.id), None)
 		applicantPlayer = next(
 			(p for p in players if p['playerId'] == self.id), None)
-		if (await self.self_invitation(selectedId, selectedPlayer)):
+		if (await self.self_invitation(
+			selectedId, selectedPlayer, selectedName)):
 			return
 		if await self.cancel_invitation(
 			applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):		
@@ -89,11 +95,11 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		await self.send_demand(
 			selfSelectedPlayer, selectedPlayer,	applicantPlayer)
 
-	async def self_invitation(self, selectedId, selectedPlayer):
+	async def self_invitation(self, selectedId, selectedPlayer, selectedName):
 
 		if selectedId == self.id:
 			selectedPlayer['busy'] = -selectedId
-			match_id = await self.start_match(-selectedId)
+			match_id = await self.start_match(-selectedId, selectedName)
 			print(f"iwille send confiration back to {self.id} from {selectedId}", flush=True)
 			await self.send_confirmation_back(
 				True, selectedId, selectedId, match_id, self)
@@ -189,21 +195,23 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			"matchId": match_id	
 		}))
 
-	async def start_match(self, applicantId):
+	async def start_match(self, applicantId, applicantName):
 
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
     				f"http://match:8002/match/new-match/"
-    				f"?p1={applicantId}&"
-    				f"p2={self.id}"
+    				f"?p1Id={applicantId}&p1Name={applicantName}"
+    				f"&p2Id={self.id}&p2Name={self.name}"
 				) as response:
 				if response.status == 201:
 					data = await response.json()
 					match_id = data.get('matchId', None)
 					matchs.append({
 						"matchId": match_id,
-						"playerId": applicantId, 
-						"otherId": self.id,			
+						"playerId": applicantId,
+						"playerName": applicantName, 
+						"otherId": self.id,
+						"otherName": self.name		
 					})
 					return match_id
 				return None
