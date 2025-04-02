@@ -169,7 +169,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			(p for p in players if p['playerId'] == applicantId), None)
 		if response:
 			if self.is_busy_with(applicant_player, self.id):			
-				match_id = await self.start_match(applicantId)
+				match_id = await self.start_match(
+					applicantId, applicant_player.get('playerName'))
 			else:		
 				return
 		elif self.is_busy_with(applicant_player, self.id):
