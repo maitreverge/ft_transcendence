@@ -51,7 +51,8 @@ class Tournament():
 		print(f"START MATCH p1:{p1[0]} {p1[1]} p2:{p2[0]} {p2[1]} lmt:{local_match_id}", flush=True)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
-    				f"http://match:8002/match/new-match/?p1={p1[0]}&p2={p2[0]}"
+    				f"http://match:8002/match/new-match/"
+					f"?p1Id={p1[0]}&p1Name={p1[1]}&p2Id={p2[0]}&p2Name={p2[1]}"
 				) as response:
 				if response.status == 201:
 					data = await response.json()

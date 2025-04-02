@@ -76,10 +76,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def new_player(self, player_name):
 
 		player_name = html.escape(player_name)
-		TournamentConsumer.id -= 1
+		twins_players = [p for p in players if p.name == player_name]
+		if len(twins_players) >= 1:
+			print(f"playername is yet exist", flush=True)
+			id = 0
+		else:
+			TournamentConsumer.id -= 1
+			id = TournamentConsumer.id			
 		await self.send(text_data=json.dumps({
 			"type": "newPlayerId",			
-			"playerId": TournamentConsumer.id,
+			"playerId": id,
 			"playerName": player_name
 		}))
 		

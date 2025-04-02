@@ -32,6 +32,14 @@ function initTournament() {
 
 function connectNewPlayer(playerId, playerName) {
 
+	if (!playerId)
+	{
+		alert("player name yet exist!");
+		console.log(websockets);
+		websockets = websockets.filter(ws => ws.playerId !== undefined);	
+		console.log(websockets);
+		return;
+	}
 	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
 	const ws = websockets.find(ws => ws.playerName === playerName);	
 	ws.playerId = playerId;
@@ -60,6 +68,11 @@ function newPlayer(socket) {
 	if (playerName.trim() === "")
 	{
 		alert("enter a name!");
+		return;
+	}
+	if (websockets.length >= 3)
+	{
+		alert("you can't create more than three players!");
 		return;
 	}
 	if (socket.readyState === WebSocket.OPEN) 
