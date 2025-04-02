@@ -118,42 +118,42 @@ function setSelfMatchId() {
 		};					
 	});
 }
-matchWebsockets = []
-function newMatchPlayer(socket) {
+// matchWebsockets = []
+// function newMatchPlayer(socket) {
   
-	const playerName = document.getElementById("match-player-name").value;
-	if (playerName.trim() === "")
-	{
-		alert("enter a name!");
-		return;
-	}
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({
-			type: "newPlayer",
-			playerName: playerName			
-		}));
-	matchWebsockets.push({playerName: playerName});
-}
+// 	const playerName = document.getElementById("match-player-name").value;
+// 	if (playerName.trim() === "")
+// 	{
+// 		alert("enter a name!");
+// 		return;
+// 	}
+// 	if (socket.readyState === WebSocket.OPEN) 
+// 		socket.send(JSON.stringify({
+// 			type: "newPlayer",
+// 			playerName: playerName			
+// 		}));
+// 	matchWebsockets.push({playerName: playerName});
+// }
 
-function connectNewMatchPlayer(playerId, playerName) {
+// function connectNewMatchPlayer(playerId, playerName) {
 
-	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
-	const ws = websockets.find(ws => ws.playerName === playerName);	
-	ws.playerId = playerId;
-	console.log("ws id ", ws.playerName, ws.playerId);
-	const socket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
-    );
-	ws.socket = socket;
-	socket.onopen = () => {
-		console.log(`Connexion Tournament ${playerName} établie 😊`);	
-	}
-	socket.onclose = () => {
-		console.log(`Connexion Tournament ${playerName} disconnected 😈`);
-	};	
-	socket.onmessage = event =>
-		{};// onTournamentMessage(event, window.tournamentSocket);	
-} 
+// 	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
+// 	const ws = websockets.find(ws => ws.playerName === playerName);	
+// 	ws.playerId = playerId;
+// 	console.log("ws id ", ws.playerName, ws.playerId);
+// 	const socket = new WebSocket(
+//         `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
+//     );
+// 	ws.socket = socket;
+// 	socket.onopen = () => {
+// 		console.log(`Connexion Tournament ${playerName} établie 😊`);	
+// 	}
+// 	socket.onclose = () => {
+// 		console.log(`Connexion Tournament ${playerName} disconnected 😈`);
+// 	};	
+// 	socket.onmessage = event =>
+// 		{};// onTournamentMessage(event, window.tournamentSocket);	
+// } 
 // function movePlayerInMatch(socket, matchElement, match) {
 	
 // 	const playersContainer = document.getElementById("players");
