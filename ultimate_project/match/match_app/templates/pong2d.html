@@ -24,6 +24,10 @@
 	<div id="ball2"></div>
 	<div id="p2"></div>
 	<div id="waiting">Waiting</div>
+	<div class="loader">
+        <div class="circle"></div>
+        <div class="countdown">3</div>
+    </div>
 	<div id="end-cont" style="display:none">
 	<div id="end"></div>
 	</div>
@@ -59,4 +63,24 @@
         console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
     }
 });
+
+    const countdownElement = document.querySelector('.countdown');
+    const loaderElement = document.querySelector('.loader');
+    const countdownText = ['3', '2', '1', 'GO!'];
+
+    let currentIndex = 0;
+
+    const countdownInterval = setInterval(() => {
+        countdownElement.textContent = countdownText[currentIndex];
+        currentIndex++;
+
+        // Quand "GO!" est affiché, on arrête l'intervalle et cache l'élément loader
+        if (currentIndex === countdownText.length) {
+            clearInterval(countdownInterval); // Arrêter l'intervalle
+            setTimeout(() => {
+                loaderElement.classList.add('no-waiting'); // Ajouter la classe no-waiting pour cacher l'élément
+            }, 1500); // Laisser un petit délai avant de cacher (optionnel)
+        }
+    }, 1000); // Change le texte toutes les 1 seconde
+
 </script>
