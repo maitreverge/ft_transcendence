@@ -1,17 +1,13 @@
 from fastapi import FastAPI, Request, HTTPException, Query, Depends
-import httpx
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from starlette.exceptions import HTTPException as StarletteHTTPException
-import logging
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-
-templates = Jinja2Templates(directory="templates")
-
-
-from auth_helpers import block_authenticated_users
+import httpx
+import logging
 import json
+
+
 from authentication import (
     login_fastAPI,
     is_authenticated,
