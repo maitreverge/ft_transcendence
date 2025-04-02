@@ -83,10 +83,12 @@ def del_pong(pong_id):
 	pong = next((p for p in pongs if p.id == pong_id), None)
 	print(players, flush=True)
 	print(pongs, flush=True)
+	print("c la mouquate pongs.players", flush=True)
+	print(pong.users, flush=True)
 	if pong: 
 		players[:] = [
 			p for p in players if not any(
-				p['playerId'] == po['playerId'] for po in pong.players   
+				p['playerId'] == po['playerId'] for po in pong.users   
 		)]	
 		pongs[:] = [p for p in pongs if p.id != pong_id]
 	print(players, flush=True)

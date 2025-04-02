@@ -34,7 +34,7 @@ class Pong:
 
 		self.has_wall = False
 		self.max_score = 5
-		self.max_wait_delay = 1500
+		self.max_wait_delay = 15
 
 		self.pad_height = 40	
 		self.pads_y = [self.pad_height / 2, self.pad_height / 2]

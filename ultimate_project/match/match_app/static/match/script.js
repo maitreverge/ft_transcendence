@@ -576,8 +576,8 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	//! TO OPTI
 	const leftNameElement = document.getElementById("inst-left");
 	const rightNameElement = document.getElementById("inst-right");
-	leftNameElement.innerText = data.names[0];
-	rightNameElement.innerText = data.names[1];
+	leftNameElement.innerHTML = data.names[0] + "<br> keys: enter / +"
+	rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
 	if (data.state == "end")
 	{	
         end.innerHTML = `The winner is: ${data.winnerName} <br> 
