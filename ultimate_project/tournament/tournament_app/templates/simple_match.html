@@ -30,7 +30,7 @@
 	pattern=".{1,50}"
 	required
 	placeholder="enter a name"
-	oninput="input.value = input.value.replace(/[<>]/g, '');"
+	oninput="this.value = this.value.replace(/[<>]/g, '');"
 />
 <button onclick="newMatchPlayer(window.matchSocket)">Create Player</button>
 	<div id="players"></div>
