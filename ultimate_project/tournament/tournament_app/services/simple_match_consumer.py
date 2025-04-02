@@ -2,12 +2,15 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import requests
 import aiohttp
+import html
 
 players = []
 selfPlayers = []
 matchs = []
 
 class SimpleConsumer(AsyncWebsocketConsumer):
+
+	id = 0
 
 	async def connect(self):
 		
@@ -51,6 +54,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 		data = json.loads(text_data)
 		match data:
+			case {"type": "newPlayer", "playerName": player_name}:
+				await self.new_player(player_name)
 			case {"type": "playerClick", "selectedId": selectedId}:
 				await self.invitation(selectedId)				
 			case {
@@ -61,7 +66,17 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 				await self.confirmation(response, applicantId)		
 			case _:
 				pass
-			
+
+	async def new_player(self, player_name):
+
+		player_name = html.escape(player_name)
+		SimpleConsumer.id -= 1
+		await self.send(text_data=json.dumps({
+			"type": "newPlayerId",			
+			"playerId": SimpleConsumer.id,
+			"playerName": player_name
+		}))	
+
 	async def invitation(self, selectedId):
 	
 		selectedPlayer = next(

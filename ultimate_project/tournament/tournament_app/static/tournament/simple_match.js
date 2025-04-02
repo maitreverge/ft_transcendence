@@ -106,7 +106,7 @@ function setSelfMatchId() {
         match.onclick = function() {
 			fetch(
 				`/match/match${dim.value}d/` +
-				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}`)
+				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${-window.selfId}&playerName=${window.player2Name}`)
 			.then(response => {
 				if (!response.ok) 
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
@@ -117,7 +117,42 @@ function setSelfMatchId() {
 		};					
 	});
 }
+matchWebsockets = []
+function newMatchPlayer(socket) {
+  
+	const playerName = document.getElementById("match-player-name").value;
+	if (playerName.trim() === "")
+	{
+		alert("enter a name!");
+		return;
+	}
+	if (socket.readyState === WebSocket.OPEN) 
+		socket.send(JSON.stringify({
+			type: "newPlayer",
+			playerName: playerName			
+		}));
+	matchWebsockets.push({playerName: playerName});
+}
 
+function connectNewMatchPlayer(playerId, playerName) {
+
+	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
+	const ws = websockets.find(ws => ws.playerName === playerName);	
+	ws.playerId = playerId;
+	console.log("ws id ", ws.playerName, ws.playerId);
+	const socket = new WebSocket(
+        `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
+    );
+	ws.socket = socket;
+	socket.onopen = () => {
+		console.log(`Connexion Tournament ${playerName} établie 😊`);	
+	}
+	socket.onclose = () => {
+		console.log(`Connexion Tournament ${playerName} disconnected 😈`);
+	};	
+	socket.onmessage = event =>
+		{};// onTournamentMessage(event, window.tournamentSocket);	
+} 
 // function movePlayerInMatch(socket, matchElement, match) {
 	
 // 	const playersContainer = document.getElementById("players");
@@ -318,10 +353,12 @@ function sendPlayerClick(socket, event, selected)
 	if (!window.busyElement)
 		window.busyElement = selected;
 	window.busyElement.classList.add("invitation-waiting")
+	if (selected.id == window.selfId)
+		window.player2Name = document.getElementById("match-player-name").value;
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
-			selectedId: Number(selected.id)
+			selectedId: Number(selected.id)			
 		}));
 }
 
@@ -411,6 +448,9 @@ function onSimpleMatchMessage(event, socket) {
 		// case "selfAssign":
 		// 	setSelfId(data.selfId);
 		// 	break;
+		case "newPlayerId":
+			connectNewMatchPlayer(data.playerId, data.playerName);
+		break;
 		case "playerList":
 			window.simplePlayersList = data.players;		
 			updateSimplePlayers(socket, data.players);
