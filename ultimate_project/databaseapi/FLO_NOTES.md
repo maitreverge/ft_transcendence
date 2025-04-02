@@ -21,38 +21,8 @@
 
 
 --------------------------------------------------------------------------------
-									let
+									SECURITY
 --------------------------------------------------------------------------------
-- Je ne peux pas commencer la derniere etape qui est de securiser le site tant que tu continue a travailler sur l'architecture
-- Je ne peux pas commencer a travailler sur cette partie tant que ces changements sont parfaitement integres a ta partie :
-	1 - JWT avec UUID users
-	2 - 2FA authentication
-	3 - Delete users
-	4 - Le jeu qui est stable
-	5 - La SPA qui est stable
-	6 - Connexion Websockets
-	7 - Register / Login / Logout
-	8 - Back and forwards buttons
-
-- Plus tot je commence ce travail de securisation, plus tot je pourrai t'aider.
-- Plus tard je commence ce travail, moins je pourrai t'aider
-- Moins ces features seront integrees / testees / stabilisees, moins cela nous facilite la tache
-
-On a une maturite sur le projet / archi depuis 3 mois desormais, et tu rebat les regles du jeu a deux semaines du rendu
-
-Meme si tu fais quelquechose de mieux / plus stable,
-et dans l'idee que tout notre travail s'integre parfaitement au tien,
-on va devoir tous passer du temps a comprendre ce que tu as fais,
-
-ALORS que l'idee initiale etait de te faciliter le travail / te paver la route pour que tu puisses APRES avoir fait la feature repenser l'architecture en derniere semaine
-
-VU comment ton travail s'articule, je suis oblige t'attendre que tu ai finit ton travail, de le comprendre, et de m'adapter a la nouvell archi pour pouvoir la securiser, et si et seulement si toutes nos features MODULES comme MANDATORY sont respectees.
-
-DONC si tu arrive a refacto l'archi + integrer toutes nos features, et ainsi qu'on puisse beneficier de ton travail, on est tous preneur ici
-
-Mais si tu n'y arrive pas + que tu ne fais pas les features, tu nous aura tous fait perdre du temps, alors que l'idee initiale etait d'en gagner.
-
-Besoin d'une date butoire cette semaine pour que je puisse reprendre mon travail.
 
 
 --------------------------------------------------------------------------------
