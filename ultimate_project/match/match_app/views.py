@@ -84,7 +84,7 @@ def del_pong(pong_id):
 	print(players, flush=True)
 	print(pongs, flush=True)
 	print("c la mouquate pongs.players", flush=True)
-	print(pong.users, flush=True)
+	# print(pong.users, flush=True)
 	if pong: 
 		players[:] = [
 			p for p in players if not any(
