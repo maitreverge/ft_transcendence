@@ -62,7 +62,7 @@ function connectNewPlayer(playerId, playerName) {
 } 
 
 function sanitizeInput(input) {
-	input.value = input.value.replace(/[<>]/g, "");
+	input.value = input.value.replace(/[^a-zA-Z0-9]/g, "");
 }
   
 function newPlayer(socket) {
