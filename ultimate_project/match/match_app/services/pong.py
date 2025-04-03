@@ -210,6 +210,8 @@ class Pong:
 
 	async def stop(self, playerId):
 
+		print(f"STOP playerId: {playerId}", flush=True)
+		print(self.plyIds, flush=True)
 		if playerId in self.plyIds: 	
 			print(f"le player est bien autorise a fermer le match", flush=True)
 			# self.sendTask.cancel()
