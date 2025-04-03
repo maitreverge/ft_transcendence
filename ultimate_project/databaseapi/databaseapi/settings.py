@@ -192,19 +192,18 @@ LOGGING = {
 }
 
 CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
-CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for development
 CORS_ALLOW_ORIGINS = [
-    "http://localhost:8000",  # Basic
-    "http://localhost:8001",  # Tournament
-    "http://localhost:8002",  # Match
-    "http://localhost:8003",  # Static files
-    "http://localhost:8004",  # User
-    "http://localhost:8005",  # FastAPI
-    "http://localhost:8006",  # Authentication
-    "http://localhost:8007",  # DatabaseAPI
-    f"https://{HOST_IP}",  # Production
+    # "http://localhost:8000",
+    # "http://localhost:8001",
+    # "http://localhost:8002",
+    # "http://localhost:8003",
+    # "http://localhost:8004",
+    # "http://localhost:8005",
+    "http://localhost:8007",
+    "https://localhost:8443",
+    f"https://{HOST_IP}",
 ]
-CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]
 CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken", "Set-Cookie"]
 
@@ -216,22 +215,6 @@ JWT_AUTH = {
     "JWT_EXPIRATION_DELTA": timedelta(minutes=15),
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
-
-CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
-CORS_ALLOW_ORIGINS = [
-    "http://localhost:8000",  # Basic
-    "http://localhost:8001",  # Tournament
-    "http://localhost:8002",  # Match
-    "http://localhost:8003",  # Static files
-    "http://localhost:8004",  # User
-    "http://localhost:8005",  # FastAPI
-    "http://localhost:8006",  # Authentication
-    "http://localhost:8007",  # DatabaseAPI
-    "https://localhost:8443"  # For secure HTTPS access
-    f"https://{HOST_IP}",  # Production
-]
-CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
-CORS_ALLOW_HEADERS = ["*"]
 
 # Cookie settings
 SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS

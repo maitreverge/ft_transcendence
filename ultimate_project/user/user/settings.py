@@ -170,18 +170,17 @@ LOGGING = {
 
 CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
 CORS_ALLOW_ORIGINS = [
-    "http://localhost:8000",  # Basic
-    "http://localhost:8001",  # Tournament
-    "http://localhost:8002",  # Match
-    "http://localhost:8003",  # Static files
-    "http://localhost:8004",  # User
-    "http://localhost:8005",  # FastAPI
-    "http://localhost:8006",  # Authentication
+    # "http://localhost:8000",  # Basic
+    # "http://localhost:8001",  # Tournament
+    # "http://localhost:8002",  # Match
+    # "http://localhost:8003",  # Static files
+    # "http://localhost:8004",  # User
+    # "http://localhost:8005",  # FastAPI
     "http://localhost:8007",  # DatabaseAPI
     "https://localhost:8443"  # For secure HTTPS access
     f"https://{HOST_IP}",  # Production
 ]
-CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]
 
 # Cookie settings
