@@ -24,8 +24,18 @@
     sessionStorage.setItem("lastVisitedPage", currentURL);
   });
 
+
   // this function helps reloading the scripts after browser navigation
   console.log("Attachement de l'event popstate...");
+
+    function closeWebsockets()
+    {
+        if (typeof closeSimpleMatchSocket === 'function')
+            closeSimpleMatchSocket();
+        if (typeof closeTournamentSocket === 'function')
+            closeTournamentSocket();
+    }
+
   window.addEventListener("popstate", () => {
     toggleSidebar(true);
     console.log("popstate event triggered!");
@@ -34,6 +44,7 @@
       swap: "outerhtml",
       headers: { "HX-Login-Success": "true" },
     });
+    closeWebsockets();
   });
   
   // this function toggles the sidebar on and off
