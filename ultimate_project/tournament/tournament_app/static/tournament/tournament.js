@@ -385,14 +385,14 @@ function dropTournament(div, tournamentId) {
 // 	});
 // }
 
-function catchPlayersInMatch(lk, playerId, PlayerName) {
+function catchPlayersInMatch(lk, playerId, playerName) {
 
-	const wss = websockets.filter(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
+	const wss = websockets.filter(
+		ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
 		wss.push({playerId: window.selfId, playerName: window.selfName});
 	let player2Id = 0;
 	let player2Name = "";
-
 	if (wss.length >= 1)
 	{
 		playerId = wss[0].playerId;
@@ -518,17 +518,20 @@ function linkMatch(lk) {
 	if (!tournament)
 		return;
 	const overlay = tournament.querySelector("#overlay-match");
-	overlay.style = "transform:translate(-180px, 200px);"
 	const localMatch = tournament.querySelector(`#${lk.localMatchId}`);
 	if (!localMatch)
 		return;
+	overlay.style = "transform:translate(-180px, 200px);"
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
 		return;
 	localP1.innerText = lk.p1Name;
 	localP2.innerText = lk.p2Name;
-	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+	// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+	const ws = websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id)
+	console.log("WAIBECHAUSETTE ", ws);
+	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
 	{
 		window.selfMatchId = lk.matchId;
 		localMatch.classList.add("next-match");
@@ -543,7 +546,9 @@ function linkMatch(lk) {
 			console.log("DEJA SCRIPT");
 			return; // Ne pas exécuter fetch si un script "match-script" existe déjà
 		};
-		if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+		const ws = websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id)
+		console.log("WAIBECHAUSETTE ", ws);
+		if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
 		{
 			window.selfMatchId = lk.matchId;
 			// localMatch.classList.add("next-match");
