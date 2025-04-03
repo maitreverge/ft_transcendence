@@ -24,7 +24,24 @@
     sessionStorage.setItem("lastVisitedPage", currentURL);
   });
 
-  // this function helps reloading the scripts after browser navigation
+  function closeWebsockets() {
+    console.log("########### closing websockets #######");
+    if (typeof closeSimpleMatchSocket === "function") closeSimpleMatchSocket();
+    if (typeof closeTournamentSocket === "function") closeTournamentSocket();
+  }
+
+  closeWebsockets();
+  function interceptUrlChanges() {
+    const originalReplaceState = history.replaceState;
+
+    history.replaceState = function (state, title, url) {
+      originalReplaceState.apply(history, arguments);
+      closeWebsockets();
+    };
+  }
+
+  interceptUrlChanges();
+
   console.log("Attachement de l'event popstate...");
   window.addEventListener("popstate", () => {
     toggleSidebar(true);
@@ -34,8 +51,9 @@
       swap: "outerhtml",
       headers: { "HX-Login-Success": "true" },
     });
+    closeWebsockets();
   });
-  
+
   // this function toggles the sidebar on and off
   function toggleSidebar(show) {
     console.log("toggleSidebar called");
