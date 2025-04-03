@@ -28,10 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ! SECURED BY FLO
 SECRET_KEY = os.getenv("DJANGO_KEY")
 
-# TODO SECURITY
-FERNET_SECRET_KEY = os.getenv(
-    "FERNET_SECRET_KEY", "2kXe3YL7r5_v69Gm4axlcNLWO4f2xAQqaqTTdLZST0A="
-)
+# ! SECURED BY FLO
+FERNET_SECRET_KEY = os.getenv("FERNET_SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

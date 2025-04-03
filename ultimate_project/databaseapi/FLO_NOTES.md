@@ -16,7 +16,13 @@
 
 🟧 Find a way to lock the database as well
 
-🟧 Lock all the routes
+🟧 Lock all the routes (lock les routes visibles dans le front)
+
+🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
+
+🟧 VOIR LE REGEX DE SEB DANS DISCORD POUR SES WEBSOCKETS (lock )
+
+
 
 
 ```python
