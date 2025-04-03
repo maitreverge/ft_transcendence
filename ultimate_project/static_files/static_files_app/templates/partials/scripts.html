@@ -24,18 +24,25 @@
     sessionStorage.setItem("lastVisitedPage", currentURL);
   });
 
+  function closeWebsockets() {
+    console.log("########### closing websockets #######");
+    if (typeof closeSimpleMatchSocket === "function") closeSimpleMatchSocket();
+    if (typeof closeTournamentSocket === "function") closeTournamentSocket();
+  }
 
-  // this function helps reloading the scripts after browser navigation
+  closeWebsockets();
+  function interceptUrlChanges() {
+    const originalReplaceState = history.replaceState;
+
+    history.replaceState = function (state, title, url) {
+      originalReplaceState.apply(history, arguments);
+      closeWebsockets();
+    };
+  }
+
+  interceptUrlChanges();
+
   console.log("Attachement de l'event popstate...");
-
-    function closeWebsockets()
-    {
-        if (typeof closeSimpleMatchSocket === 'function')
-            closeSimpleMatchSocket();
-        if (typeof closeTournamentSocket === 'function')
-            closeTournamentSocket();
-    }
-
   window.addEventListener("popstate", () => {
     toggleSidebar(true);
     console.log("popstate event triggered!");
@@ -46,7 +53,7 @@
     });
     closeWebsockets();
   });
-  
+
   // this function toggles the sidebar on and off
   function toggleSidebar(show) {
     console.log("toggleSidebar called");
