@@ -364,26 +364,26 @@ function dropTournament(div, tournamentId) {
 	});
 }
 
-function dropMatch(lk, div, overlay) {
+// function dropMatch(lk, div, overlay) {
 
-	div.addEventListener("dragover", e => e.preventDefault());
-	div.addEventListener("drop", e => {
-		console.log("dans drop");
-		e.preventDefault();
-		e.stopPropagation();
-		const elementId = e.dataTransfer.getData("text/plain");
+// 	div.addEventListener("dragover", e => e.preventDefault());
+// 	div.addEventListener("drop", e => {
+// 		console.log("dans drop");
+// 		e.preventDefault();
+// 		e.stopPropagation();
+// 		const elementId = e.dataTransfer.getData("text/plain");
 
-		const socket = websockets.find(el => el.playerId == elementId);	
-		if (!socket)
-		{
-			alert("not your player MAN");
-			return;
-		}
-		// enterTournament(socket.socket, tournamentId);
+// 		const socket = websockets.find(el => el.playerId == elementId);	
+// 		if (!socket)
+// 		{
+// 			alert("not your player MAN");
+// 			return;
+// 		}
+// 		// enterTournament(socket.socket, tournamentId);
 		
-		enterMatch(lk, div, overlay, socket.playerId, socket.playerName)
-	});
-}
+// 		enterMatch(lk, div, overlay, socket.playerId, socket.playerName)
+// 	});
+// }
 
 function catchPlayersInMatch(lk, playerId, PlayerName) {
 
@@ -406,40 +406,40 @@ function catchPlayersInMatch(lk, playerId, PlayerName) {
 	return [playerId, playerName, player2Id, player2Name];
 }
 
-function enterMatch(lk, div, overlay, playerId, playerName) {
-	const scripts = Array.from(document.getElementsByTagName("script"));
-	scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
-	if (scripts.some(script => script.className === "match-script")) {
-		console.log("DEJA SCRIPT");
-		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
-	};
-	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-	{
-		window.selfMatchId = lk.matchId;
-		// localMatch.classList.add("next-match");
-	}
-	const [playerIdLLL, playerNameLLL, player2Id, player2Name] = catchPlayersInMatch(
-		lk, playerId, PlayerName)
+// function enterMatch(lk, div, overlay, playerId, playerName) {
+// 	const scripts = Array.from(document.getElementsByTagName("script"));
+// 	scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
+// 	if (scripts.some(script => script.className === "match-script")) {
+// 		console.log("DEJA SCRIPT");
+// 		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
+// 	};
+// 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+// 	{
+// 		window.selfMatchId = lk.matchId;
+// 		// localMatch.classList.add("next-match");
+// 	}
+// 	const [playerIdLLL, playerNameLLL, player2Id, player2Name] = catchPlayersInMatch(
+// 		lk, playerId, PlayerName)
 
-	fetch(
-		`/match/match${dim.value}d/` +
-		`?matchId=${lk.matchId}` +
-		`&playerId=${playerId}&playerName=${playerName}` +
-		`&player2Id=${player2Id}&player2Name=${player2Name}`
-	)
-	.then(response => {
-		if (!response.ok) 
-			throw new Error(`Error HTTP! Status: ${response.status}`);		  
-		return response.text();
-	})
-	.then(data => {
-		const oldScripts = document.querySelectorAll("script.match-script");			
-		oldScripts.forEach(oldScript => oldScript.remove());
-		window.actualScriptTid = lk.tournamentId;//?
-		loadTournamentHtml(data, overlay);	
-	})
-	.catch(error => console.log(error))
-};
+// 	fetch(
+// 		`/match/match${dim.value}d/` +
+// 		`?matchId=${lk.matchId}` +
+// 		`&playerId=${playerId}&playerName=${playerName}` +
+// 		`&player2Id=${player2Id}&player2Name=${player2Name}`
+// 	)
+// 	.then(response => {
+// 		if (!response.ok) 
+// 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+// 		return response.text();
+// 	})
+// 	.then(data => {
+// 		const oldScripts = document.querySelectorAll("script.match-script");			
+// 		oldScripts.forEach(oldScript => oldScript.remove());
+// 		window.actualScriptTid = lk.tournamentId;//?
+// 		loadTournamentHtml(data, overlay);	
+// 	})
+// 	.catch(error => console.log(error))
+// };
 
 function getPattern(tournamentId) {
 
@@ -572,7 +572,7 @@ function linkMatch(lk) {
 		})
 		.catch(error => console.log(error))
 	};
-	dropMatch(lk, localMatch, overlay)
+	// dropMatch(lk, localMatch, overlay)
 }
 
 function loadTournamentHtml(data, overlay) {
