@@ -220,7 +220,9 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 				if (window.busyElement)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
-				window.selectedElement.classList.remove("invitation-confirmed");
+				if (window.selectedElement)	
+					window.selectedElement.classList.remove(
+						"invitation-confirmed");
 				window.selectedElement = null;
 				window.selfMatchId = null;
 			}
@@ -339,6 +341,8 @@ function invitationRefused(targetName) {
 
 function invitationConfirmed(matchId, targetId) {
 	
+	window.selectedElement = document.getElementById("players")
+		.querySelector(`[id='${targetId}']`)
 	if (window.selectedElement)
 	{
 		window.busyElement = window.selectedElement
@@ -350,6 +354,7 @@ function invitationConfirmed(matchId, targetId) {
 
 function sendPlayerClick(socket, event, selected)
 {
+	window.selectedElement = selected;
 	event.stopPropagation();
 	if (!window.busyElement)
 		window.busyElement = selected;
