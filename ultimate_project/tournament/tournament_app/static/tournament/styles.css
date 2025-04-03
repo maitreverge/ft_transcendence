@@ -115,3 +115,7 @@ button {
 	margin:10px;
 	background-color: rgb(109, 94, 96);	
 }
+
+#match-player-name {
+	display: none;
+}

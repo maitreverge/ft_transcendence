@@ -19,20 +19,22 @@ class Pong:
 
 	id = 0
 
-	def __init__(self, idP1, idP2):
+	def __init__(self, p1, p2):
 
 		Pong.id += 1
 		self.id = Pong.id	
-		self.plyIds = [idP1, idP2]
-
+		self.plyIds = [p1[0], p2[0]]
+		self.names = [p1[1], p2[1]]
+		print("NAAAAAME", flush=True)
+		print(self.names, flush=True)
 		self.state = State.waiting
 		self.start_flag = False
 		self.winner = None
 		self.score = [0, 0]
 
 		self.has_wall = False
-		self.max_score = 5
-		self.max_wait_delay = 15
+		self.max_score = 50
+		self.max_wait_delay = 1500
 
 		self.pad_height = 40	
 		self.pads_y = [self.pad_height / 2, self.pad_height / 2]
@@ -242,6 +244,7 @@ class Pong:
 							"state": state.name,
 							"yp1": self.pads_y[0],
 							"yp2": self.pads_y[1],
+							"names": self.names,
 							"ball": self.ball,
 							"score": self.score,
 							"hasWall": self.has_wall
@@ -253,15 +256,26 @@ class Pong:
 	async def sendFinalState(self):
 
 		self.state = State.end
-		print(f"SEND FINAL STATE", flush=True)			
+		print(f"SEND FINAL STATE", flush=True)		
+		winner_id = self.winner
+		looser_id = self.plyIds[0] \
+			if self.winner == self.plyIds[1] else self.plyIds[1]
+		winner_name = self.names[0] \
+			if winner_id == self.plyIds[0] else self.names[1]
+		looser_name = self.names[1] \
+			if winner_id == self.plyIds[0] else self.names[0]	
 		self.users = [p for p in match_consumer.players
 			if self.id == p["matchId"]]
 		for p in self.users:
 			print(f"users {p}", flush=True)
 			try:					
 				await p["socket"].send(text_data=json.dumps({
-				"state": self.state.name,
-				"winnerId": self.winner,
+				"state": self.state.name,			
+				"winnerId": winner_id,
+				"looserId": looser_id,
+				"names": self.names,
+				"winnerName": winner_name,
+				"looserName": looser_name,
 				"score": self.score
 				}))
 			except Exception as e:
@@ -281,14 +295,15 @@ class Pong:
 
 		# if response.status_code not in [200, 201]:
 		# 	print(f"Error HTTP {response.status_code}: {response.text}")
-
+	
 		async with aiohttp.ClientSession() as session:
 			async with session.post(
 				"http://tournament:8001/tournament/match-result/", json={
 				"matchId": self.id,
-				"winnerId": self.winner,
-				"looserId": self.plyIds[0] if self.winner == self.plyIds[1]
-					else self.plyIds[1],
+				"winnerId": winner_id,
+				"looserId": looser_id,
+				"winnerName": winner_name,
+				"looserName": looser_name,
 				"p1Id": self.plyIds[0],
 				"p2Id": self.plyIds[1],
 				"score": self.score

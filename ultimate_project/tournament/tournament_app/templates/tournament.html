@@ -31,9 +31,8 @@
 		pattern=".{1,50}"
 		required
 		placeholder="enter a name"
-		oninput="sanitizeInput(this)"
+		oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');"
 	/>
-
 	<button onclick="newPlayer(window.tournamentSocket)">Create Player</button>
 	<button onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
 	<div id="tournaments"></div>

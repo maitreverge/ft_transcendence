@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import requests
 import aiohttp
+import html
 
 players = []
 selfPlayers = []
@@ -9,13 +10,16 @@ matchs = []
 
 class SimpleConsumer(AsyncWebsocketConsumer):
 
+	id = 0
+
 	async def connect(self):
 		
 		await self.accept() 
 		self.id = self.scope["url_route"]["kwargs"]["user_id"]
-		name = self.scope["url_route"]["kwargs"]["user_name"]
+		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		players[:] = [p for p in players if p.get('playerId') != self.id]
-		players.append({'playerId': self.id, 'playerName': name, 'busy': False})
+		players.append(
+			{'playerId': self.id, 'playerName': self.name, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
 		# await self.send(text_data=json.dumps({
 		# 	"type": "selfAssign", "selfId": self.id}))
@@ -50,9 +54,13 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	async def receive(self, text_data):	
 
 		data = json.loads(text_data)
-		match data:
-			case {"type": "playerClick", "selectedId": selectedId}:
-				await self.invitation(selectedId)				
+		match data:			
+			case {
+				"type": "playerClick",
+		 		"selectedId": selectedId,
+				"selectedName": selectedName
+			}:
+				await self.invitation(selectedId, selectedName)				
 			case {
 				"type": "confirmation",
 				"response": response,
@@ -61,8 +69,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 				await self.confirmation(response, applicantId)		
 			case _:
 				pass
-			
-	async def invitation(self, selectedId):
+
+	async def invitation(self, selectedId, selectedName):
 	
 		selectedPlayer = next(
 			(p for p in players if p['playerId'] == selectedId), None)
@@ -72,7 +80,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			(p for p in players if p['playerId'] == self.id), None)
 		applicantPlayer = next(
 			(p for p in players if p['playerId'] == self.id), None)
-		if (await self.self_invitation(selectedId, selectedPlayer)):
+		if (await self.self_invitation(
+			selectedId, selectedPlayer, selectedName)):
 			return
 		if await self.cancel_invitation(
 			applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):		
@@ -86,14 +95,16 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		await self.send_demand(
 			selfSelectedPlayer, selectedPlayer,	applicantPlayer)
 
-	async def self_invitation(self, selectedId, selectedPlayer):
+	async def self_invitation(self, selectedId, selectedPlayer, selectedName):
 
 		if selectedId == self.id:
 			selectedPlayer['busy'] = -selectedId
-			match_id = await self.start_match(-selectedId)
+			match_id = await self.start_match(-selectedId, selectedName)
 			print(f"iwille send confiration back to {self.id} from {selectedId}", flush=True)
 			await self.send_confirmation_back(
-				True, selectedId, selectedId, match_id, self)
+				self, True, selectedId, selectedName,
+				selectedId, selectedName, match_id
+			)
 			await SimpleConsumer.match_update()
 			return True
 		return False
@@ -104,6 +115,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			"type": "invitation",
 			"subtype": "back",
 			"applicantId": self.id,
+			"applicantName": self.name,
 			"response": response
 		}))
 		
@@ -111,8 +123,10 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):
 	
 		if self.is_busy_with(applicantPlayer, selectedId):
-			await self.send_cancel(selectedId, self)		
-			await self.send_cancel(self.id, selfSelectedPlayer['socket'])		
+			await self.send_cancel(
+				self, selectedId, selectedPlayer.get('playerName'))		
+			await self.send_cancel(
+				selfSelectedPlayer['socket'], self.id, self.name)		
 			selectedPlayer['busy'], applicantPlayer['busy'] = None, None					
 			match = next(
 				(m for m in matchs 
@@ -130,12 +144,13 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			return True
 		return False
 
-	async def send_cancel(self, targetId, target):
+	async def send_cancel(self, socket, target_id, target_name):
 
-		await target.send(text_data=json.dumps({
+		await socket.send(text_data=json.dumps({
 			"type": "invitation",
 			"subtype": "cancel",
-			"targetId": targetId,			
+			"targetId": target_id,
+			"targetName": target_name			
 		}))
 		
 	async def send_demand(self, 
@@ -144,7 +159,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		await selfSelectedPlayer['socket'].send(text_data=json.dumps({
 			"type": "invitation",
 			"subtype": "demand",
-			"applicantId": self.id
+			"applicantId": self.id,
+			"applicantName": self.name
 		}))				
 		selectedPlayer['busy'] = applicantPlayer.get('playerId')
 		applicantPlayer['busy'] = selectedPlayer.get('playerId')
@@ -158,9 +174,11 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			(p for p in players if p['playerId'] == self.id), None)
 		applicant_player = next(
 			(p for p in players if p['playerId'] == applicantId), None)
+		app_name = applicant_player.get('playerName')
 		if response:
 			if self.is_busy_with(applicant_player, self.id):			
-				match_id = await self.start_match(applicantId)
+				match_id = await self.start_match(
+					applicantId, applicant_player.get('playerName'))
 			else:		
 				return
 		elif self.is_busy_with(applicant_player, self.id):
@@ -168,39 +186,45 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		else:			
 			return	
 		await self.send_confirmation_back(
-			response, applicantId, self.id, match_id,
-			selfApplicantPlayer['socket'])
+			selfApplicantPlayer['socket'],
+			response, applicantId, app_name, self.id, self.name, match_id)
 		await self.send_confirmation_back(
-			response, applicantId, applicantId, match_id, self)
+			self, response, applicantId, app_name,
+			applicantId, app_name, match_id)
 		await SimpleConsumer.match_update()
 
 	async def send_confirmation_back(self,
-		response, applicant_id, target_id, match_id, target):
+		socket, response, applicant_id, applicant_name,
+		target_id, target_name, match_id):
 
-		await target.send(text_data=json.dumps({
+		await socket.send(text_data=json.dumps({
 			"type": "invitation",
 			"subtype": "confirmation",
 			"response": response,
 			"applicantId": applicant_id,
-			"targetId": target_id,			
+			"applicantName": applicant_name,
+			"targetId": target_id,
+			"targetName": target_name,		
 			"matchId": match_id	
 		}))
 
-	async def start_match(self, applicantId):
+	async def start_match(self, applicantId, applicantName):
 
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
     				f"http://match:8002/match/new-match/"
-    				f"?p1={applicantId}&"
-    				f"p2={self.id}"
+    				f"?p1Id={applicantId}&p1Name={applicantName}"
+    				f"&p2Id={self.id}&p2Name={self.name}"
 				) as response:
 				if response.status == 201:
 					data = await response.json()
 					match_id = data.get('matchId', None)
 					matchs.append({
 						"matchId": match_id,
-						"playerId": applicantId, 
-						"otherId": self.id,			
+						"playerId": applicantId,
+						"playerName": applicantName, 
+						"otherId": self.id,
+						"otherName": self.name		
 					})
 					return match_id
 				return None

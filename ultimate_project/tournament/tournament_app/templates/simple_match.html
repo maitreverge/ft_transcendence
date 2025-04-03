@@ -23,9 +23,18 @@
 		<option value="2">2D</option>
 		<option value="3">3D</option>
 	</select>
-	<div id="players"></div>
-	<div id="matchs"></div>
-	<div id="overlay-match"></div>
+<input
+	id="match-player-name"
+	type="text"
+	maxlength="50"
+	pattern=".{1,50}"
+	required
+	placeholder="enter a name"
+	oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');"
+/>
+<div id="players"></div>
+<div id="matchs"></div>
+<div id="overlay-match"></div>
 </div>
 <script>
 window.addEventListener("DOMContentLoaded", () => {

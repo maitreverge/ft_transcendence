@@ -141,6 +141,7 @@
     top: 10px;
     left: 10px;
     font-size: 1.2em;
+	text-align: center;
 }
 
 #inst-right {
@@ -148,6 +149,7 @@
     top: 10px;
     right: 10px;
     font-size: 1.2em;
+	text-align: center;
 }
 
 #end {
@@ -189,3 +191,58 @@
     }
 }
 
+/* From Uiverse.io by mrhyddenn */ 
+.loader {
+    color: gold;
+
+    position:absolute;
+	top:50%;
+	left:50%;
+
+    background: transparent;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .circle {
+    color: gold;
+
+    width: 80px;
+    height: 80px;
+    border: 2px solid gold;
+    position: absolute;
+    border-radius: 50%;
+    animation: circle14512 2s linear infinite;
+  }
+  
+  .circle::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #9ae932;
+    box-shadow: 0 0 20px #9ae932, 0 0 60px #9ae932;
+  }
+  
+  @keyframes circle14512 {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .no-waiting {
+    display: none !important;
+}
