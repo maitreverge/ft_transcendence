@@ -152,3 +152,4 @@ ultimate_project/databaseapi/databaseapi_app/migrations/__init__.py
 .vscode/settings.json
 ultimate_project/databaseapi/databaseapi_app/migrations/0002_remove_player_language.py
 ultimate_project/databaseapi/databaseapi_app/migrations/0002_player_language.py
+ultimate_project/databaseapi/databaseapi_app/migrations/0003_remove_player_language.py
