@@ -37,7 +37,8 @@ function stopMatch(matchId)
 				console.log("je vais envoyer 42");
 				window.stopFlag = true
 				window.matchSocket.close(3666);
-				window.matchSocket2.close(3666);
+				if (window.matchSocket2)
+					window.matchSocket2.close(3666);
 			} 
 			else 
 			{

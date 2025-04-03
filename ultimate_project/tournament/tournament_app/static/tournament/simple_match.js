@@ -361,7 +361,11 @@ function sendPlayerClick(socket, event, selected)
 	window.busyElement.classList.add("invitation-waiting")
 	let name = selected.name;
 	if (selected.id == window.selfId)
+	{
+		const input = document.getElementById("match-player-name");
+		input.style.display = "block";
 		name = document.getElementById("match-player-name").value;
+	}
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
