@@ -64,23 +64,26 @@
     }
 });
 
-    window.countdownElement = window.countdownElement || document.querySelector('.countdown');
-    window.loaderElement = window.loaderElement ||  document.querySelector('.loader');
-    window.countdownText = window.countdownText || ['3', '2', '1', 'GO!'];
+function startCountdown(selectorCountdown, selectorLoader, countdownSteps = ['3', '2', '1', 'GO!']) {
+    const countdownElement = document.querySelector(selectorCountdown);
+    const loaderElement = document.querySelector(selectorLoader);
+    if (!countdownElement || !loaderElement) return;
 
-    window.currentIndex = window.currentIndex || 0;
+    let currentIndex = 0;
 
-    window.countdownInterval = window.countdownInterval || setInterval(() => {
-        countdownElement.textContent = countdownText[currentIndex];
+    const countdownInterval = setInterval(() => {
+        countdownElement.textContent = countdownSteps[currentIndex];
         currentIndex++;
 
-        // Quand "GO!" est affiché, on arrête l'intervalle et cache l'élément loader
-        if (currentIndex === countdownText.length) {
-            clearInterval(countdownInterval); // Arrêter l'intervalle
+        if (currentIndex === countdownSteps.length) {
+            clearInterval(countdownInterval);
             setTimeout(() => {
-                loaderElement.classList.add('no-waiting'); // Ajouter la classe no-waiting pour cacher l'élément
-            }, 1500); // Laisser un petit délai avant de cacher (optionnel)
+                loaderElement.classList.add('no-waiting');
+            }, 1500);
         }
-    }, 1000); // Change le texte toutes les 1 seconde
+    }, 1000);
+}
+
+startCountdown('.countdown', '.loader');
 
 </script>
