@@ -587,15 +587,18 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
 	if (data.state == "end")
 	{	
+        let gifUrl;
+        if (data.score[0] > data.score[1])
+            gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
+        else    
+            gifUrl = document.getElementById("winner-gif").dataset.gifUrl;
         end.innerHTML = `The winner is: ${data.winnerName} <br> 
-        Score: ${data.score[0]} : ${data.score[1]}
-                <img src="https://media1.tenor.com/m/Xd5ZJk8TV84AAAAd/christ-cosmique.gif" 
-             alt="Winner GIF" 
-             class="winner-gif">
-
-             ` 
-        + end.innerHTML;
-		endCont.classList.add("end-cont");
+            Score: ${data.score[0]} : ${data.score[1]}
+            <img src="${gifUrl}" 
+                alt="Winner GIF" 
+                class="winner-gif">
+        ` + end.innerHTML;
+        endCont.classList.add("end-cont");
 	}
 	if (waitingState[0] != data.state) 
 	{
