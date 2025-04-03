@@ -385,6 +385,27 @@ function dropMatch(lk, div, overlay) {
 	});
 }
 
+function catchPlayersInMatch(lk, playerId, PlayerName) {
+
+	const wss = websockets.filter(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
+	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
+		wss.push({playerId: window.selfId, playerName: window.selfName});
+	let player2Id = 0;
+	let player2Name = "";
+
+	if (wss.length >= 1)
+	{
+		playerId = wss[0].playerId;
+		playerName = wss[0].playerName;
+	}
+	if (wss.length == 2)
+	{
+		player2Id = wss[1].playerId;
+		player2Name = wss[1].playerName;
+	}
+	return [playerId, playerName, player2Id, player2Name];
+}
+
 function enterMatch(lk, div, overlay, playerId, playerName) {
 	const scripts = Array.from(document.getElementsByTagName("script"));
 	scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
@@ -397,31 +418,9 @@ function enterMatch(lk, div, overlay, playerId, playerName) {
 		window.selfMatchId = lk.matchId;
 		// localMatch.classList.add("next-match");
 	}
+	const [playerIdLLL, playerNameLLL, player2Id, player2Name] = catchPlayersInMatch(
+		lk, playerId, PlayerName)
 
-	const wss = websockets.filter(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
-	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-		wss.push({playerId: window.selfId, playerName: window.selfName});
-	let player2Id = 0;
-	let player2Name = "";
-
-	// if (wss.length == 0)
-
-	// else
-	if (wss.length >= 1)
-	{
-		playerId = wss[0].playerId;
-		playerName = wss[0].playerName;
-	}
-	if (wss.length == 2)
-	{
-		player2Id = wss[1].playerId;
-		player2Name = wss[1].playerName;
-	}
-	// if (le joueur 1 est user et user2 est fantom ou linverse)
-	// if (le joueur 1 et 2 sont fantom)
-	// if (le joueur 1 est user , et aucun ds fantom)
-	// if (le joueur 1 est fantom et aucun autre ds fantom ni user) 
-	// if (lk.p1Id || )	
 	fetch(
 		`/match/match${dim.value}d/` +
 		`?matchId=${lk.matchId}` +
@@ -434,13 +433,10 @@ function enterMatch(lk, div, overlay, playerId, playerName) {
 		return response.text();
 	})
 	.then(data => {
-		// if ([...div.children].some(el => el.id == lk.p1Id) && [...div.children].some(el => el.id == lk.p2Id))
-		// {
-			const oldScripts = document.querySelectorAll("script.match-script");			
-			oldScripts.forEach(oldScript => oldScript.remove());
-			window.actualScriptTid = lk.tournamentId;//?
-			loadTournamentHtml(data, overlay);
-		// }
+		const oldScripts = document.querySelectorAll("script.match-script");			
+		oldScripts.forEach(oldScript => oldScript.remove());
+		window.actualScriptTid = lk.tournamentId;//?
+		loadTournamentHtml(data, overlay);	
 	})
 	.catch(error => console.log(error))
 };
@@ -552,9 +548,17 @@ function linkMatch(lk) {
 			window.selfMatchId = lk.matchId;
 			// localMatch.classList.add("next-match");
 		}
+		const [playerId, playerName, player2Id, player2Name] = catchPlayersInMatch(
+			lk, window.selfId, window.selfName)
 		fetch(
 			`/match/match${dim.value}d/` +
-			`?matchId=${lk.matchId}&playerId=${window.selfId}&playerName=${window.selfName}`)
+			`?matchId=${lk.matchId}` +
+			`&playerId=${playerId}&playerName=${playerName}` +
+			`&player2Id=${player2Id}&player2Name=${player2Name}`
+		)		
+		// fetch(
+		// 	`/match/match${dim.value}d/` +
+		// 	`?matchId=${lk.matchId}&playerId=${window.selfId}&playerName=${window.selfName}`)
 		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
