@@ -62,7 +62,6 @@ def run(playwright: Playwright) -> None:
         test_js()
 
     def test_single_page(url: str):
-        navigate(f"{base_url}/user/profile/")
         navigate(f"{base_url}{url}")
         page.evaluate("window.history.back()")
         page.wait_for_timeout(500)  # Laisse un peu de temps pour le back
@@ -115,7 +114,7 @@ def run(playwright: Playwright) -> None:
         ("#field-stats", f"{base_url}/user/stats/"),
     ]
 
-    # Vérification de la navigation via le menu topbar
+    # # Vérification de la navigation via le menu topbar
     navigate(f"{base_url}/home/")
     for locator, expected_url in navigation_tests[:4]:  # Pour les éléments du menu topbar
         test_navigation(page.locator(locator), expected_url)
@@ -131,9 +130,14 @@ def run(playwright: Playwright) -> None:
     
     # test 404
     test_single_page("/home/sylvain_duriff/");
+    navigate(f"{base_url}/home/")
     test_single_page("/register/")
+    navigate(f"{base_url}/home/")
+    test_single_page("/login/")
+
 
     # Fermeture
+    navigate(f"{base_url}/home/")
     context.close()
     browser.close()
 
