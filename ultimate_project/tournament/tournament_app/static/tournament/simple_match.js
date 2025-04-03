@@ -360,12 +360,22 @@ function sendPlayerClick(socket, event, selected)
 		window.busyElement = selected;
 	window.busyElement.classList.add("invitation-waiting")
 	let name = selected.name;
+	const input = document.getElementById("match-player-name");
+	
 	if (selected.id == window.selfId)
-	{
-		const input = document.getElementById("match-player-name");
-		input.style.display = "block";
-		name = document.getElementById("match-player-name").value;
+	{		
+		name = input.value;
+		if (name.trim() === "" && input.style.display === "block")
+		{
+			alert("enter a name for second player");			
+			return;
+		}
+		input.style.display = "block";	
 	}
+	else
+		input.style.display = "none";	
+	if (name.trim() === "")
+		return;		
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",

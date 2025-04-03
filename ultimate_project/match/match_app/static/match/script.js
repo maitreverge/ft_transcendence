@@ -1,6 +1,12 @@
 
 function stopMatch(matchId)
 {
+	const input = document.getElementById("match-player-name");
+	if (input)
+	{
+		input.style.display = "none";
+		input.value = "";
+	}
 	if (!matchId)
 	{
 		console.log("matchID EST NULLE");
