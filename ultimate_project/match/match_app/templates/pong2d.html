@@ -64,13 +64,13 @@
     }
 });
 
-    const countdownElement = document.querySelector('.countdown');
-    const loaderElement = document.querySelector('.loader');
-    const countdownText = ['3', '2', '1', 'GO!'];
+    window.countdownElement = window.countdownElement || document.querySelector('.countdown');
+    window.loaderElement = window.loaderElement ||  document.querySelector('.loader');
+    window.countdownText = window.countdownText || ['3', '2', '1', 'GO!'];
 
-    let currentIndex = 0;
+    window.currentIndex = window.currentIndex || 0;
 
-    const countdownInterval = setInterval(() => {
+    window.countdownInterval = window.countdownInterval || setInterval(() => {
         countdownElement.textContent = countdownText[currentIndex];
         currentIndex++;
 
