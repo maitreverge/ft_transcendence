@@ -32,6 +32,14 @@ function initTournament() {
 
 function connectNewPlayer(playerId, playerName) {
 
+	if (!playerId)
+	{
+		alert("player name yet exist!");
+		console.log(websockets);
+		websockets = websockets.filter(ws => ws.playerId !== undefined);	
+		console.log(websockets);
+		return;
+	}
 	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
 	const ws = websockets.find(ws => ws.playerName === playerName);	
 	ws.playerId = playerId;
@@ -45,13 +53,16 @@ function connectNewPlayer(playerId, playerName) {
 	}
 	socket.onclose = () => {
 		console.log(`Connexion Tournament ${playerName} disconnected 😈`);
+		console.log(websockets);
+		websockets = websockets.filter(ws => ws.socket !== socket);
+		console.log(websockets);
 	};	
 	socket.onmessage = event =>
 		{};// onTournamentMessage(event, window.tournamentSocket);	
 } 
 
 function sanitizeInput(input) {
-	input.value = input.value.replace(/[<>]/g, "");
+	input.value = input.value.replace(/[^a-zA-Z0-9]/g, "");
 }
   
 function newPlayer(socket) {
@@ -60,6 +71,11 @@ function newPlayer(socket) {
 	if (playerName.trim() === "")
 	{
 		alert("enter a name!");
+		return;
+	}
+	if (websockets.length >= 3)
+	{
+		alert("you can't create more than three players!");
 		return;
 	}
 	if (socket.readyState === WebSocket.OPEN) 
@@ -226,6 +242,16 @@ function createPlayerElement(socket, playerId, playerName) {
 			quitTournament(socket);	
 		}		
 	}
+	else 
+		div.onclick =  event => {
+			event.stopPropagation();
+			const ws = websockets.find(ws => ws.playerId == playerId);
+			if (!ws)
+				alert("not your player WOMAN");
+			else
+				ws.socket.close();	
+			console.log(websockets);
+		}		
 	dragPlayer(div);
 	return div;
 }

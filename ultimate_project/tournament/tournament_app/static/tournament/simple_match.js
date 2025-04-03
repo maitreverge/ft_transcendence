@@ -21,9 +21,9 @@ document.addEventListener('visibilitychange', () => {
 function handlePendingInvitations() {
     // Traite toutes les invitations en attente lorsque la page devient active
     pendingInvitations.forEach(invitation => {
-        const { applicantId, socket } = invitation;
-        const userConfirmed = confirm(`Vous avez une invitation de ${applicantId}`);
-        sendConfirmation(socket, applicantId, userConfirmed);
+        const { applicantId, applicantName, socket } = invitation;
+        const userConfirmed = confirm(`you have an invitation from ${applicantName}`);
+        sendConfirmation(socket, applicantId, applicantName, userConfirmed);
     });
 
     // Vide la file d'attente une fois les invitations traitées
@@ -45,16 +45,16 @@ function showNotification(message, applicantId) {
     }
 }
 
-function receiveInvitation(socket, applicantId) {
-    console.log("I have had an invitation from: " + applicantId);
+function receiveInvitation(socket, applicantId, applicantName) {
+    console.log("I have had an invitation from: " + applicantName);
     
     if (isPageVisible) {
         // Si l'onglet est actif, demande la confirmation immédiatement
-        const userConfirmed = confirm(`You have an invitation from ${applicantId}`);
-        sendConfirmation(socket, applicantId, userConfirmed);
+        const userConfirmed = confirm(`You have an invitation from ${applicantName}`);
+        sendConfirmation(socket, applicantId, applicantName, userConfirmed);
     } else {
         // Si l'onglet est en arrière-plan, stocke l'invitation en attente
-        pendingInvitations.push({ socket, applicantId });
+        pendingInvitations.push({socket, applicantId, applicantName});
         // showNotification(`You have an invitation from ${applicantId}`, applicantId);
     }
 }
@@ -220,7 +220,9 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 				if (window.busyElement)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
-				window.selectedElement.classList.remove("invitation-confirmed");
+				if (window.selectedElement)	
+					window.selectedElement.classList.remove(
+						"invitation-confirmed");
 				window.selectedElement = null;
 				window.selfMatchId = null;
 			}
@@ -293,9 +295,9 @@ function updateMatchs(socket, matchs) {
 // 	});
 // }
 
-function sendConfirmation(socket, applicantId, response) {
+function sendConfirmation(socket, applicantId, applicantName, response) {
 
-	console.log(`i will send ${response} to applicant: ${applicantId}`);
+	console.log(`i will send ${response} to applicant: ${applicantName}`);
 
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
@@ -305,11 +307,11 @@ function sendConfirmation(socket, applicantId, response) {
 		}));
 }
 
-function invitationCancelled(targetId) {
+function invitationCancelled(targetName) {
 
-	console.log(`invitation with ${targetId} is cancelled`);
+	console.log(`invitation with ${targetName} is cancelled`);
 
-	alert(`invitation with ${targetId} is cancelled`);
+	alert(`invitation with ${targetName} is cancelled`);
 	if (window.busyElement)	
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
@@ -327,18 +329,20 @@ function selectedBusy() {
 	window.busyElement = null;
 }
 
-function invitationRefused(targetId) {
+function invitationRefused(targetName) {
 
-	alert("refuse from target: "+ targetId + " " + window.busyElement.id);
+	// targetElement = document.getElementById("players")
+	// .querySelector(`[id='${targetId}']`);
+	alert("refuse from target: "+ targetName);
 	if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
 }
 
 function invitationConfirmed(matchId, targetId) {
-
+	
 	window.selectedElement = document.getElementById("players")
-		.querySelector(`[id='${targetId}']`);
+		.querySelector(`[id='${targetId}']`)
 	if (window.selectedElement)
 	{
 		window.busyElement = window.selectedElement
@@ -350,16 +354,33 @@ function invitationConfirmed(matchId, targetId) {
 
 function sendPlayerClick(socket, event, selected)
 {
+	window.selectedElement = selected;
 	event.stopPropagation();
 	if (!window.busyElement)
 		window.busyElement = selected;
 	window.busyElement.classList.add("invitation-waiting")
+	let name = selected.name;
+	const input = document.getElementById("match-player-name");
+	
 	if (selected.id == window.selfId)
-		window.player2Name = document.getElementById("match-player-name").value;
+	{		
+		name = input.value;
+		if (name.trim() === "" && input.style.display === "block")
+		{
+			alert("enter a name for second player");			
+			return;
+		}
+		input.style.display = "block";	
+	}
+	else
+		input.style.display = "none";	
+	if (name.trim() === "")
+		return;		
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
-			selectedId: Number(selected.id)			
+			selectedId: Number(selected.id),
+			selectedName: name
 		}));
 }
 
@@ -423,16 +444,16 @@ function invitation(socket, data) {
 				selectedBusy();	
 			break;
 		case "demand":
-			receiveInvitation(socket, data.applicantId);
+			receiveInvitation(socket, data.applicantId, data.applicantName);
 			break;
 		case "cancel":
-			invitationCancelled(data.targetId);
+			invitationCancelled(data.targetName);
 			break;
 		case "confirmation":		
 			if (data.response)
 				invitationConfirmed(data.matchId, data.targetId)
 			else if (data.applicantId == window.selfId)		
-				invitationRefused(data.targetId)
+				invitationRefused(data.targetName)
 			break;	
 		default:
 			break;	
@@ -529,7 +550,8 @@ function createSimplePlayerElement(socket, playerId, playerName) {
 	const div = document.createElement("div");
 	div.className = "user";
 	div.textContent = playerName;
-	div.id = playerId;	
+	div.id = playerId;
+	div.name = playerName;	
 	if (playerId == window.selfId)
 		div.classList.add("self-player");
 	div.onclick = event => sendPlayerClick(socket, event, div);	  

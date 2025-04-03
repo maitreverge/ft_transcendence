@@ -8,9 +8,11 @@ pongs = []
 
 def new_match(request: HttpRequest):
     
-    pong = Pong(int(request.GET.get("p1")), int(request.GET.get("p2")))
-    pongs.append(pong)
-    return JsonResponse({"matchId": pong.id}, status=201)
+	p1 = (int(request.GET.get("p1Id")), request.GET.get("p1Name"))
+	p2 = (int(request.GET.get("p2Id")), request.GET.get("p2Name"))
+	pong = Pong(p1, p2)
+	pongs.append(pong)
+	return JsonResponse({"matchId": pong.id}, status=201)
 
 def safe_int(value, default=0):
 
@@ -81,10 +83,12 @@ def del_pong(pong_id):
 	pong = next((p for p in pongs if p.id == pong_id), None)
 	print(players, flush=True)
 	print(pongs, flush=True)
+	print("c la mouquate pongs.players", flush=True)
+	print(pong.users, flush=True)
 	if pong: 
 		players[:] = [
 			p for p in players if not any(
-				p['playerId'] == po['playerId'] for po in pong.players   
+				p['playerId'] == po['playerId'] for po in pong.users   
 		)]	
 		pongs[:] = [p for p in pongs if p.id != pong_id]
 	print(players, flush=True)

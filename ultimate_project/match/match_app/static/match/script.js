@@ -1,6 +1,12 @@
 
 function stopMatch(matchId)
 {
+	const input = document.getElementById("match-player-name");
+	if (input)
+	{
+		input.style.display = "none";
+		input.value = "";
+	}
 	if (!matchId)
 	{
 		console.log("matchID EST NULLE");
@@ -37,7 +43,8 @@ function stopMatch(matchId)
 				console.log("je vais envoyer 42");
 				window.stopFlag = true
 				window.matchSocket.close(3666);
-				window.matchSocket2.close(3666);
+				if (window.matchSocket2)
+					window.matchSocket2.close(3666);
 			} 
 			else 
 			{
@@ -572,10 +579,15 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
 	// console.log("match mesage: ", data);
-	const winnerId = data.winnerId == window.playerId ? window.selfName : window.player2Name;
+	
+	//! TO OPTI
+	const leftNameElement = document.getElementById("inst-left");
+	const rightNameElement = document.getElementById("inst-right");
+	leftNameElement.innerHTML = data.names[0] + "<br> keys: enter / +"
+	rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
 	if (data.state == "end")
 	{	
-        end.innerHTML = `The winner is: ${winnerId} <br> 
+        end.innerHTML = `The winner is: ${data.winnerName} <br> 
         Score: ${data.score[0]} : ${data.score[1]}
                 <img src="https://media1.tenor.com/m/Xd5ZJk8TV84AAAAd/christ-cosmique.gif" 
              alt="Winner GIF" 
@@ -710,7 +722,7 @@ function sequelInitMatchWs(socket) {
 		else
 			spec.style.display = "none";
 	}
-	console.log("BEFORE INIT SEC !!!!!! ", window.player2Id, typeof(window.player2Id) );
+	console.log("BEFORE INIT SEC !!!!!! ", window.player2Id, typeof(window.player2Id));
 	if (window.player2Id != 0)
 	{
 		console.log("INIT SEC !!!!!! ", window.player2Id);

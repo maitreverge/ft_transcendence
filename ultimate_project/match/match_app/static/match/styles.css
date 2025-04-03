@@ -141,6 +141,7 @@
     top: 10px;
     left: 10px;
     font-size: 1.2em;
+	text-align: center;
 }
 
 #inst-right {
@@ -148,6 +149,7 @@
     top: 10px;
     right: 10px;
     font-size: 1.2em;
+	text-align: center;
 }
 
 #end {
