@@ -37,7 +37,6 @@ ALLOWED_HOSTS = ["*", f"{HOST_IP}"]
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "http://localhost:8000",
-    "http://127.0.0.1:8000",
     f"https://{HOST_IP}",
 ]
 

@@ -31,7 +31,6 @@ SECRET_KEY = os.getenv("DJANGO_KEY")
 # ! SECURED BY FLO
 FERNET_SECRET_KEY = os.getenv("FERNET_SECRET_KEY")
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
@@ -40,7 +39,6 @@ ALLOWED_HOSTS = ["*", f"https://{HOST_IP}"]
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "http://localhost:8000",
-    "http://127.0.0.1:8000",
     f"https://{HOST_IP}",
 ]
 
