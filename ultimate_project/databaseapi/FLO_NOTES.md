@@ -19,6 +19,16 @@
 🟧 Lock all the routes
 
 
+```python
+
+import os
+
+ss = os.getenv("DJANGO_KEY")
+print(ss)
+
+```
+
+
 
 --------------------------------------------------------------------------------
 									SECURITY

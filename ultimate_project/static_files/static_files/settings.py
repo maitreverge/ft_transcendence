@@ -26,9 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-\
-    8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt"
+# ! SECURED BY FLO
+SECRET_KEY = os.getenv("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
@@ -52,7 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     f"{NAME}_app",
-    'corsheaders',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -62,8 +61,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'corsheaders.middleware.CorsMiddleware',  # This must be BEFORE CommonMiddleware
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",  # This must be BEFORE CommonMiddleware
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -189,7 +188,9 @@ CORS_ALLOW_HEADERS = ["*"]
 # Cookie settings
 SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
 SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access (for security)
-SESSION_COOKIE_SAMESITE = "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+SESSION_COOKIE_SAMESITE = (
+    "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+)
 
 CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token

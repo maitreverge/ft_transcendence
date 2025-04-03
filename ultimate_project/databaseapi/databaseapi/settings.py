@@ -25,11 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-\
-    8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt"
+# ! SECURED BY FLO
+SECRET_KEY = os.getenv("DJANGO_KEY")
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# TODO SECURITY
 FERNET_SECRET_KEY = os.getenv(
     "FERNET_SECRET_KEY", "2kXe3YL7r5_v69Gm4axlcNLWO4f2xAQqaqTTdLZST0A="
 )
@@ -61,7 +60,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
-    'django_extensions', # For CSV init players
+    "django_extensions",  # For CSV init players
 ]
 
 MIDDLEWARE = [
@@ -241,7 +240,9 @@ CORS_ALLOW_HEADERS = ["*"]
 # Cookie settings
 SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
 SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access (for security)
-SESSION_COOKIE_SAMESITE = "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+SESSION_COOKIE_SAMESITE = (
+    "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+)
 
 CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token

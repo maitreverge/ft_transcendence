@@ -25,9 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-\
-    8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt"
+# ! SECURED BY FLO
+SECRET_KEY = os.getenv("DJANGO_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -53,7 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     f"{NAME}_app",
     "user_management_app",
-    'corsheaders',
+    "corsheaders",
     "twofa_app",
 ]
 
@@ -64,8 +63,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'corsheaders.middleware.CorsMiddleware',  # This must be BEFORE CommonMiddleware
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",  # This must be BEFORE CommonMiddleware
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = f"{NAME}.urls"
@@ -138,10 +137,12 @@ STATIC_ROOT = "/app/staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 # Healthcheck filter
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
         return "/health/" not in record.getMessage()
+
 
 # Logging configuration for healthcheck
 LOGGING = {
@@ -187,7 +188,9 @@ CORS_ALLOW_HEADERS = ["*"]
 # Cookie settings
 SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
 SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access (for security)
-SESSION_COOKIE_SAMESITE = "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+SESSION_COOKIE_SAMESITE = (
+    "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+)
 
 CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
@@ -195,4 +198,3 @@ CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
 
 # CSRF Middleware settings
 CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]  # Add your domain(s) here
-
