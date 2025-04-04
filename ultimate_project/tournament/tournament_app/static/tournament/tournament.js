@@ -95,20 +95,20 @@ function newTournament(socket) {
 		}));
 }
 
-function enterLocalsPlayerOnTournament(socket, tournamentId) {
-	// const scripts = Array.from(document.getElementsByTagName("script"));
-    // scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
-	// if (scripts.some(script => script.className === "match-script")) {
-	// 	console.log("DEJA SCRIPT");
-	// 	return; // Ne pas exécuter fetch si un script "match-script" existe déjà
-	// };
-	console.log("ENTER LOCALS TOURNAMENT: ", tournamentId);
-	if (socket.readyState === WebSocket.OPEN) 
-		socket.send(JSON.stringify({
-			type: "enterTournament",
-			tournamentId: tournamentId			
-		}));
-}
+// function enterLocalsPlayerOnTournament(socket, tournamentId) {
+// 	// const scripts = Array.from(document.getElementsByTagName("script"));
+//     // scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
+// 	// if (scripts.some(script => script.className === "match-script")) {
+// 	// 	console.log("DEJA SCRIPT");
+// 	// 	return; // Ne pas exécuter fetch si un script "match-script" existe déjà
+// 	// };
+// 	console.log("ENTER LOCALS TOURNAMENT: ", tournamentId);
+// 	if (socket.readyState === WebSocket.OPEN) 
+// 		socket.send(JSON.stringify({
+// 			type: "enterTournament",
+// 			tournamentId: tournamentId			
+// 		}));
+// }
 
 function enterTournament(socket, tournamentId) {
 	const scripts = Array.from(document.getElementsByTagName("script"));
@@ -397,24 +397,31 @@ function dropTournament(div, tournamentId) {
 // 	});
 // }
 
-function catchPlayersInMatch(lk, playerId, playerName) {
-
+function catchPlayersInMatch(lk, playerId, playerName)
+{
 	const wss = websockets.filter(
 		ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-		wss.push({playerId: window.selfId, playerName: window.selfName});
+		wss.push({playerId: window.selfId, playerName: window.selfName,
+			socket:window.tournamentSocket});
 	let player2Id = 0;
 	let player2Name = "";
+	let socket = window.tournamentSocket;
+	console.log("CATCH", socket, " ", window.tournamentSocket);
 	if (wss.length >= 1)
 	{
 		playerId = wss[0].playerId;
 		playerName = wss[0].playerName;
+		socket = wss[0].socket;
 	}
 	if (wss.length == 2)
 	{
 		player2Id = wss[1].playerId;
 		player2Name = wss[1].playerName;
 	}
+	enterTournament(socket, lk.tournamentId);
+	if (player2Id)
+		enterTournament(wss[1].socket, lk.tournamentId);
 	return [playerId, playerName, player2Id, player2Name];
 }
 
