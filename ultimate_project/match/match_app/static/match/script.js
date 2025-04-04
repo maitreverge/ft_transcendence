@@ -588,12 +588,13 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	if (data.state == "end")
 	{	
         let gifUrl;
-        if (data.score[0] > data.score[1])
-            gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
-        else    
+        console.log(document.getElementById("playerSelfName").innerText);
+        if (document.getElementById("playerSelfName").innerText == data.winnerName)
             gifUrl = document.getElementById("winner-gif").dataset.gifUrl;
+        else    
+            gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
         end.innerHTML = `The winner is: ${data.winnerName} <br> 
-            Score: ${data.score[0]} : ${data.score[1]}
+            Score: ${data.score[0]} : ${data.score[1]} <br> 
             <img src="${gifUrl}" 
                 alt="Winner GIF" 
                 class="winner-gif">
@@ -698,6 +699,8 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 // 		pads[3].innerText = data.score[0] + " | " + data.score[1];
 // 	}
 // }
+
+
 
 function sequelInitMatchWs(socket) {
 
