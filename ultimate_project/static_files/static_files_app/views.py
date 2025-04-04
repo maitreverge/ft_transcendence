@@ -55,30 +55,35 @@ def home(request):
 
 
 @never_cache
-def profile(request):
-    # Get username from JWT header if available
+def reload_template(request):
+    
+    """
+    The purpose of `reload_template` is to enable full page reloading while serving 
+    dynamic content through the static container. 
+
+    This function is specifically triggered when a service is requested to be served 
+    through the static container, as defined in the `reverse_proxy_request` function 
+    of the FastAPI app. 
+    
+    """
+    headers = {key: value for key, value in request.headers.items() if key != "HX-Request"}
+    url = headers["X-Url-To-Reload"]
+    
+    print("********************\nRELOAD TEMPLATE CALLED\n********************", flush=True)
+    print(f"\nURL TO RELOAD {url}\n", flush=True)
+    
+    response = requests.get(url, headers=headers)
+    page_html = response.text
     username = request.headers.get("X-Username") or request.session.get("username")
 
-    if request.headers.get("HX-Request"):
-        print("********************\nHTMX REQUEST\n********************", flush=True)
-        return render(request, "partials/profile.html", {"username": username})
-    print("********************\nNORMAL REQUEST\n********************", flush=True)
-    obj = {"username": username, "page": "partials/profile.html"}
-    return render(request, "index.html", obj)
-
-
-@never_cache
-def stats(request):
-    # Get username from JWT header if available
-    username = request.headers.get("X-Username") or request.session.get("username")
-
-    if request.headers.get("HX-Request"):
-        print("********************\nHTMX REQUEST\n********************", flush=True)
-        return render(request, "partials/stats.html", {"username": username})
-
-    print("********************\nNORMAL REQUEST\n********************", flush=True)
-    obj = {"username": username, "page": "partials/stats.html"}
-    return render(request, "index.html", obj)
+    return render(request, "index.html",
+        {
+            "username": username,
+            "rasp": os.getenv("rasp", "false"),
+            "pidom": os.getenv("pi_domain", "localhost:8443"),
+            "page": page_html,
+        }
+    )
 
 
 @never_cache
@@ -108,48 +113,6 @@ def tournament_template(request, user_id):
     url = f"http://tournament:8001/tournament/tournament/{user_id}/"
     print(f"###################### userid {user_id} #################", flush=True)
     page_html = requests.get(url).text
-
-    # Get username from JWT header if available
-    username = request.headers.get("X-Username") or request.session.get("username")
-
-    return render(
-        request,
-        "index.html",
-        {
-            "username": username,
-            "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("HOST_IP", "localhost:8443"),
-            # "simpleUsers": consumer.players,
-            "page": page_html,
-        },
-    )
-
-
-@never_cache
-def user_profile_template(request):
-    page_html = requests.get("http://user:8004/user/profile/").text
-
-    # Get username from JWT header if available
-    username = request.headers.get("X-Username") or request.session.get("username")
-    print("********************\TEMPLATE REQUEST\n********************", flush=True)
-
-    return render(
-        request,
-        "index.html",
-        {
-            "username": username,
-            "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("HOST_IP", "localhost:8443"),
-            # "simpleUsers": consumer.players,
-            "page": page_html,
-        },
-    )
-
-
-@never_cache
-def user_stats_template(request):
-    page_html = requests.get("http://user:8004/user/stats/").text
-    print("********************\TEMPLATE REQUEST\n********************", flush=True)
 
     # Get username from JWT header if available
     username = request.headers.get("X-Username") or request.session.get("username")

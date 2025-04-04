@@ -127,7 +127,7 @@ def run(playwright: Playwright) -> None:
                 pass
 
         # ! ============= PROFILE PAGE =============
-        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+        expect(page).to_have_url(f"{BASE_URL}/account/profile/")
 
         # Check is 2FA is not enabled
         expect(page.locator("#disable_2fa")).to_be_hidden()
@@ -182,7 +182,7 @@ def run(playwright: Playwright) -> None:
         for _ in range(5):
             try:
                 page.locator("#nav-profile").click()
-                expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+                expect(page).to_have_url(f"{BASE_URL}/account/profile/")
                 
                 expect(page.locator("#disable_2fa")).to_be_enabled()
                 expect(page.locator("#setup_2fa")).to_be_hidden()
@@ -245,7 +245,7 @@ def run(playwright: Playwright) -> None:
         # ! DELETE THE USET TO AVOID DUPLICATES
 
         page.locator("#nav-profile").click()
-        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+        expect(page).to_have_url(f"{BASE_URL}/account/profile/")
 
         page.locator("#delete_profile").click()
 

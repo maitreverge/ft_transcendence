@@ -69,8 +69,8 @@ def run(playwright: Playwright) -> None:
 
     urls = [ 
             f"{base_url}/home/", 
-            f"{base_url}/user/profile/", 
-            f"{base_url}/user/stats/",
+            f"{base_url}/account/profile/", 
+            f"{base_url}/account/stats/",
             f"{base_url}/tournament/simple-match/",
             f"{base_url}/tournament/tournament/"
             ]     
@@ -101,17 +101,17 @@ def run(playwright: Playwright) -> None:
     # Liste des tests à effectuer
     navigation_tests = [
         ("#nav-tournoi", f"{base_url}/tournament/tournament/"),
-        ("#nav-profile", f"{base_url}/user/profile/"),
-        ("#nav-stats", f"{base_url}/user/stats/"),
+        ("#nav-profile", f"{base_url}/account/profile/"),
+        ("#nav-stats", f"{base_url}/account/game-stats/"),
         ("#nav-match", f"{base_url}/tournament/simple-match/"),
         ("#side-tournoi", f"{base_url}/tournament/tournament/"),
-        ("#side-profile", f"{base_url}/user/profile/"),
-        ("#side-stats", f"{base_url}/user/stats/"),
+        ("#side-profile", f"{base_url}/account/profile/"),
+        ("#side-stats", f"{base_url}/account/game-stats/"),
         ("#side-match", f"{base_url}/tournament/simple-match/"),
         ("#field-tournoi", f"{base_url}/tournament/tournament/"),
         ("#field-match", f"{base_url}/tournament/simple-match/"),
-        ("#field-profile", f"{base_url}/user/profile/"),
-        ("#field-stats", f"{base_url}/user/stats/"),
+        ("#field-profile", f"{base_url}/account/profile/"),
+        ("#field-stats", f"{base_url}/account/stats/"),
     ]
 
     # # Vérification de la navigation via le menu topbar

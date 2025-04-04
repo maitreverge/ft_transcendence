@@ -1,0 +1,38 @@
+{% load static %}
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow mb-4 border-left-success">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-check-circle fa-4x text-success"></i>
+          </div>
+          <h4 class="mb-3">{{ message }}</h4>
+
+          {% if "disabled" in message %}
+          <p id="log_message">
+            Two-factor authentication has been disabled for your account.
+          </p>
+          {% else %}
+          <p id="log_message">
+            Your account is now protected with two-factor authentication.
+          </p>
+          {% endif %}
+
+          <a
+            href="/account/profile/"
+            class="btn btn-primary btn-user mt-3"
+            hx-get="/account/security/"
+            hx-target="#main_div"
+            hx-headers='{"HX-Request": "true"}'
+            hx-push-url="true"
+            >
+            Return to Security Settings
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

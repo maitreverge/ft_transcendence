@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.http import HttpResponse, JsonResponse
-import user_app.views as views
-import twofa_app.views as twofa_views
+
+import user_account_app.views as user_account_views
 from django.views.decorators.csrf import csrf_exempt
 from asgiref.sync import sync_to_async, async_to_sync
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
@@ -15,10 +15,9 @@ def health_check(request):
 
 urlpatterns = [
     path("health/", health_check, name="health_check"),
-    path("user/", include("user_management_app.urls")),
-    path("user/profile/", views.profile),
-    path("user/stats/", views.stats),
-    path("user/setup-2fa/", async_to_sync(twofa_views.setup_2fa)),
-    path("user/verify-2fa/", async_to_sync(twofa_views.verify_2fa)),
-    path("user/disable-2fa/", async_to_sync(twofa_views.disable_2fa)),
+    # path("debug-headers/", debug_headers, name="debug_headers"),
+    
+    # Everythin related to account management
+    path("account/", include("user_account_app.urls"), name="account"),
+   
 ]

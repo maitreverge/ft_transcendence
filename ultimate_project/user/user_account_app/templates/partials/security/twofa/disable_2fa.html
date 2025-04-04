@@ -1,0 +1,72 @@
+{% load static %}
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 data-translate="Disable 2FA" class="h3 mb-2 text-gray-800">
+    Disable 2FA for {{ username }}
+  </h1>
+  <p class="mb-4">
+    To disable two-factor authentication, please verify your identity by
+    entering the 6-digit code from your authenticator app.
+  </p>
+
+  <div class="row">
+    <div class="col-lg-6 mb-4 mx-auto">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-danger">
+            Enter Verification Code
+          </h6>
+        </div>
+        <div class="card-body">
+          {% if error %}
+          <div id="error" name="error" class="alert alert-danger mb-3">
+            {{ error }}
+          </div>
+          {% endif %}
+
+          <form
+            hx-post="/account/security/disable-2fa/"
+            hx-target="#main_div"
+            hx-headers='{"HX-Request": "true", "X-CSRFToken": "{{ csrf_token }}"}'
+          >
+            {% csrf_token %}
+            <div class="form-group">
+              <label>Enter the 6-digit code from your authenticator app:</label>
+              <input
+                id="token"
+                type="number"
+                name="token"
+                maxlength="6"
+                class="form-control form-control-user"
+                placeholder="Enter 6-digit code"
+                required
+              />
+            </div>
+            <div class="form-group mt-4">
+              <button
+                id="otp_verify"
+                name="otp_verify"
+                type="submit"
+                class="btn btn-danger btn-user btn-block"
+              >
+                Verify and Disable 2FA
+              </button>
+              <a
+                href="/account/security/"
+                class="btn btn-secondary btn-user btn-block mt-2"
+                hx-get="/account/security/"
+                hx-target="#main_div"
+                hx-headers='{"HX-Request": "true"}'
+
+                hx-push-url="true"
+
+              >
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

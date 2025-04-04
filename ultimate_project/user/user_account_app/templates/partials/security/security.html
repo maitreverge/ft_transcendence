@@ -1,0 +1,83 @@
+{% load static %}
+<div id="security-content">
+  <!-- Default content for security settings (2FA) -->
+  <div class="card mb-3 shadow">
+    <div class="card-body text-center">
+      <h5 class="card-title">Two-Factor Authentication (2FA)</h5>
+      <p class="card-text">Enhance your account security by enabling 2FA.</p>
+
+      <!-- Button to enable/disable 2FA -->
+      {% if user.two_fa_enabled %}
+      <a
+        href="#"
+        class="btn btn-danger"
+        hx-get="/account/security/disable-2fa/"
+        hx-target="#security-content"
+        hx-headers='{"X-Inner-Content": "true"}'
+        hx-push-url="true"
+        >
+        Disable 2FA
+      </a>
+      {% else %}
+      <a
+        href="#"
+        class="btn btn-success"
+        hx-get="/account/security/setup-2fa/"
+        hx-target="#security-content"
+        hx-headers='{"X-Inner-Content": "true"}'
+        hx-push-url="true"
+      >
+        Set Up 2FA
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+<style>
+  /* Sidebar Button Styles */
+  .sidebar-btn {
+    font-size: 0.85rem; /* Slightly smaller font */
+    padding: 0.5rem 1rem; /* Smaller padding */
+    border-width: 2px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+  /* Active state for Enable (green) and Disable (red) */
+  .sidebar-btn.active,
+  .sidebar-btn:focus {
+    color: white !important;
+  }
+
+  /* Green when enabled */
+  .btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+  }
+
+  .btn-outline-success.active,
+  .btn-outline-success:focus {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+  }
+
+  /* Red when disabled */
+  .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+  }
+  .btn-outline-danger.active,
+  .btn-outline-danger:focus {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+  }
+  /* When hovering, the button gets a darker shade */
+  .sidebar-btn:hover {
+    background-color: #0056b3;
+    color: white;
+    border-color: #0056b3;
+  }
+</style>
+
+<!-- Include HTMX -->
+<script src="https://unpkg.com/htmx.org@1.9.6/dist/htmx.min.js"></script>
