@@ -245,15 +245,23 @@ function createPlayerElement(socket, playerId, playerName)
 		}		
 	}
 	else if (ws)
-	{
-		div.classList.add("phantom");
-		div.onclick =  event => {
-			event.stopPropagation();		
-			ws.socket.close();		
-		}		
-	}
+		phantomPlayer(div, playerId, ws);
 	dragPlayer(div);
 	return div;
+}
+
+function phantomPlayer(div, playerId, ws) {
+
+	const playersCont = document.getElementById("players");
+	div.classList.add("phantom");
+	div.onclick =  event => {
+		event.stopPropagation();
+		const players = [...playersCont.children]
+		if (players.some(el => el.id == playerId))		
+			ws.socket.close();
+		else
+			quitTournament(ws.socket)	
+	}
 }
 
 function dragPlayer(div) {
@@ -337,7 +345,7 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 	div.textContent = `tournament: ${tournament.tournamentId}`;
 	div.id = tournament.tournamentId;
 	div.className = "tournament-cont"
-	div.onclick = () => enterTournament(socket, tournament.tournamentId);
+	// div.onclick = () => enterTournament(socket, tournament.tournamentId);
 	const overlayPattern = document.createElement("div");
 	overlayPattern.id = "overlay-pattern";
 	const playersCont = document.createElement("div");
@@ -355,13 +363,16 @@ function dropTournament(div, tournamentId) {
 		console.log("dans drop");
 		e.preventDefault();
 		const elementId = e.dataTransfer.getData("text/plain");
-		const socket = websockets.find(el => el.playerId == elementId);	
-		if (!socket)
+		const ws = websockets.find(el => el.playerId == elementId);	
+		if (!ws && window.selfId != elementId)
 		{
 			alert("not your player");
 			return;
 		}
-		enterTournament(socket.socket, tournamentId);
+		if (ws)
+			enterTournament(ws.socket, tournamentId);
+		else
+			enterTournament(window.tournamentSocket, tournamentId);
 	});
 }
 
@@ -518,16 +529,25 @@ function linkMatch(lk)
 		`[id='${lk.tournamentId}']`
 	);
 	if (!tournament)
+	{
+		console.log("je sors de link match parceque tournament est faux");
 		return;
+	}
 	const overlay = tournament.querySelector("#overlay-match");
 	const localMatch = tournament.querySelector(`#${lk.localMatchId}`);
 	if (!localMatch)
+	{
+		console.log("je sors de link match parceque localMatch est faux");
 		return;
+	}
 	overlay.style = "transform:translate(-180px, 200px);"
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
+	{
+		console.log("je sors de link match parceque p1 ou p2 ne sont pas vide");
 		return;
+	}
 	localP1.innerText = lk.p1Name;
 	localP2.innerText = lk.p2Name;
 	// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
