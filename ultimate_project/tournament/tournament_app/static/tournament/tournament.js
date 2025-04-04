@@ -30,7 +30,9 @@ function initTournament() {
 		onTournamentMessage(event, window.tournamentSocket);
 }
 
-function connectNewPlayer(playerId, playerName) {
+function connectNewPlayer(playerId, playerName)
+{
+	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
 
 	if (!playerId)
 	{
@@ -40,7 +42,6 @@ function connectNewPlayer(playerId, playerName) {
 		console.log(websockets);
 		return;
 	}
-	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
 	const ws = websockets.find(ws => ws.playerName === playerName);	
 	ws.playerId = playerId;
 	console.log("ws id ", ws.playerName, ws.playerId);
@@ -132,7 +133,8 @@ function closeTournamentSocket() {
 		window.tournamentSocket && 
 		window.tournamentSocket.readyState === WebSocket.OPEN
 	)
-	window.tournamentSocket.close();    
+	window.tournamentSocket.close();
+	websockets.forEach(ws => ws.socket.close());    
 }
 
 function onTournamentMessage(event, socket) {
@@ -225,15 +227,15 @@ function updateWinPlayers(socket, playersUp)
 	});
 }
 
-function createPlayerElement(socket, playerId, playerName) {
-
+function createPlayerElement(socket, playerId, playerName)
+{
 	console.log("CREATE PL ELEMENT ", playerId);
 
 	const div = document.createElement("div");
 	div.className = "user";
 	div.textContent = playerName;
 	div.id = playerId;	
-	
+	const ws = websockets.find(ws => ws.playerId == playerId);	
 	if (playerId == window.selfId)
 	{
 		div.classList.add("self-player");
@@ -242,16 +244,14 @@ function createPlayerElement(socket, playerId, playerName) {
 			quitTournament(socket);	
 		}		
 	}
-	else 
+	else if (ws)
+	{
+		div.classList.add("phantom");
 		div.onclick =  event => {
-			event.stopPropagation();
-			const ws = websockets.find(ws => ws.playerId == playerId);
-			if (!ws)
-				alert("not your player WOMAN");
-			else
-				ws.socket.close();	
-			console.log(websockets);
+			event.stopPropagation();		
+			ws.socket.close();		
 		}		
+	}
 	dragPlayer(div);
 	return div;
 }
@@ -289,7 +289,8 @@ function updatePlayersCont(playersUp) {
 	});
 }
 
-function updateTournaments(socket, tournamentsUp) {
+function updateTournaments(socket, tournamentsUp)
+{
 
 	console.log("UPDATE TOURNAMENTS ", tournamentsUp);
 
@@ -508,9 +509,10 @@ function updateLinkMatchAndResult(tournamentsUp) {
 	});
 }
 
-function linkMatch(lk) {
-
+function linkMatch(lk)
+{
 	console.log("LINK MATCH ", lk);
+
 	const dim = document.getElementById("dim");
 	const tournament = document.getElementById("tournaments").querySelector(
 		`[id='${lk.tournamentId}']`
@@ -603,8 +605,8 @@ function loadTournamentHtml(data, overlay) {
 	}
 }
 
-function matchResult(rsl) {
-
+function matchResult(rsl)
+{
 	console.log("MATCH RESULT ", rsl);
 
 	const tournament = document.getElementById("tournaments").querySelector(
@@ -641,8 +643,8 @@ function updateMatchsPlayers(pack) {
 		pack.forEach(plys => updateMatchPlayers(plys));
 }
 
-function updateMatchPlayers(plys) {
-
+function updateMatchPlayers(plys)
+{
 	console.log("MATCH PLAYERS UPDATE ", plys);	
 
 	const tournament = document.getElementById("tournaments").querySelector(
