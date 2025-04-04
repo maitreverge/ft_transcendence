@@ -588,8 +588,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	if (data.state == "end")
 	{	
         let gifUrl;
-        console.log(document.getElementById("playerSelfName").innerText);
-        if (document.getElementById("playerSelfName").innerText == data.winnerName)
+        if (window.selfName == data.winnerName)
             gifUrl = document.getElementById("winner-gif").dataset.gifUrl;
         else    
             gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
