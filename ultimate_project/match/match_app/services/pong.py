@@ -33,7 +33,7 @@ class Pong:
 		self.score = [0, 0]
 
 		self.has_wall = False
-		self.max_score = 1
+		self.max_score = 10
 		self.max_wait_delay = 1500
 
 		self.pad_height = 40	
@@ -41,8 +41,8 @@ class Pong:
 		self.pad_width = 10
 		self.ball_rst = [25, 5]
 		self.ball = self.ball_rst.copy()
-		self.vect_rst = [0.5, 0.5]
-		self.vect = self.vect_rst.copy()
+		self.ball_speed = 1
+		self.vect = self.get_random_vector() 
 		self.pad_speed = 4
 		self.max_ball_speed = 10
 		self.ball_acceleration = 1.1
@@ -210,6 +210,8 @@ class Pong:
 
 	async def stop(self, playerId):
 
+		print(f"STOP playerId: {playerId}", flush=True)
+		print(self.plyIds, flush=True)
 		if playerId in self.plyIds: 	
 			print(f"le player est bien autorise a fermer le match", flush=True)
 			# self.sendTask.cancel()
@@ -326,6 +328,7 @@ Pong.segments_intersect = physics.segments_intersect
 Pong.scale_vector = physics.scale_vector
 Pong.get_magnitude = physics.get_magnitude
 Pong.move_ball = physics.move_ball
+Pong.get_random_vector = physics.get_random_vector
 
 Pong.scores = scores.scores
 Pong.score_point = scores.score_point
