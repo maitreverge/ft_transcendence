@@ -41,15 +41,15 @@ class Pong:
 		self.pad_width = 10
 		self.ball_rst = [25, 5]
 		self.ball = self.ball_rst.copy()
-		self.vect_rst = [1, 1]
+		self.vect_rst = [0.1, 0.1]
 		self.vect = self.vect_rst.copy()
 		self.pad_speed = 4
 		self.max_ball_speed = 10
 		self.ball_acceleration = 1.1
 
 		self.bounce_delay = 0.05
-		self.send_delay = 0.05
-		self.gear_delay = 0.05
+		self.send_delay = 0.01
+		self.gear_delay = 0.01
 
 		self.send_task = None
 		self.watch_task = None
