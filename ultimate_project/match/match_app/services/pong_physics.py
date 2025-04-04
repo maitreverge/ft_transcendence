@@ -1,6 +1,7 @@
 import math
 import asyncio
 import operator as op
+import random
 
 def pad_commands(self, players):
 	
@@ -131,6 +132,15 @@ def move_ball(self):
 	if (self.wall_flag):	
 		self.ball[0] += self.vect[0]				
 		self.ball[1] += self.vect[1]
+
+def get_random_vector(self):
+
+	neg_x = random.uniform(-self.ball_speed, -self.ball_speed / 2)
+	pos_x = random.uniform(+self.ball_speed, +self.ball_speed / 2)
+	x = random.choice([neg_x, pos_x])
+	y = math.sqrt(abs(self.ball_speed ** 2 - x **2))
+	y = random.choice([y, -y])
+	return [x, y]
 
 # def substract_vect(self, vect_a, vect_b):
 # 	new_vect = [0, 0]
