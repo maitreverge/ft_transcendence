@@ -126,8 +126,8 @@ def run(playwright: Playwright) -> None:
             except Exception as e:
                 pass
 
-        # ! ============= PROFILE PAGE =============
-        expect(page).to_have_url(f"{BASE_URL}/account/profile/")
+        # ! ============= Security PAGE =============
+        expect(page).to_have_url(f"{BASE_URL}/account/security/")
 
         # Check is 2FA is not enabled
         expect(page.locator("#disable_2fa")).to_be_hidden()

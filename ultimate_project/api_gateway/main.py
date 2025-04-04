@@ -13,7 +13,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 import json
 
 # from fastapi.middleware.cors import CORSMiddleware
-from utils import authentication, auth_helpers
+import authentication, auth_helpers
 
 
 # ======= 🚀 FastAPI Application Setup for API Gateway 🚀 =======
