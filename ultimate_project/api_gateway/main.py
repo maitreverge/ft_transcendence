@@ -115,7 +115,7 @@ async def jwt_refresh_middleware(request: Request, call_next):
 #     return await call_next(request)
 
 
-# ! DEBUGGING COOKIES MIDDLEWARE.
+# ! DEBUGGING COOKIES MIDDLEWARE, DO DELETE
 # This middleware is used to debug incoming cookies in FastAPI.
 # It prints the incoming cookies to the console.
 @app.middleware("http")
