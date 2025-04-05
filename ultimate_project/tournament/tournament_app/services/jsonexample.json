@@ -1,3 +1,4 @@
+MATCH SIMPLE
 {
   "matchId": 4,
   "winnerId": -2,
@@ -8,7 +9,7 @@
   "p2Id": 2,
   "score": [0, 0]
 }
-,
+TOURNOIS
 {
 	"type": "tournamentResult",
 	"tournamentId": 1,
