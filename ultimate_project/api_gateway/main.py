@@ -60,7 +60,7 @@ logger = logging.getLogger(__name__)
 
 # Token refresh middleware
 @app.middleware("http")
-async def token_refresh_middleware(request: Request, call_next):
+async def jwt_refresh_middleware(request: Request, call_next):
     """
     Middleware that checks if the access token needs to be refreshed.
     If refresh is needed, it adds the new access token to the response.
@@ -438,17 +438,17 @@ async def login_page_route(request: Request, path: str = ""):
         response = RedirectResponse(url="/home")
 
         # If token refresh is needed, set the new access token cookie
-        if user_info and user_info.get("refresh_needed"):
-            print("🔄 Setting refreshed access token during login redirect", flush=True)
-            response.set_cookie(
-                key="access_token",
-                value=user_info.get("new_access_token"),
-                httponly=True,
-                secure=True,
-                samesite="Lax",
-                path="/",
-                max_age=60 * 60 * 6,  # 6 hours
-            )
+        # if user_info and user_info.get("refresh_needed"):
+        #     print("🔄 Setting refreshed access token during login redirect", flush=True)
+        #     response.set_cookie(
+        #         key="access_token",
+        #         value=user_info.get("new_access_token"),
+        #         httponly=True,
+        #         secure=True,
+        #         samesite="Lax",
+        #         path="/",
+        #         max_age=60 * 60 * 6,  # 6 hours
+        #     )
 
         return response
 
@@ -472,7 +472,7 @@ async def login_page_route(request: Request):
     return await login_fastAPI(request, response, username, password)
 
 
-# Add auth-status endpoint for debugging
+# ! ROUTE TO DELETE
 @app.get("/auth/status")
 async def auth_status(request: Request):
     """
@@ -540,17 +540,17 @@ async def register_page_route(request: Request, path: str = ""):
         response = RedirectResponse(url="/home")
 
         # If token refresh is needed, set the new access token cookie
-        if user_info and user_info.get("refresh_needed"):
-            print("🔄 Setting refreshed access token during login redirect", flush=True)
-            response.set_cookie(
-                key="access_token",
-                value=user_info.get("new_access_token"),
-                httponly=True,
-                secure=True,
-                samesite="Lax",
-                path="/",
-                max_age=60 * 60 * 6,  # 6 hours
-            )
+        # if user_info and user_info.get("refresh_needed"):
+        #     print("🔄 Setting refreshed access token during login redirect", flush=True)
+        #     response.set_cookie(
+        #         key="access_token",
+        #         value=user_info.get("new_access_token"),
+        #         httponly=True,
+        #         secure=True,
+        #         samesite="Lax",
+        #         path="/",
+        #         max_age=60 * 60 * 6,  # 6 hours
+        #     )
 
         return response
 

@@ -30,6 +30,14 @@
 
 🟧 Garder des users standarts pour la correction
 
+🟧 https://docs.djangoproject.com/en/5.1/ref/csrf/#csrf-limitations
+==> Proteger les routes de POST / PUT / DELETE avec des decorateurs CSRF adequats
+
+🟧 Mettre un decorateur sur l'API gateway ?
+
+
+
+
 
 
 
