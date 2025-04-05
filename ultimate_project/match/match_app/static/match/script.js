@@ -574,28 +574,28 @@ function animateZ(pads) {
 
 function startCountdown()
 {
-	console.log("%%%%%%%%%%%%%%% get the shit going , BABY!!!%%%%%%%%%%%%%%");
+	// console.log("%%%%%%%%%%%%%%% get the shit going , BABY!!!%%%%%%%%%%%%%%");
 
 	loaderElement = document.querySelector(".loader");
 	if (loaderElement)
 		loaderElement.style.opacity = "1";
 
     const countdownEl = document.querySelector('.countdown');
-    const countdownEndsAt = window.gameStartTimestamp * 1000 + 3000;  // Ajouter 3 secondes pour simuler la fin du compte à rebours
-    console.log("Le compte à rebours se termine à:", countdownEndsAt / 1000);
+    const countdownEndsAt = window.gameStartTimestamp * 1000 + 3000;
+    // console.log("Le compte à rebours se termine à:", countdownEndsAt / 1000);
 
 	function updateCountdown() {
-        const now = Date.now();  // Heure actuelle en millisecondes
-        const remaining = Math.ceil((countdownEndsAt - now) / 1000);  // Temps restant en secondes
+        const now = Date.now();
+        const remaining = Math.ceil((countdownEndsAt - now) / 1000);
 
         if (remaining > 0) {
             countdownEl.textContent = remaining;
-            requestAnimationFrame(updateCountdown);  // Mettre à jour de manière continue
-        } else if (remaining > -1.5) {
-            countdownEl.textContent = "GO!";  // Afficher "GO!" quand le compte à rebours se termine
+            requestAnimationFrame(updateCountdown);
+        } else if (remaining > -1) {
+            countdownEl.textContent = "GO!";
             requestAnimationFrame(updateCountdown);
         } else {
-            loaderElement.remove();  // Retirer le loader une fois le compte à rebours terminé
+            loaderElement.remove();
         }
     }
 	updateCountdown();
@@ -614,7 +614,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	
 			// Ici tu peux démarrer ton compte à rebours
 			// startCountdownFrom(data.timestamp, '.countdown', '.loader');
-			console.log("################START THE GAME##############");
+			// console.log("################START THE GAME##############");
 			startCountdown();
 		} else {
 			console.log("⏩ Timestamp déjà reçu, ignoré.");
