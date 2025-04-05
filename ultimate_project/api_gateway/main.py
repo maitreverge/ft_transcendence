@@ -49,13 +49,40 @@ services = {
     "match": "http://match:8002",
     "static_files": "http://static_files:8003",
     "user": "http://user:8004",
-    # "authentication": "http://authentication:8006", # ! OUTDATED SERVICE, DO NOT USE
     "databaseapi": "http://databaseapi:8007",
 }
 
 # logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Exclude Path for the 
+EXCLUDED_PATHS = ["/login", "/register"]
+
+@app.middleware("http")
+async def bouncer_middleware(request: Request, call_next):
+    """
+    Main Middleware to filter authenticated users from non auth users
+    """
+    if request.url.path in EXCLUDED_PATHS:
+        # Skip middleware for excluded paths
+        return await call_next(request)
+    
+    response = await call_next(request)
+
+    is_auth, user_info = is_authenticated(request)
+
+    if not is_auth:
+        response.delete_cookie(key="access_token", path="/")
+        response.delete_cookie(key="refresh_token", path="/")
+        
+        
+        return RedirectResponse(url="/home/")
+
+    
+
+    response = await call_next(request)
+    return response
 
 
 # Token refresh middleware
@@ -701,7 +728,7 @@ async def delete_profile_proxy(request: Request):
                 response.delete_cookie(key="access_token", path="/")
                 response.delete_cookie(key="refresh_token", path="/")
 
-                # Set HX-Redirect header for client-side redirection
+                # ! REDIRECT RELOAD THE SPA HERE
                 response.headers["HX-Redirect"] = "/register/"
 
                 print("🗑️ Cookies cleared and redirect set", flush=True)
