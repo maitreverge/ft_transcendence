@@ -19,8 +19,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		print(f"CONNECT TOURNAMENT {self.id} {self.name}", flush=True)
 		players.append(self)
-		# await self.send(text_data=json.dumps({
-		# 	"type": "selfAssign", "selfId": self.id})) 
 		await self.send_list("player", players)
 		await TournamentConsumer.send_tournaments()
 
@@ -163,3 +161,4 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	
 		for player in players:				
 			await player.send(text_data=json.dumps(packet))
+			

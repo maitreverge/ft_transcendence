@@ -21,8 +21,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		players.append(
 			{'playerId': self.id, 'playerName': self.name, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
-		# await self.send(text_data=json.dumps({
-		# 	"type": "selfAssign", "selfId": self.id}))
 		await SimpleConsumer.send_list('player', players)
 		await SimpleConsumer.send_list('match', matchs)
 
