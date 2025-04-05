@@ -132,7 +132,7 @@ class Tournament():
 	async def workflow(self, match_result):
 
 		if self.n_match == 1:
-			await self.send_match_result(match_result)
+			await self.send_all_players(match_result)
 		elif self.n_match == 2:
 			# p1 = (self.matchs[0].get('matchResult', {}).get('winnerId'),
 			# 	self.matchs[0].get('matchResult', {}).get('winnerName'))
@@ -140,12 +140,12 @@ class Tournament():
 			# 	self.matchs[1].get('matchResult', {}).get('winnerName'))
 			nxt_plys = self.get_next_players()
 			link_match = await self.start_match(nxt_plys[0], nxt_plys[1], "m1")			
-			await self.send_match_result(match_result)
-			await self.send_link_match(link_match)
+			await self.send_all_players(match_result)
+			await self.send_all_players(link_match)
 		elif self.n_match == 3:
-			await self.send_match_result(match_result)
+			await self.send_all_players(match_result)
 			tournament_result = self.get_tournament_result(match_result)
-			await self.send_tournament_result(tournament_result)
+			await self.send_all_players(tournament_result)
 			await self.send_db(tournament_result)
 			self.launch = False
 
@@ -165,6 +165,7 @@ class Tournament():
 	def get_tournament_result(self, match_result):
 
 		return {
+			"type": "tournamentResult",
 			"tournamentId": self.id,
 			"winner_id": match_result.get('winnerId'),
 			"winner_name": match_result.get('winnerName'),
@@ -173,12 +174,35 @@ class Tournament():
 			"matchs": self.matchs
 		}
 
-	async def send_tournament_result(self, tournament_result):
-		print(f"SENDLINKMATCH {tournament_result}", flush=True)	
-		from tournament_app.services.tournament_consumer import players
-		for player in players:
-			print(f"SENDLINKMATCH {tournament_result} to {player.id}", flush=True)				
-			await player.send(text_data=json.dumps(tournament_result))
+	async def send_all_players(self, packet):
+
+		from tournament_app.services.tournament_consumer \
+			import send_all_players as sap
+		await sap(packet)
+
+	# async def send_tournament_result(self, tournament_result):
+	# 	print(f"SENDLINKMATCH {tournament_result}", flush=True)	
+	# 	from tournament_app.services.tournament_consumer import players
+	# 	for player in players:
+	# 		print(f"SENDLINKMATCH {tournament_result} to {player.id}", flush=True)				
+	# 		await player.send(text_data=json.dumps(tournament_result))
+
+		
+	# async def send_link_match(self, link_match):
+
+	# 	print(f"SENDLINKMATCH {link_match}", flush=True)	
+	# 	from tournament_app.services.tournament_consumer import players
+	# 	for player in players:
+	# 		print(f"SENDLINKMATCH {link_match} to {player.id}", flush=True)				
+	# 		await player.send(text_data=json.dumps(link_match))
+
+	# async def send_match_result(self, match_result):
+
+	# 	print(f"SENDMATCHRESULT {match_result}", flush=True)
+	# 	from tournament_app.services.tournament_consumer import players
+	# 	for player in players:
+	# 		print(f"SENDMATCHRESULT {match_result} to {player.id}", flush=True)					
+	# 		await player.send(text_data=json.dumps(match_result))
 
 	async def send_db(tournament_result):
 
@@ -186,22 +210,6 @@ class Tournament():
 
 		path = ""
 		send_db(path, tournament_result)
-		
-	async def send_link_match(self, link_match):
-
-		print(f"SENDLINKMATCH {link_match}", flush=True)	
-		from tournament_app.services.tournament_consumer import players
-		for player in players:
-			print(f"SENDLINKMATCH {link_match} to {player.id}", flush=True)				
-			await player.send(text_data=json.dumps(link_match))
-
-	async def send_match_result(self, match_result):
-
-		print(f"SENDMATCHRESULT {match_result}", flush=True)
-		from tournament_app.services.tournament_consumer import players
-		for player in players:
-			print(f"SENDMATCHRESULT {match_result} to {player.id}", flush=True)					
-			await player.send(text_data=json.dumps(match_result))
 
 	async def match_players_update(self, match_update):
 

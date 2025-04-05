@@ -155,4 +155,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		print(f"PACK: {pack}", flush=True)
 		for player in players:
 			await player.send(text_data=json.dumps(pack))
+
+	@staticmethod
+	async def send_all_players(packet):
+
+		print(f"SEND ALL PLAYERS {packet}", flush=True)
 	
+		for player in players:				
+			await player.send(text_data=json.dumps(packet))

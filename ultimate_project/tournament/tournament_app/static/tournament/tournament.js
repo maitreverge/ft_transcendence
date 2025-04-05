@@ -147,6 +147,10 @@ function onTournamentMessage(event, socket) {
 		// case "selfAssign":
 		// 	setSelfId(data.selfId);
 		// 	break;
+		
+		case "tournamentResult":
+			tournamentResult(data);
+		break;
 		case "newPlayerId":
 			connectNewPlayer(data.playerId, data.playerName);
 		break;
@@ -198,6 +202,11 @@ function onTournamentMessage(event, socket) {
 // 	document.getElementById("player").innerText = 
 // 		"Je suis le joueur " + window.selfId;	
 // }
+
+function tournamentResult(data)
+{
+	console.log("TOURNAMENT RESULT ", data);
+}
 
 function updatePlayers(socket, playersUp)
 {
