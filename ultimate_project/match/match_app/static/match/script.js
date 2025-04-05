@@ -574,12 +574,31 @@ function animateZ(pads) {
 
 function startCountdown()
 {
-	loaderElement = document.querySelector(".loader");
-	if (loaderElement) {
-		loaderElement.style.opacity = "1";
-	  }
-	console.log(loaderElement);
 	console.log("%%%%%%%%%%%%%%% get the shit going , BABY!!!%%%%%%%%%%%%%%");
+
+	loaderElement = document.querySelector(".loader");
+	if (loaderElement)
+		loaderElement.style.opacity = "1";
+
+    const countdownEl = document.querySelector('.countdown');
+    const countdownEndsAt = window.gameStartTimestamp * 1000 + 3000;  // Ajouter 3 secondes pour simuler la fin du compte à rebours
+    console.log("Le compte à rebours se termine à:", countdownEndsAt / 1000);
+
+	function updateCountdown() {
+        const now = Date.now();  // Heure actuelle en millisecondes
+        const remaining = Math.ceil((countdownEndsAt - now) / 1000);  // Temps restant en secondes
+
+        if (remaining > 0) {
+            countdownEl.textContent = remaining;
+            requestAnimationFrame(updateCountdown);  // Mettre à jour de manière continue
+        } else if (remaining > -1.5) {
+            countdownEl.textContent = "GO!";  // Afficher "GO!" quand le compte à rebours se termine
+            requestAnimationFrame(updateCountdown);
+        } else {
+            loaderElement.remove();  // Retirer le loader une fois le compte à rebours terminé
+        }
+    }
+	updateCountdown();
 }
 
 function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
