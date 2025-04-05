@@ -6,15 +6,13 @@
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
 
-🟧 Create a worklofo to delete the DB at 42
+✅ Create a worklofo to delete the DB at 42
 
-🟧 Test and stabilize multi-users connection 
-
-🟧 Write tests about it once merged with Thomas 
+🟧 Test and stabilize multi-users connection (once everything is locked up) 
 
 🟧 Beautify register / login / 2fa landing pages
 
-🟧 Find a way to lock the database as well
+🟧 Find a way to lock the database routes as well
 
 🟧 Lock all the routes (lock les routes visibles dans le front)
 
@@ -22,23 +20,17 @@
 
 🟧 VOIR LE REGEX DE SEB DANS DISCORD POUR SES WEBSOCKETS (lock )
 
+🟧 DELETE THIS FILE
+
+🟧 DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT...
+
+🟧 XSS / Injection SQL sur tout les formulaires
+
+🟧 Changer le mot de passe d'admin / Delete l'admin en production
+
+🟧 Garder des users standarts pour la correction
 
 
-
-```python
-
-import os
-
-ss = os.getenv("DJANGO_KEY")
-print(ss)
-
-```
-
-
-
---------------------------------------------------------------------------------
-									SECURITY
---------------------------------------------------------------------------------
 
 
 --------------------------------------------------------------------------------
@@ -46,13 +38,9 @@ print(ss)
 --------------------------------------------------------------------------------
 
 
-🟧 
-
 🟧 DELETE LE BASH MIGRATION.DELETE.SH DANS LE MAKEFILE
 
 🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES ==> VOIR AVEC MERGE THOMAS
-
-🟧 SILENCE HEALTHCHECKS 
 
 🟧 Retravailler la securisation des routes dans fastAPI
 
@@ -80,7 +68,6 @@ print(ss)
 🟧 Injections SQL / XSS
 ✅ HTTPS (wss)
 🟧 Secure routes API
-🟧 Changer le mot de passe d'admin
 🟧
 ✅
 
