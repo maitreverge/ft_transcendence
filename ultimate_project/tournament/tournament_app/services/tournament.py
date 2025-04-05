@@ -140,7 +140,8 @@ class Tournament():
 		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)
 		match = next(
 			(m for m in self.matchs
-			if m.get('matchId') == match_update.get('matchId')), None)
+			if m.get('matchId') == match_update.get('matchId'))
+		, None)
 		if match:
 			match_update['type'] = 'matchPlayersUpdate'
 			match_update['tournamentId'] = self.id

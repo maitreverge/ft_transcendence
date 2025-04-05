@@ -176,6 +176,7 @@ class Pong:
 
 	async def run_game(self):
 
+		await self.send_start()
 		self.state = State.running
 		self.winner = None
 		self.start_flag = True
@@ -232,6 +233,13 @@ class Pong:
 		print(f"le player n'est pas bien autorise a fermer le match", flush=True)
 		return False
 	
+	async def send_start(self):
+
+		for p in self.users:
+			await p["socket"].send(text_data=json.dumps({
+				"timestamp": time
+			}))
+
 	async def sendState(self):		
 		
 		while self.state != State.end:	

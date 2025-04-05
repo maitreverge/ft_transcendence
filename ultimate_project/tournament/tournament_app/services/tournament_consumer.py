@@ -59,6 +59,29 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				]
 			}))
 
+	@staticmethod
+	async def match_result(data):
+
+		tournament = TournamentConsumer.find_tournament(data)
+		if tournament:
+			await tournament.match_result(data)
+
+	@staticmethod
+	async def match_players_update(data):
+
+		tournament = TournamentConsumer.find_tournament(data)
+		if tournament:
+			await tournament.match_players_update(data)
+
+	@staticmethod
+	def find_tournament(data):
+
+		match_id = data.get('match_id')
+		return next((
+			t for t in tournaments
+			if any(match_id == m.get("matchId") for m in t.matchs)
+		), None)
+	
 	async def receive(self, text_data):
 
 		print(f"RECEIVE", flush=True)
