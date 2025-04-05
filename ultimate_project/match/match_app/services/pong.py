@@ -175,13 +175,13 @@ class Pong:
 		]
 
 	async def send_start(self):
+		if not hasattr(self, "timestamp") or self.timestamp is None:
+			self.timestamp = time.time()
 
-			timestamp = time.time()
-			self.timestamp = timestamp  # stocké dans l'objet jeu si besoin
 		for p in self.users:
 			await p["socket"].send(text_data=json.dumps({
 				"type": "timestamp",
-				"timestamp": timestamp
+				"timestamp": self.timestamp
 			}))
 
 	async def run_game(self):
