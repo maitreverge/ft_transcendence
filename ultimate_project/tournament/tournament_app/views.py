@@ -133,6 +133,6 @@ async def send_db(path, result):
 	async with aiohttp.ClientSession() as session:
 		async with session.post(
 			f"http://databaseapi:8007/{path}", json=result) as response:				
-			if response.status != 200 and response.status != 201:
+			if response.status not in (200, 201):
 				err = await response.text()
 				print(f"Error HTTP {response.status}: {err}", flush=True)

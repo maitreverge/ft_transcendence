@@ -318,7 +318,7 @@ class Pong:
 				"p2Id": self.plyIds[1],
 				"score": self.score
 			}) as response:				
-				if response.status != 200 and response.status != 201:
+				if response.status not in (200, 201):
 					err = await response.text()
 					print(f"Error HTTP {response.status}: {err}", flush=True)
 		print(f"AFTER SEND MATCH RESULT", flush=True)
