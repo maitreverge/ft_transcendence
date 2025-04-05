@@ -77,12 +77,44 @@ class Tournament():
 					print(f"Error HTTP {response.status}: {err}", flush=True)
 
 
-	async def match_result(self, match_id, winner_id, looser_id):
+	# async def match_result(self, data):
 
-		print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
+	# 	match_id = data.get('matchId')
+	# 	winner_id = data.get('winnerId')
+	# 	looser_id = data.get('looserId')
+	# 	winner_name = data.get('winnerName')
+	# 	looser_name = data.get('looserName')
+	# 	score = data.get('score')
+	# 	p1_id = data.get('p1Id')
+	# 	p2_id = data.get('p2Id')
+	# 	print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
 
-		winner = next((p for p in self.players if p.id == winner_id), None)
-		looser = next((p for p in self.players if p.id == looser_id), None)	
+	# 	# winner = next((p for p in self.players if p.id == winner_id), None)
+	# 	# looser = next((p for p in self.players if p.id == looser_id), None)	
+	# 	self.n_match += 1
+	# 	match = next(
+	# 		(m for m in self.matchs if m.get('matchId') == match_id), None)
+	# 	if match:
+	# 		match_result = {				
+	# 			"type": "matchResult",
+	# 			"tournamentId": self.id,
+	# 			"localMatchId": match.get('linkMatch', {}).get('localMatchId'),			
+	# 			"matchId": match_id,
+	# 			"p1Id": p1_id,
+	# 			"p2Id": p2_id,
+	# 			"winnerId": winner_id,
+	# 			"looserId": looser_id,
+	# 			"winnerName": winner_name,
+	# 			"looserName": looser_name,
+	# 			"score": score			
+	# 		}
+	# 		match['matchResult'] = match_result
+	# 		match['matchPlayersUpdate'] = None
+	# 	await self.workflow(match_result)
+	
+	async def match_result(self, data):
+
+		match_id = data.get('matchId')		
 		self.n_match += 1
 		match = next(
 			(m for m in self.matchs if m.get('matchId') == match_id), None)
@@ -91,33 +123,61 @@ class Tournament():
 				"type": "matchResult",
 				"tournamentId": self.id,
 				"localMatchId": match.get('linkMatch', {}).get('localMatchId'),			
-				"matchId": match_id,
-				"p1Id": match.get('linkMatch', {}).get('p1Id'),
-				"p2Id": match.get('linkMatch', {}).get('p2Id'),
-				"winnerId": winner_id,
-				"looserId": looser_id,
-				"winnerName": winner.name,
-				"looserName": looser.name			
+				**data			
 			}
 			match['matchResult'] = match_result
 			match['matchPlayersUpdate'] = None
 		await self.workflow(match_result)
-	
+
 	async def workflow(self, match_result):
 
 		if self.n_match == 1:
 			await self.send_match_result(match_result)
 		elif self.n_match == 2:
-			p1 = (self.matchs[0].get('matchResult', {}).get('winnerId'),
-				self.matchs[0].get('matchResult', {}).get('winnerName'))
-			p2 = (self.matchs[1].get('matchResult', {}).get('winnerId'),
-				self.matchs[1].get('matchResult', {}).get('winnerName'))
-			link_match = await self.start_match(p1, p2, "m1")			
+			# p1 = (self.matchs[0].get('matchResult', {}).get('winnerId'),
+			# 	self.matchs[0].get('matchResult', {}).get('winnerName'))
+			# p2 = (self.matchs[1].get('matchResult', {}).get('winnerId'),
+			# 	self.matchs[1].get('matchResult', {}).get('winnerName'))
+			nxt_plys = self.get_next_players()
+			link_match = await self.start_match(nxt_plys[0], nxt_plys[1], "m1")			
 			await self.send_match_result(match_result)
 			await self.send_link_match(link_match)
 		elif self.n_match == 3:
 			await self.send_match_result(match_result)
+			tournament_result = self.get_tournament_result(match_result)
+			await self.send_tournament_result(tournament_result)
 			self.launch = False
+
+	def get_next_players(self):
+
+		return (
+			(
+				self.matchs[0].get('matchResult', {}).get('winnerId'),
+				self.matchs[0].get('matchResult', {}).get('winnerName')
+			),	
+			(
+				self.matchs[1].get('matchResult', {}).get('winnerId'),
+				self.matchs[1].get('matchResult', {}).get('winnerName')
+			)
+		)
+		
+	def get_tournament_result(self, match_result):
+
+		return {
+			"tournamentId": self.id,
+			"winner_id": match_result.get('winnerId'),
+			"winner_name": match_result.get('winnerName'),
+			"looser_id": match_result.get('looserId'),
+			"looser_name": match_result.get('looserName'),
+			"matchs": self.matchs
+		}
+
+	async def send_tournament_result(self, tournament_result):
+		print(f"SENDLINKMATCH {tournament_result}", flush=True)	
+		from tournament_app.services.tournament_consumer import players
+		for player in players:
+			print(f"SENDLINKMATCH {tournament_result} to {player.id}", flush=True)				
+			await player.send(text_data=json.dumps(tournament_result))
 
 	async def send_link_match(self, link_match):
 
