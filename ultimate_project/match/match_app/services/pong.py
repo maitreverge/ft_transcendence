@@ -29,6 +29,7 @@ class Pong:
 		print(self.names, flush=True)
 		self.state = State.waiting
 		self.start_flag = False
+		self.pause = True
 		self.winner = None
 		self.score = [0, 0]
 
@@ -185,6 +186,7 @@ class Pong:
 			}))
 
 	async def run_game(self):
+		
 		if not self.start_flag:
 			await self.send_start(3)    
 		self.state = State.running
@@ -192,10 +194,11 @@ class Pong:
 		self.start_flag = True
 		self.wall_flag = True
 
-		self.pad_commands(self.players)		
-		await self.scores()
-		await self.bounces()										
-		self.move_ball()
+		self.pad_commands(self.players)	
+		if not self.pause:	
+			await self.scores()
+			await self.bounces()										
+			self.move_ball()
 						
 	def set_waiting_state(self, players):
 
