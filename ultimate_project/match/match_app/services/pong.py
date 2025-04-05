@@ -174,18 +174,19 @@ class Pong:
 			None)
 		]
 
-	async def send_start(self):
+	async def send_start(self, delay):
 		self.timestamp = time.time()
 
 		for p in self.users:
 			await p["socket"].send(text_data=json.dumps({
 				"type": "timestamp",
-				"timestamp": self.timestamp
+				"timestamp": self.timestamp,
+				"delay": delay
 			}))
 
 	async def run_game(self):
 		if not self.start_flag:
-			await self.send_start()
+			await self.send_start(3)    
 		self.state = State.running
 		self.winner = None
 		self.start_flag = True

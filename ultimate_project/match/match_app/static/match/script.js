@@ -572,7 +572,7 @@ function animateZ(pads) {
 //     }
 // }
 
-function startCountdown()
+function startCountdown(delay)
 {
 	// console.log("%%%%%%%%%%%%%%% get the shit going , BABY!!!%%%%%%%%%%%%%%");
 
@@ -581,7 +581,7 @@ function startCountdown()
 		loaderElement.style.opacity = "1";
 
     const countdownEl = document.querySelector('.countdown');
-    const countdownEndsAt = window.gameStartTimestamp * 1000 + 3000;
+    const countdownEndsAt = window.gameStartTimestamp * 1000 + delay * 1000;
     // console.log("Le compte à rebours se termine à:", countdownEndsAt / 1000);
 
 	function updateCountdown() {
@@ -611,12 +611,14 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	if (data.timestamp && !data.state) {
 		if (window.gameStartTimestamp === undefined) {
 			window.gameStartTimestamp = data.timestamp;
+            delay = data.delay;
 			console.log("✅ Premier timestamp enregistré:", data.timestamp);
 	
 			// Ici tu peux démarrer ton compte à rebours
 			// startCountdownFrom(data.timestamp, '.countdown', '.loader');
 			// console.log("################START THE GAME##############");
-			startCountdown();
+
+            startCountdown(delay);
 		} else {
 			console.log("⏩ Timestamp déjà reçu, ignoré.");
 		}
