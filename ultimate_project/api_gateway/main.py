@@ -56,31 +56,38 @@ services = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Exclude Path for the 
-EXCLUDED_PATHS = ["/login", "/register"]
+# Exclude Path for the
+EXCLUDED_PATHS = [
+    "/login",
+    "/register",
+    "/login/",
+    "/register/",
+    "/auth/login/",
+    "/auth/register/",
+]
 
+# NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
 @app.middleware("http")
 async def bouncer_middleware(request: Request, call_next):
     """
-    Main Middleware to filter authenticated users from non auth users
+    Main Middleware to filter authenticated users from non-auth users
     """
     if request.url.path in EXCLUDED_PATHS:
+        print(f"👍 Bounder Middleware non trigered 👍")
         # Skip middleware for excluded paths
         return await call_next(request)
     
-    response = await call_next(request)
-
     is_auth, user_info = is_authenticated(request)
 
     if not is_auth:
+        print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
+        # Dedirect Home
+        response = RedirectResponse(url="/register/")
         response.delete_cookie(key="access_token", path="/")
         response.delete_cookie(key="refresh_token", path="/")
-        
-        
-        return RedirectResponse(url="/home/")
+        return response
 
-    
-
+    # Proceed to route handler if authenticated
     response = await call_next(request)
     return response
 
@@ -730,6 +737,8 @@ async def delete_profile_proxy(request: Request):
 
                 # ! REDIRECT RELOAD THE SPA HERE
                 response.headers["HX-Redirect"] = "/register/"
+                # response = RedirectResponse(url="/register/")
+
 
                 print("🗑️ Cookies cleared and redirect set", flush=True)
         except Exception as e:
