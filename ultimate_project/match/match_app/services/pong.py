@@ -217,7 +217,7 @@ class Pong:
 			except Exception as e:
 				pass		
 		print(f"BEFORE SEND MATCH RESULT", flush=True)
-		await self.send_match_result(winner, looser)
+		await self.send_match_result(w_and_l[0], w_and_l[1])
 		print(f"AFTER SEND MATCH RESULT", flush=True)
 		from match_app.views import del_pong
 		del_pong(self.id)
