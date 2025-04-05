@@ -45,6 +45,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	@staticmethod
 	async def send_list(message_type, source):	
 
+		print(f"SEND LIST {source}", flush=True)	
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": message_type + "List",			
@@ -243,6 +244,12 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			await SimpleConsumer.match_update()
 
 	@staticmethod
+	async def match_update():
+
+		print(f"SIMPLE MATCH UPDATE {matchs}", flush=True)		
+		await SimpleConsumer.send_list('match', matchs)
+
+	@staticmethod
 	async def match_players_update(data):
 
 		print(f"SIMPLE MATCH UPDATE {matchs}", flush=True)
@@ -259,9 +266,9 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	async def match_result(data):
 
 		print(f"SIMPLE MATCH CONSUMER RESULT {data}", flush=True)		
-		p1_id = data.get('p1_id')
-		p2_id = data.get('p2_id')
-		match_id = data.get('match_id')
+		p1_id = data.get('p1Id')
+		p2_id = data.get('p2Id')
+		match_id = data.get('matchId')
 		p1 = next((p for p in players if p.get("playerId") == p1_id), None)
 		p2 = next((p for p in players if p.get("playerId") == p2_id), None)
 		if p1:
@@ -277,8 +284,10 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	
 	@staticmethod
 	async def send_bd(data):
-	
-		from tournament_app.views import send_db
+		
+		print(f"SIMPLE MATCH CONSUMER SEND BD {data}", flush=True)	
+		from tournament_app.views import send_db as sdb
 
 		path = ""
-		send_db(path, data) 
+		await sdb(path, data) 
+		

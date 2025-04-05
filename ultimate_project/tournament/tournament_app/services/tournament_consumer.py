@@ -76,7 +76,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	@staticmethod
 	def find_tournament(data):
 
-		match_id = data.get('match_id')
+		match_id = data.get('matchId')
 		return next((
 			t for t in tournaments
 			if any(match_id == m.get("matchId") for m in t.matchs)

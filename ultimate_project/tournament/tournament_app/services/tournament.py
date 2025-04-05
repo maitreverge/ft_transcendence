@@ -167,18 +167,18 @@ class Tournament():
 		return {
 			"type": "tournamentResult",
 			"tournamentId": self.id,
-			"winner_id": match_result.get('winnerId'),
-			"winner_name": match_result.get('winnerName'),
-			"looser_id": match_result.get('looserId'),
-			"looser_name": match_result.get('looserName'),
+			"winnerId": match_result.get('winnerId'),
+			"winnerName": match_result.get('winnerName'),
+			"looserId": match_result.get('looserId'),
+			"looserName": match_result.get('looserName'),
 			"matchs": self.matchs
 		}
 
 	async def send_all_players(self, packet):
 
 		from tournament_app.services.tournament_consumer \
-			import send_all_players as sap
-		await sap(packet)
+			import TournamentConsumer
+		await TournamentConsumer.send_all_players(packet)
 
 	# async def send_tournament_result(self, tournament_result):
 	# 	print(f"SENDLINKMATCH {tournament_result}", flush=True)	
@@ -204,12 +204,12 @@ class Tournament():
 	# 		print(f"SENDMATCHRESULT {match_result} to {player.id}", flush=True)					
 	# 		await player.send(text_data=json.dumps(match_result))
 
-	async def send_db(tournament_result):
+	async def send_db(self, tournament_result):
 
-		from tournament_app.views import send_db
+		from tournament_app.views import send_db as sdb
 
 		path = ""
-		send_db(path, tournament_result)
+		await sdb(path, tournament_result)
 
 	async def match_players_update(self, match_update):
 
