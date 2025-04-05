@@ -195,10 +195,9 @@ class Pong:
 		self.wall_flag = True
 
 		self.pad_commands(self.players)	
-		if not self.pause:	
-			await self.scores()
-			await self.bounces()										
-			self.move_ball()
+		await self.scores()
+		await self.bounces()										
+		self.move_ball()
 						
 	def set_waiting_state(self, players):
 
