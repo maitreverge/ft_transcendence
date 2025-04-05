@@ -48,8 +48,8 @@ class Pong:
 		self.ball_acceleration = 1.1
 
 		self.bounce_delay = 0.05
-		self.send_delay = 0.01
-		self.gear_delay = 0.01
+		self.send_delay = 0.05
+		self.gear_delay = 0.05
 
 		self.send_task = None
 		self.watch_task = None
