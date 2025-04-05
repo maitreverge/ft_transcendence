@@ -15,7 +15,8 @@ async def score_point(self, cmp, limit, score_idx):
 		self.ball = self.ball_rst.copy()
 		self.vect = self.get_random_vector()
 		await self.send_start(0)
-		await asyncio.sleep(1)
+		self.tasks.append(
+			self.myEventLoop.create_task(self.watch_cat(self.point_delay)))
 
 async def max_score_rise(self, ply_idx):
 	

@@ -21,134 +21,62 @@ class Pong:
 
 	def __init__(self, p1, p2):
 
+		self.init_vars(p1, p2)
+		threading.Thread(target=self.launchTask, daemon=True).start()
+
+	def init_vars(self, p1, p2):
+
 		Pong.id += 1
 		self.id = Pong.id	
 		self.plyIds = [p1[0], p2[0]]
 		self.names = [p1[1], p2[1]]
-		print("NAAAAAME", flush=True)
-		print(self.names, flush=True)
 		self.state = State.waiting
 		self.start_flag = False
 		self.pause = True
-		self.winner = None
 		self.score = [0, 0]
+		self.max_score = 3
+		self.point_delay = 1
+		self.start_delay = 4
+		self.max_wait_delay = 1500	
+		self.users = []
+		self.players = None		
+		self.winner = None
+		self.myEventLoop = None
+		self.tasks = None
+		self.init_physics()
+
+	def init_physics(self):
 
 		self.has_wall = False
-		self.max_score = 3
-		self.max_wait_delay = 1500
-
 		self.pad_height = 40	
 		self.pads_y = [self.pad_height / 2, self.pad_height / 2]
 		self.pad_width = 10
-		self.ball_rst = [25, 5]
+		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
 		self.ball_speed = 1
 		self.vect = self.get_random_vector() 
 		self.pad_speed = 4
 		self.max_ball_speed = 10
 		self.ball_acceleration = 1.1
-
 		self.bounce_delay = 0.05
 		self.send_delay = 0.05
 		self.gear_delay = 0.05
 
-		self.send_task = None
-		self.watch_task = None
-
-		self.users = None
-		self.players = None
-		# asyncio.run(self.end())
-		threading.Thread(target=self.launchTask, daemon=True).start()
-
-	# async def end(self):
-	# 	print("end un", flush=True)
-	# 	await self.two()
-	# 	print("end deux", flush=True)
-		
-	# async def two(self):
-	# 	print("two un", flush=True)
-	# 	await self.three()
-	# 	print("two deux", flush=True)
-		
-	# async def three(self):
-	# 	print("three un", flush=True)
-	# 	await asyncio.sleep(1)
-	# 	print("three deux", flush=True)
-
-
-
-	# async def stop_tasks(self):
-
-	# 	tasks = [self.send_task, self.watch_task]
-	# 	for task in tasks:
-	# 		if task and not task.done() and not task.cancelled():
-	# 			task.cancel()
-	# 	await asyncio.gather(*[t for t in tasks if t], return_exceptions=True)
-
-	# def stop(self, playerId):
-	# 	print(f"in stop PONG my id is : {self.id}", flush=True)
-	# 	print(f"self.idP1: {self.idP1}, self.idP2: {self.idP2}, playerId: {playerId}", flush=True)
-
-	# 	if playerId in (self.idP1, self.idP2):
-	# 		print("Player is authorized to stop the match", flush=True)
-	# 		self.state = State.end
-	# 		print(f"Match {self.id} state updated to {self.state}", flush=True)
-	# 		return True
-
-	# 	print("Player not authorized to stop the match", flush=True)
-	# 	return False
-	# def launchTask(self):
-	# 	self.start_flag = False
-	# 	self.myEventLoop = asyncio.new_event_loop()
-	# 	asyncio.set_event_loop(self.myEventLoop)
-	# 	self.myEventLoop.create_task(self.launch())
-	# 	# self.myEventLoop.run_forever()
-	# 	# myEventLoop.run_until_complete(asyncio.Future())
-	# 	self.myEventLoop.run_until_complete(self.launch())
-	
-	# 	self.myEventLoop.stop()
-	# 	self.myEventLoop.close() 
-	# 	print("in match after RUN", flush=True)
-	
-	# def launchTask(self):
-		
-	# 	self.myEventLoop = asyncio.new_event_loop()
-	# 	asyncio.set_event_loop(self.myEventLoop)	
-	# 	try:
-	# 		# self.myEventLoop.create_task(self.launch_game())
-	# 		# self.myEventLoop.run_forever()
-
-	# 		self.myEventLoop.run_until_complete(self.launch())  
-	# 	finally:
-	# 		time.sleep(2)			
-	# 		tasks = [
-	# 			t for t in asyncio.all_tasks(self.myEventLoop) if not t.done()]
-	# 		for task in tasks:
-	# 			task.cancel()
-	# 		self.myEventLoop.run_until_complete(
-	# 			asyncio.gather(*tasks, return_exceptions=True))
-	# 		self.myEventLoop.stop()
-	# 		self.myEventLoop.close()
-	# 		print(f"Event loop fermé proprement pour match {self.id}", flush=True)
-
-		# self.launch_task = self.myEventLoop.create_task(self.launch_game())
-		# self.send_task = self.myEventLoop.create_task(self.sendState())
-		# self.watch_task = self.myEventLoop.create_task(self.watch_dog())
-
 	def launchTask(self):
 
-		myEventLoop = asyncio.new_event_loop()
-		asyncio.set_event_loop(myEventLoop)
-		tasks = [
-			myEventLoop.create_task(self.launch_game()),
-			myEventLoop.create_task(self.sendState()),
-			myEventLoop.create_task(self.watch_dog()),	
+		self.myEventLoop = asyncio.new_event_loop()
+		asyncio.set_event_loop(self.myEventLoop)
+		self.tasks = [
+			self.myEventLoop.create_task(self.launch_game()),
+			self.myEventLoop.create_task(self.sendState()),
+			self.myEventLoop.create_task(self.watch_dog()),
+			self.myEventLoop.create_task(self.watch_cat(self.start_delay)),		
 		]
 		try:
-			myEventLoop.run_until_complete(
-				asyncio.gather(*tasks, return_exceptions=True))
+			self.myEventLoop.run_until_complete(
+				asyncio.gather(*self.tasks, return_exceptions=True))
 		finally:
-			myEventLoop.close()
+			self.myEventLoop.close()
 			print(f"Event loop fermé proprement pour match {self.id}", flush=True)
 
 	async def launch_game(self):
@@ -176,12 +104,11 @@ class Pong:
 		]
 
 	async def send_start(self, delay):
-		self.timestamp = time.time()
 
 		for p in self.users:
 			await p["socket"].send(text_data=json.dumps({
 				"type": "timestamp",
-				"timestamp": self.timestamp,
+				"timestamp": time.time(),
 				"delay": delay
 			}))
 
@@ -215,41 +142,42 @@ class Pong:
 		while self.state != State.end:			
 			if self.state == State.running:
 				delay = 0
-			if (delay > self.max_wait_delay):
+			if delay > self.max_wait_delay:
 				print(f"stopped by wathdog", flush=True)
 				await self.stop(self.plyIds[0])
 				return
 			delay += 1
 			await asyncio.sleep(1.00)
 
+	async def watch_cat(self, pause_delay):
+
+		self.pause = True
+		delay = 0
+		while self.state != State.end:
+			if delay >= pause_delay:				
+				self.pause = False
+				break
+			delay += 1
+			await asyncio.sleep(1.00)
+
 	async def stop(self, playerId):
 
 		print(f"STOP playerId: {playerId}", flush=True)
-		print(self.plyIds, flush=True)
+
 		if playerId in self.plyIds: 	
-			print(f"le player est bien autorise a fermer le match", flush=True)
-			# self.sendTask.cancel()
-			# try:
-			# 	await self.sendTask  # Attendre que l'annulation soit complète
-			# except asyncio.CancelledError:
-			# 	print("Tâche annulée avec succès")	 
-			# self.state = State.end
 			if self.winner is None and self.start_flag:
 				self.winner = self.plyIds[0] \
 					if playerId == self.plyIds[1] else self.plyIds[1]
 			if self.winner is None and not self.start_flag:
 				self.winner = self.plyIds[0] \
 					if playerId == self.plyIds[1] else self.plyIds[1]
-			# asyncio.run_coroutine_threadsafe(self.stop_tasks, self.myEventLoop)
 			await self.sendFinalState()
 			return True
-		print(f"le player n'est pas bien autorise a fermer le match", flush=True)
 		return False
 	
 	async def sendState(self):		
 		
 		while self.state != State.end:	
-			# print(f"{self.ball}", flush=True)
 			self.users = [p for p in match_consumer.players
 				if self.id == p["matchId"]]
 			for p in self.users:
@@ -271,65 +199,57 @@ class Pong:
 
 	async def sendFinalState(self):
 
-		self.state = State.end
 		print(f"SEND FINAL STATE", flush=True)		
-		winner_id = self.winner
-		looser_id = self.plyIds[0] \
-			if self.winner == self.plyIds[1] else self.plyIds[1]
-		winner_name = self.names[0] \
-			if winner_id == self.plyIds[0] else self.names[1]
-		looser_name = self.names[1] \
-			if winner_id == self.plyIds[0] else self.names[0]	
-		self.users = [p for p in match_consumer.players
-			if self.id == p["matchId"]]
+
+		self.state = State.end
+		w_and_l = self.get_winner_and_looser()
 		for p in self.users:
-			print(f"users {p}", flush=True)
 			try:					
 				await p["socket"].send(text_data=json.dumps({
 				"state": self.state.name,			
-				"winnerId": winner_id,
-				"looserId": looser_id,
+				"winnerId": w_and_l[0][0],
+				"looserId": w_and_l[1][0],
 				"names": self.names,
-				"winnerName": winner_name,
-				"looserName": looser_name,
+				"winnerName":  w_and_l[0][1],
+				"looserName":  w_and_l[1][1],
 				"score": self.score
 				}))
 			except Exception as e:
 				pass		
 		print(f"BEFORE SEND MATCH RESULT", flush=True)
+		await self.send_match_result(winner, looser)
+		print(f"AFTER SEND MATCH RESULT", flush=True)
+		from match_app.views import del_pong
+		del_pong(self.id)
 
+	def get_winner_and_looser(self):
 
-		# response = requests.post(
-		# 	"http://tournament:8001/tournament/match-result/", json={
-		# 	"matchId": self.id,
-		# 	"winnerId": self.winner,
-		# 	"looserId": self.idP1 if self.winner == self.idP2 else self.idP2,
-		# 	"p1Id": self.idP1,
-		# 	"p2Id": self.idP2,
-		# 	"score": self.score
-		# })
+		return ((
+			self.winner,
+			self.names[0] if self.winner == self.plyIds[0] else self.names[1]			
+		),
+		(
+			self.plyIds[0] if self.winner == self.plyIds[1] else self.plyIds[1],
+			self.names[1] if self.winner == self.plyIds[0] else self.names[0]
+		))
 
-		# if response.status_code not in [200, 201]:
-		# 	print(f"Error HTTP {response.status_code}: {response.text}")
-	
+	async def send_match_result(self, winner, looser):
+
 		async with aiohttp.ClientSession() as session:
 			async with session.post(
 				"http://tournament:8001/tournament/match-result/", json={
 				"matchId": self.id,
-				"winnerId": winner_id,
-				"looserId": looser_id,
-				"winnerName": winner_name,
-				"looserName": looser_name,
+				"winnerId": winner[0],
+				"looserId": looser[0],
+				"winnerName": winner[1],
+				"looserName": looser[1],
 				"p1Id": self.plyIds[0],
 				"p2Id": self.plyIds[1],
 				"score": self.score
 			}) as response:				
-				if response.status != 200 and response.status != 201:
+				if response.status not in (200, 201):
 					err = await response.text()
 					print(f"Error HTTP {response.status}: {err}", flush=True)
-		print(f"AFTER SEND MATCH RESULT", flush=True)
-		from match_app.views import del_pong
-		del_pong(self.id)
 
 Pong.pad_commands = physics.pad_commands
 Pong.pad_command = physics.pad_command
