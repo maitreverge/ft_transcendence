@@ -572,36 +572,15 @@ function animateZ(pads) {
 //     }
 // }
 
-// function startCountdownFrom(startTimestamp, selectorCountdown, selectorLoader, countdownSteps = ['3', '2', '1', 'GO!']) {
-//     const countdownElement = document.querySelector(selectorCountdown);
-//     const loaderElement = document.querySelector(selectorLoader);
-//     if (!countdownElement || !loaderElement) return;
-
-//     const totalDuration = countdownSteps.length; // en secondes
-//     const now = Date.now() / 1000;
-//     const elapsed = now - startTimestamp;
-//     let currentIndex = Math.floor(elapsed);
-
-// 	// Si le countdown est déjà fini
-// 	if (currentIndex >= totalDuration) {
-// 		loaderElement.classList.add('no-waiting');
-// 		return;
-// 	}
-	
-// 	countdownElement.textContent = countdownSteps[currentIndex];
-
-//     const countdownInterval = setInterval(() => {
-//         countdownElement.textContent = countdownSteps[currentIndex];
-//         currentIndex++;
-
-//         if (currentIndex === countdownSteps.length) {
-//             clearInterval(countdownInterval);
-//             setTimeout(() => {
-//                 loaderElement.classList.add('no-waiting');
-//             }, 1500);
-//         }
-//     }, 1000);
-// }
+function startCountdown()
+{
+	loaderElement = document.querySelector(".loader");
+	if (loaderElement) {
+		loaderElement.style.opacity = "1";
+	  }
+	console.log(loaderElement);
+	console.log("%%%%%%%%%%%%%%% get the shit going , BABY!!!%%%%%%%%%%%%%%");
+}
 
 function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	match = document.getElementById("match");
@@ -617,6 +596,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 			// Ici tu peux démarrer ton compte à rebours
 			// startCountdownFrom(data.timestamp, '.countdown', '.loader');
 			console.log("################START THE GAME##############");
+			startCountdown();
 		} else {
 			console.log("⏩ Timestamp déjà reçu, ignoré.");
 		}

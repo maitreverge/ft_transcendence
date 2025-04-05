@@ -193,6 +193,7 @@
 
 /* From Uiverse.io by mrhyddenn */ 
 .loader {
+    opacity: 0;
     color: gold;
 
     position:absolute;

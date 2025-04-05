@@ -67,26 +67,5 @@
     }
 });
 
-function startCountdown(selectorCountdown, selectorLoader, countdownSteps = ['3', '2', '1', 'GO!']) {
-    const countdownElement = document.querySelector(selectorCountdown);
-    const loaderElement = document.querySelector(selectorLoader);
-    if (!countdownElement || !loaderElement) return;
-
-    let currentIndex = 0;
-
-    const countdownInterval = setInterval(() => {
-        countdownElement.textContent = countdownSteps[currentIndex];
-        currentIndex++;
-
-        if (currentIndex === countdownSteps.length) {
-            clearInterval(countdownInterval);
-            setTimeout(() => {
-                loaderElement.classList.add('no-waiting');
-            }, 1500);
-        }
-    }, 1000);
-}
-
-startCountdown('.countdown', '.loader');
 
 </script>
