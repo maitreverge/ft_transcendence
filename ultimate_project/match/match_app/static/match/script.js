@@ -616,6 +616,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	
 			// Ici tu peux démarrer ton compte à rebours
 			// startCountdownFrom(data.timestamp, '.countdown', '.loader');
+			console.log("################START THE GAME##############");
 		} else {
 			console.log("⏩ Timestamp déjà reçu, ignoré.");
 		}
@@ -636,15 +637,17 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
         let gifUrl;
         if (window.selfName == data.winnerName)
             gifUrl = document.getElementById("winner-gif").dataset.gifUrl;
-        else    
-            gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
-        end.innerHTML = `The winner is: ${data.winnerName} <br> 
-            Score: ${data.score[0]} : ${data.score[1]} <br> 
-            <img src="${gifUrl}" 
-                alt="Winner GIF" 
-                class="winner-gif">
-        ` + end.innerHTML;
-        endCont.classList.add("end-cont");
+		else    
+		gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
+		end.innerHTML = `The winner is: ${data.winnerName} <br> 
+		Score: ${data.score[0]} : ${data.score[1]} <br> 
+		<img src="${gifUrl}" 
+		alt="Winner GIF" 
+		class="winner-gif">
+		` + end.innerHTML;
+		endCont.classList.add("end-cont");
+		console.log("🏁 Match terminé, reset du timestamp");
+		window.gameStartTimestamp = undefined;	
 	}
 	if (waitingState[0] != data.state) 
 	{
