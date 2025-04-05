@@ -273,3 +273,12 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		if match: 
 			matchs[:] = [m for m in matchs if m.get("matchId") != match_id]
 			await SimpleConsumer.send_list('match', matchs)
+			await SimpleConsumer.send_bd(data)
+	
+	@staticmethod
+	async def send_bd(data):
+	
+		from tournament_app.views import send_db
+
+		path = ""
+		send_db(path, data) 

@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import tournament_app.services.tournament_consumer as t_cs
 import requests
+import aiohttp
 
 def simple_match(request: HttpRequest, user_id):
     
@@ -124,3 +125,13 @@ def tournament_pattern(request: HttpRequest, tournament_id):
         request,
         "tournament_pattern.html",
     )
+
+async def send_db(path, result):
+
+	return	
+	async with aiohttp.ClientSession() as session:
+		async with session.post(
+			f"http://databaseapi:8007/{path}", json=result) as response:				
+			if response.status != 200 and response.status != 201:
+				err = await response.text()
+				print(f"Error HTTP {response.status}: {err}", flush=True)

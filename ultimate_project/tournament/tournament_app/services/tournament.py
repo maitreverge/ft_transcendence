@@ -146,6 +146,7 @@ class Tournament():
 			await self.send_match_result(match_result)
 			tournament_result = self.get_tournament_result(match_result)
 			await self.send_tournament_result(tournament_result)
+			await self.send_db(tournament_result)
 			self.launch = False
 
 	def get_next_players(self):
@@ -179,6 +180,13 @@ class Tournament():
 			print(f"SENDLINKMATCH {tournament_result} to {player.id}", flush=True)				
 			await player.send(text_data=json.dumps(tournament_result))
 
+	async def send_db(tournament_result):
+
+		from tournament_app.views import send_db
+
+		path = ""
+		send_db(path, tournament_result)
+		
 	async def send_link_match(self, link_match):
 
 		print(f"SENDLINKMATCH {link_match}", flush=True)	
