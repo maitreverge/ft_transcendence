@@ -33,7 +33,7 @@ class Pong:
 		self.score = [0, 0]
 
 		self.has_wall = False
-		self.max_score = 10
+		self.max_score = 2
 		self.max_wait_delay = 1500
 
 		self.pad_height = 40	
@@ -174,8 +174,19 @@ class Pong:
 			None)
 		]
 
+	async def send_start(self):
+
+			timestamp = time.time()
+			self.timestamp = timestamp  # stocké dans l'objet jeu si besoin
+		for p in self.users:
+			await p["socket"].send(text_data=json.dumps({
+				"type": "timestamp",
+				"timestamp": timestamp
+			}))
+
 	async def run_game(self):
 
+		await self.send_start()
 		self.state = State.running
 		self.winner = None
 		self.start_flag = True

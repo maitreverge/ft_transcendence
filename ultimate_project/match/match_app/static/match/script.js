@@ -572,19 +572,65 @@ function animateZ(pads) {
 //     }
 // }
 
+// function startCountdownFrom(startTimestamp, selectorCountdown, selectorLoader, countdownSteps = ['3', '2', '1', 'GO!']) {
+//     const countdownElement = document.querySelector(selectorCountdown);
+//     const loaderElement = document.querySelector(selectorLoader);
+//     if (!countdownElement || !loaderElement) return;
+
+//     const totalDuration = countdownSteps.length; // en secondes
+//     const now = Date.now() / 1000;
+//     const elapsed = now - startTimestamp;
+//     let currentIndex = Math.floor(elapsed);
+
+// 	// Si le countdown est déjà fini
+// 	if (currentIndex >= totalDuration) {
+// 		loaderElement.classList.add('no-waiting');
+// 		return;
+// 	}
+	
+// 	countdownElement.textContent = countdownSteps[currentIndex];
+
+//     const countdownInterval = setInterval(() => {
+//         countdownElement.textContent = countdownSteps[currentIndex];
+//         currentIndex++;
+
+//         if (currentIndex === countdownSteps.length) {
+//             clearInterval(countdownInterval);
+//             setTimeout(() => {
+//                 loaderElement.classList.add('no-waiting');
+//             }, 1500);
+//         }
+//     }, 1000);
+// }
+
 function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	match = document.getElementById("match");
 	
 	// console.log("SERVEUR");
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
+	if (data.timestamp && !data.state) {
+		if (window.gameStartTimestamp === undefined) {
+			window.gameStartTimestamp = data.timestamp;
+			console.log("✅ Premier timestamp enregistré:", data.timestamp);
+	
+			// Ici tu peux démarrer ton compte à rebours
+			// startCountdownFrom(data.timestamp, '.countdown', '.loader');
+		} else {
+			console.log("⏩ Timestamp déjà reçu, ignoré.");
+		}
+		return;
+	}
 	// console.log("match mesage: ", data);
 	
 	//! TO OPTI
 	const leftNameElement = document.getElementById("inst-left");
 	const rightNameElement = document.getElementById("inst-right");
-	leftNameElement.innerHTML = data.names[0] + "<br> keys: enter / +"
-	rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+	if (data.names)
+	{
+		leftNameElement.innerHTML = data.names[0] + "<br> keys: enter / +"
+		rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+	}
 	if (data.state == "end")
 	{	
         let gifUrl;
