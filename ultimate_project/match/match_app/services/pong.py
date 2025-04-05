@@ -175,8 +175,7 @@ class Pong:
 		]
 
 	async def send_start(self):
-		if not hasattr(self, "timestamp") or self.timestamp is None:
-			self.timestamp = time.time()
+		self.timestamp = time.time()
 
 		for p in self.users:
 			await p["socket"].send(text_data=json.dumps({
@@ -185,8 +184,8 @@ class Pong:
 			}))
 
 	async def run_game(self):
-
-		await self.send_start()
+		if not self.start_flag:
+			await self.send_start()
 		self.state = State.running
 		self.winner = None
 		self.start_flag = True

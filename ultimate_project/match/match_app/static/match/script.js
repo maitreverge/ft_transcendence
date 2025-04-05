@@ -595,7 +595,8 @@ function startCountdown()
             countdownEl.textContent = "GO!";
             requestAnimationFrame(updateCountdown);
         } else {
-            loaderElement.remove();
+            loaderElement.style.opacity = "0";
+            window.gameStartTimestamp = undefined;
         }
     }
 	updateCountdown();

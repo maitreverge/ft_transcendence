@@ -14,6 +14,7 @@ async def score_point(self, cmp, limit, score_idx):
 		self.score[score_idx] += 1
 		self.ball = self.ball_rst.copy()
 		self.vect = self.get_random_vector()
+		await self.send_start()
 		await asyncio.sleep(1)
 
 async def max_score_rise(self, ply_idx):
