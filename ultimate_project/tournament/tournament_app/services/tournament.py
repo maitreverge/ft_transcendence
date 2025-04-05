@@ -75,14 +75,10 @@ class Tournament():
 				else:  
 					err = await response.text()
 					print(f"Error HTTP {response.status}: {err}", flush=True)
+	
+	async def match_result(self, data):
 
-
-	async def match_result(self, match_id, winner_id, looser_id):
-
-		print(f"winner is {winner_id}, and looser is {looser_id}", flush=True)
-
-		winner = next((p for p in self.players if p.id == winner_id), None)
-		looser = next((p for p in self.players if p.id == looser_id), None)	
+		match_id = data.get('matchId')		
 		self.n_match += 1
 		match = next(
 			(m for m in self.matchs if m.get('matchId') == match_id), None)
@@ -91,56 +87,73 @@ class Tournament():
 				"type": "matchResult",
 				"tournamentId": self.id,
 				"localMatchId": match.get('linkMatch', {}).get('localMatchId'),			
-				"matchId": match_id,
-				"p1Id": match.get('linkMatch', {}).get('p1Id'),
-				"p2Id": match.get('linkMatch', {}).get('p2Id'),
-				"winnerId": winner_id,
-				"looserId": looser_id,
-				"winnerName": winner.name,
-				"looserName": looser.name			
+				**data			
 			}
 			match['matchResult'] = match_result
 			match['matchPlayersUpdate'] = None
 		await self.workflow(match_result)
-	
+
 	async def workflow(self, match_result):
 
 		if self.n_match == 1:
-			await self.send_match_result(match_result)
-		elif self.n_match == 2:
-			p1 = (self.matchs[0].get('matchResult', {}).get('winnerId'),
-				self.matchs[0].get('matchResult', {}).get('winnerName'))
-			p2 = (self.matchs[1].get('matchResult', {}).get('winnerId'),
-				self.matchs[1].get('matchResult', {}).get('winnerName'))
-			link_match = await self.start_match(p1, p2, "m1")			
-			await self.send_match_result(match_result)
-			await self.send_link_match(link_match)
+			await self.send_all_players(match_result)
+		elif self.n_match == 2:		
+			nxt_plys = self.get_next_players()
+			link_match = await self.start_match(nxt_plys[0], nxt_plys[1], "m1")			
+			await self.send_all_players(match_result)
+			await self.send_all_players(link_match)
 		elif self.n_match == 3:
-			await self.send_match_result(match_result)
+			await self.send_all_players(match_result)
+			tournament_result = self.get_tournament_result(match_result)
+			await self.send_all_players(tournament_result)
+			await self.send_db(tournament_result)
 			self.launch = False
 
-	async def send_link_match(self, link_match):
+	def get_next_players(self):
 
-		print(f"SENDLINKMATCH {link_match}", flush=True)	
-		from tournament_app.services.tournament_consumer import players
-		for player in players:
-			print(f"SENDLINKMATCH {link_match} to {player.id}", flush=True)				
-			await player.send(text_data=json.dumps(link_match))
+		return (
+			(
+				self.matchs[0].get('matchResult', {}).get('winnerId'),
+				self.matchs[0].get('matchResult', {}).get('winnerName')
+			),	
+			(
+				self.matchs[1].get('matchResult', {}).get('winnerId'),
+				self.matchs[1].get('matchResult', {}).get('winnerName')
+			)
+		)
+		
+	def get_tournament_result(self, match_result):
 
-	async def send_match_result(self, match_result):
+		return {
+			"type": "tournamentResult",
+			"tournamentId": self.id,
+			"winnerId": match_result.get('winnerId'),
+			"winnerName": match_result.get('winnerName'),
+			"looserId": match_result.get('looserId'),
+			"looserName": match_result.get('looserName'),
+			"matchs": self.matchs
+		}
 
-		print(f"SENDMATCHRESULT {match_result}", flush=True)
-		from tournament_app.services.tournament_consumer import players
-		for player in players:
-			print(f"SENDMATCHRESULT {match_result} to {player.id}", flush=True)					
-			await player.send(text_data=json.dumps(match_result))
+	async def send_all_players(self, packet):
+
+		from tournament_app.services.tournament_consumer \
+			import TournamentConsumer
+		await TournamentConsumer.send_all_players(packet)
+
+	async def send_db(self, tournament_result):
+
+		from tournament_app.views import send_db as sdb
+
+		path = ""
+		await sdb(path, tournament_result)
 
 	async def match_players_update(self, match_update):
 
 		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)
 		match = next(
 			(m for m in self.matchs
-			if m.get('matchId') == match_update.get('matchId')), None)
+			if m.get('matchId') == match_update.get('matchId'))
+		, None)
 		if match:
 			match_update['type'] = 'matchPlayersUpdate'
 			match_update['tournamentId'] = self.id

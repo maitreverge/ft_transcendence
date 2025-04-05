@@ -4,8 +4,9 @@ import tournament_app.services.simple_match_consumer as sm_cs
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from tournament_app.services.tournament_consumer import tournaments
+import tournament_app.services.tournament_consumer as t_cs
 import requests
+import aiohttp
 
 def simple_match(request: HttpRequest, user_id):
     
@@ -34,57 +35,19 @@ def simple_match(request: HttpRequest, user_id):
 @csrf_exempt
 async def match_players_update(request: HttpRequest):
     
-    print(f"MATCH PLAYERS UPDATE VIEWS", flush=True)
-    
+    print(f"MATCH PLAYERS UPDATE VIEWS", flush=True)    
     data = json.loads(request.body.decode("utf-8"))
-    match_id = data.get("matchId", None)
-    players = data.get("players", [])
-    print(f"MATCH PLAYERS UPDATE VIEWS match_id: {match_id} {players}", flush=True)
-    match = next(
-        (m for m in sm_cs.matchs if m.get("matchId") == match_id), None)
-    if match:
-        match["players"] = players
-        await sm_cs.SimpleConsumer.match_update()
-    tournament = next(
-        (
-            t
-            for t in tournaments
-            if any(data.get("matchId") == m.get("matchId") for m in t.matchs)
-        ),
-        None,
-    )
-    if tournament:
-        await tournament.match_players_update(data)
+    await sm_cs.SimpleConsumer.match_players_update(data)
+    await t_cs.TournamentConsumer.match_players_update(data)
     return JsonResponse({"status": "succes"})
 
 @csrf_exempt
 async def match_result(request: HttpRequest):
     
     print("MATCH RESULT", flush=True)
-    data = json.loads(request.body.decode("utf-8"))
-    match_id = data.get("matchId")
-    winner_id = data.get("winnerId")
-    looser_id = data.get("looserId")
-    p1_id = data.get("p1Id")
-    p2_id = data.get("p2Id")
-    p1 = next((p for p in sm_cs.players if p.get("playerId") == p1_id), None)
-    p2 = next((p for p in sm_cs.players if p.get("playerId") == p2_id), None)
-    if p1:
-        p1["busy"] = None
-    if p2:
-        p2["busy"] = None   
-    sm_cs.matchs[:] = [m for m in sm_cs.matchs if m.get("matchId") != match_id]
-    await sm_cs.SimpleConsumer.match_update()
-    tournament = next(
-        (
-            t
-            for t in tournaments
-            if any(match_id == m.get("matchId", None) for m in t.matchs)
-        ),
-        None,
-    )
-    if tournament:
-        await tournament.match_result(match_id, winner_id, looser_id)
+    data = json.loads(request.body.decode("utf-8"))   
+    await sm_cs.SimpleConsumer.match_result(data)
+    await t_cs.TournamentConsumer.match_result(data)
     return JsonResponse({"status": "succes"})
 
 def tournament(request: HttpRequest, user_id):
@@ -118,3 +81,14 @@ def tournament_pattern(request: HttpRequest, tournament_id):
         request,
         "tournament_pattern.html",
     )
+
+async def send_db(path, result):
+
+	print(f"SEND DB {result}", flush=True)
+	return	
+	async with aiohttp.ClientSession() as session:
+		async with session.post(
+			f"http://databaseapi:8007/{path}", json=result) as response:				
+			if response.status not in (200, 201):
+				err = await response.text()
+				print(f"Error HTTP {response.status}: {err}", flush=True)

@@ -76,6 +76,6 @@ class MatchConsumer(AsyncWebsocketConsumer):
 					key : value for key, value in p.items() if key == 'playerId'
 					} for p in players if p.get('matchId') == self.match_id				
 				]}) as resp:
-					if resp.status != 200 and resp.status != 201:
+					if resp.status not in (200, 201):
 						err = await resp.text()
 						print(f"Error HTTP {resp.status}: {err}", flush=True)

@@ -19,8 +19,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		print(f"CONNECT TOURNAMENT {self.id} {self.name}", flush=True)
 		players.append(self)
-		# await self.send(text_data=json.dumps({
-		# 	"type": "selfAssign", "selfId": self.id})) 
 		await self.send_list("player", players)
 		await TournamentConsumer.send_tournaments()
 
@@ -59,6 +57,29 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 				]
 			}))
 
+	@staticmethod
+	async def match_result(data):
+
+		tournament = TournamentConsumer.find_tournament(data)
+		if tournament:
+			await tournament.match_result(data)
+
+	@staticmethod
+	async def match_players_update(data):
+
+		tournament = TournamentConsumer.find_tournament(data)
+		if tournament:
+			await tournament.match_players_update(data)
+
+	@staticmethod
+	def find_tournament(data):
+
+		match_id = data.get('matchId')
+		return next((
+			t for t in tournaments
+			if any(match_id == m.get("matchId") for m in t.matchs)
+		), None)
+	
 	async def receive(self, text_data):
 
 		print(f"RECEIVE", flush=True)
@@ -132,4 +153,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		print(f"PACK: {pack}", flush=True)
 		for player in players:
 			await player.send(text_data=json.dumps(pack))
+
+	@staticmethod
+	async def send_all_players(packet):
+
+		print(f"SEND ALL PLAYERS {packet}", flush=True)
 	
+		for player in players:				
+			await player.send(text_data=json.dumps(packet))
+			

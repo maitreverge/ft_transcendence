@@ -21,8 +21,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		players.append(
 			{'playerId': self.id, 'playerName': self.name, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
-		# await self.send(text_data=json.dumps({
-		# 	"type": "selfAssign", "selfId": self.id}))
 		await SimpleConsumer.send_list('player', players)
 		await SimpleConsumer.send_list('match', matchs)
 
@@ -45,6 +43,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	@staticmethod
 	async def send_list(message_type, source):	
 
+		print(f"SEND LIST {source}", flush=True)	
 		for selfplay in selfPlayers:
 			await selfplay['socket'].send(text_data=json.dumps({
 				"type": message_type + "List",			
@@ -247,4 +246,45 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 		print(f"SIMPLE MATCH UPDATE {matchs}", flush=True)		
 		await SimpleConsumer.send_list('match', matchs)
+
+	@staticmethod
+	async def match_players_update(data):
+
+		print(f"SIMPLE MATCH UPDATE {matchs}", flush=True)
+		match_id = data.get("matchId", None)
+		players = data.get("players", [])
+		print(f"MATCH PLAYERS UPDATE VIEWS match_id: {match_id} {players}", flush=True)
+		match = next(
+			(m for m in matchs if m.get("matchId") == match_id), None)
+		if match:
+			match["players"] = players	
+			await SimpleConsumer.send_list('match', matchs)
 	
+	@staticmethod
+	async def match_result(data):
+
+		print(f"SIMPLE MATCH CONSUMER RESULT {data}", flush=True)		
+		p1_id = data.get('p1Id')
+		p2_id = data.get('p2Id')
+		match_id = data.get('matchId')
+		p1 = next((p for p in players if p.get("playerId") == p1_id), None)
+		p2 = next((p for p in players if p.get("playerId") == p2_id), None)
+		if p1:
+			p1["busy"] = None
+		if p2:
+			p2["busy"] = None 
+		match = next(
+			(m for m in matchs if m.get("matchId") == match_id), None)
+		if match: 
+			matchs[:] = [m for m in matchs if m.get("matchId") != match_id]
+			await SimpleConsumer.send_list('match', matchs)
+			await SimpleConsumer.send_db(data)
+	
+	@staticmethod
+	async def send_db(data):
+		
+		print(f"SIMPLE MATCH CONSUMER SEND BD {data}", flush=True)	
+		from tournament_app.views import send_db as sdb
+
+		path = ""
+		await sdb(path, data) 

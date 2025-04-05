@@ -174,7 +174,7 @@ class Pong:
 			await self.sendFinalState()
 			return True
 		return False
-	
+
 	async def sendState(self):		
 		
 		while self.state != State.end:	
