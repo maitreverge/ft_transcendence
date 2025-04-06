@@ -326,7 +326,8 @@ function invitationCancelled(targetName) {
 
 	console.log(`invitation with ${targetName} is cancelled`);
 
-	alert(`invitation with ${targetName} is cancelled`);
+    messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', `invitation with ${targetName} is cancelled`)
+	// alert(`invitation with ${targetName} is cancelled`);
 	if (window.busyElement)	
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
@@ -338,7 +339,9 @@ function invitationCancelled(targetName) {
 
 function selectedBusy() {
 
-	alert("selectedBusy");
+    messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "selectedBusy")
+
+	// alert("selectedBusy");
 	if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
@@ -346,20 +349,7 @@ function selectedBusy() {
 
 function invitationRefused(targetName) {
 
-    // let noContractGif;
-    //     noContractGif = document.getElementById("no-contract").innerText;
-	// targetElement = document.getElementById("players")
-	// .querySelector(`[id='${targetId}']`);
-    // alert("Le joueur ne contracte pas: "+ targetName);
-    messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', targetName + ' ne contracte pas...')
-    // Swal.fire({
-    //     title: 'Oops!',
-    //     text: targetName + ' ne contracte pas...',
-    //     imageUrl: 'https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true',
-    //     imageWidth: 300,
-    //     imageHeight: 300,
-    //     imageAlt: 'GIF fun',
-    //   });
+    messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', ' ne contracte pas...')
 
     if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
@@ -411,7 +401,9 @@ function sendPlayerClick(socket, event, selected)
 		name = input.value;
 		if (name.trim() === "" && input.style.display === "block")
 		{
-			alert("enter a name for second player");			
+            messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "enter a name for second player")
+
+			// alert("enter a name for second player");			
 			return;
 		}
 		input.style.display = "block";	
@@ -483,7 +475,8 @@ function invitation(socket, data) {
 	{
 		case "back":				
 			if (data.response === "selfBusy")
-				alert("selfBusy");
+                messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "selfBusy")
+				// alert("selfBusy");
 			else if (data.response === "selectedBusy")
 				selectedBusy();	
 			break;

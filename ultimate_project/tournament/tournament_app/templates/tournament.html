@@ -37,6 +37,7 @@
 	<button onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
 	<div id="tournaments"></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
     let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
