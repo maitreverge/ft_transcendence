@@ -35,6 +35,8 @@
 
 🟧 Mettre un decorateur sur l'API gateway ?
 
+🟧 Encoder les clefd SSL de NGINX ?
+
 
 
 

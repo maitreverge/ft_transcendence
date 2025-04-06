@@ -42,7 +42,7 @@ def run(playwright: Playwright) -> None:
         page.locator("#password").fill(PASSWORD)
         page.locator("#loginButton").click()
 
-        # ! ============= TWO-FA PAGE =============
+        time.sleep(2)
         expect(page).to_have_url(f"{BASE_URL}/home/")
 
     def logout(page):
@@ -103,15 +103,29 @@ def run(playwright: Playwright) -> None:
         page1 = pages[0]
         page2 = pages[1]
 
+        # Page 1 login first
         login(page1, LOGIN_REG)
-        login(page2, LOGIN_REG)
 
-        logout(page1)
-        logout(page2)
+        # Page 1 Nagiguate the website
+        page1.locator("#big-tournament").click()
+        expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
+
+
+        # Page 2 login after
+        login(page2, LOGIN_REG)
+        page2.locator("#big-tournament").click()
+        expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")
+
+        
+        # Page 1 tries to navigate afterwards, and is no longer auth
+        page1.locator("#side-match").click()
+        expect(page1).to_have_url(f"{BASE_URL}/register/")
+        page1.goto(f"{BASE_URL}/home/")
+        expect(page1).to_have_url(f"{BASE_URL}/register/")
+
 
         # time.sleep(10)
         destroy_obj(browsers, contexts)
-        pass
 
     def test_2fa_users():
         pass
