@@ -32,7 +32,7 @@ async function invitationPopup(socket, applicantId, applicantName)
       });
       console.log("RESULT: ", result, result.isConfirmed)
     // const userConfirmed = confirm(`You have an invitation from ${applicantName}`);
-    sendConfirmation(socket, applicantId, applicantName, result);
+    sendConfirmation(socket, applicantId, applicantName, result.isConfirmed);
 }
 
 function handlePendingInvitations() {
@@ -351,18 +351,31 @@ function invitationRefused(targetName) {
 	// targetElement = document.getElementById("players")
 	// .querySelector(`[id='${targetId}']`);
     // alert("Le joueur ne contracte pas: "+ targetName);
-    Swal.fire({
-        title: 'Oops!',
-        text: targetName + ' ne contracte pas...',
-        imageUrl: 'https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true',
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: 'GIF fun',
-      });
+    messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', targetName + ' ne contracte pas...')
+    // Swal.fire({
+    //     title: 'Oops!',
+    //     text: targetName + ' ne contracte pas...',
+    //     imageUrl: 'https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true',
+    //     imageWidth: 300,
+    //     imageHeight: 300,
+    //     imageAlt: 'GIF fun',
+    //   });
 
     if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
+}
+
+function messagePopUp(url, text)
+{
+    Swal.fire({
+        title: 'Oops!',
+        text: text,
+        imageUrl: url,
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: 'GIF fun',
+      });
 }
 
 function invitationConfirmed(matchId, targetId) {
