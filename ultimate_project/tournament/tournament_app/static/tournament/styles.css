@@ -61,7 +61,7 @@
 
 	width:100%;
 	height:80%;
-	background-color: rgb(222, 30, 72);
+	background-color: rgb(211, 226, 225);
 }
 
 .invitation-waiting {
@@ -110,7 +110,9 @@ button {
 }
 
 .phantom {
-	background-color: rgb(8, 234, 250);
+    background-image: url("https://images.creativefabrica.com/products/previews/2024/03/31/axvDiTp2B/2eSsvlapRvdzCFVky7QzsmaMzaO-mobile.jpg");
+	background-size: cover;
+    background-color: rgb(8, 234, 250);
 }
 
 .tournament-cont {
