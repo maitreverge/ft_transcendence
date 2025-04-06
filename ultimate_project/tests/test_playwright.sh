@@ -1,6 +1,20 @@
 #!/bin/bash
 source tests/utils.sh
 
+start=$(date +%s)
+
+make delete_volume re > /dev/null 2>&1 &
+
+source env/bin/activate
+
+echo "⏳ Attente que le serveur soit prêt..."
+
+until curl -k -s -o /dev/null -w "%{http_code}" https://localhost:8443/home | grep 200 > /dev/null; do
+
+  sleep 1
+done
+
+echo "✅ Serveur prêt, lancement des tests..."
 echo "Running Playwright tests..."
 python3 tests/test_authentication.py
 sleep 1
@@ -20,3 +34,7 @@ check_result "Playwright tests"
 echo "♻️ Recreating delete users for testing ♻️"
 docker restart ctn_databaseapi
 echo "✅ Deleted users recreated ✅"
+
+end=$(date +%s)
+elapsed=$((end - start))
+echo "⏱️ Tests terminés en $elapsed secondes"
