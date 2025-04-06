@@ -556,7 +556,7 @@ function linkMatch(lk)
 		console.log("je sors de link match parceque localMatch est faux");
 		return;
 	}
-	overlay.style = "transform:translate(-180px, 200px);"
+	// overlay.style = "transform:translate(-180px, 200px);"
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
 	if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")

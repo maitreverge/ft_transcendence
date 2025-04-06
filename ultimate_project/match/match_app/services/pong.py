@@ -69,8 +69,7 @@ class Pong:
 		self.tasks = [
 			self.myEventLoop.create_task(self.launch_game()),
 			self.myEventLoop.create_task(self.sendState()),
-			self.myEventLoop.create_task(self.watch_dog()),
-			self.myEventLoop.create_task(self.watch_cat(self.start_delay)),		
+			self.myEventLoop.create_task(self.watch_dog())		
 		]
 		try:
 			self.myEventLoop.run_until_complete(
@@ -115,16 +114,19 @@ class Pong:
 	async def run_game(self):
 		
 		if not self.start_flag:
-			await self.send_start(3)    
+			await self.send_start(3)
+			self.tasks.append(
+				self.myEventLoop.create_task(self.watch_cat(self.start_delay)))
 		self.state = State.running
 		self.winner = None
 		self.start_flag = True
 		self.wall_flag = True
 
 		self.pad_commands(self.players)	
-		await self.scores()
-		await self.bounces()										
-		self.move_ball()
+		if not self.pause:	
+			await self.scores()
+			await self.bounces()										
+			self.move_ball()
 						
 	def set_waiting_state(self, players):
 
