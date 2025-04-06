@@ -1,6 +1,9 @@
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
 
+LOGIN = "user2"
+PASSWORD = "password"
+
 def run(playwright: Playwright) -> None:
     base_url = "https://localhost:8443"
     browser = playwright.chromium.launch(headless=False)
@@ -66,6 +69,24 @@ def run(playwright: Playwright) -> None:
         page.evaluate("window.history.back()")
         page.wait_for_timeout(500)  # Laisse un peu de temps pour le back
         test_page(page.url)
+    
+    def login():
+        page.goto(f"{base_url}/login/")
+
+        page.locator("#username").fill(LOGIN)
+        page.locator("#password").fill(PASSWORD)
+        page.locator("#loginButton").click()
+        expect(page).to_have_url(f"{base_url}/home/")\
+    
+    def logout():
+        youpiBanane = page.locator("#youpiBanane")
+        logoutButton = page.locator("#logoutButton")
+        modalLogoutButton = page.locator("#modalLogoutButton")
+        assert "show" not in (youpiBanane.get_attribute("class") or "")
+        youpiBanane.click()
+        logoutButton.click()
+        modalLogoutButton.click()
+        expect(page).to_have_url(f"{base_url}/login/")
 
     urls = [ 
             f"{base_url}/home/", 
@@ -75,13 +96,20 @@ def run(playwright: Playwright) -> None:
             f"{base_url}/tournament/tournament/"
             ]     
     
-        # DAN TEST FROM HERE
+    # ! =============== KICKSTART TESTER HERE ===============
     for url in urls:
+        login()
         test_page(url)
     
+    print("⭐ 1st BLOCK PASSED  ⭐")
+    
     for url in urls:
+        login()
         navigate(url)
+        logout()
+    print("⭐ 2nd BLOCK PASSED  ⭐")
 
+    # ? ================== WORK NEEDLE ======================
     for url in reversed(urls):
         while True:
             if page.url == url:
