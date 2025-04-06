@@ -64,7 +64,11 @@ EXCLUDED_PATHS = [
     "/register/",
     "/auth/login/",
     "/auth/register/",
+    "/two-factor-auth/",
+    "/translations/en.json",
+    "/auth/verify-2fa/"
 ]
+
 
 
 # NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
@@ -74,6 +78,10 @@ async def bouncer_middleware(request: Request, call_next):
     Main Middleware to filter authenticated users from non-auth users
     """
     is_auth, user_info = is_authenticated(request)
+
+    print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
+    print(f"=============           {request.url.path} ================\n")
+    print(f"============= URL REQUEST ENTERING BOUNCER ================")
 
     # ! CASE 1 : User is auth but requests auth pages / routes
     if is_auth and request.url.path in EXCLUDED_PATHS:
