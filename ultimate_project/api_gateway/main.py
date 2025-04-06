@@ -80,8 +80,10 @@ async def bouncer_middleware(request: Request, call_next):
         print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
-            response = Response()
-            response.headers["HX-Redirect"] = "/home/"
+            response = Response(status_code=200)
+            response.headers["HX-Location"] = (
+                "/home/"  # Use HX-Location for SPA navigation
+            )
         else:
             response = RedirectResponse(url="/home/")
         return response
@@ -90,16 +92,17 @@ async def bouncer_middleware(request: Request, call_next):
         print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
-            print(f"🔄 HTMX request detected, using HX-Redirect", flush=True)
-            response = Response()
-            response.headers["HX-Redirect"] = "/register/"
-            # Optionally clear JWT cookies
+            print(f"🔄 HTMX request detected, using HX-Location", flush=True)
+            # HX-Location makes HTMX do a client-side redirect without a full page reload
+            response = Response(status_code=200)
+            response.headers["HX-Location"] = "/register/"
+            # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
         else:
             print(f"🔄 Standard request, using RedirectResponse", flush=True)
             response = RedirectResponse(url="/register/")
-            # Optionally clear JWT cookies
+            # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
         return response
