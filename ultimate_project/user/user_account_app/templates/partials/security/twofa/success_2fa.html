@@ -1,7 +1,7 @@
 {% load static %}
 <div class="container-fluid">
   <!-- Page Heading -->
-  <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="row justify-content-center align-items-center" style="min-height: 80vh;" id="twofa_success_message">
     <div class="col-lg-6 mb-4">
       <div class="card shadow mb-4 border-left-success">
         <div class="card-body text-center">
@@ -21,7 +21,7 @@
           {% endif %}
 
           <a
-            href="/account/profile/"
+            href="/account/security/"
             class="btn btn-primary btn-user mt-3"
             hx-get="/account/security/"
             hx-target="#main_div"

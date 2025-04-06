@@ -22,7 +22,8 @@
             hx-post="/account/security/verify-2fa/"
             hx-target="#main_div"
             hx-push-url="true"
-            hx-headers='{"HX-Request": "true", "X-CSRFToken": "{{ csrf_token }}"}'
+            hx-headers='{"HX-Request": "true"}'
+            hx-ext="csrf"
           >
             {% csrf_token %}
             <div class="form-group">

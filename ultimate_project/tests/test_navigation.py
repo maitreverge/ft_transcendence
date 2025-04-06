@@ -70,7 +70,7 @@ def run(playwright: Playwright) -> None:
     urls = [ 
             f"{base_url}/home/", 
             f"{base_url}/account/profile/", 
-            f"{base_url}/account/stats/",
+            f"{base_url}/account/game-stats/",
             f"{base_url}/tournament/simple-match/",
             f"{base_url}/tournament/tournament/"
             ]     
@@ -111,7 +111,7 @@ def run(playwright: Playwright) -> None:
         ("#field-tournoi", f"{base_url}/tournament/tournament/"),
         ("#field-match", f"{base_url}/tournament/simple-match/"),
         ("#field-profile", f"{base_url}/account/profile/"),
-        ("#field-stats", f"{base_url}/account/stats/"),
+        ("#field-stats", f"{base_url}/account/game-stats/"),
     ]
 
     # # Vérification de la navigation via le menu topbar
@@ -129,7 +129,7 @@ def run(playwright: Playwright) -> None:
         test_navigation(page.locator(locator), expected_url)
     
     # test 404
-    test_single_page("/home/sylvain_duriff/");
+    test_single_page("/home/sylvain_duriff/")
     navigate(f"{base_url}/home/")
     test_single_page("/register/")
     navigate(f"{base_url}/home/")

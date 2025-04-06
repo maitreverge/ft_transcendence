@@ -27,7 +27,8 @@
           <form
             hx-post="/account/security/disable-2fa/"
             hx-target="#main_div"
-            hx-headers='{"HX-Request": "true", "X-CSRFToken": "{{ csrf_token }}"}'
+            hx-headers='{"HX-Request": "true"}'
+            hx-ext="csrf"
           >
             {% csrf_token %}
             <div class="form-group">
@@ -57,9 +58,7 @@
                 hx-get="/account/security/"
                 hx-target="#main_div"
                 hx-headers='{"HX-Request": "true"}'
-
                 hx-push-url="true"
-
               >
                 Cancel
               </a>

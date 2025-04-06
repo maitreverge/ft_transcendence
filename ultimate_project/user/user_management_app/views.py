@@ -8,16 +8,6 @@ from django.conf import settings
 import pyotp
 
 
-# Create your views here.
-def index(request):
-    return render(
-        request,
-        "user_management_app/index.html",
-        {
-            "title": "User Management Page",
-        },
-    )
-
 
 @require_http_methods(["GET", "POST"])
 @ensure_csrf_cookie
@@ -40,8 +30,7 @@ async def delete_profile(request):
         # ! Should not happen once the route will be locked
         if response.status_code != 200:
             return render(
-                request,
-                "user_management_app/delete-profile.html",
+                request,"user_management_app/delete-profile.html",
                 {"user" : user,
                 "error": "User not found"},
             )
@@ -53,9 +42,7 @@ async def delete_profile(request):
         elif isinstance(user_data, dict) and "results" in user_data:
             user = user_data["results"][0]
         else:
-            return render(
-                request,
-                "user_management_app/delete-profile.html",
+            return render(request, "user_management_app/delete-profile.html",
                 {"user" : user,
                 "error": "Invalid user data"},
             )

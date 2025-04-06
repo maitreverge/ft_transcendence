@@ -1,5 +1,7 @@
 import httpx
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest
+import os
+from typing import Tuple, Dict
 
 
 async def get_user_info_w_username(username):
@@ -30,8 +32,8 @@ async def get_user_info_w_username(username):
     except Exception as e:
         print(f"Error getting user by username: {str(e)}", flush=True)
         return None
-  
-  
+
+
 async def get_if_user_auth_w_username(username):
     """
     Get user information by username from the database API
@@ -106,3 +108,17 @@ async def update_user_w_user_id(user_id, data):
     except Exception as e:
         print(f"Exception in update_user: {str(e)}", flush=True)
         return None
+
+
+async def build_context(request: HttpRequest) -> Dict:
+    """Build the base context with username from Request if found"""
+    username = request.headers.get("X-Username")
+    context = {
+        "rasp": os.getenv("rasp", "false"),
+        "pidom": os.getenv("pi_domain", "localhost:8443"),
+    }
+    if username:
+        context["username"] = username
+    else:
+        context["username"] = None
+    return context

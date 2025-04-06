@@ -8,24 +8,24 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 
+from django.views.decorators.http import require_http_methods
+
+# Custom import
 from utils import manage_user_data
 
+#view hope the access will be handle above :)
 
-#@cache_control(no_cache=True, must_revalidate=True)
+@require_http_methods(["GET"])
 async def game_stats_view(request: HttpRequest):
     
-    username = request.headers.get("X-Username")
-    context = {
-        "rasp": os.getenv("rasp", "false"),
-        "pidom": os.getenv("pi_domain", "localhost:8443"),
-    }
-    context["username"] = username
+    context = await manage_user_data.build_context(request)
+    username = context["username"]
     if username:
         user = await manage_user_data.get_user_info_w_username(username)
         if user:
             context["user"] = user
     if request.headers.get("HX-Request"):
-        if request.headers.get("X-Inner-Content") == "true":
+        if request.headers.get("X-Inner-Content-Account") == "true":
                 return render(request, "partials/game_stats/game_stats.html", context)
     context["page"] =  "partials/game_stats/game_stats.html"
     return render(request, "layouts/account.html", context)
