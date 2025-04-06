@@ -85,8 +85,32 @@ def run(playwright: Playwright) -> None:
         # Test the current page (either we returned or we couldn't navigate due to auth)
         test_page(page.url)
 
+    def ensure_authenticated():
+        """Check if we're authenticated, and login if not"""
+        # Simple check - if we're on login or register page, we're not authenticated
+        if page.url.startswith(f"{base_url}/login") or page.url.startswith(
+            f"{base_url}/register"
+        ):
+            login()
+            return True
+
+        # Try accessing home page - if redirected to login, we need to authenticate
+        navigate(f"{base_url}/home/")
+        if page.url.startswith(f"{base_url}/login") or page.url.startswith(
+            f"{base_url}/register"
+        ):
+            login()
+            return True
+
+        return True  # Already authenticated
+
     def login():
+        # Always navigate to login page first
         page.goto(f"{base_url}/login/")
+        page.wait_for_load_state("networkidle")
+
+        # Wait for the login form to be visible before interacting with it
+        page.wait_for_selector("#username", state="visible", timeout=10000)
 
         page.locator("#username").fill(LOGIN)
         page.locator("#password").fill(PASSWORD)
@@ -153,8 +177,21 @@ def run(playwright: Playwright) -> None:
 
     # Vérification de la navigation via le sidebar menu
     def test_navigation(locator, expected_url):
-        locator.click()
-        expect(page).to_have_url(expected_url)
+        try:
+            # Wait for the element to be visible
+            locator.wait_for(state="visible", timeout=5000)
+            # Check that it's clickable
+            if not locator.is_visible():
+                print(f"Warning: Navigation element {locator} is not visible")
+                return
+
+            locator.click()
+            expect(page).to_have_url(expected_url)
+            print(f"✓ Navigation to {expected_url} successful")
+        except Exception as e:
+            print(f"Error navigating with {locator}: {e}")
+            raise e
+
     print("⭐ 4th BLOCK PASSED  ⭐")
 
     # Liste des tests à effectuer
@@ -174,25 +211,29 @@ def run(playwright: Playwright) -> None:
     ]
 
     # Vérification de la navigation via le menu topbar
-    login()  # Ensure we're authenticated
+    ensure_authenticated()
     navigate(f"{base_url}/home/")
     for locator, expected_url in navigation_tests[
         :4
     ]:  # Pour les éléments du menu topbar
         test_navigation(page.locator(locator), expected_url)
+        # Go back to home after each test to ensure we can find the next navigation element
+        navigate(f"{base_url}/home/")
     print("⭐ 5th BLOCK PASSED  ⭐")
 
     # Vérification de la navigation via le menu latéral
-    login()  # Re-authenticate to ensure session is valid
+    ensure_authenticated()
     navigate(f"{base_url}/home/")
     for locator, expected_url in navigation_tests[
         4:8
     ]:  # Pour les éléments du menu latéral
         test_navigation(page.locator(locator), expected_url)
+        # Go back to home after each test
+        navigate(f"{base_url}/home/")
     print("⭐ 6th BLOCK PASSED  ⭐")
 
     # Vérification de la navigation via les boutons sur la page home
-    login()  # Re-authenticate to ensure session is valid
+    ensure_authenticated()
     for locator, expected_url in navigation_tests[
         8:
     ]:  # Pour les éléments de la page home
@@ -201,7 +242,7 @@ def run(playwright: Playwright) -> None:
     print("⭐ 7th BLOCK PASSED  ⭐")
 
     # test 404
-    login()  # Ensure we're authenticated for protected routes
+    ensure_authenticated()
     test_single_page("/home/sylvain_duriff/")
     print("⭐ 8th BLOCK PASSED  ⭐")
 
@@ -218,7 +259,7 @@ def run(playwright: Playwright) -> None:
     print("⭐ 10th BLOCK PASSED  ⭐")
 
     # Login again before closing
-    login()
+    ensure_authenticated()
     navigate(f"{base_url}/home/")
     print("⭐ 11th BLOCK PASSED  ⭐")
 
