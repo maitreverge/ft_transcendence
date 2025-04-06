@@ -331,17 +331,33 @@ function selectedBusy() {
 
 function invitationRefused(targetName) {
 
+    // let noContractGif;
+    //     noContractGif = document.getElementById("no-contract").innerText;
 	// targetElement = document.getElementById("players")
 	// .querySelector(`[id='${targetId}']`);
-	alert("refuse from target: "+ targetName);
-	if (window.busyElement)
+    // alert("Le joueur ne contracte pas: "+ targetName);
+    Swal.fire({
+        title: 'Oops!',
+        text: targetName + ' ne contracte pas...',
+        imageUrl: 'https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true',
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: 'GIF fun',
+      });
+
+    if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
 }
 
 function invitationConfirmed(matchId, targetId) {
-	
-	window.selectedElement = document.getElementById("players")
+
+    // document.getElementById("response").innerHTML = '<img id="myGif" src="https://media1.tenor.com/m/A-ozELwp694AAAAC/thumbs-thumbs-up-kid.gif" alt="gif marrant">';
+	// setTimeout(() => {
+    //     document.getElementById("myGif")?.remove();
+    //   }, 3000);
+    
+    window.selectedElement = document.getElementById("players")
 		.querySelector(`[id='${targetId}']`)
 	if (window.selectedElement)
 	{
@@ -578,7 +594,7 @@ function initSimpleMatch() {
         `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
     );
 	window.simpleMatchSocket.onopen = () => {
-		console.log("Connexion Simple Match établie 😊");	
+        console.log("Connexion Simple Match établie 😊");	
 	}
 	window.simpleMatchSocket.onclose = () => {
 		console.log("Connexion Simple Match disconnected 😈");

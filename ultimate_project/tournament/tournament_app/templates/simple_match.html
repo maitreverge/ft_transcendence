@@ -31,11 +31,13 @@
 	required
 	placeholder="enter a name"
 	oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');"
-/>
+    />
 <div id="players"></div>
 <div id="matchs"></div>
+<div id="response"></div>
 <div id="overlay-match"></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
     let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
