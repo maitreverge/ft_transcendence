@@ -17,13 +17,29 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
+async function invitationPopup(socket, applicantId, applicantName)
+{
+    const result = await Swal.fire({
+        title: 'Oops!',
+        text: ' You have an invitation!',
+        imageUrl: 'https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true',
+        imageWidth: 300,
+        imageHeight: 300,
+        imageAlt: 'GIF fun',
+        showCancelButton: true,
+        confirmButtonText: 'Accept',
+        cancelButtonText: 'Decline',
+      });
+      console.log("RESULT: ", result, result.isConfirmed)
+    // const userConfirmed = confirm(`You have an invitation from ${applicantName}`);
+    sendConfirmation(socket, applicantId, applicantName, result);
+}
 
 function handlePendingInvitations() {
     // Traite toutes les invitations en attente lorsque la page devient active
     pendingInvitations.forEach(invitation => {
         const { applicantId, applicantName, socket } = invitation;
-        const userConfirmed = confirm(`you have an invitation from ${applicantName}`);
-        sendConfirmation(socket, applicantId, applicantName, userConfirmed);
+        invitationPopup(socket, applicantId, applicantName);
     });
 
     // Vide la file d'attente une fois les invitations traitées
@@ -50,8 +66,7 @@ function receiveInvitation(socket, applicantId, applicantName) {
     
     if (isPageVisible) {
         // Si l'onglet est actif, demande la confirmation immédiatement
-        const userConfirmed = confirm(`You have an invitation from ${applicantName}`);
-        sendConfirmation(socket, applicantId, applicantName, userConfirmed);
+        invitationPopup(socket, applicantId, applicantName);
     } else {
         // Si l'onglet est en arrière-plan, stocke l'invitation en attente
         pendingInvitations.push({socket, applicantId, applicantName});
