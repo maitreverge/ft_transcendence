@@ -77,12 +77,15 @@ async def bouncer_middleware(request: Request, call_next):
     # ! CASE 1 : User is auth but requests auth pages / routes
     if is_auth and request.url.path in EXCLUDED_PATHS:
         print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
-        return RedirectResponse(url="/home")
+        response = RedirectResponse(url="/home")
+        # response.headers["HX-Redirect"] = "/home/"
+        return response
 
     elif not is_auth and request.url.path not in EXCLUDED_PATHS:
         print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
         # MAYBE DELETE JWT COOCKIES HERE
         response = RedirectResponse(url="/register/")
+        # response = response.headers["HX-Redirect"] = "/register/"
         return response
     
 
@@ -92,6 +95,8 @@ async def bouncer_middleware(request: Request, call_next):
     response = await call_next(request)
     return response
     
+    # response.headers["HX-Redirect"] = "/register/"
+
     
     
     
@@ -578,11 +583,11 @@ async def register_page_route(request: Request, path: str = ""):
     Redirects to home if user is already authenticated.
     """
     # Check if user is authenticated
-    is_auth, user_info = is_authenticated(request)
+    # is_auth, user_info = is_authenticated(request)
 
-    if is_auth:
-        # If authenticated, redirect to home
-        response = RedirectResponse(url="/home")
+    # if is_auth:
+    #     # If authenticated, redirect to home
+    #     response = RedirectResponse(url="/home")
 
         # If token refresh is needed, set the new access token cookie
         # if user_info and user_info.get("refresh_needed"):
@@ -597,7 +602,7 @@ async def register_page_route(request: Request, path: str = ""):
         #         max_age=60 * 60 * 6,  # 6 hours
         #     )
 
-        return response
+        # return response
 
     # If not authenticated, show login page
     return await proxy_request("static_files", "register/", request)
