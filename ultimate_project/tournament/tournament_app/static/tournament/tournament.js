@@ -54,7 +54,7 @@ function connectNewPlayer(playerId, playerName)
 
 	if (!playerId)
 	{
-        messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "player name yet exist!")
+        messagePopUp('https://dansylvain.github.io/pictures/travolta.webp', "player name yet exist!")
 		// alert("player name yet exist!");
 		console.log(websockets);
 		websockets = websockets.filter(ws => ws.playerId !== undefined);	
@@ -90,14 +90,14 @@ function newPlayer(socket) {
 	const playerName = document.getElementById("player-name").value;
 	if (playerName.trim() === "")
 	{
-        messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "enter a name!")
+        messagePopUp('https://dansylvain.github.io/pictures/travolta.webp', "enter a name!")
 
 		// alert("enter a name!");
 		return;
 	}
 	if (websockets.length >= 3)
 	{
-        messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "you can't create more than three players!")
+        messagePopUp('https://dansylvain.github.io/pictures/marioNo.webp', "you can't create more than three players!")
 
 		// alert("you can't create more than three players!");
 		return;
@@ -399,7 +399,7 @@ function dropTournament(div, tournamentId) {
 		const ws = websockets.find(el => el.playerId == elementId);	
 		if (!ws && window.selfId != elementId)
 		{
-            messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "not your player")
+            messagePopUp('https://dansylvain.github.io/pictures/marioNo.webp', "not your player")
 
 			// alert("not your player");
 			return;
