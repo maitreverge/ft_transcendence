@@ -25,15 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-\
-    8to7%ajqsxrgsbr5asn@mzimmxx9-t^4&356adt680x(v^34kt"
+# ! SECURED BY FLO
+SECRET_KEY = os.getenv("DJANGO_KEY")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-FERNET_SECRET_KEY = os.getenv(
-    "FERNET_SECRET_KEY", "2kXe3YL7r5_v69Gm4axlcNLWO4f2xAQqaqTTdLZST0A="
-)
-
+# ! SECURED BY FLO
+FERNET_SECRET_KEY = os.getenv("FERNET_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
@@ -43,7 +39,6 @@ ALLOWED_HOSTS = ["*", f"https://{HOST_IP}"]
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "http://localhost:8000",
-    "http://127.0.0.1:8000",
     f"https://{HOST_IP}",
 ]
 
@@ -61,7 +56,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
-    'django_extensions', # For CSV init players
+    "django_extensions",  # For CSV init players
 ]
 
 MIDDLEWARE = [
@@ -197,19 +192,18 @@ LOGGING = {
 }
 
 CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
-CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins for development
 CORS_ALLOW_ORIGINS = [
-    "http://localhost:8000",  # Basic
-    "http://localhost:8001",  # Tournament
-    "http://localhost:8002",  # Match
-    "http://localhost:8003",  # Static files
-    "http://localhost:8004",  # User
-    "http://localhost:8005",  # FastAPI
-    "http://localhost:8006",  # Authentication
-    "http://localhost:8007",  # DatabaseAPI
-    f"https://{HOST_IP}",  # Production
+    # "http://localhost:8000",
+    # "http://localhost:8001",
+    # "http://localhost:8002",
+    # "http://localhost:8003",
+    # "http://localhost:8004",
+    # "http://localhost:8005",
+    "http://localhost:8007",
+    "https://localhost:8443",
+    f"https://{HOST_IP}",
 ]
-CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
+CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]
 CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken", "Set-Cookie"]
 
@@ -222,26 +216,12 @@ JWT_AUTH = {
     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
 }
 
-CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
-CORS_ALLOW_ORIGINS = [
-    "http://localhost:8000",  # Basic
-    "http://localhost:8001",  # Tournament
-    "http://localhost:8002",  # Match
-    "http://localhost:8003",  # Static files
-    "http://localhost:8004",  # User
-    "http://localhost:8005",  # FastAPI
-    "http://localhost:8006",  # Authentication
-    "http://localhost:8007",  # DatabaseAPI
-    "https://localhost:8443"  # For secure HTTPS access
-    f"https://{HOST_IP}",  # Production
-]
-CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
-CORS_ALLOW_HEADERS = ["*"]
-
 # Cookie settings
 SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
 SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access (for security)
-SESSION_COOKIE_SAMESITE = "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+SESSION_COOKIE_SAMESITE = (
+    "Lax"  # Allows cookies on same-site navigation, blocks cross-site
+)
 
 CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token

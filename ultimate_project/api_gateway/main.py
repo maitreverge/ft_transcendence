@@ -49,7 +49,6 @@ services = {
     "match": "http://match:8002",
     "static_files": "http://static_files:8003",
     "user": "http://user:8004",
-    # "authentication": "http://authentication:8006", # ! OUTDATED SERVICE, DO NOT USE
     "databaseapi": "http://databaseapi:8007",
 }
 
@@ -57,10 +56,74 @@ services = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Exclude Path for the
+EXCLUDED_PATHS = [
+    "/login",
+    "/register",
+    "/login/",
+    "/register/",
+    "/auth/login/",
+    "/auth/register/",
+    "/two-factor-auth/",
+    "/translations/en.json",
+    "/auth/verify-2fa/"
+]
+
+
+
+# NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
+@app.middleware("http")
+async def bouncer_middleware(request: Request, call_next):
+    """
+    Main Middleware to filter authenticated users from non-auth users
+    """
+    is_auth, user_info = is_authenticated(request)
+
+    print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
+    print(f"=============           {request.url.path} ================\n")
+    print(f"============= URL REQUEST ENTERING BOUNCER ================")
+
+    # ! CASE 1 : User is auth but requests auth pages / routes
+    if is_auth and request.url.path in EXCLUDED_PATHS:
+        print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
+        # Check if this is an HTMX request
+        if "HX-Request" in request.headers:
+            response = Response(status_code=200)
+            response.headers["HX-Location"] = (
+                "/home/"  # Use HX-Location for SPA navigation
+            )
+        else:
+            response = RedirectResponse(url="/home/")
+        return response
+
+    elif not is_auth and request.url.path not in EXCLUDED_PATHS:
+        print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
+        # Check if this is an HTMX request
+        if "HX-Request" in request.headers:
+            print(f"🔄 HTMX request detected, using HX-Location", flush=True)
+            # HX-Location makes HTMX do a client-side redirect without a full page reload
+            response = Response(status_code=200)
+            response.headers["HX-Location"] = "/register/"
+            # Clear JWT cookies
+            response.delete_cookie(key="access_token", path="/")
+            response.delete_cookie(key="refresh_token", path="/")
+        else:
+            print(f"🔄 Standard request, using RedirectResponse", flush=True)
+            response = RedirectResponse(url="/register/")
+            # Clear JWT cookies
+            response.delete_cookie(key="access_token", path="/")
+            response.delete_cookie(key="refresh_token", path="/")
+        return response
+
+    print(f"👍 Bounder Middleware non trigered 👍")
+    # Proceed to route handler if authenticated
+    response = await call_next(request)
+    return response
+
 
 # Token refresh middleware
 @app.middleware("http")
-async def token_refresh_middleware(request: Request, call_next):
+async def jwt_refresh_middleware(request: Request, call_next):
     """
     Middleware that checks if the access token needs to be refreshed.
     If refresh is needed, it adds the new access token to the response.
@@ -115,7 +178,7 @@ async def token_refresh_middleware(request: Request, call_next):
 #     return await call_next(request)
 
 
-# ! DEBUGGING COOKIES MIDDLEWARE.
+# ! DEBUGGING COOKIES MIDDLEWARE, DO DELETE
 # This middleware is used to debug incoming cookies in FastAPI.
 # It prints the incoming cookies to the console.
 @app.middleware("http")
@@ -131,6 +194,7 @@ async def debug_cookies_middleware(request: Request, call_next):
         )
 
     return response
+
 
 async def proxy_request(service_name: str, path: str, request: Request):
     if service_name not in services:
@@ -347,7 +411,7 @@ async def match_proxy(
     playerId: int = Query(None),
     playerName: str = Query(None),
     player2Id: int = Query(None),
-    player2Name: str = Query(None)    
+    player2Name: str = Query(None),
 ):
     """
     Proxy requests to the match microservice.
@@ -362,7 +426,6 @@ async def match_proxy(
     """
     path = (
         f"match/match2d/?matchId={matchId}&playerId={playerId}&playerName={playerName}&player2Id={player2Id}&player2Name={player2Name}"
-        
         if matchId is not None and playerId is not None
         else "match/"
     )
@@ -381,7 +444,7 @@ async def redirect_to_home():
 
 
 # ! DATABASE API ROUTE
-@app.api_route("/api/{path:path}", methods=["GET", "POST","PUT", "DELETE"])
+@app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def databaseapi_proxy(path: str, request: Request):
     """
     Proxy requests to the database API microservice.
@@ -431,26 +494,26 @@ async def login_page_route(request: Request, path: str = ""):
     Redirects to home if user is already authenticated.
     """
     # Check if user is authenticated
-    is_auth, user_info = is_authenticated(request)
+    # is_auth, user_info = is_authenticated(request)
 
-    if is_auth:
-        # If authenticated, redirect to home
-        response = RedirectResponse(url="/home")
+    # if is_auth:
+    #     # If authenticated, redirect to home
+    #     response = RedirectResponse(url="/home")
 
-        # If token refresh is needed, set the new access token cookie
-        if user_info and user_info.get("refresh_needed"):
-            print("🔄 Setting refreshed access token during login redirect", flush=True)
-            response.set_cookie(
-                key="access_token",
-                value=user_info.get("new_access_token"),
-                httponly=True,
-                secure=True,
-                samesite="Lax",
-                path="/",
-                max_age=60 * 60 * 6,  # 6 hours
-            )
+    # If token refresh is needed, set the new access token cookie
+    # if user_info and user_info.get("refresh_needed"):
+    #     print("🔄 Setting refreshed access token during login redirect", flush=True)
+    #     response.set_cookie(
+    #         key="access_token",
+    #         value=user_info.get("new_access_token"),
+    #         httponly=True,
+    #         secure=True,
+    #         samesite="Lax",
+    #         path="/",
+    #         max_age=60 * 60 * 6,  # 6 hours
+    #     )
 
-        return response
+    # return response
 
     # If not authenticated, show login page
     return await proxy_request("static_files", "login/", request)
@@ -472,7 +535,7 @@ async def login_page_route(request: Request):
     return await login_fastAPI(request, response, username, password)
 
 
-# Add auth-status endpoint for debugging
+# ! ROUTE TO DELETE
 @app.get("/auth/status")
 async def auth_status(request: Request):
     """
@@ -533,26 +596,26 @@ async def register_page_route(request: Request, path: str = ""):
     Redirects to home if user is already authenticated.
     """
     # Check if user is authenticated
-    is_auth, user_info = is_authenticated(request)
+    # is_auth, user_info = is_authenticated(request)
 
-    if is_auth:
-        # If authenticated, redirect to home
-        response = RedirectResponse(url="/home")
+    # if is_auth:
+    #     # If authenticated, redirect to home
+    #     response = RedirectResponse(url="/home")
 
-        # If token refresh is needed, set the new access token cookie
-        if user_info and user_info.get("refresh_needed"):
-            print("🔄 Setting refreshed access token during login redirect", flush=True)
-            response.set_cookie(
-                key="access_token",
-                value=user_info.get("new_access_token"),
-                httponly=True,
-                secure=True,
-                samesite="Lax",
-                path="/",
-                max_age=60 * 60 * 6,  # 6 hours
-            )
+    # If token refresh is needed, set the new access token cookie
+    # if user_info and user_info.get("refresh_needed"):
+    #     print("🔄 Setting refreshed access token during login redirect", flush=True)
+    #     response.set_cookie(
+    #         key="access_token",
+    #         value=user_info.get("new_access_token"),
+    #         httponly=True,
+    #         secure=True,
+    #         samesite="Lax",
+    #         path="/",
+    #         max_age=60 * 60 * 6,  # 6 hours
+    #     )
 
-        return response
+    # return response
 
     # If not authenticated, show login page
     return await proxy_request("static_files", "register/", request)
@@ -701,8 +764,9 @@ async def delete_profile_proxy(request: Request):
                 response.delete_cookie(key="access_token", path="/")
                 response.delete_cookie(key="refresh_token", path="/")
 
-                # Set HX-Redirect header for client-side redirection
+                # ! REDIRECT RELOAD THE SPA HERE
                 response.headers["HX-Redirect"] = "/register/"
+                # response = RedirectResponse(url="/register/")
 
                 print("🗑️ Cookies cleared and redirect set", flush=True)
         except Exception as e:
