@@ -20,9 +20,8 @@
         <div class="card-body">
           <form
             hx-post="/account/security/verify-2fa/"
-            hx-target="#main_div"
             hx-push-url="true"
-            hx-headers='{"HX-Request": "true"}'
+            hx-target="#account-content"
             hx-ext="csrf"
           >
             {% csrf_token %}
@@ -54,12 +53,11 @@
               <a
                 href="/account/security/setup-2fa/"
                 class="btn btn-secondary btn-rounded btn-block mt-2"
-                hx-get="/account/profile/"
-                hx-target="#main_div"
-                hx-headers='{"HX-Request": "true"}'
+                hx-get="/account/security/setup-2fa/"
                 hx-push-url="true"
-              >
-                Cancel
+                hx-target="#account-content"
+                >
+                Cancel and generate a new QR code.
               </a>
             </div>
           </form>

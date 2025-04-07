@@ -25,8 +25,8 @@ async def game_stats_view(request: HttpRequest):
         if user:
             context["user"] = user
     if request.headers.get("HX-Request"):
-        if request.headers.get("X-Inner-Content-Account") == "true":
-                return render(request, "partials/game_stats/game_stats.html", context)
+        if request.headers.get("HX-Target") == "account-content":
+            return render(request, "partials/game_stats/game_stats.html", context)
     context["page"] =  "partials/game_stats/game_stats.html"
     return render(request, "layouts/account.html", context)
     

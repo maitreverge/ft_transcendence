@@ -1,0 +1,61 @@
+{% load static %}
+<div class="container-fluid" id="conf-content">
+  <!-- Delete Profile Section -->
+  <div class="card mb-3 shadow">
+    <div class="card-body text-center">
+      <h5 class="card-title">Delete Account</h5>
+      <p class="card-text text-muted"> <!-- Changed text color to muted instead of red -->
+        Are you sure you want to delete your account? This action is
+        irreversible.
+      </p>
+
+      <!-- Styled Delete Account Button -->
+      <a
+        href="#"
+        class="btn-danger-custom"
+        hx-get="/account/confidentiality/delete-account/"
+        hx-target="#account-content"
+        hx-push-url="true"
+        id="delete_account"
+      >
+        Delete Account
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  #conf-content {
+    margin-top: 20px;
+  }
+
+  .btn-danger-custom {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    border: 2px solid #dc3545;
+    background-color: transparent;
+    color: #dc3545; /* Button color */
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+
+  .btn-danger-custom:hover,
+  .btn-danger-custom:focus,
+  .btn-danger-custom:active {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
+  }
+</style>
+
+

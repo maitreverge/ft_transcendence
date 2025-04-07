@@ -27,7 +27,8 @@
           <form
             hx-post="/account/security/disable-2fa/"
             hx-target="#main_div"
-            hx-headers='{"HX-Request": "true"}'
+            hx-target="#account-content"
+            hx-swap="innerHTML"
             hx-ext="csrf"
           >
             {% csrf_token %}
@@ -56,8 +57,7 @@
                 href="/account/security/"
                 class="btn btn-secondary btn-user btn-block mt-2"
                 hx-get="/account/security/"
-                hx-target="#main_div"
-                hx-headers='{"HX-Request": "true"}'
+                hx-target="#account-content"
                 hx-push-url="true"
               >
                 Cancel

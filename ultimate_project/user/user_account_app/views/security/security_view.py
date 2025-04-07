@@ -15,9 +15,8 @@ async def security_view(request: HttpRequest):
         if user:
             context["user"] = user
     if request.headers.get("HX-Request"):
-        if request.headers.get("X-Inner-Content-Account") == "true":
+        if request.headers.get("HX-Target") == "account-content":
             return render(request, "partials/security/security.html", context)
-    # Default full-page load with security page included
     context["page"] = "partials/security/security.html"
     return render(request, "layouts/account.html", context)
 

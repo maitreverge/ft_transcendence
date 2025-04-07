@@ -1,5 +1,5 @@
 {% load static %}
-<div id="security-content">
+<div class="container-fluid" id="security-content">
   <!-- Default content for security settings (2FA) -->
   <div class="card mb-3 shadow">
     <div class="card-body text-center">
@@ -12,9 +12,8 @@
         href="#"
         class="btn btn-outline-danger"
         hx-get="/account/security/disable-2fa/"
-        hx-target="#security-content"
+        hx-target="#account-content"
         hx-push-url="true"
-        hx-headers='{"X-Inner-Content-Account": "true"}'
         id="disable_2fa"
       >
         Disable 2FA
@@ -24,9 +23,8 @@
         href="#"
         class="btn btn-outline-success"
         hx-get="/account/security/setup-2fa/"
-        hx-target="#security-content"
+        hx-target="#account-content"
         hx-push-url="true"
-        hx-headers='{"X-Inner-Content-Account": "true"}'
         id="setup_2fa"
       >
         Set Up 2FA

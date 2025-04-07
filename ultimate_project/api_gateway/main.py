@@ -156,6 +156,7 @@ async def debug_cookies_middleware(request: Request, call_next):
             print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
     return (response)
 
+ 
 """ @app.middleware("http")
 async def debug_full_response_middleware(request: Request, call_next):
     print(f"🔍 Incoming Request: {request.method} {request.url}", flush=True)

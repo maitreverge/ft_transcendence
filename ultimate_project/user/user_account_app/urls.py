@@ -7,8 +7,8 @@ from .views.profile import profile_view
 from .views.game_stats import game_stats_view
 from .views.security import security_view
 from .views.security.twofa import twofa_views
-from .views.confidentiality import conf_view
-#from .views.confidentiality.delete_account import delete_view
+from .views.conf import conf_view
+from .views.conf.delete_account import delete_view
 
 from django.urls import path
 
@@ -24,5 +24,5 @@ urlpatterns = [
     path("security/disable-2fa/", twofa_views.disable_2fa_view, name="disable-2fa"),
     # Confidentiality page
     path("confidentiality/", conf_view.conf_view, name="conf-main-page"),
-    #path("confidentiality/delete-account/", delete_view.delete_profile_view, name="delete-account"),
+    path("confidentiality/delete-account/", delete_view.delete_account_view, name="delete-account"),
 ]

@@ -19,13 +19,9 @@ async def profile_view(request: HttpRequest):
         user = await manage_user_data.get_user_info_w_username(username)
         if user:
             context["user"] = user
-
-     
     #if htmx request with inner content no need to resent the account html 
     if request.headers.get("HX-Request"):
-        if request.headers.get("X-Inner-Content-Account") == "true": # we know we are on the account page
+        if request.headers.get("HX-Target") == "account-content":
             return render(request, "partials/profile/profile.html", context)
-    # If it's a full page loading
     context["page"] = "partials/profile/profile.html"
-    print(f"RENDER FULL PAGE RELOAD username: {username}\n", flush=True)
     return render(request, "layouts/account.html", context)

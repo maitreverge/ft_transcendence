@@ -1,192 +1,183 @@
 {% load static %}
-<div class="container-fluid">
-  <!-- Page Heading -->
-  <h1 data-translate="Profile" class="h3 mb-2 text-gray-800">Profile</h1>
-
-  <div>
-    <div class="card-body p-0">
-      <!-- Nested Row within Card Body -->
-      <div class="row">
-        <div
-          class="col-lg-3 my-5 align-items-center justify-content-center bg-register-image"
-        >
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6
-                data-translate="Avatar"
-                class="m-0 font-weight-bold text-primary"
-              >
-                Avatar
-              </h6>
+<div class="container-fluid" id="profile-content">
+  <div class="card-body p-0">
+    <!-- Nested Row within Card Body -->
+    <div class="row">
+      <div
+        class="col-lg-3 my-5 align-items-center justify-content-center bg-register-image"
+      >
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6
+              data-translate="Avatar"
+              class="m-0 font-weight-bold text-primary"
+            >
+              Avatar
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="text-center">
+              <img
+                class="img-fluid px-3 px-sm-4 mt-3 mb-4"
+                style="width: 25rem"
+                src="{% static 'static_files/img/undraw_posting_photo.svg' %}"
+                alt="Profile Picture"
+              />
             </div>
-            <div class="card-body">
-              <div class="text-center">
-                <img
-                  class="img-fluid px-3 px-sm-4 mt-3 mb-4"
-                  style="width: 25rem"
-                  src="{% static 'static_files/img/undraw_posting_photo.svg' %}"
-                  alt="Profile Picture"
-                />
-              </div>
-              <p data-translate="Add your picture here">
-                {{ user.username }}'s Profile Picture
-              </p>
-            </div>
+            <p data-translate="Add your picture here">
+              {{ user.username }}'s Profile Picture
+            </p>
           </div>
         </div>
+      </div>
 
-        <div class="col-lg-9 card o-hidden border-0 shadow-lg my-3">
-          <div class="p-5">
-            <div class="text-center">
-              <h1 class="h1 text-gray-900 mb-4">
-                <span data-translate="My account">Profile</span>
-              </h1>
-            </div>
+      <div class="col-lg-9 card o-hidden border-0 shadow-lg my-3">
+        <div class="p-5">
+          <div class="text-center">
+            <h1 class="h1 text-gray-900 mb-4">
+              <span data-translate="My account">Profile</span>
+            </h1>
+          </div>
 
-            <form class="user">
-              <!-- First Name -->
-              <div class="form-group row">
-                <div class="col-sm-6 mb-3 mb-sm-0 d-flex align-items-center">
-                  <input
-                    type="text"
-                    class="form-control form-control-user"
-                    id="exampleFirstName"
-                    placeholder="First Name"
-                    value="{{ user.first_name|default:'' }}"
-                    readonly
-                  />
-                  <button
-                    type="button"
-                    class="btn btn-light btn-sm ml-2 edit-btn"
-                    hx-get="/user/edit-field/?field=first_name"
-                    hx-target="#exampleFirstName"
-                    hx-swap="outerHTML"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
-                </div>
-
-                <!-- Last Name -->
-                <div class="col-sm-6 d-flex align-items-center">
-                  <input
-                    type="text"
-                    class="form-control form-control-user"
-                    id="exampleLastName"
-                    placeholder="Last Name"
-                    value="{{ user.last_name|default:'' }}"
-                    readonly
-                  />
-                  <button
-                    type="button"
-                    class="btn btn-light btn-sm ml-2 edit-btn"
-                    hx-get="/user/edit-field/?field=last_name"
-                    hx-target="#exampleLastName"
-                    hx-swap="outerHTML"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Username -->
-              <div class="form-group row">
-                <div class="col-sm-6 mb-3 mb-sm-0 d-flex align-items-center">
-                  <input
-                    type="text"
-                    class="form-control form-control-user"
-                    id="exampleDisplayName"
-                    placeholder="Username"
-                    value="{{ user.username|default:'' }}"
-                    readonly
-                  />
-                  <button
-                    type="button"
-                    class="btn btn-light btn-sm ml-2 edit-btn"
-                    hx-get="/user/edit-field/?field=username"
-                    hx-target="#exampleDisplayName"
-                    hx-swap="outerHTML"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Email Address -->
-              <div class="form-group d-flex align-items-center">
+          <form class="user">
+            <!-- First Name -->
+            <div class="form-group row">
+              <div class="col-sm-6 mb-3 mb-sm-0 d-flex align-items-center">
                 <input
-                  type="email"
+                  type="text"
                   class="form-control form-control-user"
-                  id="exampleInputEmail"
-                  placeholder="Email Address"
-                  value="{{ user.email|default:'' }}"
+                  id="exampleFirstName"
+                  placeholder="First Name"
+                  value="{{ user.first_name|default:'' }}"
                   readonly
                 />
                 <button
                   type="button"
                   class="btn btn-light btn-sm ml-2 edit-btn"
-                  hx-get="/user/edit-field/?field=email"
-                  hx-target="#exampleInputEmail"
-                  hx-swap="outerHTML">
+                  hx-get="/user/edit-field/?field=first_name"
+                  hx-target="#exampleFirstName"
+                  hx-swap="outerHTML"
+                >
                   <i class="fas fa-edit"></i>
                 </button>
               </div>
-            </form>
 
-            <hr />
-            <!-- Friends List -->
-            <div>
-              <a
-                class="nav-link collapsed"
-                href="#"
-                data-toggle="collapse"
-                data-target="#collapseTwo"
-                aria-expanded="true"
-                aria-controls="collapseTwo"
-              >
-                <i class="fas fa-fw fa-heart"></i>
-                <span data-translate="Friends">Friends</span>
-              </a>
-              <div
-                id="collapseTwo"
-                class="collapse"
-                aria-labelledby="headingTwo"
-              >
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table
-                      class="table table-bordered"
-                      id="dataTable"
-                      width="100%"
-                      cellspacing="0"
-                    >
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Score</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for friend in user.friends %}
-                        <tr>
-                          <td>{{ friend.name }}</td>
-                          <td>{{ friend.score }}</td>
-                          <td>{{ friend.status }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="4" class="text-center">
-                            No friends found
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <!-- Last Name -->
+              <div class="col-sm-6 d-flex align-items-center">
+                <input
+                  type="text"
+                  class="form-control form-control-user"
+                  id="exampleLastName"
+                  placeholder="Last Name"
+                  value="{{ user.last_name|default:'' }}"
+                  readonly
+                />
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm ml-2 edit-btn"
+                  hx-get="/user/edit-field/?field=last_name"
+                  hx-target="#exampleLastName"
+                  hx-swap="outerHTML"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
               </div>
             </div>
 
+            <!-- Username -->
+            <div class="form-group row">
+              <div class="col-sm-6 mb-3 mb-sm-0 d-flex align-items-center">
+                <input
+                  type="text"
+                  class="form-control form-control-user"
+                  id="exampleDisplayName"
+                  placeholder="Username"
+                  value="{{ user.username|default:'' }}"
+                  readonly
+                />
+                <button
+                  type="button"
+                  class="btn btn-light btn-sm ml-2 edit-btn"
+                  hx-get="/user/edit-field/?field=username"
+                  hx-target="#exampleDisplayName"
+                  hx-swap="outerHTML"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-group d-flex align-items-center">
+              <input
+                type="email"
+                class="form-control form-control-user"
+                id="exampleInputEmail"
+                placeholder="Email Address"
+                value="{{ user.email|default:'' }}"
+                readonly
+              />
+              <button
+                type="button"
+                class="btn btn-light btn-sm ml-2 edit-btn"
+                hx-get="/user/edit-field/?field=email"
+                hx-target="#exampleInputEmail"
+                hx-swap="outerHTML"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </form>
+
+          <hr />
+          <!-- Friends List -->
+          <div>
+            <a
+              class="nav-link collapsed"
+              href="#"
+              data-toggle="collapse"
+              data-target="#collapseTwo"
+              aria-expanded="true"
+              aria-controls="collapseTwo"
+            >
+              <i class="fas fa-fw fa-heart"></i>
+              <span data-translate="Friends">Friends</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table
+                    class="table table-bordered"
+                    id="dataTable"
+                    width="100%"
+                    cellspacing="0"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for friend in user.friends %}
+                      <tr>
+                        <td>{{ friend.name }}</td>
+                        <td>{{ friend.score }}</td>
+                        <td>{{ friend.status }}</td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="4" class="text-center">
+                          No friends found
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

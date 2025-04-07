@@ -823,7 +823,7 @@ async def register_fastAPI(
         # Generate and set CSRF token
         # csrf_token = secrets.token_urlsafe(64)
         #NOW IN A MIDDLEWARE
-        """ json_response.set_cookie(
+        json_response.set_cookie(
             key="csrftoken",
             value=generate_django_csrf_token(),
             httponly=True,
@@ -831,7 +831,7 @@ async def register_fastAPI(
             samesite="Lax",
             path="/",
             max_age=60 * 60 * 6,  # 6 hours, same as access token
-        ) """
+        )
 
         return json_response
 

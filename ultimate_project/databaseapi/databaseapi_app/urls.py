@@ -14,5 +14,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/verify-credentials/', views.verify_credentials, name="verify_credentials"),
     path('api/check-2fa/', views.check_2fa, name="check_2fa"),
+    # IDK UUID MAYBE NEED AN END SLASH ???
     path('api/player/<int:player_id>/uuid', views.uuid, name="uuid_view"),
 ]
