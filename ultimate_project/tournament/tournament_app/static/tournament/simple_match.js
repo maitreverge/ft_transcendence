@@ -356,15 +356,20 @@ function invitationRefused(targetName) {
 	window.busyElement = null;
 }
 
-function messagePopUp(url, text)
+function messagePopUp(titre, url, text, traduction)
 {
     Swal.fire({
-        title: 'Oops!',
+        title: titre,
         text: text,
         imageUrl: url,
         imageWidth: 300,
         imageHeight: 300,
         imageAlt: 'GIF fun',
+        willOpen: () => {
+            // Ajoute l'attribut data-translate au texte affiché
+            const swalText = Swal.getPopup().querySelector('.swal2-html-container');
+            swalText.setAttribute('data-translate', traduction);
+        }
       });
 }
 

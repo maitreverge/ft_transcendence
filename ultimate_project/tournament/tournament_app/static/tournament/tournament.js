@@ -30,15 +30,20 @@ function initTournament() {
 		onTournamentMessage(event, window.tournamentSocket);
 }
 
-function messagePopUp(url, text)
+function messagePopUp(titre, url, text, traduction)
 {
     Swal.fire({
-        title: 'Oops!',
+        title: titre,
         text: text,
         imageUrl: url,
         imageWidth: 300,
         imageHeight: 300,
         imageAlt: 'GIF fun',
+        willOpen: () => {
+            // Ajoute l'attribut data-translate au texte affiché
+            const swalText = Swal.getPopup().querySelector('.swal2-html-container');
+            swalText.setAttribute('data-translate', traduction);
+        }
       });
 }
 
@@ -223,6 +228,7 @@ function onTournamentMessage(event, socket) {
 
 function tournamentResult(data)
 {
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/trumpDance.webp', `${data.winnerName} WON THE TOURNAMENT`, "")	// Le tournoi est terminé
 	console.log("TOURNAMENT RESULT ", data);
 }
 
