@@ -533,6 +533,7 @@ function onSimpleMatchMessage(event, socket) {
 
 function closeSimpleMatchSocket() {
 
+	alert("je suis ds close match ds simplematchjs");
 	if (typeof stopMatch === 'function')
 		stopMatch(window.selfMatchId);
     if (
