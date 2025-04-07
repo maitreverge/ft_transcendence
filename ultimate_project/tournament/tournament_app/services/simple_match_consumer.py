@@ -96,7 +96,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 	async def self_invitation(self, selectedId, selectedPlayer, selectedName):
 
-		if selectedId == self.id:
+		if selectedId == self.id and not selectedPlayer.get('busy'):
 			selectedPlayer['busy'] = -selectedId
 			match_id = await self.start_match(-selectedId, selectedName)
 			print(f"iwille send confiration back to {self.id} from {selectedId}", flush=True)

@@ -393,6 +393,8 @@ function invitationConfirmed(matchId, targetId) {
 
 function sendPlayerClick(socket, event, selected)
 {
+	// if (typeof stopMatch === 'function')
+	// 	stopMatch(window.selfMatchId);
 	window.selectedElement = selected;
 	event.stopPropagation();
 	if (!window.busyElement)
