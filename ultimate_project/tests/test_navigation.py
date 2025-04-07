@@ -192,13 +192,13 @@ def run(playwright: Playwright) -> None:
         login()
         test_page(url)
 
-    print("⭐ 1st BLOCK PASSED  ⭐")
+    # print("⭐ 1st BLOCK PASSED  ⭐")
 
     for url in urls:
         login()
         navigate(url)
         logout()
-    print("⭐ 2nd BLOCK PASSED  ⭐")
+    # print("⭐ 2nd BLOCK PASSED  ⭐")
 
     # ? ================== WORK NEEDLE ======================
     # Test logout from each page and then try to access protected URL (should redirect to register)
@@ -215,7 +215,7 @@ def run(playwright: Playwright) -> None:
         expect(page).to_have_url(f"{base_url}/register/")
         print(f"✓ After logout, access to {url} correctly redirects to register")
 
-    print("⭐ 3rd BLOCK PASSED  ⭐")
+    # print("⭐ 3rd BLOCK PASSED  ⭐")
 
     # Vérification de la navigation via le sidebar menu
     def test_navigation(locator, expected_url):
@@ -243,7 +243,7 @@ def run(playwright: Playwright) -> None:
             print(f"Error navigating with element: {e}")
             raise e
 
-    print("⭐ 4th BLOCK PASSED  ⭐")
+    # print("⭐ 4th BLOCK PASSED  ⭐")
 
     # Liste des tests à effectuer
     navigation_tests = [
@@ -270,7 +270,7 @@ def run(playwright: Playwright) -> None:
         test_navigation(page.locator(locator), expected_url)
         # Go back to home after each test to ensure we can find the next navigation element
         ensure_on_home()
-    print("⭐ 5th BLOCK PASSED ⭐")
+    # print("⭐ 5th BLOCK PASSED ⭐")
 
     # Vérification de la navigation via le menu latéral
     ensure_authenticated()
@@ -281,7 +281,7 @@ def run(playwright: Playwright) -> None:
         test_navigation(page.locator(locator), expected_url)
         # Go back to a page where sidebar is visible after each test
         ensure_sidebar_visible()
-    print("⭐ 6th BLOCK PASSED ⭐")
+    # print("⭐ 6th BLOCK PASSED ⭐")
 
     # Vérification de la navigation via les boutons sur la page home
     ensure_authenticated()
@@ -290,29 +290,29 @@ def run(playwright: Playwright) -> None:
     ]:  # Pour les éléments de la page home
         ensure_on_home()
         test_navigation(page.locator(locator), expected_url)
-    print("⭐ 7th BLOCK PASSED ⭐")
+    # print("⭐ 7th BLOCK PASSED ⭐")
 
     # test 404
     ensure_authenticated()
     test_single_page("/home/sylvain_duriff/")
-    print("⭐ 8th BLOCK PASSED  ⭐")
+    # print("⭐ 8th BLOCK PASSED  ⭐")
 
     # Test unauthenticated routes - first logout
     # logout()
     test_single_page("/register/")
     test_single_page("/login/")
-    print("⭐ 9th BLOCK PASSED  ⭐")
+    # print("⭐ 9th BLOCK PASSED  ⭐")
 
     # Test protected routes redirection when logged out
     print("Testing protected routes redirection when logged out...")
     for url in urls:
         test_auth_redirection(url)
-    print("⭐ 10th BLOCK PASSED  ⭐")
+    # print("⭐ 10th BLOCK PASSED  ⭐")
 
     # Login again before closing
     ensure_authenticated()
     navigate(f"{base_url}/home/")
-    print("⭐ 11th BLOCK PASSED  ⭐")
+    # print("⭐ 11th BLOCK PASSED  ⭐")
 
     # Fermeture
     context.close()
