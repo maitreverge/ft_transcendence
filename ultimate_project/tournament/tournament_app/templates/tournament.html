@@ -26,7 +26,7 @@
 	</select>
     <div class="tuto-overlay" id="tuto-overlay">
         <div class="tuto-box">
-          <img src="https://github.com/dansylvain/pictures/blob/main/tuto_test.gif?raw=true" alt="Tutoriel" />
+          <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp" alt="Tutoriel" />
           <p>Clique ici pour démarrer un match !</p>
         </div>
     </div>
@@ -48,29 +48,46 @@
     document.addEventListener('click', (event) => {
         const overlay = document.getElementById('tuto-overlay');
         if (!overlay) return;
-
+        
         // Si on clique directement sur l'overlay (et pas à l'intérieur de la box)
         if (event.target === overlay) {
             overlay.style.display = 'none';
         }
     });
 
-window.addEventListener("DOMContentLoaded", () => {
-    let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+    function showTutoOverlayIfFirstTime() {
+        const overlay = document.getElementById('tuto-overlay');
+        if (!overlay) return;
 
-    console.log("Dernière page visitée:", lastVisitedPage);
-    console.log("Page actuelle:", window.location.href);
+        const alreadySeen = localStorage.getItem('tutoTournamentSeen');
+        if (!alreadySeen) {
+            overlay.style.display = 'flex';
 
-    // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
-    if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
-        console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
-        
-        // Marque que la redirection a eu lieu pour éviter la boucle infinie
-        sessionStorage.setItem("redirected", "true");
-
-    } else {
-        sessionStorage.removeItem("redirected");
-        console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+            overlay.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                localStorage.setItem('tutoTournamentSeen', 'true');
+            });
+        }
     }
-});
+
+    showTutoOverlayIfFirstTime();
+
+    window.addEventListener("DOMContentLoaded", () => {
+        let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+
+        console.log("Dernière page visitée:", lastVisitedPage);
+        console.log("Page actuelle:", window.location.href);
+
+        // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
+        if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
+            console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
+            
+            // Marque que la redirection a eu lieu pour éviter la boucle infinie
+            sessionStorage.setItem("redirected", "true");
+
+        } else {
+            sessionStorage.removeItem("redirected");
+            console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+        }
+    });
 </script>
