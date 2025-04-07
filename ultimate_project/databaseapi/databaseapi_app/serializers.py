@@ -81,4 +81,6 @@ class MatchSerializer(serializers.ModelSerializer):
             "winner",
             "winner_details",
             "tournament",
+            "score_p1",
+            "score_p2",
         ]

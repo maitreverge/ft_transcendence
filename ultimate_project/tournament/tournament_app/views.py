@@ -87,7 +87,7 @@ def tournament_pattern(request: HttpRequest, tournament_id):
 async def send_db(path, result):
 
 	print(f"SEND DB {result}", flush=True)
-	return	
+	# return	
 	async with aiohttp.ClientSession() as session:
 		async with session.post(
 			f"http://databaseapi:8007/{path}", json=result) as response:				

@@ -288,12 +288,13 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		print(f"SIMPLE MATCH CONSUMER SEND BD {match_results}", flush=True)
 		from tournament_app.views import send_db as sdb
 
-        # Extract 3 data
-		p1 = 1 if match_results["p1Id"] < 0 else match_results["p1Id"]
-		p2 = 1 if match_results["p2Id"] < 0 else match_results["p2Id"]
-		win = 1 if match_results["winnerId"] < 0 else match_results["winnerId"]
+        # Extract data from within the payload
+		p1 = 1 if match_results["p1Id"] <= 0 else match_results["p1Id"]
+		p2 = 1 if match_results["p2Id"] <= 0 else match_results["p2Id"]
+		win = 1 if match_results["winnerId"] <= 0 else match_results["winnerId"]
 		score_p1 = match_results["score"][0]
 		score_p2 = match_results["score"][1]
+		
 		data = {
             "player1": p1,
             "player2": p2,
@@ -301,6 +302,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
             "score_p1": score_p1,
             "score_p2": score_p2,
         }
+		# print(f"⭐⭐⭐ DATA SEND TO DB = {data}", flush=True)
 
 		path = "api/match/"
 		await sdb(path, data)

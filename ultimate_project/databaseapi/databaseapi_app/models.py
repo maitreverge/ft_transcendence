@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.core.validators import MaxValueValidator
 from utils.crypto import encrypt_2fa_secret, decrypt_2fa_secret
 
 
@@ -100,8 +101,8 @@ class Match(models.Model):
         related_name="winner_match",  # Keep the original related_name to avoid migration issues
     )
 
-    score_p1 = models.PositiveSmallIntegerField()
-    score_p2 = models.PositiveSmallIntegerField()
+    score_p1 = models.IntegerField(default=0)
+    score_p2 = models.IntegerField(default=0)
 
     tournament = models.ForeignKey(
         to=Tournament,
