@@ -289,9 +289,9 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		from tournament_app.views import send_db as sdb
 
         # Extract data from within the payload
-		p1 = 1 if match_results["p1Id"] <= 0 else match_results["p1Id"]
-		p2 = 1 if match_results["p2Id"] <= 0 else match_results["p2Id"]
-		win = 1 if match_results["winnerId"] <= 0 else match_results["winnerId"]
+		p1 = max(1, match_results["p1Id"])
+		p2 = max(1, match_results["p2Id"])
+		win = max(1, match_results["winnerId"])
 		score_p1 = match_results["score"][0]
 		score_p2 = match_results["score"][1]
 		

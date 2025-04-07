@@ -141,26 +141,33 @@ class Tournament():
 		await TournamentConsumer.send_all_players(packet)
 
     # ! ================ SEND DB =================
-	async def save_tournament_matches(matches):
+	async def save_tournament_matches(self, matches, tournament_id):
 		
-		from tournament_app.views import send_db as sdb
+		from tournament_app.views import send_db as update_match
+
+		path = "api/match/"
 		
 		for _ in range(3):
-			tournament = matches[_]["matchResult"]["tournamentId"]
-			p1 = matches[_]["matchResult"][""]
-			p2 = matches[_]["matchResult"][""]
-			win = matches[_]["matchResult"][""]
-			score_p1 = matches[_]["matchResult"][""]
-			score_p2 = matches[_]["matchResult"][""]
-		
-		
-		
-		
-		
-		
-		
-		
-		
+			
+			# Extract each key individually
+			tournament = tournament_id
+			p1 = max(1, matches[_]["matchResult"]["p1Id"])
+			p2 = max(1, matches[_]["matchResult"]["p2Id"])
+			win = max(1, matches[_]["matchResult"]["winnerId"])
+			score_p1 = matches[_]["matchResult"]["score"][0]
+			score_p2 = matches[_]["matchResult"]["score"][1]
+			
+			# Compile each key in a JSON body
+			data = {
+				"player1": p1,
+				"player2": p2,
+				"winner": win,
+				"score_p1": score_p1,
+				"score_p2": score_p2,
+				"tournament": tournament,
+			}
+			await update_match(path, data)
+
 	async def send_db(self, tournament_result):
 
 		from tournament_app.views import send_db as sdb
@@ -173,8 +180,11 @@ class Tournament():
 			"winner_tournament" : winner,
 		}
 		await sdb(path, data_tournament)
+
+		# Need to extract the last tournament update
+		id_tournament = "?"
 		
-		await save_tournament_matches(tournament_result["matchs"])
+		await self.save_tournament_matches(tournament_result["matchs"], id_tournament)
 		
 		
 		
