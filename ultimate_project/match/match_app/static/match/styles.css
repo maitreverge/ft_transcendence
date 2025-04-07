@@ -191,6 +191,12 @@
     }
 }
 
+#spec {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 9999;
+}
 /* From Uiverse.io by mrhyddenn */ 
 .loader {
     opacity: 0;

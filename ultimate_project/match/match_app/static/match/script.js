@@ -604,7 +604,7 @@ function startCountdown(delay)
 
 function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	match = document.getElementById("match");
-	
+
 	// console.log("SERVEUR");
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
@@ -639,14 +639,21 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
         let gifUrl;
         if (window.selfName == data.winnerName)
             gifUrl = document.getElementById("winner-gif").dataset.gifUrl;
-		else    
-		gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
+		else if (spec.style.display != "none")
+			{
+				gifUrl = "https://i.gifer.com/origin/0c/0c928224e981a44014280dd496d3c6e1_w200.gif";
+				spec.style.display = "none";
+			}
+		else 
+			gifUrl = document.getElementById("loser-gif").dataset.gifUrl;
+
 		end.innerHTML = `The winner is: ${data.winnerName} <br> 
 		Score: ${data.score[0]} : ${data.score[1]} <br> 
 		<img src="${gifUrl}" 
 		alt="Winner GIF" 
 		class="winner-gif">
-		` + end.innerHTML;
+		`;
+		
 		endCont.classList.add("end-cont");
 		console.log("🏁 Match terminé, reset du timestamp");
 		window.gameStartTimestamp = undefined;	
