@@ -283,12 +283,26 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
     # ! =================== SEND DB =======================
 	@staticmethod
-	async def send_db(data):
-		
-		print(f"SIMPLE MATCH CONSUMER SEND BD {data}", flush=True)	
+	async def send_db(match_results):
+
+		print(f"SIMPLE MATCH CONSUMER SEND BD {match_results}", flush=True)
 		from tournament_app.views import send_db as sdb
 
-		path = ""
-		await sdb(path, data) 
+        # Extract 3 data
+		p1 = 1 if match_results["p1Id"] < 0 else match_results["p1Id"]
+		p2 = 1 if match_results["p2Id"] < 0 else match_results["p2Id"]
+		win = 1 if match_results["winnerId"] < 0 else match_results["winnerId"]
+		score_p1 = match_results["score"][0]
+		score_p2 = match_results["score"][1]
+		data = {
+            "player1": p1,
+            "player2": p2,
+            "winner": win,
+            "score_p1": score_p1,
+            "score_p2": score_p2,
+        }
+
+		path = "api/match/"
+		await sdb(path, data)
 
     # ! =================== SEND DB =======================
