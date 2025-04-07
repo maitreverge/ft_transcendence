@@ -37,6 +37,10 @@
 
 🟧 Encoder les clefd SSL de NGINX ?
 
+🟧 Mettre un bouton retour HOME sur les pages d'erreur
+
+🟧 Implementer les pages d'erreur si pas auth a la fin de la semaine
+
 
 
 

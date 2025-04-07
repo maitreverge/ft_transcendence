@@ -78,9 +78,15 @@ EXCLUDED_PATH = [
     "/match/stop-match/undefined/undefined/",
 ]
 
+# TODO : To let error pages go through when non authenticated
+# KNOWN_PATHS = [
+#     "/login",
+
+# ]
 
 
-# NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
+
+# ! NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
 @app.middleware("http")
 async def bouncer_middleware(request: Request, call_next):
     """
@@ -91,6 +97,12 @@ async def bouncer_middleware(request: Request, call_next):
     print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
     print(f"=============           {request.url.path} ================\n")
     print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
+
+    # TODO : To let error pages go through when non authenticated
+    # if request.url.path not in KNOWN_PATHS:
+    #     print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
+    #     response = await call_next(request)
+    #     return response
 
     # Let go through the Middleware everyting included in EXCLUDED_PATH 
     if request.url.path in EXCLUDED_PATH:
