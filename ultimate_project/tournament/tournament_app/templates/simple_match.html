@@ -23,6 +23,13 @@
 		<option value="2">2D</option>
 		<option value="3">3D</option>
 	</select>
+    <div class="tuto-overlay" id="tuto-overlay">
+        <div class="tuto-box">
+          <img src="https://github.com/dansylvain/pictures/blob/main/tuto_test.gif?raw=true" alt="Tutoriel" />
+          <p>Clique ici pour démarrer un match !</p>
+        </div>
+    </div>
+    <button onclick="replayTuto()">Afficher le tutoriel</button>
 <input
 	id="match-player-name"
 	type="text"
@@ -39,21 +46,56 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-window.addEventListener("DOMContentLoaded", () => {
-    let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+    document.addEventListener('click', (event) => {
+        const overlay = document.getElementById('tuto-overlay');
+        if (!overlay) return;
 
-    console.log("Dernière page visitée:", lastVisitedPage);
-    console.log("Page actuelle:", window.location.href);
+        // Si on clique directement sur l'overlay (et pas à l'intérieur de la box)
+        if (event.target === overlay) {
+            overlay.style.display = 'none';
+        }
+    });
 
-    // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
-    if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
-        console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
-        
-        // Marque que la redirection a eu lieu pour éviter la boucle infinie
-        sessionStorage.setItem("redirected", "true");
-    } else {
-        sessionStorage.removeItem("redirected");
-        console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+    function replayTuto() {
+        const overlay = document.getElementById('tuto-overlay');
+        if (!overlay) return;
+
+        overlay.style.display = 'flex';
+        localStorage.removeItem('tutoSimpleMatchSeen');
     }
-});
+    
+    function showTutoOverlayIfFirstTime() {
+        const overlay = document.getElementById('tuto-overlay');
+        if (!overlay) return;
+
+        const alreadySeen = localStorage.getItem('tutoSimpleMatchSeen');
+        if (!alreadySeen) {
+            overlay.style.display = 'flex';
+
+            overlay.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                localStorage.setItem('tutoSimpleMatchSeen', 'true');
+            });
+        }
+    }
+
+    showTutoOverlayIfFirstTime();
+
+    window.addEventListener("DOMContentLoaded", () => {
+        let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
+
+        console.log("Dernière page visitée:", lastVisitedPage);
+        console.log("Page actuelle:", window.location.href);
+
+        // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
+        if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
+            console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
+            
+            // Marque que la redirection a eu lieu pour éviter la boucle infinie
+            sessionStorage.setItem("redirected", "true");
+        } else {
+            sessionStorage.removeItem("redirected");
+            console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
+        }
+    });
 </script>   
