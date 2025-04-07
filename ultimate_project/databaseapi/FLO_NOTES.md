@@ -8,13 +8,13 @@
 
 ✅ Create a worklofo to delete the DB at 42
 
-🟧 Test and stabilize multi-users connection (once everything is locked up) 
+✅ Test and stabilize multi-users connection (once everything is locked up) 
 
 🟧 Beautify register / login / 2fa landing pages
 
 🟧 Find a way to lock the database routes as well
 
-🟧 Lock all the routes (lock les routes visibles dans le front)
+🟧✅ Lock all the routes (lock les routes visibles dans le front)
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
@@ -35,7 +35,11 @@
 
 🟧 Mettre un decorateur sur l'API gateway ?
 
-🟧 Encoder les clefd SSL de NGINX ?
+🟧 Encoder les clefs SSL de NGINX ?
+
+🟧 Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
+
+🟧 Implementer les pages d'erreur si pas auth a la fin de la semaine
 
 
 

@@ -57,7 +57,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Exclude Path for the
-EXCLUDED_PATHS = [
+AUTH_PATH = [
     "/login",
     "/register",
     "/login/",
@@ -65,13 +65,28 @@ EXCLUDED_PATHS = [
     "/auth/login/",
     "/auth/register/",
     "/two-factor-auth/",
-    "/translations/en.json",
     "/auth/verify-2fa/"
 ]
 
+EXCLUDED_PATH = [
+    "/favicon.ico",
+    "/translations/de.json",
+    "/translations/en.json",
+    "/translations/es.json",
+    "/translations/fr.json",
+    "/translations/tl.json",
+    "/match/stop-match/undefined/undefined/",
+]
+
+# TODO : To let error pages go through when non authenticated
+# KNOWN_PATHS = [
+#     "/login",
+
+# ]
 
 
-# NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
+
+# ! NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
 @app.middleware("http")
 async def bouncer_middleware(request: Request, call_next):
     """
@@ -81,10 +96,22 @@ async def bouncer_middleware(request: Request, call_next):
 
     print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
     print(f"=============           {request.url.path} ================\n")
-    print(f"============= URL REQUEST ENTERING BOUNCER ================")
+    print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
 
-    # ! CASE 1 : User is auth but requests auth pages / routes
-    if is_auth and request.url.path in EXCLUDED_PATHS:
+    # TODO : To let error pages go through when non authenticated
+    # if request.url.path not in KNOWN_PATHS:
+    #     print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
+    #     response = await call_next(request)
+    #     return response
+
+    # Let go through the Middleware everyting included in EXCLUDED_PATH 
+    if request.url.path in EXCLUDED_PATH:
+        print(f"👍 Bounder Middleware non trigered 👍")
+        response = await call_next(request)
+        return response
+
+
+    if is_auth and request.url.path in AUTH_PATH:
         print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
@@ -96,7 +123,7 @@ async def bouncer_middleware(request: Request, call_next):
             response = RedirectResponse(url="/home/")
         return response
 
-    elif not is_auth and request.url.path not in EXCLUDED_PATHS:
+    elif not is_auth and request.url.path not in AUTH_PATH:
         print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
@@ -116,7 +143,7 @@ async def bouncer_middleware(request: Request, call_next):
         return response
 
     print(f"👍 Bounder Middleware non trigered 👍")
-    # Proceed to route handler if authenticated
+    
     response = await call_next(request)
     return response
 
