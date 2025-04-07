@@ -9,8 +9,9 @@ source env/bin/activate
 
 echo "⏳ Attente que le serveur soit prêt..."
 
-until curl -k -s -o /dev/null -w "%{http_code}" https://localhost:8443/home | grep 200 > /dev/null; do
+until curl -k -s -o /dev/null -w "%{http_code}" https://localhost:8443/login | grep 200 > /dev/null; do
 
+echo "⏳ NOT READY YET"
   sleep 1
 done
 
@@ -25,7 +26,8 @@ sleep 1
 python3 tests/test_delete_user.py
 sleep 1
 python3 tests/test_username.py
-# python3 tests/test_same_time_auth.py #! NOT READY TO SHIP YET
+sleep 1
+python3 tests/test_sametime_auth.py
 sleep 1
 python3 tests/test_navigation.py
 check_result "Playwright tests"

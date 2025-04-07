@@ -4,20 +4,18 @@ In a `non-root` env, we can't delete the bind-mount volume in `~ (home)` because
 
 Under the hood, this is the process that manages the volumes which has the auth.
 
-## STEP 1 : MAKE SURE THAT THE PROJECTS IS RUNNING
+## STEP 1 : MAKE SURE THAT THE PROJECT IS STOPPED
 
-make re
+# STEP 2 : BUILD A UBUNTU CONTAINER UPON THE EXISTING VOLUME
 
-# STEP 2 : ENTER IN THE POSTGRES DOCKER RUNNING :
+docker run --rm -it -v ~/volumes_transcendence:/mnt ubuntu bash
 
-docker exec -it ctn_database bash
+This will take control of the volume through another container
 
-# STEP 3 : WHILE IN THE CONTAINER, CHANGE OWNERSHIP :
+# STEP 3 : FROM WITHIN THE CONTAINER, DELETE THE VOLUME
 
-chown -R 1000:1000 /var/lib/postgresql/data
+rm -rf /mnt/postgres
 
-Change ownership to the first non root user in Unix Systems
+# STEP 4 : DELETE CONTAINER FROM THE HOST MACHINE
 
-# STEP 4 : STOP CONTAINERS
-
-# STEP 5 : DELETE THE VOLUME
+docker system prune --all --force
