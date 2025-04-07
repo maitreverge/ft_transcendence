@@ -26,7 +26,6 @@
 
 function stopMatch()
 {
-	alert("STOPMATCH");
 	fetch(`/match/stop-match/${window.selfId}/${window.selfMatchId}/`)
 	.then(response => {
 		if (!response.ok) 
@@ -38,12 +37,10 @@ function stopMatch()
 }
 
   function closeWebsockets() {
-	alert("closeWebsocket");
+
     console.log("########### closing websockets #######");
-    if (typeof closeSimpleMatchSocket === "function") {alert("CLOSE SIMPLE MATCH");closeSimpleMatchSocket();}
-	else {alert("NO CLOSE SIMPLE MATCH TROUVED");}
-    if (typeof closeTournamentSocket === "function")  {alert("CLOSE TOURNAMENT MATCH");closeTournamentSocket();}
-	else {alert("NO CLOSE TOURNAMENT MATCH TROUVED");}
+    if (typeof closeSimpleMatchSocket === "function") closeSimpleMatchSocket();
+    if (typeof closeTournamentSocket === "function") closeTournamentSocket();
   }
 
   closeWebsockets();

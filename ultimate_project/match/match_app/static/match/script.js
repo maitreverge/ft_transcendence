@@ -1,7 +1,6 @@
 
 function stopMatch(matchId)
 {
-	alert("STOPINGMATCH");
 	const input = document.getElementById("match-player-name");
 	if (input)
 	{
@@ -10,7 +9,6 @@ function stopMatch(matchId)
 	}
 	if (!matchId)
 	{
-		alert("matchidnulle");
 		console.log("matchID EST NULLE");
 		const oldScripts = document.querySelectorAll("script.match-script");
 		console.log("olscript len", oldScripts.length);			
@@ -19,8 +17,7 @@ function stopMatch(matchId)
 	}
 		
 	if (window.selfMatchId == matchId)
-	{	
-		alert("STOPMATCH");
+	{
 		fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
 		.then(response => {
 			if (!response.ok) 
