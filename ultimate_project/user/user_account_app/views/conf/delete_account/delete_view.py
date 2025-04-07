@@ -42,21 +42,12 @@ async def handle_post_delete(request: HttpRequest, username, context):
     if not result or not result.get("success"):
         context["error_del_page"] = "The password you entered is incorrect."
         return render(request,"partials/conf/delete_acc/delete_acc.html", context), "is_default"
-    
-    result = await manage_user_data.delete_user_cookies_from_fast_api(request)
-    
-    if not result or not result.get("success"):
-        context["error_del_page"] = "Unable to delete the authentication cookies."
-        return render(request,"partials/conf/delete_acc/delete_acc.html", context), "is_default"
-    
-    
     result = await manage_user_data.delete_user_w_user_id(user["id"])
     if not result or not result.get("success"):
         context["error_del_page"] = "Failed to delete your account. Please retry or contact support if the issue persists."
         return render(request,"partials/conf/delete_acc/delete_acc.html", context), "is_default"
     context["message"] = "Your account has been successfully deleted. You will be redirected shortly."
     response = render(request, "partials/conf/delete_acc/success_del.html", context)
-    
     # of CORUSE COOKIE IN DAJNGO DOESNET FUCKIGN WORKSSSS
     """ response.delete_cookie(
         key="access_token",
@@ -106,7 +97,7 @@ async def delete_account_view(request: HttpRequest):
             context["page"] = "partials/conf/delete_acc/delete_acc.html"       
         return render(request, "layouts/account.html", context)
     except Exception as e:
-        print(f"\n❌ Exception in verify_2fa_view: {e}\n", flush=True)
+        print(f"\n❌ Exception in delete_account_view: {e}\n", flush=True)
         if request.headers.get("HX-Request"):
             return render(request, "partials/conf/delete_acc/error_del.html", context)
         context["page"] = "partials/conf/delete_acc/error_del.html"

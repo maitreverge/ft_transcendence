@@ -16,8 +16,33 @@
 </div>
 
 <script>
+  //cant find BETTER SOLUTION BECAUSE LITERALLYC ANOT DELETECOOKIES FROM DJANGO WHYYYY
+  function logoutUser() {
+    fetch("/auth/logout/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin", // Important for cookies
+    }).then((response) => {
+      if (response.ok) {
+        // After successful logout, make an HTMX request to update the page
+        htmx.ajax("GET", "/register/", {
+          target: "body",
+          swap: "outerHTML",
+          headers: { "HX-Login-Success": "true" },
+        }).then(function () {
+          // After the HTMX request completes, push the state to change the URL to "/login/"
+          history.pushState(null, "", "/register/");
+        });
+      } else {
+        // Handle any potential errors during the logout process
+        console.error("Logout failed:", response.statusText);
+      }
+    });
+  }
   setTimeout(() => {
-    window.location.href = "/register/";
+    logoutUser();
   }, 2000);
 </script>
 

@@ -130,14 +130,15 @@ async def delete_user_w_user_id(user_id):
 
 async def delete_user_cookies_from_fast_api(request):
     if request.method == "POST":
-        fastapi_url = "http://localhost:8005/auth/logout/"
-        headers = {'Content-Type': 'application/json'}
+        fastapi_url = "http://ctn_api_gateway:8005/auth/logout/"
+        headers = {key: value for key, value in request.headers.items()}
+        cookies = request.COOKIES
         async with httpx.AsyncClient() as client:
-            response = await client.post(fastapi_url)
+            response = await client.post(fastapi_url, headers=headers, cookies=cookies, content=None)
         if response.status_code == 200:
-            return JsonResponse({"message": "Successfully logged out from FastAPI."})
+            return JsonResponse({"message": "Successfully logged out."})
         else:
-            return JsonResponse({"error": "Failed to log out from FastAPI."}, status=response.status_code)
+            return JsonResponse({"error": "Failed to log out."}, status=response.status_code)
     return JsonResponse({"error": "Only POST method is allowed."}, status=405)
 
 async def build_context(request: HttpRequest) -> Dict:

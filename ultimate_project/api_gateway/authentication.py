@@ -373,7 +373,6 @@ async def logout_fastAPI(request: Request):
 
     # Log for debugging
     print("🔑 JWT Cookies cleared", flush=True)
-
     return response
 
 
