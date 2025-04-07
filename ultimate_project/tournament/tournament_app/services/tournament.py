@@ -36,6 +36,10 @@ class Tournament():
 		tournaments[:] = [t for t in tournaments if t.id != self.id]
 		await TournamentConsumer.send_tournaments()
 
+	# def end_remove(self):
+	# 	from tournament_app.services.tournament_consumer import tournaments
+	# 	tournaments[:] = [t for t in tournaments if t.id != self.id]
+
 	async def launchTournament(self):
 
 		self.launch = True
@@ -107,7 +111,14 @@ class Tournament():
 			tournament_result = self.get_tournament_result(match_result)
 			await self.send_all_players(tournament_result)
 			await self.send_db(tournament_result)
+			asyncio.create_task(self.end_remove())
 			self.launch = False
+
+	async def end_remove(self):
+
+		print(f"END REMOVE", flush=True)
+		await asyncio.sleep(10)
+		await self.del_tournament()
 
 	def get_next_players(self):
 
