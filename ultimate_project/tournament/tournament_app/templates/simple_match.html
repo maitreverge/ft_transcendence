@@ -29,6 +29,7 @@
           <p>Clique ici pour démarrer un match !</p>
         </div>
     </div>
+    <button onclick="replayTuto()">Afficher le tutoriel</button>
 <input
 	id="match-player-name"
 	type="text"
@@ -55,6 +56,14 @@
         }
     });
 
+    function replayTuto() {
+        const overlay = document.getElementById('tuto-overlay');
+        if (!overlay) return;
+
+        overlay.style.display = 'flex';
+        localStorage.removeItem('tutoSimpleMatchSeen');
+    }
+    
     function showTutoOverlayIfFirstTime() {
         const overlay = document.getElementById('tuto-overlay');
         if (!overlay) return;

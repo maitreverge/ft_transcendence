@@ -30,6 +30,7 @@
           <p>Clique ici pour démarrer un match !</p>
         </div>
     </div>
+    <button onclick="replayTuto()">Afficher le tutoriel</button>
 	<input
 		id="player-name"
 		type="text"
@@ -68,6 +69,14 @@
                 localStorage.setItem('tutoTournamentSeen', 'true');
             });
         }
+    }
+
+    function replayTuto() {
+        const overlay = document.getElementById('tuto-overlay');
+        if (!overlay) return;
+
+        overlay.style.display = 'flex';
+        localStorage.removeItem('tutoTournamentSeen');
     }
 
     showTutoOverlayIfFirstTime();
