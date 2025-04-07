@@ -304,6 +304,13 @@ function dragPlayer(div) {
 		e => {console.log("dans drag"); e.dataTransfer.setData("text/plain", e.target.id);});
 }
 
+// function allQuitTournament() 
+// {
+// 	console.log("ALL QUIT TOURNAMENT");
+// 	websockets.forEach(ws => quitTournament(ws.socket));
+// 	quitTournament(window.tournamentSocket);	
+// }
+
 function quitTournament(socket) {
 	
 	console.log("QUIT TOURNAMENT");
@@ -383,11 +390,24 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 	overlayPattern.id = "overlay-pattern";
 	const playersCont = document.createElement("div");
 	playersCont.id = "players-cont";
+	// const close = createTournamentClose(div);
+	// div.appendChild(close);
 	div.appendChild(playersCont);
 	div.appendChild(overlayPattern);
 	dropTournament(div, tournament.tournamentId);
 	tournamentsContainer.appendChild(div);	
 }
+
+// function createTournamentClose(tournament)
+// {
+// 	const div = document.createElement("div");
+// 	div.innerText = "Close";
+// 	div.onclick = ()=> {
+// 		tournament.style.display = "none";
+// 		allQuitTournament(tournamentId);
+// 	}
+// 	return div	
+// }
 
 function dropTournament(div, tournamentId) {
 

@@ -37,7 +37,7 @@ class Pong:
 		self.max_score = 1
 		self.point_delay = 1
 		self.start_delay = 4
-		self.max_wait_delay = 1500	
+		self.max_wait_delay = 1000	
 		self.users = []
 		self.players = None		
 		self.winner = None
