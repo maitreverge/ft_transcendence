@@ -69,7 +69,8 @@
         if (!overlay) return;
 
         const alreadySeen = localStorage.getItem('tutoSimpleMatchSeen');
-        if (!alreadySeen) {
+        // if (!alreadySeen) { exchange the two lines to activate tutorial
+        if (alreadySeen) {
             overlay.style.display = 'flex';
 
             overlay.addEventListener('click', () => {
