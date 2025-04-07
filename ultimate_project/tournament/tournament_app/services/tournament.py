@@ -141,12 +141,43 @@ class Tournament():
 		await TournamentConsumer.send_all_players(packet)
 
     # ! ================ SEND DB =================
+	async def save_tournament_matches(matches):
+		
+		from tournament_app.views import send_db as sdb
+		
+		for _ in range(3):
+			tournament = matches[_]["matchResult"]["tournamentId"]
+			p1 = matches[_]["matchResult"][""]
+			p2 = matches[_]["matchResult"][""]
+			win = matches[_]["matchResult"][""]
+			score_p1 = matches[_]["matchResult"][""]
+			score_p2 = matches[_]["matchResult"][""]
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	async def send_db(self, tournament_result):
 
 		from tournament_app.views import send_db as sdb
 
-		path = ""
-		await sdb(path, tournament_result)
+		path = "api/tournament/"
+		
+		winner = tournament_result["winnerId"]
+		
+		data_tournament = {
+			"winner_tournament" : winner,
+		}
+		await sdb(path, data_tournament)
+		
+		await save_tournament_matches(tournament_result["matchs"])
+		
+		
+		
     # ! ================ SEND DB =================
 
 	async def match_players_update(self, match_update):

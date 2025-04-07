@@ -61,7 +61,10 @@ class PlayerNestedSerializer(serializers.ModelSerializer):
 class TournamentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tournament
-        fields = ["id"]
+        fields = [
+            "id",
+            "winner_tournament",
+        ]
 
 
 class MatchSerializer(serializers.ModelSerializer):
