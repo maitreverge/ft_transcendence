@@ -65,7 +65,6 @@ EXCLUDED_PATHS = [
     "/auth/login/",
     "/auth/register/",
     "/two-factor-auth/",
-    "/translations/en.json",
     "/auth/verify-2fa/"
 ]
 
