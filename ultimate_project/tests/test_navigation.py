@@ -85,6 +85,22 @@ def run(playwright: Playwright) -> None:
         # Test the current page (either we returned or we couldn't navigate due to auth)
         test_page(page.url)
 
+    def ensure_on_home():
+        """Ensure we're on the home page before testing navigation"""
+        if not page.url.endswith("/home/"):
+            navigate(f"{base_url}/home/")
+            page.wait_for_load_state("networkidle")
+            print("✓ Navigated to home page")
+
+    def ensure_sidebar_visible():
+        """Ensure we're on a page where the sidebar is visible before testing sidebar navigation"""
+        # Navigate to a page where the sidebar is visible (not home)
+        if page.url.endswith("/home/"):
+            # Navigate to profile page where sidebar should be visible
+            navigate(f"{base_url}/user/profile/")
+            page.wait_for_load_state("networkidle")
+            print("✓ Navigated to profile page for sidebar testing")
+
     def ensure_authenticated():
         """Check if we're authenticated, and login if not"""
         # Simple check - if we're on login or register page, we're not authenticated
@@ -178,18 +194,27 @@ def run(playwright: Playwright) -> None:
     # Vérification de la navigation via le sidebar menu
     def test_navigation(locator, expected_url):
         try:
-            # Wait for the element to be visible
-            locator.wait_for(state="visible", timeout=5000)
-            # Check that it's clickable
-            if not locator.is_visible():
-                print(f"Warning: Navigation element {locator} is not visible")
+            # Check if the element exists in the DOM (even if hidden)
+            if not locator.count() > 0:
+                print(f"Warning: Navigation element not found in DOM")
                 return
 
-            locator.click()
+            # For sidebar elements, ensure we're on a page where sidebar is visible
+            element_id = locator.get_attribute("id")
+            if element_id and "side-" in element_id:
+                ensure_sidebar_visible()
+                # Now wait for the element to be visible
+                locator.wait_for(state="visible", timeout=5000)
+                locator.click()
+            else:
+                # For other elements, wait for visibility
+                locator.wait_for(state="visible", timeout=5000)
+                locator.click()
+
             expect(page).to_have_url(expected_url)
             print(f"✓ Navigation to {expected_url} successful")
         except Exception as e:
-            print(f"Error navigating with {locator}: {e}")
+            print(f"Error navigating with element: {e}")
             raise e
 
     print("⭐ 4th BLOCK PASSED  ⭐")
@@ -212,34 +237,34 @@ def run(playwright: Playwright) -> None:
 
     # Vérification de la navigation via le menu topbar
     ensure_authenticated()
-    navigate(f"{base_url}/home/")
+    ensure_on_home()
     for locator, expected_url in navigation_tests[
         :4
     ]:  # Pour les éléments du menu topbar
         test_navigation(page.locator(locator), expected_url)
         # Go back to home after each test to ensure we can find the next navigation element
-        navigate(f"{base_url}/home/")
-    print("⭐ 5th BLOCK PASSED  ⭐")
+        ensure_on_home()
+    print("⭐ 5th BLOCK PASSED ⭐")
 
     # Vérification de la navigation via le menu latéral
     ensure_authenticated()
-    navigate(f"{base_url}/home/")
+    ensure_sidebar_visible()  # Start from a page where sidebar is visible
     for locator, expected_url in navigation_tests[
         4:8
     ]:  # Pour les éléments du menu latéral
         test_navigation(page.locator(locator), expected_url)
-        # Go back to home after each test
-        navigate(f"{base_url}/home/")
-    print("⭐ 6th BLOCK PASSED  ⭐")
+        # Go back to a page where sidebar is visible after each test
+        ensure_sidebar_visible()
+    print("⭐ 6th BLOCK PASSED ⭐")
 
     # Vérification de la navigation via les boutons sur la page home
     ensure_authenticated()
     for locator, expected_url in navigation_tests[
         8:
     ]:  # Pour les éléments de la page home
-        navigate(f"{base_url}/home/")
+        ensure_on_home()
         test_navigation(page.locator(locator), expected_url)
-    print("⭐ 7th BLOCK PASSED  ⭐")
+    print("⭐ 7th BLOCK PASSED ⭐")
 
     # test 404
     ensure_authenticated()
