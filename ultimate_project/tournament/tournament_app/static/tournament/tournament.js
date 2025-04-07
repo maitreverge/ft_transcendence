@@ -54,7 +54,7 @@ function connectNewPlayer(playerId, playerName)
 
 	if (!playerId)
 	{
-        messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "player name yet exist!")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "player name yet exist!", "player name yet exist!")
 		// alert("player name yet exist!");
 		console.log(websockets);
 		websockets = websockets.filter(ws => ws.playerId !== undefined);	
@@ -90,14 +90,14 @@ function newPlayer(socket) {
 	const playerName = document.getElementById("player-name").value;
 	if (playerName.trim() === "")
 	{
-        messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "enter a name!")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "enter a name!", "enter a name!")
 
 		// alert("enter a name!");
 		return;
 	}
 	if (websockets.length >= 3)
 	{
-        messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "you can't create more than three players!")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "you can't create more than three players!", "you can't create more than three players!")
 
 		// alert("you can't create more than three players!");
 		return;
@@ -228,7 +228,7 @@ function onTournamentMessage(event, socket) {
 
 function tournamentResult(data)
 {
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/trumpDance.webp', `${data.winnerName} WON THE TOURNAMENT`, "")	// Le tournoi est terminé
+    messagePopUp('Yeah!', 'https://dansylvain.github.io/pictures/trumpDance.webp', "Tournament over!", "Tournament over!")	// Le tournoi est terminé
 	console.log("TOURNAMENT RESULT ", data);
 }
 
@@ -399,7 +399,7 @@ function dropTournament(div, tournamentId) {
 		const ws = websockets.find(el => el.playerId == elementId);	
 		if (!ws && window.selfId != elementId)
 		{
-            messagePopUp('https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true', "not your player")
+            messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "not your player", "not your player")
 
 			// alert("not your player");
 			return;
