@@ -30,6 +30,7 @@
 }
 
 .user::before {
+    font-size: 30;
 	content: "👽 ";
 	margin-right: 4px;
 }
@@ -78,6 +79,7 @@
 }
 
 .self-player::before {
+    font-size: 30;
 	content: "😀 ";
 	margin-right: 4px;
 }
