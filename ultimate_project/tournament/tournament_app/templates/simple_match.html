@@ -23,6 +23,12 @@
 		<option value="2">2D</option>
 		<option value="3">3D</option>
 	</select>
+    <div class="tuto-overlay" id="tuto-overlay">
+        <div class="tuto-box">
+          <img src="https://github.com/dansylvain/pictures/blob/main/tuto_test.gif?raw=true" alt="Tutoriel" />
+          <p>Clique ici pour démarrer un match !</p>
+        </div>
+    </div>
 <input
 	id="match-player-name"
 	type="text"
@@ -39,6 +45,15 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    document.addEventListener('click', (event) => {
+        const overlay = document.getElementById('tuto-overlay');
+        if (!overlay) return;
+
+        // Si on clique directement sur l'overlay (et pas à l'intérieur de la box)
+        if (event.target === overlay) {
+            overlay.style.display = 'none';
+        }
+    });
 window.addEventListener("DOMContentLoaded", () => {
     let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
 
