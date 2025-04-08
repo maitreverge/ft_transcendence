@@ -115,7 +115,7 @@
     background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
 }
 
-#match-sylvain-gif {
+.match-sylvain-gif {
 	overflow: hidden;
     background-image: url('https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp');
 	background-size: contain;

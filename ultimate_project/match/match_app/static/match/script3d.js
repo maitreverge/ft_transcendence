@@ -351,7 +351,11 @@ function setCommands3D(socket, socket2) {
 
 function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingState) {
     const data = JSON.parse(event.data);
-
+    if (data.names)
+	{
+        document.getElementById("inst-left").innerHTML = data.names[0] + "<br> keys: enter / +"
+	    document.getElementById("inst-right").innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+	}
     if (data.state == "end")
     {
         const winnerId = data.winnerId == window.playerId ? window.selfName : window.player2Name;
