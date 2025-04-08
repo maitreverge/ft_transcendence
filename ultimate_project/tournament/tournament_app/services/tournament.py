@@ -36,6 +36,10 @@ class Tournament():
 		tournaments[:] = [t for t in tournaments if t.id != self.id]
 		await TournamentConsumer.send_tournaments()
 
+	# def end_remove(self):
+	# 	from tournament_app.services.tournament_consumer import tournaments
+	# 	tournaments[:] = [t for t in tournaments if t.id != self.id]
+
 	async def launchTournament(self):
 
 		self.launch = True
@@ -98,16 +102,73 @@ class Tournament():
 		if self.n_match == 1:
 			await self.send_all_players(match_result)
 		elif self.n_match == 2:		
-			nxt_plys = self.get_next_players()
-			link_match = await self.start_match(nxt_plys[0], nxt_plys[1], "m1")			
 			await self.send_all_players(match_result)
-			await self.send_all_players(link_match)
+			nxt_plys = self.get_next_players()
+			if not None in (nxt_plys[0][0], nxt_plys[1][0]):
+				link_match = await self.start_match(
+					nxt_plys[0], nxt_plys[1], "m1")							
+				await self.send_all_players(link_match)
+			else:
+				link_match = self.create_fake_link(match_result, "m1", nxt_plys)
+				await self.send_all_players(link_match)
+				await self.create_fake_match(link_match, nxt_plys)
 		elif self.n_match == 3:
 			await self.send_all_players(match_result)
 			tournament_result = self.get_tournament_result(match_result)
 			await self.send_all_players(tournament_result)
 			await self.send_db(tournament_result)
+			asyncio.create_task(self.end_remove())
 			self.launch = False
+
+	def create_fake_link(self, match_result, local_match_id, nxt_plys):
+		
+		match_id = -match_result.get('matchId')
+		link_match = {
+			"type": "linkMatch",
+			"tournamentId": self.id,
+			"localMatchId": local_match_id,			
+			"matchId": match_id,
+			"p1Id": nxt_plys[0][0],
+			"p2Id": nxt_plys[1][0],
+			"p1Name": nxt_plys[0][1],
+			"p2Name": nxt_plys[1][1]
+		}
+		match = {
+			"matchId": match_id,						
+			"linkMatch": link_match
+		}
+		self.matchs.append(match)
+		return link_match
+	
+	async def create_fake_match(self, link_match, nxt_plys):
+		
+		match_id = -link_match.get('matchId')
+		if nxt_plys[0][0]:
+			winner = nxt_plys[0]
+			looser =  nxt_plys[1]
+		elif nxt_plys[1][0]:
+			winner = nxt_plys[1]
+			looser = nxt_plys[0]
+		else:
+			winner = (None, "nobody")
+			looser = (None, "nobody")
+		data = {
+			"matchId": match_id,
+			"winnerId": winner[0],
+			"looserId": looser[0],
+			"winnerName": winner[1],
+			"looserName": looser[1],
+			"p1Id": winner[0],
+			"p2Id": looser[0],
+			"score": [0, 0]
+		}
+		await self.match_result(data)
+
+	async def end_remove(self):
+
+		print(f"END REMOVE", flush=True)
+		# await asyncio.sleep(10)
+		# await self.del_tournament()
 
 	def get_next_players(self):
 

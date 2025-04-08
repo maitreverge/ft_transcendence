@@ -3,9 +3,9 @@ source tests/utils.sh
 
 start=$(date +%s)
 
-make delete_volume re > /dev/null 2>&1 &
+make clean
 
-source env/bin/activate
+make delete_volume re > /dev/null 2>&1 &
 
 echo "⏳ Attente que le serveur soit prêt..."
 
