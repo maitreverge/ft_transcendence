@@ -382,7 +382,7 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 
 	const div = document.createElement("div");	
 	div.className = "tournament";
-	div.textContent = `tournament: ${tournament.tournamentId}`;
+	// div.textContent = `tournament: ${tournament.tournamentId}`;
 	div.id = tournament.tournamentId;
 	div.className = "tournament-cont"
 	// div.onclick = () => enterTournament(socket, tournament.tournamentId);
