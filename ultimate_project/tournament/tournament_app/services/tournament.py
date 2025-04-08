@@ -168,6 +168,16 @@ class Tournament():
 			}
 			await update_match(path, data)
 
+	async def extract_last_tournament_id(self):
+		
+		async with aiohttp.ClientSession() as session:
+			async with session.get(
+				f"http://databaseapi:8007/api/tournament/") as response:				
+				if response.status not in (200, 201):
+					full_response = response.json()
+					return full_response[-1]["id"] # [-1] access the last block of json
+
+
 	async def send_db(self, tournament_result):
 
 		from tournament_app.views import send_db as sdb
@@ -182,7 +192,7 @@ class Tournament():
 		await sdb(path, data_tournament)
 
 		# Need to extract the last tournament update
-		id_tournament = "?"
+		id_tournament = self.extract_last_tournament()
 		
 		await self.save_tournament_matches(tournament_result["matchs"], id_tournament)
 		

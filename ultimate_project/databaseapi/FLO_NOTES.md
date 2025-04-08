@@ -93,6 +93,31 @@ print(response.json())
 
 ```
 
+
+
+```python
+
+import requests
+
+url = 'http://databaseapi:8007/api/tournament/'
+
+response = requests.get(url)
+print(response.status_code)
+print(response.json())
+
+```
+
+Extract the last ID in python
+
+```python
+
+data = [{'id': 1, 'winner_tournament': 11}, {'id': 2, 'winner_tournament': 13}]
+last_id = data[-1]['id']
+print(last_id)  # Output: 2
+
+
+```
+
 --------------------------------------------------------------------------------
 									TOUDOU
 --------------------------------------------------------------------------------
