@@ -29,23 +29,27 @@
 				<div class="card-header py-3">
 					<div class="d-flex align-items-center gap-2">
 
-						<button  onclick="newPlayer(window.tournamentSocket)" class="w-50 btn btn-primary d-flex align-items-center justify-content-between">
+						<button onclick="newPlayer(window.tournamentSocket)"
+							class="w-50 btn btn-primary d-flex align-items-center justify-content-between">
 							<span class="text">Add Player</span>
 							<span class="icon text-white-50">
 								<i class="fas fa-arrow-right"></i>
 							</span>
 						</button>
 
-						<input class="w-50 form-control border-0" id="player-name" type="text" maxlength="50" pattern=".{1,50}" required placeholder="enter a name"
-		oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-						
+						<input class="w-50 form-control border-0" id="player-name" type="text" maxlength="50"
+							pattern=".{1,50}" required placeholder="enter a name"
+							oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
+
 					</div>
 				</div>
 
 			</div>
 		</div>
 
-		<div class="col-lg-5 d-flex flex-column">
+		<div class="col-lg-1 d-flex flex-column"></div>
+		
+		<div class="col-lg-4 d-flex flex-column">
 			<div class="card shadow">
 				<div class="card-header">
 					<div class="d-flex align-items-center justify-content-center" style="gap: 1rem;">
@@ -56,8 +60,10 @@
 								<p>Clique ici pour démarrer un match !</p>
 							</div>
 						</div>
-						<button id="overlayButton" onclick="replayTuto()" class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i class="fas fa-info-circle"></i>INFO</button>
-						
+						<button id="overlayButton" onclick="replayTuto()"
+							class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i
+								class="fas fa-info-circle"></i>INFO</button>
+
 
 					</div>
 				</div>
@@ -71,68 +77,67 @@
 					</select>
 				</div>
 			</div>
+			<div class="card shadow">
+				<div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
+					<button class="font-weight-bold text-primary mx-2" onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
+				</div>
+			</div>
 		</div>
 
 	</div>
 	<div class="row d-flex align-items-stretch">
 		<div class="col-lg-4 mb-4">
 			<div class="card shadow h-100">
-
-				<div class="card-body">
-					<div class="text-center mb-2">user 3</div>
-					<div class="text-center mb-2">user 4</div>
-					<div class="text-center mb-2">user 5</div>
-					<div class="text-center mb-2">user 6</div>
-
+				<div id="players" class="card-body">
 				</div>
 			</div>
 		</div>
 		<div class="col-lg-1 mb-4 d-flex flex-column align-items-center justify-content-start pt-4">
 			<div class="mb-2">
-				<a href="#" class="text-decoration-none text-dark me-2">
+				<a class="text-decoration-none text-dark me-2">
 					<i class="fas fa-arrow-left"></i>
 				</a>
-				<a href="#" class="text-decoration-none text-dark">
+				<a class="text-decoration-none text-dark">
 					<i class="fas fa-arrow-right"></i>
 				</a>
 			</div>
 			<div class="mb-2">
-				<a href="#" class="text-decoration-none text-dark me-2">
+				<a class="text-decoration-none text-dark me-2">
 					<i class="fas fa-arrow-left"></i>
 				</a>
-				<a href="#" class="text-decoration-none text-dark">
+				<a class="text-decoration-none text-dark">
 					<i class="fas fa-arrow-right"></i>
 				</a>
 			</div>
 			<div class="mb-2">
-				<a href="#" class="text-decoration-none text-dark me-2">
+				<a class="text-decoration-none text-dark me-2">
 					<i class="fas fa-arrow-left"></i>
 				</a>
-				<a href="#" class="text-decoration-none text-dark">
+				<a class="text-decoration-none text-dark">
 					<i class="fas fa-arrow-right"></i>
 				</a>
 			</div>
 			<div class="mb-2">
-				<a href="#" class="text-decoration-none text-dark me-2">
+				<a class="text-decoration-none text-dark me-2">
 					<i class="fas fa-arrow-left"></i>
 				</a>
-				<a href="#" class="text-decoration-none text-dark">
+				<a class="text-decoration-none text-dark">
 					<i class="fas fa-arrow-right"></i>
 				</a>
 			</div>
 			<div class="mb-2">
-				<a href="#" class="text-decoration-none text-dark me-2">
+				<a class="text-decoration-none text-dark me-2">
 					<i class="fas fa-arrow-left"></i>
 				</a>
-				<a href="#" class="text-decoration-none text-dark">
+				<a class="text-decoration-none text-dark">
 					<i class="fas fa-arrow-right"></i>
 				</a>
 			</div>
 			<div class="mb-2">
-				<a href="#" class="text-decoration-none text-dark me-2">
+				<a class="text-decoration-none text-dark me-2">
 					<i class="fas fa-arrow-left"></i>
 				</a>
-				<a href="#" class="text-decoration-none text-dark">
+				<a class="text-decoration-none text-dark">
 					<i class="fas fa-arrow-right"></i>
 				</a>
 			</div>
@@ -145,11 +150,7 @@
 			<div class="card shadow mb-4 h-100">
 
 				<div class="card-body">
-					<div class="border-bottom-warning bg-gray-200">
-						<div class="text-center mb-2">user 1</div>
-						<div class="text-center mb-2">Ghost 1</div>
-						<div class="text-center mb-2" style="height: 1.2rem;"></div>
-						<div class="text-center mb-2" style="height: 1.2rem;"></div>
+					<div id="tournaments" class="border-bottom-warning bg-gray-200">
 					</div>
 
 
@@ -159,7 +160,7 @@
 		<div class="col-lg-1 mb-4">
 
 			<div style="height: 11rem; display: flex; justify-content: center; align-items: center;">
-				<a href="#" class="btn btn-success btn-circle btn-lg">
+				<a class="btn btn-success btn-circle btn-lg">
 					<i class="fas fa-check"></i>
 				</a>
 			</div>
@@ -167,23 +168,6 @@
 	</div>
 
 </div>
-
-
-
-
-<div>
-	<div id="players"></div>
-
-	<button onclick="newPlayer(window.tournamentSocket)">Create Player</button>
-	<button onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
-	<div id="tournaments"></div>
-</div>
-
-
-
-
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'tournament/tuto-overlay.js' %}"></script>
