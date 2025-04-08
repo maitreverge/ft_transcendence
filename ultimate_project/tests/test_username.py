@@ -44,7 +44,7 @@ def run(playwright: Playwright) -> None:
         page.locator(f"#{locator}").click()
 
         # Extract username
-        username = page.locator("#player").text_content().removeprefix("Je suis ")
+        username = page.locator("#players").text_content().removeprefix("Je suis ")
 
         # Assertion on the first try
         assert username == LOGIN_REG

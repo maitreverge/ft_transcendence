@@ -1,7 +1,7 @@
 #!/bin/bash
-# source tests/utils.sh
+source tests/utils.sh
 
-# start=$(date +%s)
+start=$(date +%s)
 
 # make clean
 
@@ -37,6 +37,6 @@ echo "♻️ Recreating delete users for testing ♻️"
 docker restart ctn_databaseapi
 echo "✅ Deleted users recreated ✅"
 
-# end=$(date +%s)
-# elapsed=$((end - start))
-# echo "⏱️ Tests terminés en $elapsed secondes"
+end=$(date +%s)
+elapsed=$((end - start))
+echo "⏱️ Tests terminés en $elapsed secondes"
