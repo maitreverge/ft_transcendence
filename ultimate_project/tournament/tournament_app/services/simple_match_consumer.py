@@ -99,7 +99,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		if selectedId == self.id and not selectedPlayer.get('busy'):
 			selectedPlayer['busy'] = -selectedId
 			match_id = await self.start_match(-selectedId, selectedName)
-			print(f"iwille send confiration back to {self.id} from {selectedId}", flush=True)
 			await self.send_confirmation_back(
 				self, True, selectedId, selectedName,
 				selectedId, selectedName, match_id
@@ -280,11 +279,27 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			await SimpleConsumer.send_list('match', matchs)
 			await SimpleConsumer.send_db(data)
 	
+
 	@staticmethod
-	async def send_db(data):
-		
-		print(f"SIMPLE MATCH CONSUMER SEND BD {data}", flush=True)	
+	async def send_db(match_results):
+
+		print(f"SIMPLE MATCH CONSUMER SEND BD {match_results}", flush=True)
 		from tournament_app.views import send_db as sdb
 
-		path = ""
-		await sdb(path, data) 
+        # Extract data from within the payload
+		p1 = max(1, match_results["p1Id"] or 0)
+		p2 = max(1, match_results["p2Id"] or 0)
+		win = max(1, match_results["winnerId"] or 0)
+		score_p1 = match_results["score"][0]
+		score_p2 = match_results["score"][1]
+		
+		data = {
+            "player1": p1,
+            "player2": p2,
+            "winner": win,
+            "score_p1": score_p1,
+            "score_p2": score_p2,
+        }
+
+		path = "api/match/"
+		await sdb(path, data)

@@ -102,10 +102,16 @@ class Tournament():
 		if self.n_match == 1:
 			await self.send_all_players(match_result)
 		elif self.n_match == 2:		
-			nxt_plys = self.get_next_players()
-			link_match = await self.start_match(nxt_plys[0], nxt_plys[1], "m1")			
 			await self.send_all_players(match_result)
-			await self.send_all_players(link_match)
+			nxt_plys = self.get_next_players()
+			if not None in (nxt_plys[0][0], nxt_plys[1][0]):
+				link_match = await self.start_match(
+					nxt_plys[0], nxt_plys[1], "m1")							
+				await self.send_all_players(link_match)
+			else:
+				link_match = self.create_fake_link(match_result, "m1", nxt_plys)
+				await self.send_all_players(link_match)
+				await self.create_fake_match(link_match, nxt_plys)
 		elif self.n_match == 3:
 			await self.send_all_players(match_result)
 			tournament_result = self.get_tournament_result(match_result)
@@ -114,11 +120,55 @@ class Tournament():
 			asyncio.create_task(self.end_remove())
 			self.launch = False
 
+	def create_fake_link(self, match_result, local_match_id, nxt_plys):
+		
+		match_id = -match_result.get('matchId')
+		link_match = {
+			"type": "linkMatch",
+			"tournamentId": self.id,
+			"localMatchId": local_match_id,			
+			"matchId": match_id,
+			"p1Id": nxt_plys[0][0],
+			"p2Id": nxt_plys[1][0],
+			"p1Name": nxt_plys[0][1],
+			"p2Name": nxt_plys[1][1]
+		}
+		match = {
+			"matchId": match_id,						
+			"linkMatch": link_match
+		}
+		self.matchs.append(match)
+		return link_match
+	
+	async def create_fake_match(self, link_match, nxt_plys):
+		
+		match_id = -link_match.get('matchId')
+		if nxt_plys[0][0]:
+			winner = nxt_plys[0]
+			looser =  nxt_plys[1]
+		elif nxt_plys[1][0]:
+			winner = nxt_plys[1]
+			looser = nxt_plys[0]
+		else:
+			winner = (None, "nobody")
+			looser = (None, "nobody")
+		data = {
+			"matchId": match_id,
+			"winnerId": winner[0],
+			"looserId": looser[0],
+			"winnerName": winner[1],
+			"looserName": looser[1],
+			"p1Id": winner[0],
+			"p2Id": looser[0],
+			"score": [0, 0]
+		}
+		await self.match_result(data)
+
 	async def end_remove(self):
 
 		print(f"END REMOVE", flush=True)
-		await asyncio.sleep(10)
-		await self.del_tournament()
+		# await asyncio.sleep(10)
+		# await self.del_tournament()
 
 	def get_next_players(self):
 
@@ -151,13 +201,60 @@ class Tournament():
 			import TournamentConsumer
 		await TournamentConsumer.send_all_players(packet)
 
+	async def save_tournament_matches(self, matches, tournament_id):
+		
+		from tournament_app.views import send_db as update_match
+
+		path = "api/match/"
+		
+        # Loops 3 times because there is 3 matches within a tournament
+		for _ in range(3):
+            # `or 0` Handles `None` users
+			p1 = max(1, matches[_]["matchResult"]["p1Id"] or 0)
+			p2 = max(1, matches[_]["matchResult"]["p2Id"] or 0)
+			win = max(1, matches[_]["matchResult"]["winnerId"] or 0)
+			score_p1 = matches[_]["matchResult"]["score"][0]
+			score_p2 = matches[_]["matchResult"]["score"][1]
+			tournament = tournament_id
+			
+			# Compile each key in a JSON body
+			data = {
+				"player1": p1,
+				"player2": p2,
+				"winner": win,
+				"score_p1": score_p1,
+				"score_p2": score_p2,
+				"tournament": tournament,
+			}
+			await update_match(path, data)
+
+	async def extract_last_tournament_id(self):
+		async with aiohttp.ClientSession() as session:
+			async with session.get(
+				f"http://databaseapi:8007/api/tournament/") as response:				
+				if response.status in (200, 201):
+					full_response = await response.json()
+                    # [-1] access the last json block
+					return full_response[-1]["id"]
+
 	async def send_db(self, tournament_result):
 
 		from tournament_app.views import send_db as sdb
-
-		path = ""
-		await sdb(path, tournament_result)
-
+		path = "api/tournament/"
+		winner = max(1, tournament_result["winnerId"] or 0)
+		
+        # Update the tournament table first...
+		data_tournament = {
+			"winner_tournament" : winner,
+		}
+		await sdb(path, data_tournament)
+		
+        # ... and retrieve it's databaseID afterwards to pass it as argument
+		id_tournament = await self.extract_last_tournament_id()
+		all_matches = tournament_result["matchs"]
+		
+		await self.save_tournament_matches(all_matches, id_tournament)
+		
 	async def match_players_update(self, match_update):
 
 		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)

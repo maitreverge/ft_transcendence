@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from django.core.validators import MaxValueValidator
 from utils.crypto import encrypt_2fa_secret, decrypt_2fa_secret
 
 
@@ -68,6 +69,12 @@ class Player(AbstractBaseUser, PermissionsMixin):
 class Tournament(models.Model):
     id = models.AutoField(primary_key=True)
 
+    winner_tournament = models.ForeignKey(
+        to=Player,  # Explicit reference to Player model
+        on_delete=models.CASCADE,  # If a player is deleted, the match is also deleted
+        related_name="winner_tournament",
+    )
+
     class Meta:
         db_table = "tournament"
 
@@ -88,11 +95,14 @@ class Match(models.Model):
         on_delete=models.CASCADE,
         related_name="player2",
     )
-    winner = models.ForeignKey(
+    winner = models.ForeignKey(  # Renamed from winner_match to winner
         to=Player,
         on_delete=models.CASCADE,
-        related_name="winner",
+        related_name="winner_match",  # Keep the original related_name to avoid migration issues
     )
+
+    score_p1 = models.IntegerField(default=0)
+    score_p2 = models.IntegerField(default=0)
 
     tournament = models.ForeignKey(
         to=Tournament,

@@ -15,7 +15,7 @@ TOURNOIS
 	"tournamentId": 1,
 	"winnerId": 2,
 	"winnerName": "user2",
-	"looserId": -3,
+	"looserId": -3, // looser of last match
 	"looserName": "na",
 	"matchs": [
 	  {
