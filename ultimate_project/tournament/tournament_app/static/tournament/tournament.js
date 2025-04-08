@@ -47,7 +47,6 @@ function messagePopUp(titre, url, text, traduction)
       });
 }
 
-
 function connectNewPlayer(playerId, playerName)
 {
 	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
@@ -701,12 +700,12 @@ function matchResult(rsl)
 		return;
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
-	if (rsl.winnerId === rsl.p1Id)
+	if (rsl.winnerId && rsl.winnerId === rsl.p1Id)
 	{
 		localP1.classList.add("winner");
 		localP2.classList.add("looser");
 	}
-	else if (rsl.winnerId === rsl.p2Id)
+	else if (rsl.winnerId && rsl.winnerId === rsl.p2Id)
 	{
 		localP2.classList.add("winner");
 		localP1.classList.add("looser");

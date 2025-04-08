@@ -91,7 +91,7 @@
 }
 
 .self-match {
-	background: rgb(251, 255, 0);
+	background: rgb(48, 48, 25);
 }
 
 button {
@@ -125,7 +125,7 @@ button {
 }
 
 .undef {
-	background-color: hwb(180 81% 18%) !important;
+	background-color: hwb(0 9% 5%) !important;
 }
 
 .phantom::before {

@@ -34,10 +34,10 @@ class Pong:
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 1
+		self.max_score = 100
 		self.point_delay = 1
 		self.start_delay = 4
-		self.max_wait_delay = 1000	
+		self.max_wait_delay = 20
 		self.users = []
 		self.players = None		
 		self.winner = None
@@ -135,6 +135,8 @@ class Pong:
 				self.winner = self.plyIds[0]
 			elif players[1]:
 				self.winner = self.plyIds[1]
+			else:
+				self.winner = None
 		self.state = State.waiting
 
 	async def watch_dog(self):
@@ -145,7 +147,7 @@ class Pong:
 				delay = 0
 			if delay > self.max_wait_delay:
 				print(f"stopped by wathdog", flush=True)
-				await self.stop(self.plyIds[0])
+				await self.stop(None)
 				return
 			delay += 1
 			await asyncio.sleep(1.00)
@@ -165,13 +167,10 @@ class Pong:
 
 		print(f"STOP playerId: {playerId}", flush=True)
 
-		if playerId in self.plyIds: 	
-			if self.winner is None and self.start_flag:
+		if not playerId or playerId in self.plyIds: 	
+			if not self.winner and all((playerId, self.start_flag)):							
 				self.winner = self.plyIds[0] \
-					if playerId == self.plyIds[1] else self.plyIds[1]
-			if self.winner is None and not self.start_flag:
-				self.winner = self.plyIds[0] \
-					if playerId == self.plyIds[1] else self.plyIds[1]
+					if playerId == self.plyIds[1] else self.plyIds[1]				
 			await self.sendFinalState()
 			return True
 		return False
@@ -214,7 +213,7 @@ class Pong:
 				"winnerName":  w_and_l[0][1],
 				"looserName":  w_and_l[1][1],
 				"score": self.score
-				}))
+				})) 
 			except Exception as e:
 				pass		
 		print(f"BEFORE SEND MATCH RESULT", flush=True)
@@ -225,6 +224,8 @@ class Pong:
 
 	def get_winner_and_looser(self):
 
+		if not self.winner:
+			return ((None, "None"), (None, "None"))
 		return ((
 			self.winner,
 			self.names[0] if self.winner == self.plyIds[0] else self.names[1]			
