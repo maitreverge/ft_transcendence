@@ -21,6 +21,7 @@ async function invitationPopup(socket, applicantId, applicantName)
 {
     const result = await Swal.fire({
         title: 'Oops!',
+        html: `<span>${applicantName}</span><span data-translate=" has sent you an invitation!"> has sent you an invitation!</span>`,
         text: ' You have an invitation!',
         imageUrl: 'https://dansylvain.github.io/pictures/thumbs.webp',
         imageWidth: 300,
@@ -326,7 +327,7 @@ function invitationCancelled(targetName) {
 
 	console.log(`invitation with ${targetName} is cancelled`);
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation with is cancelled", "invitation with is cancelled")
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled by ", "invitation cancelled by ", "", targetName)
 	// alert(`invitation with ${targetName} is cancelled`);
 	if (window.busyElement)	
 		window.busyElement.classList.remove("invitation-waiting");
@@ -339,7 +340,7 @@ function invitationCancelled(targetName) {
 
 function selectedBusy() {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "selectedBusy", "selectedBusy")
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy", "The player is busy", "", "")
 
 	// alert("selectedBusy");
 	if (window.busyElement)
@@ -349,27 +350,22 @@ function selectedBusy() {
 
 function invitationRefused(targetName) {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', ' ne contracte pas...', ' ne contracte pas...')
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled by ", "invitation cancelled by ", "", targetName)
 
     if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
 }
 
-function messagePopUp(titre, url, text, traduction)
+function messagePopUp(titre, url, text, traduction, start_var, end_var)
 {
     Swal.fire({
         title: titre,
-        text: text,
+        html: `<span>${start_var}</span><span data-translate="${traduction}">${text}</span><span>${end_var}</span>`,
         imageUrl: url,
         imageWidth: 300,
         imageHeight: 300,
-        imageAlt: 'GIF fun',
-        willOpen: () => {
-            // Ajoute l'attribut data-translate au texte affiché
-            const swalText = Swal.getPopup().querySelector('.swal2-html-container');
-            swalText.setAttribute('data-translate', traduction);
-        }
+        imageAlt: 'GIF fun'
       });
 }
 
@@ -408,7 +404,7 @@ function sendPlayerClick(socket, event, selected)
 		name = input.value;
 		if (name.trim() === "" && input.style.display === "block")
 		{
-            messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "enter a name for second player", "enter a name for second player")
+            messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "enter a name for second player", "enter a name for second player", "", "")
 
 			// alert("enter a name for second player");			
 			return;
@@ -482,7 +478,7 @@ function invitation(socket, data) {
 	{
 		case "back":				
 			if (data.response === "selfBusy")
-                messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "selfBusy", "selfBusy")
+                messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "")
 				// alert("selfBusy");
 			else if (data.response === "selectedBusy")
 				selectedBusy();	
