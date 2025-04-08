@@ -22,11 +22,8 @@
 }
 
 #overlay-match {
-	/* position:relative; */
 	display:block;
 	top:0;
-    /* background: white; */
-    /* margin: 10px;    */
 }
 
 .user::before {
@@ -37,25 +34,25 @@
 
 .user {
 	margin-top: 5px;
-
-	/* width:20px; */
-	/* height:20px; */
 	border-radius: 5px;
-	/* margin: 5px;
-	padding: 2px; */
-	/* display:inline-block; */
 	display: flex;
-	justify-content: center; /* centre horizontalement */
+	justify-content: center;
 	align-items: center;  
 	background: rgb(251, 255, 0);
 }
 
+.match::before {
+	font-size: 30;
+	content: "🏓 ";
+	margin-right: 4px;
+}
+
 .match {
-	width:fit-content;
-	height:fit-content;
-	margin:5px;
-	margin-top:10px;
-	display:inline-block;
+	margin-top: 5px;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;  
 	background: rgb(251, 255, 0);
 }
 
@@ -94,9 +91,7 @@
 }
 
 .self-match {
-	width:fit-content;
-	height:fit-content;
-	background-color: rgb(250, 8, 250);
+	background: rgb(251, 255, 0);
 }
 
 button {
@@ -146,9 +141,10 @@ button {
 
 .tournament-cont {
 	width: 100%;
-	height: 16rem;
-	margin:10px;
+	height: 14rem;
 	background-color: rgb(109, 94, 96);	
+	border-radius: 5%;
+	padding: 5px;
 }
 
 #match-player-name {
@@ -184,9 +180,4 @@ button {
     max-height: 250px;
     object-fit: contain;
     border-radius: 8px;
-}
-
-.arrows {
-	font-size: 1 rem;
-
 }
