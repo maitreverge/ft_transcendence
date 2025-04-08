@@ -224,6 +224,8 @@ class Pong:
 
 	def get_winner_and_looser(self):
 
+		if not self.winner:
+			return ((None, None), (None, None))
 		return ((
 			self.winner,
 			self.names[0] if self.winner == self.plyIds[0] else self.names[1]			

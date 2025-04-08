@@ -102,10 +102,14 @@ class Tournament():
 		if self.n_match == 1:
 			await self.send_all_players(match_result)
 		elif self.n_match == 2:		
-			nxt_plys = self.get_next_players()
-			link_match = await self.start_match(nxt_plys[0], nxt_plys[1], "m1")			
 			await self.send_all_players(match_result)
-			await self.send_all_players(link_match)
+			nxt_plys = self.get_next_players()
+			if not None in (nxt_plys[0][0], nxt_plys[1][0]):
+				link_match = await self.start_match(
+					nxt_plys[0], nxt_plys[1], "m1")			
+				await self.send_all_players(link_match)
+			else:
+				await self.create_fake_match(match_result, nxt_plys)
 		elif self.n_match == 3:
 			await self.send_all_players(match_result)
 			tournament_result = self.get_tournament_result(match_result)
@@ -113,6 +117,32 @@ class Tournament():
 			await self.send_db(tournament_result)
 			asyncio.create_task(self.end_remove())
 			self.launch = False
+
+	async def create_fake_match(self, match_result, nxt_plys):
+		
+		match_id = -match_result.get('matchId')
+		match = {"matchId": match_id}
+		self.matchs.append(match)
+		if nxt_plys[0][0]:
+			winner = nxt_plys[0]
+			looser =  nxt_plys[1]
+		elif nxt_plys[1][0]:
+			winner = nxt_plys[1]
+			looser = nxt_plys[0]
+		else:
+			winner = (None, None)
+			looser = (None, None)
+		data = {
+			"matchId": match_id,
+			"winnerId": winner[0],
+			"looserId": looser[0],
+			"winnerName": winner[1],
+			"looserName": looser[1],
+			"p1Id": winner[0],
+			"p2Id": looser[0],
+			"score": [0, 0]
+		}
+		await self.match_result(data)
 
 	async def end_remove(self):
 
