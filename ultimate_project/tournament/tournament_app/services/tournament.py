@@ -142,7 +142,6 @@ class Tournament():
 	
 	async def create_fake_match(self, link_match, nxt_plys):
 		
-		match_id = -link_match.get('matchId')
 		if nxt_plys[0][0]:
 			winner = nxt_plys[0]
 			looser =  nxt_plys[1]
@@ -153,7 +152,7 @@ class Tournament():
 			winner = (None, "nobody")
 			looser = (None, "nobody")
 		data = {
-			"matchId": match_id,
+			"matchId": link_match.get('matchId'),
 			"winnerId": winner[0],
 			"looserId": looser[0],
 			"winnerName": winner[1],
@@ -167,8 +166,8 @@ class Tournament():
 	async def end_remove(self):
 
 		print(f"END REMOVE", flush=True)
-		# await asyncio.sleep(10)
-		# await self.del_tournament()
+		await asyncio.sleep(10)
+		await self.del_tournament()
 
 	def get_next_players(self):
 
