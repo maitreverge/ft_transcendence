@@ -140,7 +140,7 @@ class Tournament():
 			import TournamentConsumer
 		await TournamentConsumer.send_all_players(packet)
 
-    # ! ================ SEND DB =================
+    # ! ================ SEND DB ===============================================
 	async def save_tournament_matches(self, matches, tournament_id):
 		
 		from tournament_app.views import send_db as update_match
@@ -149,11 +149,12 @@ class Tournament():
 		
 		for _ in range(3):
 			
-			# Extract each key individually
 			tournament = tournament_id
-			p1 = max(1, matches[_]["matchResult"]["p1Id"])
-			p2 = max(1, matches[_]["matchResult"]["p2Id"])
-			win = max(1, matches[_]["matchResult"]["winnerId"])
+			
+            # `or 0` Handles `None` users
+			p1 = max(1, matches[_]["matchResult"]["p1Id"] or 0)
+			p2 = max(1, matches[_]["matchResult"]["p2Id"] or 0)
+			win = max(1, matches[_]["matchResult"]["winnerId"] or 0)
 			score_p1 = matches[_]["matchResult"]["score"][0]
 			score_p2 = matches[_]["matchResult"]["score"][1]
 			
@@ -166,39 +167,47 @@ class Tournament():
 				"score_p2": score_p2,
 				"tournament": tournament,
 			}
+			
+			print(f"⭐⭐⭐ TOURNAMENT MATCHED DATA = {data}", flush=True)
+
 			await update_match(path, data)
 
 	async def extract_last_tournament_id(self):
-		
+		print(f"⭐⭐⭐⭐⭐⭐⭐⭐⭐EXTRACTING LAST TOURNAMEnT ID ", flush=True)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(
 				f"http://databaseapi:8007/api/tournament/") as response:				
 				if response.status not in (200, 201):
 					full_response = response.json()
-					return full_response[-1]["id"] # [-1] access the last block of json
+					print(f"⭐⭐⭐⭐⭐ RESPONSE EXTRACTING", flush=True)
+                    
+                    # [-1] access the last json block
+					return full_response[-1]["id"]
 
 
 	async def send_db(self, tournament_result):
 
 		from tournament_app.views import send_db as sdb
-
 		path = "api/tournament/"
+		winner = max(1, tournament_result["winnerId"] or 0)
 		
-		winner = tournament_result["winnerId"]
-		
+        # Update the tournament table first...
 		data_tournament = {
 			"winner_tournament" : winner,
 		}
 		await sdb(path, data_tournament)
+		
+		print(f"⭐ DATA SEND TO DB = {data_tournament}", flush=True)
 
-		# Need to extract the last tournament update
-		id_tournament = self.extract_last_tournament()
 		
-		await self.save_tournament_matches(tournament_result["matchs"], id_tournament)
+        # ... and retrieve it's databaseID afterwards to pass it as argument
+		id_tournament = await self.extract_last_tournament_id()
+		print(f"⭐⭐ EXTRACTED TOURNAMENT ID = {id_tournament}", flush=True)
+		all_matches = tournament_result["matchs"]
 		
+		await self.save_tournament_matches(all_matches, id_tournament)
 		
-		
-    # ! ================ SEND DB =================
+    # ! ================ SEND DB ===============================================
 
 	async def match_players_update(self, match_update):
 
