@@ -29,17 +29,16 @@
 				<div class="card-header py-3">
 					<div class="d-flex align-items-center gap-2">
 
-						<a href="#" class="w-50 btn btn-primary d-flex align-items-center justify-content-between">
+						<button  onclick="newPlayer(window.tournamentSocket)" class="w-50 btn btn-primary d-flex align-items-center justify-content-between">
 							<span class="text">Add Player</span>
 							<span class="icon text-white-50">
 								<i class="fas fa-arrow-right"></i>
 							</span>
-						</a>
+						</button>
 
 						<input class="w-50 form-control border-0" id="player-name" type="text" maxlength="50" pattern=".{1,50}" required placeholder="enter a name"
 		oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-						<!-- <input type="text" class="w-50 form-control border-0" placeholder="Enter name..."
-							aria-label="Search" aria-describedby="basic-addon2"> -->
+						
 					</div>
 				</div>
 
