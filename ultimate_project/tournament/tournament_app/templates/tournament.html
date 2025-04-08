@@ -1,22 +1,22 @@
 {% load static %}
 <div style="display:none;">
+
 	<head>
 		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
 		<script>
-			window.rasp = "{{ rasp }}"; 
+			window.rasp = "{{ rasp }}";
 			window.pidom = "{{ pidom }}";
-            window.selfId = "{{ user_id }}";
+			window.selfId = "{{ user_id }}";
 			window.selfName = "{{ user_name }}";							
 		</script>
-		<script src="{% static 'tournament/tournament.js' %}"
-				onload="initTournament()"></script>
+		<script src="{% static 'tournament/tournament.js' %}" onload="initTournament()"></script>
 	</head>
 </div>
 
 
 <div id="simple-selections">
 	<h1>Tournois - Selections</h1>
-	<h2 id ="myh1">
+	<h2 id="myh1">
 		Je dois choisir un tournois et entrer dans le match!
 	</h2>
 	<h2 id="player">Je suis {{ user_name }}</h2>
@@ -28,33 +28,36 @@
 				</div>
 				<div class="card-header py-3">
 					<div class="d-flex align-items-center gap-2">
-	
-						<a href="#"
-							class="w-50 btn btn-primary d-flex align-items-center justify-content-between">
+
+						<a href="#" class="w-50 btn btn-primary d-flex align-items-center justify-content-between">
 							<span class="text">Add Player</span>
 							<span class="icon text-white-50">
 								<i class="fas fa-arrow-right"></i>
 							</span>
 						</a>
-	
-						<input type="text" class="w-50 form-control border-0"
-							placeholder="Enter name..." aria-label="Search"
-							aria-describedby="basic-addon2">
+
+						<input type="text" class="w-50 form-control border-0" placeholder="Enter name..."
+							aria-label="Search" aria-describedby="basic-addon2">
 					</div>
 				</div>
-	
+
 			</div>
 		</div>
-	
+
 		<div class="col-lg-5 d-flex flex-column">
 			<div class="card shadow">
 				<div class="card-header">
 					<div class="d-flex align-items-center justify-content-center" style="gap: 1rem;">
-						<a href="#"
-							class="btn btn-info btn-circle d-flex align-items-center justify-content-center">
-							<i class="fas fa-info-circle"></i>
-						</a>
-						<h6 class="m-0 font-weight-bold text-primary">INFO</h6>
+						<div class="tuto-overlay" id="tuto-overlay">
+							<div class="tuto-box">
+								<img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
+									alt="Tutoriel" />
+								<p>Clique ici pour démarrer un match !</p>
+							</div>
+						</div>
+						<button id="overlayButton" onclick="replayTuto()" class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i class="fas fa-info-circle"></i>INFO</button>
+						
+
 					</div>
 				</div>
 			</div>
@@ -68,18 +71,18 @@
 				</div>
 			</div>
 		</div>
-	
+
 	</div>
 	<div class="row d-flex align-items-stretch">
 		<div class="col-lg-4 mb-4">
 			<div class="card shadow h-100">
-	
+
 				<div class="card-body">
 					<div class="text-center mb-2">user 3</div>
 					<div class="text-center mb-2">user 4</div>
 					<div class="text-center mb-2">user 5</div>
 					<div class="text-center mb-2">user 6</div>
-	
+
 				</div>
 			</div>
 		</div>
@@ -134,12 +137,12 @@
 			</div>
 			<!-- etc... -->
 		</div>
-	
-	
-	
+
+
+
 		<div class="col-lg-4 mb-4">
 			<div class="card shadow mb-4 h-100">
-	
+
 				<div class="card-body">
 					<div class="border-bottom-warning bg-gray-200">
 						<div class="text-center mb-2">user 1</div>
@@ -147,13 +150,13 @@
 						<div class="text-center mb-2" style="height: 1.2rem;"></div>
 						<div class="text-center mb-2" style="height: 1.2rem;"></div>
 					</div>
-	
-	
+
+
 				</div>
 			</div>
 		</div>
 		<div class="col-lg-1 mb-4">
-	
+
 			<div style="height: 11rem; display: flex; justify-content: center; align-items: center;">
 				<a href="#" class="btn btn-success btn-circle btn-lg">
 					<i class="fas fa-check"></i>
@@ -169,27 +172,9 @@
 
 <div>
 	<div id="players"></div>
-	<label for="dim">Selectionner le nombre de dimension</label>
-	<select id="dim">
-		<option value="2">2D</option>
-		<option value="3">3D</option>
-	</select>
-    <div class="tuto-overlay" id="tuto-overlay">
-        <div class="tuto-box">
-          <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp" alt="Tutoriel" />
-          <p>Clique ici pour démarrer un match !</p>
-        </div>
-    </div>
-    <button id="overlayButton" onclick="replayTuto()">Afficher le tutoriel</button>
-	<input
-		id="player-name"
-		type="text"
-		maxlength="50"
-		pattern=".{1,50}"
-		required
-		placeholder="enter a name"
-		oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');"
-	/>
+
+	<input id="player-name" type="text" maxlength="50" pattern=".{1,50}" required placeholder="enter a name"
+		oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
 	<button onclick="newPlayer(window.tournamentSocket)">Create Player</button>
 	<button onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
 	<div id="tournaments"></div>
