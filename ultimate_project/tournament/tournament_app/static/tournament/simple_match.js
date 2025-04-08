@@ -22,7 +22,7 @@ async function invitationPopup(socket, applicantId, applicantName)
     const result = await Swal.fire({
         title: 'Oops!',
         text: ' You have an invitation!',
-        imageUrl: 'https://github.com/dansylvain/pictures/blob/main/non-je-ne-contracte-pas.gif?raw=true',
+        imageUrl: 'https://dansylvain.github.io/pictures/thumbs.webp',
         imageWidth: 300,
         imageHeight: 300,
         imageAlt: 'GIF fun',
