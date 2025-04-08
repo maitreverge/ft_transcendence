@@ -36,8 +36,10 @@
 							</span>
 						</a>
 
-						<input type="text" class="w-50 form-control border-0" placeholder="Enter name..."
-							aria-label="Search" aria-describedby="basic-addon2">
+						<input class="w-50 form-control border-0" id="player-name" type="text" maxlength="50" pattern=".{1,50}" required placeholder="enter a name"
+		oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
+						<!-- <input type="text" class="w-50 form-control border-0" placeholder="Enter name..."
+							aria-label="Search" aria-describedby="basic-addon2"> -->
 					</div>
 				</div>
 
@@ -173,8 +175,6 @@
 <div>
 	<div id="players"></div>
 
-	<input id="player-name" type="text" maxlength="50" pattern=".{1,50}" required placeholder="enter a name"
-		oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
 	<button onclick="newPlayer(window.tournamentSocket)">Create Player</button>
 	<button onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
 	<div id="tournaments"></div>
