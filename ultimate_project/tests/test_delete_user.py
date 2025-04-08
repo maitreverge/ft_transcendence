@@ -31,16 +31,6 @@ def run(playwright: Playwright) -> None:
             page.locator("#loginButton").click()
         
 
-    # def logout():
-    #     youpiBanane = page.locator("#youpiBanane")
-    #     logoutButton = page.locator("#logoutButton")
-    #     modalLogoutButton = page.locator("#modalLogoutButton")
-    #     assert "show" not in (youpiBanane.get_attribute("class") or "")
-    #     youpiBanane.click()
-    #     logoutButton.click()
-    #     modalLogoutButton.click()
-    #     expect(page).to_have_url(f"{BASE_URL}/login/")
-
     def delete_user(user):
         login(user)
         

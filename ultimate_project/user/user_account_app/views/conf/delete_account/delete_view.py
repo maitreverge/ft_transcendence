@@ -48,17 +48,6 @@ async def handle_post_delete(request: HttpRequest, username, context):
         return render(request,"partials/conf/delete_acc/delete_acc.html", context), "is_default"
     context["message"] = "Your account has been successfully deleted. You will be redirected shortly."
     response = render(request, "partials/conf/delete_acc/success_del.html", context)
-    # of CORUSE COOKIE IN DAJNGO DOESNET FUCKIGN WORKSSSS
-    """ response.delete_cookie(
-        key="access_token",
-        path="/",
-        domain="localhost",
-        samesite="Lax")
-    response.delete_cookie(
-        key="refresh_token",
-        path="/",
-        domain="localhost",
-        samesite="Lax") """
     return response, "is_success"
 
 async def handle_get_delete(request, username, context): 
@@ -94,7 +83,7 @@ async def delete_account_view(request: HttpRequest):
         elif page_name == "is_success":
             context["page"] = "partials/conf/delete_acc/success_del.html"
         else:
-            context["page"] = "partials/conf/delete_acc/delete_acc.html"       
+            context["page"] = "partials/conf/delete_acc/delete_acc.html"     
         return render(request, "layouts/account.html", context)
     except Exception as e:
         print(f"\n❌ Exception in delete_account_view: {e}\n", flush=True)

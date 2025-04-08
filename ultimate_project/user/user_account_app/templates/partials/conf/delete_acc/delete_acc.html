@@ -1,21 +1,19 @@
 {% load static %}
-<div class="container-fluid">
+<div class="container-fluid" id="delete-acc-p">
   <!-- Page Heading -->
   <h1 data-translate="DELETE ACCOUNT" class="h3 mb-2 text-gray-800">
     Delete Your Account
   </h1>
   <p class="mb-4">
-    Please confirm your identity to permanently delete your account. This action cannot be undone.
+    Please confirm your identity to permanently delete your account. This action
+    cannot be undone.
   </p>
-
   <div class="row justify-content-center">
     <!-- CONFIRMATION FORM COLUMN -->
     <div class="col-lg-6 mb-4">
       <div class="card shadow mb-4 h-100">
         <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">
-            Confirm Deletion
-          </h6>
+          <h6 class="m-0 font-weight-bold text-primary">Confirm Deletion</h6>
         </div>
         <div class="card-body">
           <form
@@ -54,27 +52,25 @@
             <div class="form-group mt-4">
               <button
                 type="submit"
+                id="delete-acc-btn"
                 class="btn btn-danger-custom btn-rounded btn-block"
-                id="delete_account_btn"
                 hx-push-url="true"
               >
                 Delete Account
               </button>
-
-              <!-- BUTTON TO GO BACK TO SETTINGS -->
               <a
                 href="/account/confidentiality/"
                 class="btn btn-success btn-rounded btn-block mt-2"
                 hx-get="/account/confidentiality/"
                 hx-target="#account-content"
                 hx-push-url="true"
-                >
+              >
                 Cancel
               </a>
             </div>
             {% if error_del_page %}
             <div class="text-danger mt-2 text-center">
-              <h3 id="error_delete_user" name="error_delete_user">
+              <h3 id="error-input-delete-acc" name="error_delete_user">
                 {{ error_del_page }}
               </h3>
             </div>
@@ -87,7 +83,12 @@
 </div>
 
 <style>
-  /* Green Button Styles for Rounded Button (Cancel) */
+  #delete-acc-btn {
+    display: block;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
   .btn-rounded {
     border-radius: 50px; /* Makes the button rounded */
     padding: 0.75rem 1.5rem; /* Slightly more padding for a better look */
