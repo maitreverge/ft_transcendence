@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Player, Tournament, Match
+from .models import Player, Tournament, Match, FriendList, FriendRequest
 
 
 @admin.register(Player)
@@ -13,6 +13,24 @@ class PlayerAdmin(admin.ModelAdmin):
         if "password" in form.changed_data:  # Only hash if password was changed
             obj.set_password(obj.password)  # Hash the password before saving
         super().save_model(request, obj, form, change)
+
+
+#register models in django admin panel
+@admin.register(FriendList)
+class FriendListAdmin(admin.ModelAdmin):
+    list_filter = ["user"]
+    list_display = ("user",)
+    search_fields = ("user",)
+    readonly_fields = ["user"]
+    #because not using the decorator @admin.register(FriendList)
+
+
+@admin.register(FriendRequest)
+class FriendRequestAdmin(admin.ModelAdmin):
+    list_filter = ["sender", "receiver"]
+    list_display = ("sender", "receiver") 
+    search_field = ("sender__username", "sender__email" , "receiver__username", 
+                    "receiver__email")
 
 
 @admin.register(Tournament)

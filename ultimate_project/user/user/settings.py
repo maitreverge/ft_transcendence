@@ -12,15 +12,17 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 import logging
-
 
 NAME = os.getenv("name")
 
-HOST_IP = os.getenv("HOST_IP")
+PI_DOMAIN = os.getenv("pi_domain")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.append(str(BASE_DIR))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -32,11 +34,13 @@ SECRET_KEY = os.getenv("DJANGO_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*", f"https://{HOST_IP}"]
+ALLOWED_HOSTS = ["*", f"https://{PI_DOMAIN}"]
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://127.0.0.1:8443",
     "https://localhost:8443",
     "http://localhost:8000",
+    "http://127.0.0.1:8000",
     f"https://{HOST_IP}",
 ]
 
@@ -49,10 +53,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    f"{NAME}_app",
-    "user_management_app",
     "corsheaders",
-    "twofa_app",
+    "user_account_app",
 ]
 
 MIDDLEWARE = [
@@ -71,7 +73,9 @@ ROOT_URLCONF = f"{NAME}.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        'DIRS': [
+            BASE_DIR / 'templates',  # Where your templates are stored
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -136,12 +140,10 @@ STATIC_ROOT = "/app/staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 # Healthcheck filter
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
         return "/health/" not in record.getMessage()
-
 
 # Logging configuration for healthcheck
 LOGGING = {
@@ -193,6 +195,7 @@ SESSION_COOKIE_SAMESITE = (
 CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
 CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
+#CSRF_COOKIE_NAME = "csrf_token"  # Change the CSRF cookie name
 
 # CSRF Middleware settings
 CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]  # Add your domain(s) here

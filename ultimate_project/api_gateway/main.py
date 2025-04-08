@@ -1,20 +1,22 @@
-from fastapi import FastAPI, Request, HTTPException, Query, Depends
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request, HTTPException, Response, Depends, Query
 import httpx
 import logging
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.exceptions import HTTPException as StarletteHTTPException  # If you need to use it
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse, StreamingResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 import json
 
+# from fastapi.middleware.cors import CORSMiddleware
+import authentication, auth_helpers
 
-from authentication import (
-    login_fastAPI,
-    is_authenticated,
-    logout_fastAPI,
-    register_fastAPI,
-)
 
+# ======= 🚀 FastAPI Application Setup for API Gateway 🚀 =======
 
 app = FastAPI(
     title="API Gateway",
@@ -23,26 +25,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Configure CORS middleware with more permissive settings
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
-    allow_credentials=True,  # Allow cookies
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
-    expose_headers=[
-        "Content-Type",
-        "X-CSRFToken",
-        "Set-Cookie",
-    ],  # Expose these headers
-)
-
-
-# error page handler
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return await proxy_request("static_files", f"error/{exc.status_code}/", request)
-
+# ====== 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 ======
 
 services = {
     "tournament": "http://tournament:8001",
@@ -52,7 +35,8 @@ services = {
     "databaseapi": "http://databaseapi:8007",
 }
 
-# logging configuration
+# ====== 📜 LOGGER CONFIGURATION 📜 ======
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -92,7 +76,7 @@ async def bouncer_middleware(request: Request, call_next):
     """
     Main Middleware to filter authenticated users from non-auth users
     """
-    is_auth, user_info = is_authenticated(request)
+    is_auth, user_info = authentication.is_authenticated(request)
 
     print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
     print(f"=============           {request.url.path} ================\n")
@@ -147,8 +131,36 @@ async def bouncer_middleware(request: Request, call_next):
     response = await call_next(request)
     return response
 
+# ====== 🌟 FASTAPI MIDDLEWARE 🌟 ======
 
-# Token refresh middleware
+# Current middleware chain
+# 1️⃣ - Client sends an HTTP request.
+# 2️⃣ - CORS Middleware processes the request first (since it's declared first).
+# 3️⃣ - Token Refresh Middleware runs next and calls call_next(request), passing the request to the route handler.
+# 4️⃣ - Route Handler (your actual API logic) processes the request and generates a response.
+# 5️⃣ - The response flows back:
+# 
+#     5️⃣.1️⃣ - goes back through the Token Refresh Middleware, 
+#     which may modify it (e.g., refreshing tokens)
+#     5️⃣.2️⃣ - continues back to the client.
+
+# Middleware in FastAPI runs in the order they are declared in this file.
+# Be mindful of the order when adding class-based and function-based 
+# middleware.
+# Configuring CORS middleware  below:
+# [Middleware n°1]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow only trusted origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["Content-Type", "X-CSRFToken", "Set-Cookie"],
+)
+
+# 🔄 Token Refresh Middleware for HTTP Requests  
+# 🏗️ Function-Based Middleware
+# [Middleware n°2]
 @app.middleware("http")
 async def jwt_refresh_middleware(request: Request, call_next):
     """
@@ -156,15 +168,17 @@ async def jwt_refresh_middleware(request: Request, call_next):
     If refresh is needed, it adds the new access token to the response.
     """
     # First process the request normally
+    # call_next() will call the next middleware / if none call
+    # the actual route 
     response = await call_next(request)
 
     # Check authentication status after request processing
-    is_auth, user_info = is_authenticated(request)
+    is_auth, user_info = authentication.is_authenticated(request)
 
-    # If authenticated and token refresh needed, update the response cookies
+    # If authenticated and token refresh needed, update the response 
+    # cookies
     if is_auth and user_info and user_info.get("refresh_needed"):
         print("🔄 Middleware: Refreshing access token", flush=True)
-
         # Set the new access token in the response
         response.set_cookie(
             key="access_token",
@@ -175,139 +189,222 @@ async def jwt_refresh_middleware(request: Request, call_next):
             path="/",
             max_age=60 * 60 * 6,  # 6 hours
         )
+    return (response)
 
-    return response
+# Middleware to set and validate CSRF tokens
+# [Middleware n°3]
+""" CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
+csrf_serializer = URLSafeTimedSerializer(CSRF_SECRET, salt=secrets.token_urlsafe(16))
+class CSRFMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # If it's a GET request, we generate a CSRF token and set the cookie
+        # If it's a GET request and no token exists, generate a new one
+        if "csrftoken" not in request.cookies:
+            csrf_token = self.generate_csrf_token()
+            response = await call_next(request)
+            response.set_cookie(
+                key="csrftoken", 
+                value=csrf_token, 
+                httponly=True, 
+                secure=True, 
+                samesite="None", 
+                path="/", 
+                max_age=60 * 60 * 6  # 6 hours
+            )
+            return (response)
+        
+        # For POST requests, validate the CSRF token
+        if request.method == "POST":
+            
+            # INT HE FTUIRE CHECK IF JWT FOR INETRNAL POST/DELTE/PUT
+            # ELSE CHECK  
+            csrf_token_from_header = request.headers.get("X-CSRFToken")
+            csrf_token_from_cookie = request.cookies.get("csrftoken")
+            # Validate the token
+            print(f"\n == CSRF token from header: {csrf_token_from_header} == \n", flush=True)
+            print(f"\n == CSRF token from cookie: {csrf_token_from_cookie} == \n", flush=True)
+            if not csrf_token_from_header or csrf_token_from_header != csrf_token_from_cookie:
+                raise HTTPException(status_code=403, detail="Forbidden (CSRF token mismatch)")
+        return await call_next(request)
 
+    def generate_csrf_token(self):
+        Generate a CSRF token.
+        secret = secrets.token_hex(32)  # 32-byte secret key
+        hashed_token = hashlib.sha256(secret.encode()).hexdigest()
+        return hashed_token
+app.add_middleware(CSRFMiddleware)"""
 
-# CSRF middleware
-# @app.middleware("http")
-# async def csrf_middleware(request: Request, call_next):
-#     """
-#     Middleware that verifies CSRF token for non-GET requests.
-#     """
-#     # Skip CSRF check for GET requests and health checks
-#     if request.method == "GET" or request.url.path == "/health/":
-#         return await call_next(request)
-
-#     # Get CSRF token from cookie
-#     csrf_token = request.cookies.get("csrf_token")
-
-#     # Get CSRF token from header
-#     header_token = request.headers.get("X-CSRFToken")
-
-#     # Verify tokens match
-#     if not csrf_token or not header_token or csrf_token != header_token:
-#         return JSONResponse(
-#             status_code=403,
-#             content={"detail": "Invalid CSRF token"},
-#         )
-
-#     return await call_next(request)
-
-
-# ! DEBUGGING COOKIES MIDDLEWARE, DO DELETE
 # This middleware is used to debug incoming cookies in FastAPI.
-# It prints the incoming cookies to the console.
+# It prints the incoming cookies to the console for debugging purposes.
+# [Middleware n°4]
 @app.middleware("http")
 async def debug_cookies_middleware(request: Request, call_next):
     print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
     response = await call_next(request)
-
-    # Also log outgoing cookies in response headers
     if "set-cookie" in response.headers:
-        print(
-            f"🔍 Outgoing Set-Cookie headers: {response.headers.get('set-cookie')}",
-            flush=True,
-        )
+        set_cookie_headers = response.headers.getlist("set-cookie")
+        for cookie in set_cookie_headers:
+            print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
+    return (response)
 
-    return response
+ 
+""" @app.middleware("http")
+async def debug_full_response_middleware(request: Request, call_next):
+    print(f"🔍 Incoming Request: {request.method} {request.url}", flush=True)
+    response = await call_next(request)
+    # Print full response details (headers, status code, and body)
+    print(f"🔍 Outgoing Response Status: {response.status_code}", flush=True)
+    print(f"🔍 Response Headers: {response.headers}", flush=True)
+    try:
+        if response.headers.get("Content-Type") == "application/json":
+            response_body = await response.json()
+            print(f"🔍 Response Body (JSON): {response_body}", flush=True)
+        else:
+            # Print raw content for non-JSON responses (e.g., HTML or plain text)
+            response_body = await response.body()
+            print(f"🔍 Response Body (Raw): {response_body.decode()}", flush=True)
+    except Exception as e:
+        print(f"🚨 Error parsing response body: {e}", flush=True)
+    return response """
 
+# ===== ⚠️ Exception Handling ⚠️ =====
 
-async def proxy_request(service_name: str, path: str, request: Request):
-    if service_name not in services:
-        raise HTTPException(status_code=404, detail="Service not found")
+# When an exception of type StarletteHTTPException is raised during 
+# the processing of a request, the custom exception handler 
+# defined under this decorator will be calleD
+# If you have multiple exception handlers for the same exception in
+# FastAPI, only the first one registered will be used.
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return await reverse_proxy_handler("static_files", f"error/{exc.status_code}/", request)
 
+# ======= 🛠️ Main Function Handling the Reverse Proxy for the Route 🛠️ =======
+
+async def reverse_proxy_handler(target_service: str, incoming_path: str, request: Request,
+            serve_from_static: bool = False, static_service_name: str = None,
+            is_full_page: bool = False):
+    """
+    Proxies a request either directly to a target service container or through  
+    a static service container, which then serves the content.  
+
+    - If `use_static_reload` is **False**, the request is forwarded directly to 
+    the target service. 
+    - If `use_static_reload` is **True**, the request is first routed through the 
+    static service container, using the reload-template/ default URL. 
+    The static container then forwards the request to the target service, 
+    retrieves the response, and serves it back, enabling full-page reloads.
+    - Use the bool is single page if you want to use the index.html
+        or not
+    If you need to call a custom URL within the static container, simply 
+    call the static service directly and use a URL defined in its 
+   `urls.py`, just as you would when calling any other service.
+
+    Using the static service container allows for a **full page reload**, 
+    ensuring that  static assets like CSS, JavaScript, and HTML templates 
+    are properly served and updated.  
+    """
+    # Validate the target service
+    if target_service not in services:
+        raise HTTPException(status_code=404, detail="Requested service not found.")
+    # Validate the static service if `serve_from_static` is enabled
+    if serve_from_static:
+        if not static_service_name or static_service_name not in services:
+            raise HTTPException(status_code=400, detail="Invalid or missing static service.")
     async with httpx.AsyncClient(follow_redirects=True) as client:
-        base_url = services[service_name].rstrip("/")
-        path = path.lstrip("/")
-        url = f"{base_url}/{path}"
-
-        print(
-            "****************************\n",
-            f"Proxying to: {url}",
-            f"\nHX-Request header present: {'HX-Request' in request.headers}",
-            f"\nRequest method: {request.method}",
-            "\n****************************",
-            flush=True,
-        )
-
-        # Forward all headers except 'host'
-        headers = {
-            key: value
-            for key, value in request.headers.items()
-            if key.lower() not in ["host"]
+        base_service_url = services[target_service].rstrip("/")
+        normalized_path = incoming_path.lstrip("/")
+        # Handle query parameters
+        query_params = request.query_params
+        query_string = f"?{query_params}" if query_params else ""
+        if target_service == static_service_name:
+            print("⚠️ Request is for the static service, but it's specified to \
+                be served by the same static service directly. Default \
+                will directly call the static service. ⚠️")
+        forwarded_headers = {
+            key: value for key, value in request.headers.items() if key.lower() != "host"
         }
-        headers["Host"] = "localhost"
-
-        # Check if user is authenticated and add user info to headers
-        is_auth, user_info = is_authenticated(request)
-        if is_auth and user_info:
-            headers["X-User-ID"] = str(user_info.get("user_id", ""))
-            headers["X-Username"] = user_info.get("username", "")
-
-        # Log cookies for debugging
+        forwarded_headers["Host"] = "localhost"
+        # Construct request URL
+        # If serve_from_static is enabled and the requested service is not 
+        # already the static service,the request will be routed through the 
+        # reload-template for full-page reloading.
+        if serve_from_static and target_service != static_service_name:
+            static_service_url = services[static_service_name].rstrip("/")
+            final_url = f"{static_service_url}/reload-template/"
+            forwarded_headers["X-Url-To-Reload"] = f"{base_service_url}/{normalized_path}{query_string}"
+        else:
+            final_url = f"{base_service_url}/{normalized_path}{query_string}"
+        # Debug logging
+        print("\n" + "=" * 50)
+        print(f"🔁 PROXY REQUEST INITIATED 🔁")
+        print("=" * 50)
+        print(f"🔄 Request Method: {request.method}")
+        print(f"🔗 Target URL: {final_url}")
+        print(f"📩 Query Parameters: {query_string if query_string else 'None'}")
+        print(f"🛡️ HX-Request Present: {'✅ Yes' if 'HX-Request' in request.headers else '❌ No'}")
+        print(f"📦 Using Static container for reload: {'✅ Yes' if serve_from_static else '❌ No'}")
+        print("=" * 50 + "\n", flush=True)
+        # Check user authentication and attach user info headers
+        is_authenticated_user, user_info = authentication.is_authenticated(request)
+        if is_authenticated_user and user_info:
+            print("🔑 ==== IS AUTHENTICATED ==== \n", flush=True)
+            forwarded_headers["X-User-ID"] = str(user_info.get("user_id", ""))
+            forwarded_headers["X-Username"] = user_info.get("username", "")
+        # Debug log cookies
+        print("=" * 50 + "\n", flush=True)
+        print(f"🔑 Forwarding headers:", flush=True)
+        for key, value in forwarded_headers.items():
+            print(f"{key}: {value}", flush=True)
+        print("=" * 50 + "\n", flush=True)
         print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
-
-        method = request.method
-        data = await request.body()
-        cookies = request.cookies
-
+        request_cookies = request.cookies
+        request_method = request.method
+        request_body = await request.body()
         try:
             response = await client.request(
-                method, url, headers=headers, content=data, cookies=cookies
+                request_method, final_url, headers=forwarded_headers, 
+                content=request_body, cookies=request_cookies
             )
+            print("\n\n========== RESPONSE DEBUG ==========\n", flush=True)
+            print(f"🔗 Final URL: {final_url}", flush=True)
+            print(f"🔄 Status Code: {response.status_code}", flush=True)
+            print(f"📩 Headers:\n{response.headers}", flush=True)
+            print("\n====================================\n", flush=True)
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
-            logger.error(f"Request failed with status code {exc.response.status_code}")
-            raise HTTPException(
-                status_code=exc.response.status_code, detail=exc.response.text
-            )
+            logger.error(f"❌ Request failed with status code {exc.response.status_code}")
+            raise HTTPException(status_code=exc.response.status_code, detail=exc.response.text)
         except httpx.RequestError as exc:
-            logger.error(f"Request failed: {exc}")
+            logger.error(f"❌ Request error: {exc}")
             raise HTTPException(status_code=500, detail="Internal Server Error")
+    response_headers = {key: value for key, value in response.headers.items()}
+    response_headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    content_type = response.headers.get("Content-Type", "").split(";")[0].strip()
+    return Response(
+        content=response.content,
+        status_code=response.status_code,
+        headers=response_headers,
+        media_type=content_type if content_type else None,
+    )
 
-        # Prepare response headers
-        response_headers = {
-            key: value
-            for key, value in response.headers.items()
-            if key.lower() not in ["set-cookie"]
-        }  # We'll handle cookies separately
-        response_headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+# ====== 🏠 REDIRECT TO HOME 🏠 ======
 
-        # Create the response object
-        content_type = response.headers.get("Content-Type", "")
+@app.get("/")
+async def redirect_to_home():
+    """
+    Redirect requests from '/' to '/home/'.
+    """
+    return RedirectResponse(url="/home/")
 
-        # Create the FastAPI response
-        fastapi_response = Response(
-            content=response.content,
-            status_code=response.status_code,
-            headers=response_headers,
-            media_type=content_type.split(";")[0].strip() if content_type else None,
-        )
-
-        return fastapi_response
-
+# ====== 🏆 Tournament Route Setup 🏆 ======
 
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
 async def tournament_pattern_proxy(tournament_id, request: Request):
     print("################## NEW ROUTE USED #######################", flush=True)
     print(f"################## NEW ROUTE USED ##########{tournament_id}", flush=True)
-    return await proxy_request(
+    return await reverse_proxy_handler(
         "tournament", f"tournament/tournament-pattern/{tournament_id}/", request
     )
-
-
-# user_id = 0
 
 
 @app.api_route("/tournament/{path:path}", methods=["GET"])
@@ -327,7 +424,7 @@ async def tournament_proxy(path: str, request: Request):
     # global user_id
     # user_id += 1
 
-    is_auth, user_info = is_authenticated(request)
+    is_auth, user_info = authentication.is_authenticated(request)
 
     if is_auth:
         user_id = user_info.get("user_id")
@@ -345,47 +442,23 @@ async def tournament_proxy(path: str, request: Request):
     print(path + str(user_id) + "/")
 
     if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:
-        return await proxy_request(
+        return await reverse_proxy_handler(
             "tournament", "tournament/" + path + str(user_id) + "/", request
         )
     elif path == "simple-match/":
-        return await proxy_request(
+        return await reverse_proxy_handler(
             "static_files", "/tournament-match-wrapper/" + str(user_id) + "/", request
         )
     elif path == "tournament/":
-        return await proxy_request(
+        return await reverse_proxy_handler(
             "static_files", "/tournament-wrapper/" + str(user_id) + "/", request
         )
     else:
         error_message = "Page Not Found"
+        return await reverse_proxy_handler("static_files", "error/", request)
 
-        return await proxy_request("static_files", "error/", request)
 
-
-@app.api_route("/user/{path:path}", methods=["GET"])
-async def user_proxy(path: str, request: Request):
-    """
-    Proxy requests to the user microservice.
-
-    - **path**: The path to the resource in the user service.
-    - **request**: The incoming request object.
-    - **Headers**:
-      - `HX-Request`: If present, the request is treated as an HTMX request.
-    - **Responses**:
-      - Returns the content from the user microservice.
-      - If `path` is "profile/" or "stats/", returns specific content.
-    """
-    if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:
-        return await proxy_request("user", "user/" + path, request)
-    elif path == "profile/":
-        return await proxy_request("static_files", "/user-profile-wrapper/", request)
-    elif path == "stats/":
-        return await proxy_request("static_files", "/user-stats-wrapper/", request)
-    else:
-        error_message = "Page Not Found"
-
-        return await proxy_request("static_files", "error", request)
-
+# ====== ⚽ MATCH ROUTE ⚽ ======
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
 async def stop_match_proxy(path: str, request: Request):
@@ -400,7 +473,7 @@ async def stop_match_proxy(path: str, request: Request):
     - **Responses**:
       - Returns the content from the match microservice.
     """
-    return await proxy_request("match", "/match/stop-match/" + path, request)
+    return await reverse_proxy_handler("match", "/match/stop-match/" + path, request)
 
 
 @app.api_route("/match/match3d/{path:path}", methods=["GET"])
@@ -427,7 +500,7 @@ async def match_proxy(
         else "match/"
     )
 
-    return await proxy_request("match", path, request)
+    return await reverse_proxy_handler("match", path, request)
 
 
 @app.api_route("/match/match2d/{path:path}", methods=["GET"])
@@ -457,18 +530,36 @@ async def match_proxy(
         else "match/"
     )
 
-    return await proxy_request("match", path, request)
+    return await reverse_proxy_handler("match", path, request)
     # elif path == "simple-match/":
     #     return await proxy_request("static_files", "/home/", request)
 
+# ====== 🚀 USER SERVICE ROUTE 🚀 ======
 
-@app.get("/")
-async def redirect_to_home():
-    """
-    Redirect requests from '/' to '/home/'.
-    """
-    return RedirectResponse(url="/home/")
+# WILL BE SUED INT EH FURTUR FOR THE FRIENDSHIP SYSTEM
+@app.api_route("/user/{path:path}", methods=["GET"])
+async def user_route(path: str, request: Request):
 
+    # see if need to fix header hx login sucess
+    if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:        
+        return await reverse_proxy_handler("user", "/user/" + path, request)
+    else:
+        return await reverse_proxy_handler("user", "/user/" + path, request, 
+            serve_from_static=True, static_service_name="static_files")
+
+#OK
+# handle the user account management
+@app.api_route("/account/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def user_account_route(path: str, request: Request):
+
+    # see if need to fix header hx login sucess
+    if "HX-Request" in request.headers and "HX-Login-Success" not in request.headers:        
+        return await reverse_proxy_handler("user", "/account/" + path, request)
+    else:
+        return await reverse_proxy_handler("user", "/account/" + path, request, 
+            serve_from_static=True, static_service_name="static_files")
+
+# ====== 🗂️ API DATABASE PROXY 🗂️ ======
 
 # ! DATABASE API ROUTE
 @app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
@@ -510,7 +601,7 @@ async def databaseapi_proxy(path: str, request: Request):
       - `200 OK`: The user is authenticated and 2FA is not enabled
       - `401 Unauthorized`: The user is authenticated but 2FA is enabled
     """
-    return await proxy_request("databaseapi", f"api/{path}", request)
+    return await reverse_proxy_handler("databaseapi", f"api/{path}", request)
 
 
 @app.api_route("/login/{path:path}", methods=["GET"])
@@ -521,7 +612,7 @@ async def login_page_route(request: Request, path: str = ""):
     Redirects to home if user is already authenticated.
     """
     # Check if user is authenticated
-    # is_auth, user_info = is_authenticated(request)
+    is_auth, user_info = authentication.is_authenticated(request)
 
     # if is_auth:
     #     # If authenticated, redirect to home
@@ -543,7 +634,7 @@ async def login_page_route(request: Request, path: str = ""):
     # return response
 
     # If not authenticated, show login page
-    return await proxy_request("static_files", "login/", request)
+    return await reverse_proxy_handler("static_files", "login/", request)
 
 
 @app.api_route("/auth/login", methods=["POST"])
@@ -559,7 +650,7 @@ async def login_page_route(request: Request):
     # Create a new response object
     response = Response()
 
-    return await login_fastAPI(request, response, username, password)
+    return await authentication.login_fastAPI(request, response, username, password)
 
 
 # ! ROUTE TO DELETE
@@ -568,7 +659,7 @@ async def auth_status(request: Request):
     """
     Returns current authentication status - useful for debugging
     """
-    is_auth, user_info = is_authenticated(request)
+    is_auth, user_info = authentication.is_authenticated(request)
 
     # Log the cookies for debugging
     print(f"🍪 Status check cookies: {request.cookies}", flush=True)
@@ -612,7 +703,7 @@ async def logout_route(request: Request):
     """
     Handles user logout by clearing JWT cookies
     """
-    return await logout_fastAPI(request)
+    return await authentication.logout_fastAPI(request)
 
 
 @app.api_route("/register/{path:path}", methods=["GET"])
@@ -623,7 +714,7 @@ async def register_page_route(request: Request, path: str = ""):
     Redirects to home if user is already authenticated.
     """
     # Check if user is authenticated
-    # is_auth, user_info = is_authenticated(request)
+    is_auth, user_info = authentication.is_authenticated(request)
 
     # if is_auth:
     #     # If authenticated, redirect to home
@@ -645,7 +736,7 @@ async def register_page_route(request: Request, path: str = ""):
     # return response
 
     # If not authenticated, show login page
-    return await proxy_request("static_files", "register/", request)
+    return await reverse_proxy_handler("static_files", "register/", request)
 
 
 @app.api_route("/auth/register", methods=["POST"])
@@ -664,7 +755,7 @@ async def register_page_route(request: Request):
     # Create a new response object
     response = Response()
 
-    return await register_fastAPI(
+    return await authentication.register_fastAPI(
         request, response, username, password, email, first_name, last_name
     )
 
@@ -688,38 +779,14 @@ async def two_factor_auth_proxy(request: Request):
     if username:
         print(f"🔐 Username from query params: {username}", flush=True)
         # You might want to append it to the URL that's being proxied
-        return await proxy_request(
-            "static_files", f"two-factor-auth/?username={username}", request
-        )
+        return await reverse_proxy_handler(
+            "static_files", f"two-factor-auth/?username={username}", request)
 
     # Forward the request to the static_files service
-    return await proxy_request("static_files", "two-factor-auth/", request)
+    return await reverse_proxy_handler("static_files", "two-factor-auth/", request)
 
 
-@app.api_route("/user/setup-2fa/", methods=["GET"])
-@app.api_route("/setup-2fa/", methods=["GET"])
-async def setup_2fa_proxy(request: Request):
-    """
-    Proxy requests for 2FA setup to the user microservice.
-    """
-    print("🔐 Handling setup-2fa request", flush=True)
-    print(f"🔐 Headers: {request.headers}", flush=True)
-
-    return await proxy_request("user", "user/setup-2fa/", request)
-
-
-@app.api_route("/user/verify-2fa/", methods=["POST"])
-@app.api_route("/verify-2fa/", methods=["POST"])
-async def verify_2fa_proxy(request: Request):
-    """
-    Proxy requests for 2FA verification to the user microservice.
-    """
-    print("🔐 Handling verify-2fa request", flush=True)
-    print(f"🔐 Headers: {request.headers}", flush=True)
-
-    return await proxy_request("user", "user/verify-2fa/", request)
-
-
+#used to verify two fa login
 @app.api_route("/auth/verify-2fa/", methods=["POST"])
 async def verify_2fa_login(request: Request):
     """
@@ -740,22 +807,9 @@ async def verify_2fa_login(request: Request):
     response = Response()
 
     # Process the 2FA verification and generate JWT
-    from authentication import verify_2fa_and_login
-
-    return await verify_2fa_and_login(request, response, username, token)
+    return await authentication.verify_2fa_and_login(request, response, username, token)
 
 
-# ! HO LA CONG DE SA MERE LA ROUTE APIIIIIIIIIIIIIIIIIIIIIIIIIII
-@app.api_route("/user/disable-2fa/", methods=["GET", "POST"])
-@app.api_route("/disable-2fa/", methods=["GET", "POST"])
-async def disable_2fa_proxy(request: Request):
-    """
-    Proxy requests for 2FA disabling to the user microservice.
-    """
-    print("🔐 Handling disable-2fa request", flush=True)
-    print(f"🔐 Headers: {request.headers}", flush=True)
-
-    return await proxy_request("user", "user/disable-2fa/", request)
 
 
 @app.api_route("/user/delete-profile/", methods=["GET", "POST"])
@@ -772,12 +826,12 @@ async def delete_profile_proxy(request: Request):
 
     # For GET requests, make sure we get a fresh CSRF token
     if request.method == "GET":
-        response = await proxy_request("user", "user/delete-profile/", request)
+        response = await reverse_proxy_handler("user", "user/delete-profile/", request)
         # Ensure Set-Cookie headers are preserved
         return response
 
     # Forward the request to the user microservice
-    response = await proxy_request("user", "user/delete-profile/", request)
+    response = await reverse_proxy_handler("user", "user/delete-profile/", request)
 
     # If it's a POST request and deletion was successful, clear JWT cookies
     if request.method == "POST" and response.status_code == 200:
@@ -802,6 +856,7 @@ async def delete_profile_proxy(request: Request):
     return response
 
 
+
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):
     """
@@ -822,7 +877,7 @@ async def static_files_proxy(path: str, request: Request):
     #     return response
     # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
 
-    return await proxy_request("static_files", path, request)
+    return await reverse_proxy_handler("static_files", path, request)
 
 
 if __name__ == "__main__":

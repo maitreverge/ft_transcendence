@@ -31,16 +31,6 @@ def run(playwright: Playwright) -> None:
             page.locator("#loginButton").click()
         
 
-    # def logout():
-    #     youpiBanane = page.locator("#youpiBanane")
-    #     logoutButton = page.locator("#logoutButton")
-    #     modalLogoutButton = page.locator("#modalLogoutButton")
-    #     assert "show" not in (youpiBanane.get_attribute("class") or "")
-    #     youpiBanane.click()
-    #     logoutButton.click()
-    #     modalLogoutButton.click()
-    #     expect(page).to_have_url(f"{BASE_URL}/login/")
-
     def delete_user(user):
         login(user)
         
@@ -58,7 +48,7 @@ def run(playwright: Playwright) -> None:
         expect(page).to_have_url(f"{BASE_URL}/home/")
 
         page.locator("#nav-profile").click()
-        expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+        expect(page).to_have_url(f"{BASE_URL}/account/profile/")
 
         page.locator("#delete_profile").click()
 
@@ -76,7 +66,7 @@ def run(playwright: Playwright) -> None:
                     otp_field = page.locator("#otp-code")
                     otp_field.fill(totp.now())
                     final_delete_button.click()
-                    expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+                    expect(page).to_have_url(f"{BASE_URL}/account/profile/")
                     error_field = page.locator("#error_delete_user").text_content()
                     assert error_field == "Invalid password"
                     break
@@ -85,7 +75,7 @@ def run(playwright: Playwright) -> None:
         else:
             password_field.fill("nope")
             final_delete_button.click()
-            expect(page).to_have_url(f"{BASE_URL}/user/profile/")
+            expect(page).to_have_url(f"{BASE_URL}/account/profile/")
             error_field = page.locator("#error_delete_user").text_content()
             assert error_field == "Invalid password"
 

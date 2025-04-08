@@ -1,0 +1,139 @@
+{% load static %}
+<div class="container-fluid" id="delete-acc-p">
+  <!-- Page Heading -->
+  <h1 data-translate="DELETE ACCOUNT" class="h3 mb-2 text-gray-800">
+    Delete Your Account
+  </h1>
+  <p class="mb-4">
+    Please confirm your identity to permanently delete your account. This action
+    cannot be undone.
+  </p>
+  <div class="row justify-content-center">
+    <!-- CONFIRMATION FORM COLUMN -->
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow mb-4 h-100">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Confirm Deletion</h6>
+        </div>
+        <div class="card-body">
+          <form
+            hx-post="/account/confidentiality/delete-account/"
+            hx-push-url="true"
+            hx-target="#account-content"
+            hx-ext="csrf"
+          >
+            {% csrf_token %}
+            <div class="form-group">
+              <label>Enter your password:</label>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                maxlength="100"
+                class="form-control form-control-user"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            {% if user.two_fa_enabled %}
+            <div class="form-group">
+              <label>Enter your 2FA code:</label>
+              <input
+                id="otp-code"
+                type="number"
+                name="otp-code"
+                maxlength="6"
+                class="form-control form-control-user"
+                placeholder="Enter 6-digit code"
+                required
+              />
+            </div>
+            {% endif %}
+            <div class="form-group mt-4">
+              <button
+                type="submit"
+                id="delete-acc-btn"
+                class="btn btn-danger-custom btn-rounded btn-block"
+                hx-push-url="true"
+              >
+                Delete Account
+              </button>
+              <a
+                href="/account/confidentiality/"
+                class="btn btn-success btn-rounded btn-block mt-2"
+                hx-get="/account/confidentiality/"
+                hx-target="#account-content"
+                hx-push-url="true"
+              >
+                Cancel
+              </a>
+            </div>
+            {% if error_del_page %}
+            <div class="text-danger mt-2 text-center">
+              <h3 id="error-input-delete-acc" name="error_delete_user">
+                {{ error_del_page }}
+              </h3>
+            </div>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #delete-acc-btn {
+    display: block;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .btn-rounded {
+    border-radius: 50px; /* Makes the button rounded */
+    padding: 0.75rem 1.5rem; /* Slightly more padding for a better look */
+    font-size: 1rem; /* Keep the font size moderate */
+    text-align: center;
+    border-width: 2px;
+    background-color: transparent; /* Transparent background by default */
+    border-color: #28a745; /* Green border color */
+    color: #28a745; /* Green text color */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+
+  /* Hover effect for the rounded button (green on hover) */
+  .btn-rounded:hover {
+    background-color: #28a745; /* Green background on hover */
+    color: white; /* White text on hover */
+    border-color: #28a745; /* Green border on hover */
+    text-decoration: none; /* Remove underline on hover */
+  }
+
+  /* Active state when clicked */
+  .btn-rounded:focus {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+  }
+
+  /* Red Button Styles for Rounded Button (Delete) */
+  .btn-danger-custom {
+    border-color: #dc3545;
+    color: #dc3545;
+    background-color: transparent; /* Transparent inside the button */
+  }
+
+  .btn-danger-custom.active,
+  .btn-danger-custom:focus {
+    background-color: #dc3545 !important;
+    color: white;
+    border-color: #dc3545 !important;
+  }
+
+  /* Hover effects for the Delete button */
+  .btn-danger-custom:hover {
+    background-color: #dc3545; /* Red background on hover */
+    color: white; /* White text on hover */
+    border-color: #dc3545; /* Red border on hover */
+  }
+</style>

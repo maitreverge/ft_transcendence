@@ -1,0 +1,48 @@
+{% load static %}
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <div class="row justify-content-center align-items-center" style="min-height: 80vh;" id="del_success_message">
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow mb-4 border-left-success">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-check-circle fa-4x text-success"></i>
+          </div>
+          <h4 class="mb-3">{{ message }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //cant find BETTER SOLUTION BECAUSE LITERALLYC ANOT DELETECOOKIES FROM DJANGO WHYYYY
+  function logoutUser() {
+    fetch("/auth/logout/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin", // Important for cookies
+    }).then((response) => {
+      if (response.ok) {
+        // After successful logout, make an HTMX request to update the page
+        htmx.ajax("GET", "/register/", {
+          target: "body",
+          swap: "outerHTML",
+          headers: { "HX-Login-Success": "true" },
+        }).then(function () {
+          // After the HTMX request completes, push the state to change the URL to "/login/"
+          history.pushState(null, "", "/register/");
+        });
+      } else {
+        // Handle any potential errors during the logout process
+        console.error("Logout failed:", response.statusText);
+      }
+    });
+  }
+  setTimeout(() => {
+    logoutUser();
+  }, 2000);
+</script>
+

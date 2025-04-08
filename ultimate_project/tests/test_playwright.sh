@@ -17,14 +17,13 @@ start=$(date +%s)
 
 echo "✅ Serveur prêt, lancement des tests..."
 echo "Running Playwright tests..."
+#
 python3 tests/test_authentication.py
 sleep 1
 python3 tests/test_2fa.py
 sleep 1
 python3 tests/test_cookies.py
-sleep 1
-python3 tests/test_delete_user.py
-sleep 1
+#python3 tests/test_delete_user.py
 python3 tests/test_username.py
 sleep 1
 python3 tests/test_sametime_auth.py

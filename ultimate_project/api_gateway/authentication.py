@@ -24,6 +24,7 @@ DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
 CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
 
 
+# BECASUE WE HAVEA  MDIDLEWARE
 def generate_django_csrf_token():
     secret = secrets.token_hex(32)  # 32-byte secret key
     hashed_token = hashlib.sha256(secret.encode()).hexdigest()
@@ -160,6 +161,7 @@ async def login_fastAPI(
 
     # Generate and set CSRF token
     # csrf_token = secrets.token_urlsafe(64)
+    # NOW CREATE IT INA MIDDLEWARE
     json_response.set_cookie(
         key="csrftoken",
         value=generate_django_csrf_token(),
@@ -371,7 +373,6 @@ async def logout_fastAPI(request: Request):
 
     # Log for debugging
     print("🔑 JWT Cookies cleared", flush=True)
-
     return response
 
 
@@ -564,6 +565,7 @@ async def verify_2fa_and_login(
 
         # Generate and set CSRF token
         # csrf_token = secrets.token_urlsafe(64)
+        # REMVOE NOW INA MIDDLEWARE
         json_response.set_cookie(
             key="csrftoken",
             value=generate_django_csrf_token(),
@@ -819,6 +821,7 @@ async def register_fastAPI(
 
         # Generate and set CSRF token
         # csrf_token = secrets.token_urlsafe(64)
+        #NOW IN A MIDDLEWARE
         json_response.set_cookie(
             key="csrftoken",
             value=generate_django_csrf_token(),

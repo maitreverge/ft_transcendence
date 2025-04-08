@@ -1,0 +1,28 @@
+{% load static %}
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <div
+    class="row justify-content-center align-items-center"
+    style="min-height: 80vh"
+  >
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow mb-4 border-left-danger">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-exclamation-triangle fa-4x text-danger"></i>
+          </div>
+          <p id="error">{{ error|default:"An unexpected error occurred." }}</p>
+          <a
+            href="/account/security/"
+            class="btn btn-primary btn-user mt-3"
+            hx-get="/account/security/"
+            hx-target="#account-content"
+            hx-push-url="true"
+          >
+            Return to Security Settings
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

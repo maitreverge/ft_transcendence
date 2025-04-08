@@ -66,6 +66,97 @@ class Player(AbstractBaseUser, PermissionsMixin):
         return f"{self.first_name} {self.last_name}"
 
 
+class FriendList(models.Model):
+    #one user for one friend list
+    user = models.OneToOneField(Player, on_delete=models.CASCADE, related_name="user")
+    friends = models.ManyToManyField(Player, blank=True, related_name="friends")
+    
+    def __str__(self):
+        return self.user.username
+    
+    def add_friend(self, account):
+        """
+        Add a new friend
+        """
+        if not account in self.friends.all():
+            self.friends.add(account)
+            self.save()
+    
+    def remove_friend(self, account):
+        """
+        Remove friend
+        """
+        if account in self.friends.all():
+            self.friends.remove(account)
+            self.save()
+    
+    def unfriend(self, removee):
+        """
+        initiate the action of unfriending someone
+        """
+        remover_friends_list = self #person terminating the friendship
+        # Remove friend from remover friend list
+        remover_friends_list.remove_friend(removee)
+        #Remove the friend from removee friend list
+        friends_list_removee = FriendList.objects.get(user=removee)
+        friends_list_removee.remove_friend(self.user)
+        
+    def is_mutual_friend(self, friend):
+        """
+        Check if it's a fiend
+        """
+        if friend in self.friends.all():
+            return (True)
+        return (False)
+
+          
+class FriendRequest(models.Model):
+    #because a user can send an ulimited number of friend request
+    sender = models.ForeignKey(to=Player, on_delete=models.CASCADE, related_name="sender")
+    receiver = models.ForeignKey(to=Player, on_delete=models.CASCADE, related_name="receiver")
+    
+    # friend request inactive if accepted/declined
+    # by default when created is active
+    is_active = models.BooleanField(blank=True, null=False, default=True)       
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+    # Format: Sender -> Receiver (Timestamp, Active Status)
+        return (f"FriendRequest: {self.sender.username} -> {self.receiver.username} | " \
+            f"Sent at: {self.timestamp.strftime('%Y-%m-%d %H:%M:%S')} | " \
+            f"Status: {'Active' if self.is_active else 'Inactive'}")
+
+    def accept(self):
+        """
+        Accept a friend request
+        Update both sender and receiver friend list
+        """
+        receiver_friend_list: FriendList = FriendList.objects.get(user=self.receiver)
+        if receiver_friend_list:
+            receiver_friend_list.add_friend(self.sender)
+            sender_friend_list: FriendList = FriendList.objects.get(user=self.sender)
+            if sender_friend_list:
+                sender_friend_list.add_friend(self.receiver)
+                self.is_active = False
+                self.save()
+    
+    def decline(self):
+        """
+        Decline a friend request by settign is_active to false
+        """
+        self.is_active = False
+        self.save()
+    
+    def cancel(self):
+        """
+        Cancel a friend request from sender perspective
+        different than decline based on notification
+        """
+        self.is_active = False
+        self.save()
+
+# =============================================================
+
 class Tournament(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -80,6 +171,7 @@ class Tournament(models.Model):
 
     def __str__(self):
         return f"Tournament {self.id}"
+
 
 
 class Match(models.Model):
