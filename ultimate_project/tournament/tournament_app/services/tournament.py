@@ -177,9 +177,9 @@ class Tournament():
 		async with aiohttp.ClientSession() as session:
 			async with session.get(
 				f"http://databaseapi:8007/api/tournament/") as response:				
-				if response.status not in (200, 201):
-					full_response = response.json()
-					print(f"⭐⭐⭐⭐⭐ RESPONSE EXTRACTING", flush=True)
+				if response.status in (200, 201):
+					full_response = await response.json()
+					print(f"⭐⭐⭐⭐⭐ RESPONSE EXTRACTING = {full_response}", flush=True)
                     
                     # [-1] access the last json block
 					return full_response[-1]["id"]
