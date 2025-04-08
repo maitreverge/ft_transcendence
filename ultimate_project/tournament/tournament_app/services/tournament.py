@@ -140,23 +140,21 @@ class Tournament():
 			import TournamentConsumer
 		await TournamentConsumer.send_all_players(packet)
 
-    # ! ================ SEND DB ===============================================
 	async def save_tournament_matches(self, matches, tournament_id):
 		
 		from tournament_app.views import send_db as update_match
 
 		path = "api/match/"
 		
+        # Loops 3 times because there is 3 matches within a tournament
 		for _ in range(3):
-			
-			tournament = tournament_id
-			
             # `or 0` Handles `None` users
 			p1 = max(1, matches[_]["matchResult"]["p1Id"] or 0)
 			p2 = max(1, matches[_]["matchResult"]["p2Id"] or 0)
 			win = max(1, matches[_]["matchResult"]["winnerId"] or 0)
 			score_p1 = matches[_]["matchResult"]["score"][0]
 			score_p2 = matches[_]["matchResult"]["score"][1]
+			tournament = tournament_id
 			
 			# Compile each key in a JSON body
 			data = {
@@ -167,23 +165,16 @@ class Tournament():
 				"score_p2": score_p2,
 				"tournament": tournament,
 			}
-			
-			print(f"⭐⭐⭐ TOURNAMENT MATCHED DATA = {data}", flush=True)
-
 			await update_match(path, data)
 
 	async def extract_last_tournament_id(self):
-		print(f"⭐⭐⭐⭐⭐⭐⭐⭐⭐EXTRACTING LAST TOURNAMEnT ID ", flush=True)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(
 				f"http://databaseapi:8007/api/tournament/") as response:				
 				if response.status in (200, 201):
 					full_response = await response.json()
-					print(f"⭐⭐⭐⭐⭐ RESPONSE EXTRACTING = {full_response}", flush=True)
-                    
                     # [-1] access the last json block
 					return full_response[-1]["id"]
-
 
 	async def send_db(self, tournament_result):
 
@@ -197,18 +188,12 @@ class Tournament():
 		}
 		await sdb(path, data_tournament)
 		
-		print(f"⭐ DATA SEND TO DB = {data_tournament}", flush=True)
-
-		
         # ... and retrieve it's databaseID afterwards to pass it as argument
 		id_tournament = await self.extract_last_tournament_id()
-		print(f"⭐⭐ EXTRACTED TOURNAMENT ID = {id_tournament}", flush=True)
 		all_matches = tournament_result["matchs"]
 		
 		await self.save_tournament_matches(all_matches, id_tournament)
 		
-    # ! ================ SEND DB ===============================================
-
 	async def match_players_update(self, match_update):
 
 		print(f"MATCH PLAYERS UPDATE {match_update}", flush=True)

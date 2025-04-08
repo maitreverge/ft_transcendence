@@ -82,8 +82,6 @@ def tournament_pattern(request: HttpRequest, tournament_id):
         "tournament_pattern.html",
     )
 
-
-# ! =================== SEND DB =======================
 async def send_db(path, result):
 
 	print(f"SEND DB {result}", flush=True)
@@ -94,5 +92,3 @@ async def send_db(path, result):
 			if response.status not in (200, 201):
 				err = await response.text()
 				print(f"Error HTTP {response.status}: {err}", flush=True)
-
-# ! =================== SEND DB =======================

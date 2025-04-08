@@ -281,7 +281,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			await SimpleConsumer.send_db(data)
 	
 
-    # ! =================== SEND DB =======================
 	@staticmethod
 	async def send_db(match_results):
 
@@ -302,9 +301,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
             "score_p1": score_p1,
             "score_p2": score_p2,
         }
-		# print(f"⭐⭐⭐ DATA SEND TO DB = {data}", flush=True)
 
 		path = "api/match/"
 		await sdb(path, data)
-
-    # ! =================== SEND DB =======================
