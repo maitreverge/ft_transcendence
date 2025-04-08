@@ -47,7 +47,6 @@ function messagePopUp(titre, url, text, traduction)
       });
 }
 
-
 function connectNewPlayer(playerId, playerName)
 {
 	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);

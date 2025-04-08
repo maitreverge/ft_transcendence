@@ -106,10 +106,12 @@ class Tournament():
 			nxt_plys = self.get_next_players()
 			if not None in (nxt_plys[0][0], nxt_plys[1][0]):
 				link_match = await self.start_match(
-					nxt_plys[0], nxt_plys[1], "m1")			
+					nxt_plys[0], nxt_plys[1], "m1")							
 				await self.send_all_players(link_match)
 			else:
-				await self.create_fake_match(match_result, nxt_plys)
+				link_match = self.create_fake_link(match_result, "m1", nxt_plys)
+				await self.send_all_players(link_match)
+				await self.create_fake_match(link_match, nxt_plys)
 		elif self.n_match == 3:
 			await self.send_all_players(match_result)
 			tournament_result = self.get_tournament_result(match_result)
@@ -118,11 +120,29 @@ class Tournament():
 			asyncio.create_task(self.end_remove())
 			self.launch = False
 
-	async def create_fake_match(self, match_result, nxt_plys):
+	def create_fake_link(self, match_result, local_match_id, nxt_plys):
 		
 		match_id = -match_result.get('matchId')
-		match = {"matchId": match_id}
+		link_match = {
+			"type": "linkMatch",
+			"tournamentId": self.id,
+			"localMatchId": local_match_id,			
+			"matchId": match_id,
+			"p1Id": nxt_plys[0][0],
+			"p2Id": nxt_plys[1][0],
+			"p1Name": nxt_plys[0][1],
+			"p2Name": nxt_plys[1][1]
+		}
+		match = {
+			"matchId": match_id,						
+			"linkMatch": link_match
+		}
 		self.matchs.append(match)
+		return link_match
+	
+	async def create_fake_match(self, link_match, nxt_plys):
+		
+		match_id = -link_match.get('matchId')
 		if nxt_plys[0][0]:
 			winner = nxt_plys[0]
 			looser =  nxt_plys[1]
@@ -130,8 +150,8 @@ class Tournament():
 			winner = nxt_plys[1]
 			looser = nxt_plys[0]
 		else:
-			winner = (None, None)
-			looser = (None, None)
+			winner = (None, "nobody")
+			looser = (None, "nobody")
 		data = {
 			"matchId": match_id,
 			"winnerId": winner[0],
@@ -147,8 +167,8 @@ class Tournament():
 	async def end_remove(self):
 
 		print(f"END REMOVE", flush=True)
-		await asyncio.sleep(10)
-		await self.del_tournament()
+		# await asyncio.sleep(10)
+		# await self.del_tournament()
 
 	def get_next_players(self):
 

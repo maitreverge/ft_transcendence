@@ -34,10 +34,10 @@ class Pong:
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 1
+		self.max_score = 100
 		self.point_delay = 1
 		self.start_delay = 4
-		self.max_wait_delay = 1000	
+		self.max_wait_delay = 20
 		self.users = []
 		self.players = None		
 		self.winner = None
@@ -225,7 +225,7 @@ class Pong:
 	def get_winner_and_looser(self):
 
 		if not self.winner:
-			return ((None, None), (None, None))
+			return ((None, "None"), (None, "None"))
 		return ((
 			self.winner,
 			self.names[0] if self.winner == self.plyIds[0] else self.names[1]			
