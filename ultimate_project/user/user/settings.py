@@ -17,6 +17,9 @@ import logging
 
 NAME = os.getenv("name")
 
+HOST_IP = os.getenv("HOST_IP")
+
+
 PI_DOMAIN = os.getenv("pi_domain")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

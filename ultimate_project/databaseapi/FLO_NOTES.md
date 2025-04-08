@@ -43,6 +43,8 @@
 
 🟧 ADMIN DOIT RESTER ID 1
 
+🟧 UUID, le slash a la fin urls.py
+
 
 
 ```python
