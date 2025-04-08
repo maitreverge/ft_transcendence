@@ -60,8 +60,8 @@ function stopMatch()
     toggleSidebar(true);
     console.log("popstate event triggered!");
     htmx.ajax("GET", window.location.pathname, {
-      target: "body",
-      swap: "outerhtml",
+      target: "#main_div",
+      swap: "innerhtml",
       headers: { "HX-Login-Success": "true" },
     });
     // closeWebsockets();
