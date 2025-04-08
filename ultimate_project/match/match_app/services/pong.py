@@ -213,7 +213,7 @@ class Pong:
 				"winnerName":  w_and_l[0][1],
 				"looserName":  w_and_l[1][1],
 				"score": self.score
-				}))
+				})) 
 			except Exception as e:
 				pass		
 		print(f"BEFORE SEND MATCH RESULT", flush=True)
