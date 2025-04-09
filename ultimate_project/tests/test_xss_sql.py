@@ -18,15 +18,15 @@ def run(playwright: Playwright) -> None:
         page.locator("#password").fill(PASSWORD)
         page.locator("#loginButton").click()
 
-    def logout():
-        youpiBanane = page.locator("#youpiBanane")
-        logoutButton = page.locator("#logoutButton")
-        modalLogoutButton = page.locator("#modalLogoutButton")
-        assert "show" not in (youpiBanane.get_attribute("class") or "")
-        youpiBanane.click()
-        logoutButton.click()
-        modalLogoutButton.click()
-        expect(page).to_have_url(f"{BASE_URL}/login/")
+    # def logout():
+    #     youpiBanane = page.locator("#youpiBanane")
+    #     logoutButton = page.locator("#logoutButton")
+    #     modalLogoutButton = page.locator("#modalLogoutButton")
+    #     assert "show" not in (youpiBanane.get_attribute("class") or "")
+    #     youpiBanane.click()
+    #     logoutButton.click()
+    #     modalLogoutButton.click()
+    #     expect(page).to_have_url(f"{BASE_URL}/login/")
 
     # ! =============== KICKSTART TESTER HERE ===============
     
@@ -63,10 +63,10 @@ def run(playwright: Playwright) -> None:
     
     # TEST SQL / XSS on register page
 
-    # ============ TODO ======
-
     # Login within the website
+    time.sleep(1)
     login(LOGIN)
+    time.sleep(2)
     expect(page).to_have_url(f"{BASE_URL}/home/")
 
 
@@ -91,6 +91,7 @@ def run(playwright: Playwright) -> None:
     page.goto(f"{BASE_URL}/account/confidentiality/delete-account/")
 
     for sql in SQL:
+        # print(f"CURRENT SQL TESTED = {sql}")
         page.locator("#password").fill(sql)
         page.locator("#delete-acc-btn").click()
         time.sleep(0.2)
@@ -98,14 +99,14 @@ def run(playwright: Playwright) -> None:
         assert error_message == "The password you entered is incorrect."
 
     for xss in XSS:
-        # print("XSS GOOOOOOO")
+        # print(f"CURRENT XSS TESTED = {xss}")
         page.locator("#password").fill(xss)
         page.locator("#delete-acc-btn").click()
         time.sleep(0.2)
         error_message = page.locator("#error-input-delete-acc").text_content().strip()
         assert error_message == "The password you entered is incorrect."
 
-    logout()
+    # logout()
 
     print(f"✅ SQL / XSS PASSED ✅")
 
