@@ -6,29 +6,23 @@
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
 
-✅ Create a worklofo to delete the DB at 42
-
-✅ Test and stabilize multi-users connection (once everything is locked up) 
-
 🟧 Beautify register / login / 2fa landing pages
 
 🟧 Find a way to lock the database routes as well
 
-🟧✅ Lock all the routes (lock les routes visibles dans le front)
+🟧 Lock all the routes (lock les routes visibles dans le front)
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
-🟧 VOIR LE REGEX DE SEB DANS DISCORD POUR SES WEBSOCKETS (lock )
-
-🟧 DELETE THIS FILE
+🟧 DELETE THIS FLO_NOTES FILES
 
 🟧 DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT...
 
 🟧 XSS / Injection SQL sur tout les formulaires
 
-🟧 Changer le mot de passe d'admin / Delete l'admin en production
+🟧 Changer le mot de passe d'admin / Delete l'admin en production (`user_prod.csv`)
 
-🟧 Garder des users standarts pour la correction
+🟧 Switch from `user_prod.csv` to `user.csv` in correction 
 
 🟧 https://docs.djangoproject.com/en/5.1/ref/csrf/#csrf-limitations
 ==> Proteger les routes de POST / PUT / DELETE avec des decorateurs CSRF adequats
@@ -39,42 +33,22 @@
 
 🟧 Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
 
-🟧 Implementer les pages d'erreur si pas auth a la fin de la semaine
+🟧 Avoir les pages d'erreurs 404/500 sur `login/` et `regsiter/`
 
 🟧 ADMIN DOIT RESTER ID 1
 
-🟧 UUID, le slash a la fin urls.py
+🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
+
+🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
 
 
+======================================= DONE =====================================
 
-```python
+✅ UUID, le slash a la fin urls.py (si on met le slash, tout pete)
 
-    @staticmethod
-    async def send_db(match_results):
+✅ Create a worklofo to delete the DB at 42
 
-        print(f"SIMPLE MATCH CONSUMER SEND BD {match_results}", flush=True)
-        from tournament_app.views import send_db as sdb
-
-        # Extract 3 data
-        p1 = 1 if match_results["p1Id"] < 0 else match_results["p1Id"]
-        p2 = 1 if match_results["p2Id"] < 0 else match_results["p2Id"]
-        win = 1 if match_results["winnerId"] < 0 else match_results["winnerId"]
-        score_p1 = match_results["score"][0]
-        score_p2 = match_results["score"][1]
-        data = {
-            "player1": p1,
-            "player2": p2,
-            "winner": win,
-            "score_p1": score_p1,
-            "score_p2": score_p2,
-        }
-
-        path = "api/match/"
-        await sdb(path, data)
-
-```
-
-
+✅ Test and stabilize multi-users connection (once everything is locked up) 
 
 
 --------------------------------------------------------------------------------
@@ -129,12 +103,6 @@ print(last_id)  # Output: 2
 --------------------------------------------------------------------------------
 
 
-🟧 DELETE LE BASH MIGRATION.DELETE.SH DANS LE MAKEFILE
-
-🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES ==> VOIR AVEC MERGE THOMAS
-
-🟧 Retravailler la securisation des routes dans fastAPI
-
 ✅ TODO FOR DELETING THE DATABASE
 
 ✅ METTRE LES CHAMPS REQUIRED DANS DELETE-PROFILE.HTMl sur les champs password et otp
@@ -159,14 +127,6 @@ print(last_id)  # Output: 2
 🟧 Injections SQL / XSS
 ✅ HTTPS (wss)
 🟧 Secure routes API
-🟧
-✅
-
-`AVATAR CREATION` :
-
-In user creation : create a default image when creating an user
-
-
 
 
 ⛔ ✅  
@@ -198,34 +158,16 @@ In user creation : create a default image when creating an user
 ⛔ ✅ Then displays the token on the front with a redirection
 
 
-
-
-
-
 ⛔ ✅  Possibly leverage django filters
 
 
 ⛔ ✅ centraliser la documentation django / database / container
 
 --------------------------------------------------------------------------------
-									MY ROUTES
---------------------------------------------------------------------------------
-
-http://localhost:8000/admin/  ==>  ADMIN PANEL
-
-
-
---------------------------------------------------------------------------------
 									DATABASE ENDPOINTS
 --------------------------------------------------------------------------------
 
 ```python
-
-# requirements
-django-cors-headers
-
-
-
 
 INSTALLED_APPS = [
     ...
@@ -261,41 +203,9 @@ CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]
 
 
-
-
-```
-
-
 --------------------------------------------------------------------------------
 									TO ASK
 --------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-									WIP
---------------------------------------------------------------------------------
-
-2FA :
-- Implement necessary libraries
-- Create interface with Google Authenticator with big ass QR Code
-- Make 2FA optional during registering to website (possibily enable it later ?)
-- Create a one time password interface when login-in.
-- Store + encrypt securely codes ==> `cryptography` module
-- LogOut users on 2FA failure.
-
-
---------------------------------------------------------------------------------
-									TOUDOU LIST
---------------------------------------------------------------------------------
-# TO FIX LATER :
-⛔ Health tests visible on the console, maybe put them in  `> /dev/null`
-
-⛔ When refreshing AUTH forms, there is a CSRF verification failed.
-When
-
-
-# 🪡🪡🪡        WORK NEEDLE        🪡🪡🪡🪡🪡🪡
-
 
 
 --------------------------------------------------------------------------------

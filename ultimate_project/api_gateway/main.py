@@ -23,6 +23,7 @@ app = FastAPI(
     description="This API Gateway routes requests to various microservices. \
         Define endpoints to get any data here :)",
     version="1.0.0",
+    # docs_url=None, # TODO FLO : Uncomment this line to disable access to SwaggerUI
 )
 
 # ====== 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 ======
