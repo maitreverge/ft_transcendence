@@ -30,6 +30,7 @@ class Pong:
 		self.id = Pong.id	
 		self.plyIds = [p1[0], p2[0]]
 		self.names = [p1[1], p2[1]]
+		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
 		self.start_flag = False
 		self.pause = True

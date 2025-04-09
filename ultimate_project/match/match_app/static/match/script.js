@@ -608,6 +608,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	// console.log("SERVEUR");
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
+	pads[3].innerText = data.score[0] + " | " + data.score[1];
 	if (data.timestamp && !data.state) {
 		if (window.gameStartTimestamp === undefined) {
 			window.gameStartTimestamp = data.timestamp;
@@ -631,8 +632,8 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	const rightNameElement = document.getElementById("inst-right");
 	if (data.names)
 	{
-		leftNameElement.innerHTML = data.names[0] + "<br> keys: enter / +"
-		rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+		leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓"
+		rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
 	}
 	if (data.state == "end")
 	{	
@@ -721,7 +722,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 			// console.log(targets);
 		// }
 		
-        pads[3].innerText = data.score[0] + " | " + data.score[1];
+        // pads[3].innerText = data.score[0] + " | " + data.score[1];
     }
 	// });
 		

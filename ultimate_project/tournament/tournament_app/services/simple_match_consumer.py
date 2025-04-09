@@ -98,7 +98,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 		if selectedId == self.id and not selectedPlayer.get('busy'):
 			selectedPlayer['busy'] = -selectedId
-			match_id = await self.start_match(-selectedId, selectedName)
+			match_id = await self.start_match(
+				self.id, self.name, -selectedId, selectedName)
 			await self.send_confirmation_back(
 				self, True, selectedId, selectedName,
 				selectedId, selectedName, match_id
@@ -175,8 +176,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		app_name = applicant_player.get('playerName')
 		if response:
 			if self.is_busy_with(applicant_player, self.id):			
-				match_id = await self.start_match(
-					applicantId, applicant_player.get('playerName'))
+				match_id = await self.start_match(applicantId,
+					applicant_player.get('playerName'), self.id, self.name)
 			else:		
 				return
 		elif self.is_busy_with(applicant_player, self.id):
@@ -206,13 +207,14 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			"matchId": match_id	
 		}))
 
-	async def start_match(self, applicantId, applicantName):
+	async def start_match(self,
+		applicantId, applicantName, other_id, other_name):
 
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
     				f"http://match:8002/match/new-match/"
     				f"?p1Id={applicantId}&p1Name={applicantName}"
-    				f"&p2Id={self.id}&p2Name={self.name}"
+    				f"&p2Id={other_id}&p2Name={other_name}"
 				) as response:
 				if response.status == 201:
 					data = await response.json()
@@ -221,8 +223,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 						"matchId": match_id,
 						"playerId": applicantId,
 						"playerName": applicantName, 
-						"otherId": self.id,
-						"otherName": self.name		
+						"otherId": other_id,
+						"otherName": other_name		
 					})
 					return match_id
 				return None
