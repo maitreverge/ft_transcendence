@@ -35,7 +35,7 @@ class Pong:
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 2
+		self.max_score = 6
 		self.point_delay = 1
 		self.start_delay = 4
 		self.max_wait_delay = 2000
@@ -189,6 +189,7 @@ class Pong:
 							"state": state.name,
 							"yp1": self.pads_y[0],
 							"yp2": self.pads_y[1],
+							"plyIds": self.plyIds,
 							"names": self.names,
 							"ball": self.ball,
 							"score": self.score,

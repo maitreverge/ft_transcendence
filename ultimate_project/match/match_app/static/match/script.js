@@ -632,8 +632,27 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	const rightNameElement = document.getElementById("inst-right");
 	if (data.names)
 	{
-		leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓"
-		rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
+		console.log("PLAYER2ID; ", window.player2Id)
+		if (window.player2Id != 0)
+		{
+			console.log("Pje suis ds le mode MULTY; ", window.player2Id)
+			leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+			rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
+		}
+		else 
+		{
+			console.log("Pje suis ds le mode REMOTE; ", window.player2Id)
+			if (window.playerId == data.plyIds[0])
+			{
+				leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+				rightNameElement.innerHTML = data.names[1];
+			}
+			else
+			{
+				leftNameElement.innerHTML = data.names[0];
+				rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+			} 
+		}
 	}
 	if (data.state == "end")
 	{	
