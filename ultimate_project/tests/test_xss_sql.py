@@ -48,6 +48,7 @@ def run(playwright: Playwright) -> None:
         "\" onfocus=\"alert('XSS')",
     }
 
+    # TEST SQL / XSS on login page
     for sql in SQL:
         login(sql)
         time.sleep(0.5)
@@ -60,11 +61,51 @@ def run(playwright: Playwright) -> None:
         error_message = page.locator("#login-form")
         expect(error_message).to_have_text("Invalid credentials")
     
-    login(LOGIN, 1)
+    # TEST SQL / XSS on register page
+
+    # ============ TODO ======
+
+    # Login within the website
+    login(LOGIN)
+    expect(page).to_have_url(f"{BASE_URL}/home/")
 
 
+    # TEST SQL / XSS on the SETUP 2FA
+    page.goto(f"{BASE_URL}/account/security/setup-2fa/")
 
-    # logout()
+    # ! NOTE : A pure digit form can't accept those two lists, fails at every call
+    for sql in SQL:
+        try:
+            twofa_input = page.locator("#otp_input").fill(sql)
+            time.sleep(0.5)
+        except Exception as e:
+            pass
+    for xss in XSS:
+        try:
+            twofa_input = page.locator("#otp_input").fill(xss)
+            time.sleep(0.5)
+        except Exception as e:
+            pass
+
+    # TEST SQL / XSS on the DELETE ACCOUNT
+    page.goto(f"{BASE_URL}/account/confidentiality/delete-account/")
+
+    for sql in SQL:
+        page.locator("#password").fill(sql)
+        page.locator("#delete-acc-btn").click()
+        time.sleep(0.2)
+        error_message = page.locator("#error-input-delete-acc").text_content().strip()
+        assert error_message == "The password you entered is incorrect."
+
+    for xss in XSS:
+        # print("XSS GOOOOOOO")
+        page.locator("#password").fill(xss)
+        page.locator("#delete-acc-btn").click()
+        time.sleep(0.2)
+        error_message = page.locator("#error-input-delete-acc").text_content().strip()
+        assert error_message == "The password you entered is incorrect."
+
+    logout()
 
     print(f"✅ SQL / XSS PASSED ✅")
 
