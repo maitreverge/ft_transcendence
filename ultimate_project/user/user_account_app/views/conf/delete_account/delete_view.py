@@ -65,7 +65,6 @@ async def handle_get_delete(request, username, context):
         context["error"] = "Something went wrong when getting the delete page. Please try again later."
         return render(request, "partials/conf/delete_acc/error_del.html", context), "is_error"
     
-# will neeed to modfy this code
 @require_http_methods(["GET", "POST"])
 @ensure_csrf_cookie
 async def delete_account_view(request: HttpRequest):

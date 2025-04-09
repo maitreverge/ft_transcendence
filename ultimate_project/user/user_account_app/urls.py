@@ -25,4 +25,5 @@ urlpatterns = [
     # Confidentiality page
     path("confidentiality/", conf_view.conf_view, name="conf-main-page"),
     path("confidentiality/delete-account/", delete_view.delete_account_view, name="delete-account"),
+
 ]

@@ -1,14 +1,19 @@
 {% load static %}
 <div class="container-fluid">
   <!-- Page Heading -->
-  <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+  <div
+    class="row justify-content-center align-items-center"
+    style="min-height: 80vh"
+  >
     <div class="col-lg-6 mb-4">
       <div class="card shadow mb-4 border-left-danger">
         <div class="card-body text-center">
           <div class="mb-3">
             <i class="fas fa-exclamation-triangle fa-4x text-danger"></i>
           </div>
-          <p id="error-delete-account">{{ error|default:"An unexpected error occurred." }}</p>
+          <p id="error-delete-account">
+            {{ error|default:"An unexpected error occurred." }}
+          </p>
           <a
             href="/account/confidentiality/"
             class="btn btn-primary btn-user mt-3 btn-rounded"
@@ -25,29 +30,26 @@
 </div>
 
 <style>
-  /* Button Styles for Rounded Button */
   .btn-rounded {
-    border-radius: 50px; /* Makes the button rounded */
-    padding: 0.75rem 1.5rem; /* Slightly more padding for a better look */
-    font-size: 1rem; /* Keep the font size moderate */
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
     text-align: center;
     border-width: 2px;
-    background-color: transparent; /* Transparent background by default */
+    background-color: transparent;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   }
 
-  /* Red Button for Error Page (e.g. return button) */
   .btn-primary {
     border-color: #007bff;
     color: #007bff;
     background-color: transparent;
   }
 
-  /* Hover effects for the button */
   .btn-primary:hover {
-    background-color: #007bff; /* Blue background on hover */
-    color: white; /* White text on hover */
-    border-color: #007bff; /* Blue border on hover */
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
   }
 
   .btn-primary.active,
@@ -57,21 +59,18 @@
     border-color: #007bff !important;
   }
 
-  /* Error Page Styles */
   #error {
-    color: #dc3545; /* Red color for error message */
+    color: #dc3545;
     font-size: 1.25rem;
     margin-top: 20px;
   }
 
-  /* Ensure responsive font size for error messages */
   @media (max-width: 576px) {
     #error {
       font-size: 1rem;
     }
   }
 
-  /* Make the form inputs larger */
   .form-control-user.form-control-lg {
     font-size: 1.25rem;
     padding: 0.75rem;

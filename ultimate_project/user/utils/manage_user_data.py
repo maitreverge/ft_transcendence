@@ -128,19 +128,6 @@ async def delete_user_w_user_id(user_id):
         print(f"Exception in get_if_user_credentials_valid: {str(e)}", flush=True)
         return None
 
-async def delete_user_cookies_from_fast_api(request):
-    if request.method == "POST":
-        fastapi_url = "http://ctn_api_gateway:8005/auth/logout/"
-        headers = {key: value for key, value in request.headers.items()}
-        cookies = request.COOKIES
-        async with httpx.AsyncClient() as client:
-            response = await client.post(fastapi_url, headers=headers, cookies=cookies, content=None)
-        if response.status_code == 200:
-            return JsonResponse({"message": "Successfully logged out."})
-        else:
-            return JsonResponse({"error": "Failed to log out."}, status=response.status_code)
-    return JsonResponse({"error": "Only POST method is allowed."}, status=405)
-
 async def build_context(request: HttpRequest) -> Dict:
     """Build the base context with username from Request if found"""
     username = request.headers.get("X-Username")
@@ -153,3 +140,30 @@ async def build_context(request: HttpRequest) -> Dict:
     else:
         context["username"] = None
     return context
+
+
+async def get_user_data(user_id):
+    """
+    Check if the user's credentials are valid using the database API.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            headers = {"Content-Type": "application/json"}
+            response = await client.get(
+                f"http://databaseapi:8007/api/player/{user_id}/",
+                headers=headers,   
+            )
+            if response.status_code == 204:
+                try:
+                    result = response.json()
+                    print(f"User deleted successfully.", flush=True)
+                    return result
+                except ValueError:
+                    print("User deleted successfully (non-JSON response)", flush=True)
+                    return {"success": True}
+            print(f"Error retrieving user credentials: HTTP {response.status_code} - {response.text}",
+                flush=True,)
+            return None
+    except Exception as e:
+        print(f"Exception in get_if_user_credentials_valid: {str(e)}", flush=True)
+        return None

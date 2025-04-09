@@ -536,7 +536,6 @@ async def match_proxy(
 
 # ====== 🚀 USER SERVICE ROUTE 🚀 ======
 
-# WILL BE SUED INT EH FURTUR FOR THE FRIENDSHIP SYSTEM
 @app.api_route("/user/{path:path}", methods=["GET"])
 async def user_route(path: str, request: Request):
 
@@ -547,8 +546,6 @@ async def user_route(path: str, request: Request):
         return await reverse_proxy_handler("user", "/user/" + path, request, 
             serve_from_static=True, static_service_name="static_files")
 
-#OK
-# handle the user account management
 @app.api_route("/account/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def user_account_route(path: str, request: Request):
 
@@ -561,7 +558,6 @@ async def user_account_route(path: str, request: Request):
 
 # ====== 🗂️ API DATABASE PROXY 🗂️ ======
 
-# ! DATABASE API ROUTE
 @app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def databaseapi_proxy(path: str, request: Request):
     """
