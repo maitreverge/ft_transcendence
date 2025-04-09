@@ -111,7 +111,7 @@ def run(playwright: Playwright) -> None:
         # Navigate to a page where the sidebar is visible (not home)
         if page.url.endswith("/home/"):
             # Navigate to profile page where sidebar should be visible
-            navigate(f"{base_url}/user/profile/")
+            navigate(f"{base_url}/account/profile/")
             page.wait_for_load_state("networkidle")
             print("✓ Navigated to profile page for sidebar testing")
 
