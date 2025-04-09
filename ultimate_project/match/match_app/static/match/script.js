@@ -609,7 +609,8 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	// console.log("SERVEUR");
 	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
-	pads[3].innerText = data.score[0] + " | " + data.score[1];
+	// console.log("DATA: ", data);
+	// pads[3].innerText = data.score[0] + " | " + data.score[1];
 	if (data.timestamp && !data.state) {
 		if (window.gameStartTimestamp === undefined) {
 			window.gameStartTimestamp = data.timestamp;
@@ -633,26 +634,42 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	const rightNameElement = document.getElementById("inst-right");
 	if (data.names)
 	{
+		pads[3].innerText = data.score[0] + " | " + data.score[1];
 		// console.log("PLAYER2ID; ", window.player2Id)
 		if (window.player2Id != 0)
 		{
-			// console.log("Pje suis ds le mode MULTY; ", window.player2Id)
-			leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-			rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
-		}
-		else 
-		{
-			// console.log("Pje suis ds le mode REMOTE; ", window.player2Id)
-			if (window.playerId == data.plyIds[0])
+			console.log("Pje suis ds le mode MULTY; ", window.player2Id)
+			
+			if (data.plyIds && window.playerId == data.plyIds[0])
 			{
+				console.log(data.plyIds[0]);
 				leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-				rightNameElement.innerHTML = data.names[1];
+				rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
 			}
 			else
 			{
-				leftNameElement.innerHTML = data.names[0];
-				rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-			} 
+				leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+				rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
+			}
+		}
+		else 
+		{
+			console.log("Pje suis ds le mode REMOTE; ", window.playerId)
+			console.log("Pje suis ds le mode REMOTE; joueur 0", data.plyIds[0], " ", data.names[0]);
+			console.log("Pje suis ds le mode REMOTE; joueur 1", data.plyIds[1], " ", data.names[1]);
+			if (data.plyIds)
+			{
+				if (window.playerId == data.plyIds[0])
+				{
+					leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+					rightNameElement.innerHTML = data.names[1];
+				}
+				else
+				{
+					leftNameElement.innerHTML = data.names[0];
+					rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+				} 
+			}
 		}
 	}
 	if (data.state == "end")

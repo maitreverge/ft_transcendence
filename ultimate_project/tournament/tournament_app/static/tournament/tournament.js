@@ -637,7 +637,8 @@ function linkMatch(lk)
 			// localMatch.classList.add("next-match");
 		}
 		const [playerId, playerName, player2Id, player2Name] = catchPlayersInMatch(
-			lk, window.selfId, window.selfName)
+			lk, window.selfId, window.selfName);
+		console.log("TOURNAMENT TO ENTER IN MATCH : ", playerId, " ",  playerName, " ", player2Id, " ", player2Name)
 		fetch(
 			`/match/match${dim.value}d/` +
 			`?matchId=${lk.matchId}` +
