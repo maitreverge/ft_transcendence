@@ -40,15 +40,16 @@
                         </a>
                         <div id="overlayButton" onclick="replayTuto()"
                             class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                            <i class="fas fa-info-circle"></i>INFO</div>
+                            <i class="fas fa-info-circle"></i>INFO
+                        </div>
                     </li>
                     <!-- Security Button (Replaces Password & 2FA) -->
                     <li class="nav-item mb-3">
                         <a id="acc-security"
                             class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
                             <span class="mr-2">2D</span>
-                            <label class="switch">
-                                <input type="checkbox">
+                            <label for="dim" class="switch">
+                                <input type="checkbox" id="dim" hidden>
                                 <span class="slider"></span>
                             </label>
                             <span class="ml-2">3D</span>
@@ -72,17 +73,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 d-flex flex-column">
-                            <div class="card shadow">
-                                <div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
-                                    <h6 class="font-weight-bold text-primary mx-2">Dimensions:</h6>
-                                    <select id="dim" class="form-select w-auto">
-                                        <option value="2">2D</option>
-                                        <option value="3">3D</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-lg-2 d-flex flex-column"></div>
                     </div>
                     <div class="row d-flex align-items-stretch">
@@ -98,7 +88,6 @@
                         </div>
                         <div class="col-lg-4 mb-4">
                             <div class="card shadow mb-4 h-100">
-
                                 <div class="card-body">
                                     <div id="matchs">
                                     </div>
@@ -113,7 +102,15 @@
         </main>
     </div>
 </div>
+<script>
+    const dim = document.getElementById('dim');
 
+    Object.defineProperty(dim, 'value', {
+        get() {
+            return dim.checked ? '3' : '2';
+        }
+    });
+</script>
 <!-- Add FontAwesome Icons -->
 <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
