@@ -16,17 +16,13 @@
 
 🟧 Find a way to lock the database routes as well
 
-🟧 Lock all the routes (lock les routes visibles dans le front)
+⚠️ Lock all the routes (lock les routes visibles dans le front)
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
 🟧 DELETE THIS FLO_NOTES FILES
 
 🟧 DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT...
-
-🟧 XSS
-
-🟧 Injection SQL sur tout les formulaires
 
 🟧 Changer le mot de passe d'admin / Delete l'admin en production (`user_prod.csv`)
 
@@ -47,26 +43,16 @@
 
 🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
 
-🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES // VERIFIER XSS
-{
-	✅ login/
-	✅ register/
-	🟧✅ /account/profile/ => FULL of 404
-	🟧✅ /account/confidentiality/delete-account/ 
-	🟧✅
-	🟧✅
-	🟧✅
-	🟧✅
-	🟧✅
-	🟧✅
-	🟧✅
-	🟧✅
-	🟧✅
-}
+🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
 
 
 
 ======================================= DONE =====================================
+
+
+✅ XSS
+
+✅ Injection SQL sur tout les formulaires
 
 ✅ UUID, le slash a la fin urls.py (si on met le slash, tout pete)
 
