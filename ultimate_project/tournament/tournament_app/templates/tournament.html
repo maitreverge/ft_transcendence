@@ -132,8 +132,9 @@
     </div>
 </div>
 <script>
-    const dim = document.getElementById('dim');
-
+    if (typeof dim === 'undefined') {
+        const dim = document.getElementById('dim');
+    }
     Object.defineProperty(dim, 'value', {
         get() {
             return dim.checked ? '3' : '2';
