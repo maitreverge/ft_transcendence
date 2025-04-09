@@ -179,7 +179,7 @@ function setCommands(socket, socket2) {
         delete keysPressed[event.key];
 
         if (Object.keys(keysPressed).length === 0) {
-            cancelAnimationFrame(animationFrameId);
+            cancelAnimationFrame(animationFrameId); //! penser a cancel aussi lanimation de la balle!!!!!!!!!!!!!!!!!!!!!!!!!!!1111111
             animationFrameId = null;
         }
     });
