@@ -74,22 +74,6 @@
 						</div>
 						<div class="col-lg-4 d-flex flex-column">
 							<div class="card shadow">
-								<div class="card-header">
-									<div class="d-flex align-items-center justify-content-center" style="gap: 1rem;">
-										<div class="tuto-overlay" id="tuto-overlay">
-											<div class="tuto-box">
-												<img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
-													alt="Tutoriel" />
-												<p>Clique ici pour démarrer un match !</p>
-											</div>
-										</div>
-										<button id="overlayButton" onclick="replayTuto()"
-											class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i
-												class="fas fa-info-circle"></i>INFO</button>
-									</div>
-								</div>
-							</div>
-							<div class="card shadow">
 								<div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
 									<h6 class="font-weight-bold text-primary mx-2">Dimensions:</h6>
 									<select id="dim" class="form-select w-auto">
@@ -107,8 +91,8 @@
 							<div class="card shadow h-100">
 								<div id="players" class="card-body p-2">
 								</div>
-								<input class="w-50 form-control border-0" id="match-player-name" type="text"
-									maxlength="50" pattern=".{1,50}" required placeholder="enter a name"
+								<input class="m-2 w-auto form-control border-0" id="match-player-name" type="text"
+									maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
 									oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
 							</div>
 						</div>
@@ -132,70 +116,5 @@
 
 <!-- Add FontAwesome Icons -->
 <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-<style>
-	/* Sidebar Button Styles */
-	.sidebar-btn {
-		font-size: 0.85rem;
-		/* Slightly smaller font */
-		padding: 0.5rem 1rem;
-		/* Smaller padding */
-		border-width: 2px;
-		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-	}
-
-	/* When clicked, fill with color */
-	.sidebar-btn.active,
-	.sidebar-btn:focus {
-		color: white !important;
-	}
-
-	/* Outline with Blue Border */
-	.btn-outline-primary {
-		border-color: #007bff;
-		color: #007bff;
-	}
-
-	/* When active, the button background changes to blue */
-	.btn-outline-primary.active,
-	.btn-outline-primary:focus {
-		background-color: #007bff !important;
-		border-color: #007bff !important;
-	}
-
-	/* When hovering, the button gets a darker blue */
-	.sidebar-btn:hover {
-		background-color: #007bff;
-		color: white;
-		border-color: #0056b3;
-	}
-
-	/* Sidebar Styling: Reduce sidebar width for better content presentation */
-	.sidebar {
-		width: 250px;
-		/* Adjust width */
-	}
-
-	/* Main content area should have space beside it */
-	main {
-		margin-left: 260px;
-		/* Add some space for the sidebar */
-	}
-</style>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'tournament/tuto-overlay.js' %}"></script>
-<script>
-	document.addEventListener("DOMContentLoaded", function () {
-		const buttons = document.querySelectorAll(".sidebar-btn");
-
-		buttons.forEach((button) => {
-			button.addEventListener("click", function () {
-				// Remove active class from all buttons
-				buttons.forEach((btn) => btn.classList.remove("active"));
-
-				// Add active class to the clicked button
-				this.classList.add("active");
-			});
-		});
-	});
-</script>
