@@ -2,6 +2,12 @@
 ⛔
 🟧
 ⚠️
+
+# BUG REPORT
+🟧 404 Quand on clique sur les update formulaires de Thomas
+🟧 ACCOUNT THOMAS => Quand on resize la page, les views droppent en bas
+
+
 --------------------------------------------------------------------------------
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
@@ -18,7 +24,9 @@
 
 🟧 DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT...
 
-🟧 XSS / Injection SQL sur tout les formulaires
+🟧 XSS
+
+🟧 Injection SQL sur tout les formulaires
 
 🟧 Changer le mot de passe d'admin / Delete l'admin en production (`user_prod.csv`)
 
@@ -39,7 +47,23 @@
 
 🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
 
-🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
+🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES // VERIFIER XSS
+{
+	✅ login/
+	✅ register/
+	🟧✅ /account/profile/ => FULL of 404
+	🟧✅ /account/confidentiality/delete-account/ 
+	🟧✅
+	🟧✅
+	🟧✅
+	🟧✅
+	🟧✅
+	🟧✅
+	🟧✅
+	🟧✅
+	🟧✅
+}
+
 
 
 ======================================= DONE =====================================
@@ -49,6 +73,42 @@
 ✅ Create a worklofo to delete the DB at 42
 
 ✅ Test and stabilize multi-users connection (once everything is locked up) 
+
+
+--------------------------------------------------------------------------------
+									XSS /SQL
+--------------------------------------------------------------------------------
+
+# XSS
+
+
+
+
+
+# Injection SQL
+
+"SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+
+
+✅
+username: ' OR '1'='1
+password: anything
+
+✅
+username: admin' --
+password: anything
+
+✅
+username: ' UNION SELECT null, 'hacked', null --
+password: anything
+
+✅
+username: ' OR IF(1=1, SLEEP(5), 0) --
+password: anything
+
+
+
+
 
 
 --------------------------------------------------------------------------------
