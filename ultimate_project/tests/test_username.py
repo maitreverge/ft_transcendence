@@ -9,11 +9,10 @@ PASSWORD = "password"
 SENTENCE = "Je suis "
 BASE_URL = "https://localhost:8443"
 
+
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context(
-        ignore_https_errors=True
-    )
+    context = browser.new_context(ignore_https_errors=True)
     page = context.new_page()
 
     def login():
@@ -43,19 +42,29 @@ def run(playwright: Playwright) -> None:
 
         page.locator(f"#{locator}").click()
 
-        # Extract username
-        username = page.locator("#players").text_content().removeprefix("Je suis ")
+        # Wait for the content to be available
+        page.wait_for_selector("#players", state="attached")
 
-        # Assertion on the first try
-        assert username == LOGIN_REG
+        # Extract username from self-player and assert it matches LOGIN_REG
+        self_player_username = (
+            page.locator("#players .self-player").text_content().strip()
+        )
+        print(f"✅ Self player username: {self_player_username}")
 
+        # Simple assertion to verify username matches
+        assert (
+            self_player_username == LOGIN_REG
+        ), f"Username mismatch: found '{self_player_username}', expected '{LOGIN_REG}'"
+
+        # Verify username persists after page reload
         page.reload()
-        assert username == LOGIN_REG
-        
-        time.sleep(1)
-        
-        page.reload()
-        assert username == LOGIN_REG
+        page.wait_for_selector("#players", state="attached")
+        time.sleep(0.5)  # Brief wait for content to load
+
+        reload_username = page.locator("#players .self-player").text_content().strip()
+        assert (
+            reload_username == LOGIN_REG
+        ), f"Username mismatch after reload: found '{reload_username}', expected '{LOGIN_REG}'"
 
         logout()
 
