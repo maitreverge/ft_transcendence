@@ -12,71 +12,207 @@
 		<script src="{% static 'tournament/simple_match.js' %}" onload="initSimpleMatch()"></script>
 	</head>
 </div>
-<div class="pt-4" id="simple-selections">
-	<h1 class="pl-2">Simple match</h1>
-	<div class="row d-flex">
-		<div class="col-lg-2 d-flex flex-column"></div>
-		<div class="col-lg-4">
-
-			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 text-center font-weight-bold text-primary">Player pool</h6>
-				</div>
-			</div>
+<div class="container-fluid">
+	<div class="row">
+	  <!-- Sidebar -->
+	  <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 shadow-sm">
+		<div class="sidebar-sticky text-center">
+		  <!-- Account Settings Title -->
+		  <h1 class="h3 mb-3 text-gray-800">Account Settings</h1>
+		  <ul class="nav flex-column">
+			<!-- Profile Section -->
+			<li class="nav-item mb-3">
+			  <a
+				id="acc-profile"
+				class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+				href="#"
+				hx-get="/account/profile/"
+				hx-target="#account-content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			  >
+				<i class="fas fa-user-circle me-2"></i> Profile
+			  </a>
+			</li>
+  
+			<li class="nav-item mb-3">
+			  <a
+				id="acc-stats"
+				class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+				href="#"
+				hx-get="/account/game-stats/"
+				hx-target="#account-content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			  >
+				<i class="fas fa-trophy me-2"></i> Game Stats
+			  </a>
+			</li>
+  
+			<!-- Security Button (Replaces Password & 2FA) -->
+			<li class="nav-item mb-3">
+			  <a
+				id="acc-security"
+				class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+				href="#"
+				hx-get="/account/security/"
+				hx-target="#account-content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			  >
+				<i class="fas fa-shield-alt me-2"></i> Security
+			  </a>
+			</li>
+			<!-- Confidentiality Button -->
+			<li class="nav-item mb-3">
+			  <a
+				id="acc-conf"
+				class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+				href="#"
+				hx-get="/account/confidentiality/"
+				hx-target="#account-content"
+				hx-swap="innerHTML"
+				hx-push-url="true"
+			  >
+				<i class="fas fa-user-shield me-2"></i>
+				Confidentiality
+			  </a>
+			</li>
+		  </ul>
 		</div>
-		<div class="col-lg-4 d-flex flex-column">
-			<div class="card shadow">
-				<div class="card-header">
-					<div class="d-flex align-items-center justify-content-center" style="gap: 1rem;">
-						<div class="tuto-overlay" id="tuto-overlay">
-							<div class="tuto-box">
-								<img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
-									alt="Tutoriel" />
-								<p>Clique ici pour démarrer un match !</p>
+	  </nav>
+	  <!-- Main Content -->
+	  <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+		<!-- Content dynamically loaded here -->
+		<div id="account-content">
+			<div class="pt-4" id="simple-selections">
+				<h1 class="pl-2">Simple match</h1>
+				<div class="row d-flex">
+					<div class="col-lg-2 d-flex flex-column"></div>
+					<div class="col-lg-4">
+			
+						<div class="card shadow mb-4">
+							<div class="card-header py-3">
+								<h6 class="m-0 text-center font-weight-bold text-primary">Player pool</h6>
 							</div>
 						</div>
-						<button id="overlayButton" onclick="replayTuto()"
-							class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i
-								class="fas fa-info-circle"></i>INFO</button>
 					</div>
+					<div class="col-lg-4 d-flex flex-column">
+						<div class="card shadow">
+							<div class="card-header">
+								<div class="d-flex align-items-center justify-content-center" style="gap: 1rem;">
+									<div class="tuto-overlay" id="tuto-overlay">
+										<div class="tuto-box">
+											<img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
+												alt="Tutoriel" />
+											<p>Clique ici pour démarrer un match !</p>
+										</div>
+									</div>
+									<button id="overlayButton" onclick="replayTuto()"
+										class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i
+											class="fas fa-info-circle"></i>INFO</button>
+								</div>
+							</div>
+						</div>
+						<div class="card shadow">
+							<div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
+								<h6 class="font-weight-bold text-primary mx-2">Dimensions:</h6>
+								<select id="dim" class="form-select w-auto">
+									<option value="2">2D</option>
+									<option value="3">3D</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-2 d-flex flex-column"></div>
 				</div>
-			</div>
-			<div class="card shadow">
-				<div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
-					<h6 class="font-weight-bold text-primary mx-2">Dimensions:</h6>
-					<select id="dim" class="form-select w-auto">
-						<option value="2">2D</option>
-						<option value="3">3D</option>
-					</select>
+				<div class="row d-flex align-items-stretch">
+					<div class="col-lg-2 d-flex flex-column"></div>
+					<div class="col-lg-4 mb-4">
+						<div class="card shadow h-100">
+							<div id="players" class="card-body p-2">
+							</div>
+							<input class="w-50 form-control border-0" id="match-player-name" type="text" maxlength="50"
+								pattern=".{1,50}" required placeholder="enter a name"
+								oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
+						</div>
+					</div>
+					<div class="col-lg-4 mb-4">
+						<div class="card shadow mb-4 h-100">
+			
+							<div class="card-body">
+								<div id="matchs">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-2 d-flex flex-column"></div>
 				</div>
+				<div id="overlay-match"></div>
 			</div>
 		</div>
-		<div class="col-lg-2 d-flex flex-column"></div>
+	  </main>
 	</div>
-	<div class="row d-flex align-items-stretch">
-		<div class="col-lg-2 d-flex flex-column"></div>
-		<div class="col-lg-4 mb-4">
-			<div class="card shadow h-100">
-				<div id="players" class="card-body p-2">
-				</div>
-				<input class="w-50 form-control border-0" id="match-player-name" type="text" maxlength="50"
-					pattern=".{1,50}" required placeholder="enter a name"
-					oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-			</div>
-		</div>
-		<div class="col-lg-4 mb-4">
-			<div class="card shadow mb-4 h-100">
+  </div>
+  
+  <!-- Add FontAwesome Icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <style>
+	/* Sidebar Button Styles */
+	.sidebar-btn {
+	  font-size: 0.85rem; /* Slightly smaller font */
+	  padding: 0.5rem 1rem; /* Smaller padding */
+	  border-width: 2px;
+	  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+	}
+	/* When clicked, fill with color */
+	.sidebar-btn.active,
+	.sidebar-btn:focus {
+	  color: white !important;
+	}
+  
+	/* Outline with Blue Border */
+	.btn-outline-primary {
+	  border-color: #007bff;
+	  color: #007bff;
+	}
+	/* When active, the button background changes to blue */
+	.btn-outline-primary.active,
+	.btn-outline-primary:focus {
+	  background-color: #007bff !important;
+	  border-color: #007bff !important;
+	}
+	/* When hovering, the button gets a darker blue */
+	.sidebar-btn:hover {
+	  background-color: #007bff;
+	  color: white;
+	  border-color: #0056b3;
+	}
+	/* Sidebar Styling: Reduce sidebar width for better content presentation */
+	.sidebar {
+	  width: 250px; /* Adjust width */
+	}
+	/* Main content area should have space beside it */
+	main {
+	  margin-left: 260px; /* Add some space for the sidebar */
+	}
+  </style>
 
-				<div class="card-body">
-					<div id="matchs">
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-2 d-flex flex-column"></div>
-	</div>
-	<div id="overlay-match"></div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'tournament/tuto-overlay.js' %}"></script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+	  const buttons = document.querySelectorAll(".sidebar-btn");
+  
+	  buttons.forEach((button) => {
+		button.addEventListener("click", function () {
+		  // Remove active class from all buttons
+		  buttons.forEach((btn) => btn.classList.remove("active"));
+  
+		  // Add active class to the clicked button
+		  this.classList.add("active");
+		});
+	  });
+	});
+  </script>
