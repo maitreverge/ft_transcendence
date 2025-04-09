@@ -20,20 +20,28 @@
     <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 shadow-sm">
       <div class="sidebar-sticky text-center">
         <!-- Account Settings Title -->
-        <h1 class="h3 mb-3 text-gray-800">Account Settings</h1>
+        <h1 class="h3 mb-3 text-gray-800">Tournament</h1>
         <ul class="nav flex-column">
           <!-- Profile Section -->
           <li class="nav-item mb-3">
             <a
               id="acc-profile"
               class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              href="#"
-              hx-get="/account/profile/"
-              hx-target="#account-content"
+              
+              hx-get="/tournament/simple-match/"
+              hx-target="#main_div"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-user-circle me-2"></i> Profile
+
+
+
+
+
+
+
+
+              <i class="fas fa-user-circle me-2"></i> Simple Match
             </a>
           </li>
 
@@ -41,13 +49,13 @@
             <a
               id="acc-stats"
               class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              href="#"
+              
               hx-get="/account/game-stats/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-trophy me-2"></i> Game Stats
+              <i class="fas fa-trophy me-2"></i> INFO
             </a>
           </li>
 
@@ -56,28 +64,13 @@
             <a
               id="acc-security"
               class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              href="#"
+              
               hx-get="/account/security/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-shield-alt me-2"></i> Security
-            </a>
-          </li>
-          <!-- Confidentiality Button -->
-          <li class="nav-item mb-3">
-            <a
-              id="acc-conf"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              href="#"
-              hx-get="/account/confidentiality/"
-              hx-target="#account-content"
-              hx-swap="innerHTML"
-              hx-push-url="true"
-            >
-              <i class="fas fa-user-shield me-2"></i>
-              Confidentiality
+              <i class="fas fa-shield-alt me-2"></i> 2d/3d
             </a>
           </li>
         </ul>
