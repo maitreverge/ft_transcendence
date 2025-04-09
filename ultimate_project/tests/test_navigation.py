@@ -190,8 +190,8 @@ def run(playwright: Playwright) -> None:
 
     urls = [
         f"{base_url}/home/",
-        f"{base_url}/user/profile/",
-        f"{base_url}/user/stats/",
+        f"{base_url}/account/profile/",
+        f"{base_url}/account/game-stats/",
         f"{base_url}/tournament/simple-match/",
         f"{base_url}/tournament/tournament/",
     ]
