@@ -1,5 +1,6 @@
 var tjs_keyup = null;
 var tjs_keydown = null;
+var is_towplayer = false;
 
 function stopMatch(matchId) {
     // unregister the event listeners
@@ -303,6 +304,8 @@ function setCommands3D(socket, socket2) {
         }
 
         if (socket2 && socket2.readyState === WebSocket.OPEN) {
+            is_towplayer = true;
+
             if (keysPressed["+"]) {
                 socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
             }
@@ -390,8 +393,14 @@ function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingSt
 
     if (data.names)
     {
-        document.getElementById("inst-left").innerHTML = data.names[0] + "<br> keys: enter / +"
-        document.getElementById("inst-right").innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+        if (is_towplayer)
+        {
+            document.getElementById("inst-left").innerHTML = data.names[0] + "<br> keys: enter / +";
+            document.getElementById("inst-right").innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+        } else {
+            document.getElementById("inst-left").innerHTML = data.names[0];
+            document.getElementById("inst-right").innerHTML = data.names[1];
+        }
     }
 
     if (data.state == "end")
