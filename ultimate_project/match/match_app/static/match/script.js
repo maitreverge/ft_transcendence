@@ -1,6 +1,7 @@
 
 function stopMatch(matchId)
 {
+	window.multy = false;
 	const input = document.getElementById("match-player-name");
 	if (input)
 	{
