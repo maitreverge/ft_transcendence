@@ -2,7 +2,7 @@
 
 # python3 manage.py migrate --run-syncdb
 python3 manage.py makemigrations databaseapi_app
-python3 manage.py makemigrations
+# python3 manage.py makemigrations
 python3 manage.py migrate
 
 # ! Init users DB populate
