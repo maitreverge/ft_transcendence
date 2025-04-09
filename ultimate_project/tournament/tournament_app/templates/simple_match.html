@@ -32,11 +32,16 @@
 					</li>
 
 					<li class="nav-item mb-3">
-						<a id="acc-stats"
-							class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-							<i class="fas fa-trophy me-2"></i> INFO
+						<a class="tuto-overlay" id="tuto-overlay">
+						  <div class="tuto-box">
+							<img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp" alt="Tutoriel" />
+							<p>Clique ici pour démarrer un match !</p>
+						  </div>
 						</a>
-					</li>
+						<div id="overlayButton" onclick="replayTuto()"
+						  class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"><i
+							class="fas fa-info-circle"></i>INFO</div>
+				  </li>
 					<!-- Security Button (Replaces Password & 2FA) -->
 					<li class="nav-item mb-3">
 						<a id="acc-security"

@@ -31,10 +31,15 @@
             </a>
           </li>
           <li class="nav-item mb-3">
-            <a id="acc-stats"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-              <i class="fas fa-trophy me-2"></i> INFO
-            </a>
+                <a class="tuto-overlay" id="tuto-overlay">
+                  <div class="tuto-box">
+                    <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp" alt="Tutoriel" />
+                    <p>Clique ici pour démarrer un match !</p>
+                  </div>
+                </a>
+                <div id="overlayButton" onclick="replayTuto()"
+                  class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"><i
+                    class="fas fa-info-circle"></i>INFO</div>
           </li>
           <!-- Security Button (Replaces Password & 2FA) -->
           <li class="nav-item mb-3">
@@ -79,17 +84,7 @@
             <div class="col-lg-4 d-flex flex-column">
               <div class="card shadow">
                 <div class="card-header">
-                  <div class="d-flex align-items-center justify-content-center" style="gap: 1rem;">
-                    <div class="tuto-overlay" id="tuto-overlay">
-                      <div class="tuto-box">
-                        <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp" alt="Tutoriel" />
-                        <p>Clique ici pour démarrer un match !</p>
-                      </div>
-                    </div>
-                    <button id="overlayButton" onclick="replayTuto()"
-                      class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i
-                        class="fas fa-info-circle"></i>INFO</button>
-                  </div>
+                  
                 </div>
               </div>
               <div class="card shadow">
