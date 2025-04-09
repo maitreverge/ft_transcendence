@@ -13,8 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN rm -rf databaseapi_app/migrations/
-
 RUN chmod +x _docker/entrypoint.sh
 
 ENTRYPOINT ["/bin/sh", "_docker/entrypoint.sh"]
