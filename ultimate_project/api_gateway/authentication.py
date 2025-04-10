@@ -12,21 +12,18 @@ import uuid
 
 router = APIRouter()
 
-# Clé secrète pour signer les JWT
 SECRET_JWT_KEY = os.getenv("JWT_KEY")
 
-# Configuration des durées des tokens
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
-# URL de l'API qui gère la vérification des identifiants
+# API urls for checking users IDs
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
 CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
 
 
-# BECASUE WE HAVEA  MDIDLEWARE
 def generate_django_csrf_token():
-    secret = secrets.token_hex(32)  # 32-byte secret key
+    secret = secrets.token_hex(32)
     hashed_token = hashlib.sha256(secret.encode()).hexdigest()
     return hashed_token
 
@@ -42,9 +39,9 @@ async def login_fastAPI(
     Vérifie les identifiants via `databaseAPI`, puis génère un JWT stocké en cookie.
     """
 
-    print(f"🔐 Tentative de connexion pour {username}", flush=True)
+    print(f"🔐 User {username} tries to connect...", flush=True)
 
-    # Vérifier les identifiants en appelant `databaseAPI`
+    # Calls `databaseAPI` container for checking ID
     try:
         db_response = requests.post(
             DATABASE_API_URL,
@@ -58,11 +55,9 @@ async def login_fastAPI(
                 content={"success": False, "message": error_message}, status_code=401
             )
 
-        # 🔹 L'authentification est réussie, récupérer les données utilisateur
         auth_data = db_response.json()
 
     except requests.exceptions.RequestException as e:
-        # Return error message for connection issues
         return JSONResponse(
             content={"success": False, "message": f"Service unavailable: {str(e)}"},
             status_code=500,
@@ -79,7 +74,7 @@ async def login_fastAPI(
             content={"success": False, "message": "2FA is enabled"}, status_code=401
         )
 
-    # 🔹 Générer les tokens JWT
+    # Generates expiration dates for JWT
     expire_access = datetime.datetime.utcnow() + datetime.timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
@@ -87,9 +82,8 @@ async def login_fastAPI(
         days=REFRESH_TOKEN_EXPIRE_DAYS
     )
 
+    # Store the UUID in the database, for preventing double login on the same account
     my_uuid = str(uuid.uuid4())
-
-    # Store the UUID in the database
     try:
         session_response = requests.put(
             f"http://databaseapi:8007/api/player/{auth_data.get('user_id', 0)}/uuid",
@@ -107,36 +101,29 @@ async def login_fastAPI(
     access_payload = {
         "user_id": auth_data.get("user_id", 0),
         "username": username,
-        "uuid": my_uuid,  # Include UUID in the payload
+        "uuid": my_uuid,  # ! Include UUID in the payload ...
         "exp": expire_access,
     }
     refresh_payload = {
         "user_id": auth_data.get("user_id", 0),
-        "username": username,  # Include username in refresh token too
+        "username": username,
+        #"uuid": my_uuid,  #!... but not in the refresh token
         "exp": expire_refresh,
     }
 
+    # Encode the payloads in JWT tokens
     access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
     refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
-    # 🔹 Log pour debug
     print(f"Access Token: {access_token[:20]}...", flush=True)
     print(f"Refresh Token: {refresh_token[:20]}...", flush=True)
 
-    # 🔹 Indiquer à HTMX de rediriger l'utilisateur
-    # response.headers["HX-Redirect"] = "/home"
-    # response.headers["HX-Login-Success"] = "true"
 
     # Create a JSONResponse with success message
     json_response = JSONResponse(
         content={"success": True, "message": "Connexion réussie"}
     )
 
-    # Copy the headers from our response to the JSONResponse
-    # for key, value in response.headers.items():
-    #     json_response.headers[key] = value
-
-    # Make sure the cookies are also set on the JSONResponse
     # Access token
     json_response.set_cookie(
         key="access_token",
@@ -160,8 +147,6 @@ async def login_fastAPI(
     )
 
     # Generate and set CSRF token
-    # csrf_token = secrets.token_urlsafe(64)
-    # NOW CREATE IT INA MIDDLEWARE
     json_response.set_cookie(
         key="csrftoken",
         value=generate_django_csrf_token(),
@@ -363,15 +348,11 @@ async def logout_fastAPI(request: Request):
 
     response.delete_cookie(
         key="refresh_token",
-        path="/",  # Must match how it was set
-        httponly=True,  # Must match how it was set
-        samesite="Lax",  # Must match how it was set
+        path="/",
+        httponly=True,
+        samesite="Lax",
     )
 
-    # Add a header for HTMX to redirect to login page
-    # response.headers["HX-Redirect"] = "/login"
-
-    # Log for debugging
     print("🔑 JWT Cookies cleared", flush=True)
     return response
 

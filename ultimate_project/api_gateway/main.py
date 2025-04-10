@@ -1,21 +1,16 @@
-from fastapi import FastAPI, Request, HTTPException, Response, Depends, Query
-import httpx
-import logging
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request, HTTPException, Response, Query
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.exceptions import (
     HTTPException as StarletteHTTPException,
-)  # If you need to use it
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, StreamingResponse
-from starlette.middleware.base import BaseHTTPMiddleware
+) 
+import httpx
+import logging
 import json
+import authentication
 
 # from fastapi.middleware.cors import CORSMiddleware
-import authentication, auth_helpers
+
 
 
 # ======= 🚀 FastAPI Application Setup for API Gateway 🚀 =======
@@ -197,46 +192,49 @@ async def jwt_refresh_middleware(request: Request, call_next):
 
 # Middleware to set and validate CSRF tokens
 # [Middleware n°3]
-""" CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
-csrf_serializer = URLSafeTimedSerializer(CSRF_SECRET, salt=secrets.token_urlsafe(16))
-class CSRFMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        # If it's a GET request, we generate a CSRF token and set the cookie
-        # If it's a GET request and no token exists, generate a new one
-        if "csrftoken" not in request.cookies:
-            csrf_token = self.generate_csrf_token()
-            response = await call_next(request)
-            response.set_cookie(
-                key="csrftoken", 
-                value=csrf_token, 
-                httponly=True, 
-                secure=True, 
-                samesite="None", 
-                path="/", 
-                max_age=60 * 60 * 6  # 6 hours
-            )
-            return (response)
+# CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
+# csrf_serializer = URLSafeTimedSerializer(CSRF_SECRET, salt=secrets.token_urlsafe(16))
+# class CSRFMiddleware(BaseHTTPMiddleware):
+    
+#     def generate_csrf_token(self):
+#         # Generate a CSRF token.
+#         secret = secrets.token_hex(32)
+#         hashed_token = hashlib.sha256(secret.encode()).hexdigest()
+#         return hashed_token
+    
+#     async def dispatch(self, request: Request, call_next):
+#         # If it's a GET request, we generate a CSRF token and set the cookie
+#         # If it's a GET request and no token exists, generate a new one
+#         if "csrftoken" not in request.cookies:
+#             csrf_token = self.generate_csrf_token()
+#             response = await call_next(request)
+#             response.set_cookie(
+#                 key="csrftoken", 
+#                 value=csrf_token, 
+#                 httponly=True, 
+#                 secure=True, 
+#                 samesite="None", 
+#                 path="/", 
+#                 max_age=60 * 60 * 6  # 6 hours #! WHAT IF THE TOKEN IS EXPIRED ?
+#             )
+#             return response
         
-        # For POST requests, validate the CSRF token
-        if request.method == "POST":
+#         # For POST requests, validate the CSRF token
+#         if request.method == "POST":
             
-            # INT HE FTUIRE CHECK IF JWT FOR INETRNAL POST/DELTE/PUT
-            # ELSE CHECK  
-            csrf_token_from_header = request.headers.get("X-CSRFToken")
-            csrf_token_from_cookie = request.cookies.get("csrftoken")
-            # Validate the token
-            print(f"\n == CSRF token from header: {csrf_token_from_header} == \n", flush=True)
-            print(f"\n == CSRF token from cookie: {csrf_token_from_cookie} == \n", flush=True)
-            if not csrf_token_from_header or csrf_token_from_header != csrf_token_from_cookie:
-                raise HTTPException(status_code=403, detail="Forbidden (CSRF token mismatch)")
-        return await call_next(request)
+#             # INT HE FTUIRE CHECK IF JWT FOR INETRNAL POST/DELTE/PUT
+#             # ELSE CHECK  
+#             csrf_token_from_header = request.headers.get("X-CSRFToken")
+#             csrf_token_from_cookie = request.cookies.get("csrftoken")
+#             # Validate the token
+#             print(f"\n == CSRF token from header: {csrf_token_from_header} == \n", flush=True)
+#             print(f"\n == CSRF token from cookie: {csrf_token_from_cookie} == \n", flush=True)
+#             if not csrf_token_from_header or csrf_token_from_header != csrf_token_from_cookie:
+#                 raise HTTPException(status_code=403, detail="Forbidden (CSRF token mismatch)")
+        
+#         return await call_next(request)
 
-    def generate_csrf_token(self):
-        Generate a CSRF token.
-        secret = secrets.token_hex(32)  # 32-byte secret key
-        hashed_token = hashlib.sha256(secret.encode()).hexdigest()
-        return hashed_token
-app.add_middleware(CSRFMiddleware)"""
+# app.add_middleware(CSRFMiddleware)
 
 
 # This middleware is used to debug incoming cookies in FastAPI.
