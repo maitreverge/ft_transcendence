@@ -2,6 +2,8 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 import time
 import os
 import pyotp
+from playwright.async_api import async_playwright
+import asyncio
 
 
 # USERS
@@ -15,6 +17,7 @@ BASE_URL = "https://localhost:8443"
 
 
 def run(playwright: Playwright) -> None:
+    
 
     def get_screen_size():
         # This is a simple approach that works on many Linux systems
@@ -173,6 +176,48 @@ def run(playwright: Playwright) -> None:
         page2.get_by_role("button", name="EXIT").click()
 
     def test_remote_tournament(browsers, contexts, pages, positions, window_sizes):
+
+        page1 = pages[0]
+        page2 = pages[1]
+
+        # Page 1 Goes to match by clicking button... #! MAYBE NEED TO CHANGE THE LOCATOR
+        # page1.locator("#acc-profile").click()
+        page1.goto(f"{BASE_URL}/tournament/tournament/")
+
+
+        # Page 2 goes by straight link
+        page2.goto(f"{BASE_URL}/tournament/tournament/")
+
+        # ! WORK NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDLE
+    #     - TEST CINQ: test tournament remote
+    # - on lance deux navigateurs
+    # - l'user A navigue vers la page tournament
+    # - l'user A clique sur le lien vers la page tournament
+    # - Dans le champ avec l'id="player-name", chacun d'entre eux entre les noms "hehe" OU "hoho"
+
+        page1.locator("#player-name").fill("ghost_user2")
+        page2.locator("#player-name").fill("ghost_user3")
+
+    # - chacun d'entre eux clique sur l'élément dont le contenu est "Add Player"
+        page1.get_by_role("button", name="Add Player").click()
+        page2.get_by_role("button", name="Add Player").click()
+
+    # - chacun d'entre eux clique sur l'élément dont le contenu est "Create Tournament"
+        page1.get_by_role("button", name="Create Tournament").click()
+        page2.get_by_role("button", name="Create Tournament").click()
+
+    # - chacun d'entre eux drag and drop le div avec les classes "user phantom" et enfant du div id="players"
+
+
+
+        source = page1.query_selector(".user phamtom")  # The div to be dragged
+        target = page1.query_selector(".tournament-cont")  # The div where it's dropped
+
+        source.drag_to(target)
+
+
+
+
         pass
 
 
@@ -184,8 +229,8 @@ def run(playwright: Playwright) -> None:
     screen_width, screen_height = get_screen_size()
 
     # Make windows narrow but tall (vertical shape)
-    window_width = int(screen_width * 0.35)
-    window_height = int(screen_height * 0.9)
+    window_width = int(screen_width)
+    window_height = int(screen_height )
 
     # Position one window at far left, one at far right
     left_position = 0
@@ -246,17 +291,25 @@ def run(playwright: Playwright) -> None:
     - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"✅
     - joueur A et joueur B excuent la routine 2✅
     un 
-    - TEST QUATRE: test tournament one machine
-    - l'user navigue vers la page tournament
-    - ROUTINE (x3): Dans le champ avec l'id="player-name", il entre les noms "hehe", "hoho", "haha"
-    - il clique sur l'élément dont le contenu est "Add Player"
-    - il clique sur l'élément dont le contenu est "Create Tournament"
-    - il drag and drop les trois divs avec les classes "user phantom" dans le div avec l'idsur l'élément avec la classe "text" et dont le contenu est "Add Player" vers le div
-    -
-    -
-    -
-    -
 
+    
+
+
+
+
+
+    - TEST CINQ: test tournament remote
+    - on lance deux navigateurs
+    - l'user A navigue vers la page tournament
+    - l'user A clique sur le lien vers la page tournament
+    - Dans le champ avec l'id="player-name", chacun d'entre eux entre les noms "hehe" OU "hoho"
+    - chacun d'entre eux clique sur l'élément dont le contenu est "Add Player"
+    - chacun d'entre eux clique sur l'élément dont le contenu est "Create Tournament"
+    - chacun d'entre eux drag and drop le div avec les classes "user phantom" et enfant du div id="players"
+        vers le div avec la class="tournament-cont"
+    
+    - apres, c'est la merde... 
+    -
     
     """
 
