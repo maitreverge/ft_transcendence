@@ -6,7 +6,7 @@ import pyotp
 
 # USERS
 USER_2 = "user2"
-LOGIN_2 = "user3"
+USER_3 = "user3"
 PASSWORD = "password"
 
 SIMULTANEOUS_USERS = 2
@@ -109,7 +109,7 @@ def run(playwright: Playwright) -> None:
             browser.close()
 
 
-    def remote_simple_match(browsers, contexts, pages, positions, window_sizes):
+    def test_remote_simple_match(browsers, contexts, pages, positions, window_sizes):
 
         for _ in range(SIMULTANEOUS_USERS):
             pages[_].goto(f"{BASE_URL}/login/")
@@ -119,7 +119,7 @@ def run(playwright: Playwright) -> None:
 
         # Login both pages regular users
         login(page1, USER_2)
-        login(page2, LOGIN_2)
+        login(page2, USER_3)
 
         # Go to match simple
         page1.goto(f"{BASE_URL}/tournament/simple-match/")
@@ -179,7 +179,7 @@ def run(playwright: Playwright) -> None:
     window_sizes = [(window_width, window_height), (window_width, window_height)]
 
     # ! =============== KICKSTART TESTER HERE ===============
-    remote_simple_match(browsers, contexts, pages, positions, window_sizes)
+    test_remote_simple_match(browsers, contexts, pages, positions, window_sizes)
 
 
     print(f"✅ GAME TESTS ✅")
@@ -196,10 +196,13 @@ def run(playwright: Playwright) -> None:
     - TEST MATCH SIMPLE
     - PREMIER TEST: test 1v1 solo
     - Navigate to page Match simple
+
     - START ROUTINE1 click sur l'element ayant les classes "user self-player"
     - dans l'input avec l'id="match-player-name", entre le nom "bobby"
     - click ENCORE sur le meme elment qu'avant 
-    - click sur l'element avec les classes "match self-match"    - 
+    
+    
+    - START ROUTINE 2 click sur l'element avec les classes "match self-match"    - 
     - l'élément avec la class "loader" doit avoir style="opacity: 1;"
     - attendre 4 secondes
     - l'élément avec la class "loader" doit avoir style="opacity: 0;"
@@ -215,7 +218,16 @@ def run(playwright: Playwright) -> None:
     - l'autre navigue directement à la page 
     - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
     - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
-    - l'autre A clique 
+    - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
+    - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
+    - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
+    - joueur A et joueur B excuent la routine 2
+    
+    - TEST QUATRE: test 
+    -
+    -
+    -
+    -
     -
     -
     -
