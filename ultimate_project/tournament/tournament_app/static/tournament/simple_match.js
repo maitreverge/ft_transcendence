@@ -121,16 +121,26 @@ function setSelfMatchId() {
 			match.classList.add("self-match");					
         match.onclick = function() {
             // console.log("AVANT ", window.selfName, " ", )
+			// if ()
+			// console.log("AAAwindows2playername ", window.player2Name, typeof(window.player2Name));
+			let player2Id = -window.selfId;
+			if (!window.multy)
+			{
+				console.log("je suis qd mmm rentre ne taffole pas");
+				window.multy = false;
+				// console.log("AAAplayer2name est ! ", window.player2Name);
+				player2Id = 0;
+			}
 			fetch(
 				`/match/match${dim.value}d/` +
-				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${-window.selfId}&player2Name=${window.player2Name}`)
+				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${player2Id}&player2Name=${window.player2Name}`)
 			.then(response => {
 				if (!response.ok) 
 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
 				return response.text();
 			})
 			.then(data => loadSimpleMatchHtml(data, "overlay-match"))
-			.catch(error => console.log(error))
+			.catch(error => console.log(error));			
 		};					
 	});
 }
@@ -410,11 +420,17 @@ function sendPlayerClick(socket, event, selected)
 			return;
 		}
 		input.style.display = "block";	
+		
 	}
 	else
 		input.style.display = "none";	
 	if (name.trim() === "")
-		return;		
+		return;
+	if (selected.id == window.selfId)	
+	{
+		console.log("HOOOOOOO je remet player2NAME a NAME TETE de b");
+		window.multy = true;	
+	}
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
@@ -476,7 +492,8 @@ function invitation(socket, data) {
 
 	switch (data.subtype)
 	{
-		case "back":				
+		case "back":	
+            window.multy = false;			
 			if (data.response === "selfBusy")
                 messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "")
 				// alert("selfBusy");
