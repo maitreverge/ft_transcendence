@@ -24,12 +24,13 @@ services:
       - match_port=${match_port}
     image: img_nginx
     ports:
-      # - "443:443" #https NOT WORKING AT 42!!!
-      # - "80:80" #http NOT WORKING AT 42!!!
       - "8443:443"
       - "8000:80"
     volumes:
       - staticvol:/usr/share/nginx/static
+      # :ro => Read Only
+      - ./nginx/envv/local.crt:/etc/nginx/ssl/local.crt:ro
+      - ./nginx/envv/local.key:/etc/nginx/ssl/local.key:ro
     networks:
       - transcendence_network
     restart: on-failure
