@@ -11,7 +11,10 @@ BASE_URL = "https://localhost:8443"
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context(ignore_https_errors=True)
+    context = browser.new_context(
+        ignore_https_errors=True,
+        viewport={"width": 1920, "height": 1080}
+    )
     page = context.new_page()
 
     def login():
@@ -69,6 +72,158 @@ def run(playwright: Playwright) -> None:
         time.sleep(5)
         expect(page.locator('.loader')).to_have_css('opacity', '0')
         page.get_by_role("button", name="EXIT").click()
+
+
+        page.goto(f"{BASE_URL}/tournament/tournament/")
+        time.sleep(3)
+        page.locator("#player-name").click()
+        time.sleep(0.1)
+        page.get_by_role("textbox", name="enter a name").fill("hehe")
+        time.sleep(0.1)
+        page.get_by_text("Add Player", exact=True).click()
+        time.sleep(0.1)
+        page.locator("#player-name").click()
+        time.sleep(0.1)
+        page.get_by_role("textbox", name="enter a name").fill("haha")
+        time.sleep(0.1)
+        page.get_by_text("Add Player", exact=True).click()
+        time.sleep(0.1)
+        page.locator("#player-name").click()
+        time.sleep(0.1)
+        page.get_by_role("textbox", name="enter a name").fill("hoho")
+        time.sleep(0.1)
+        page.get_by_text("Add Player", exact=True).click()
+        time.sleep(0.1)
+        
+        page.get_by_text("Create Tournament").click()
+        
+        source = page.get_by_text("hehe")
+        target = page.locator(".tournament-cont")
+        source.drag_to(target)
+        source = page.get_by_text("haha")
+        target = page.locator(".tournament-cont")
+        source.drag_to(target)
+        source = page.get_by_text("hoho")
+        target = page.locator(".tournament-cont")
+        source.drag_to(target)
+
+        page.locator("#m2").click()
+        time.sleep(0.1)
+        expect(page.locator('.loader')).to_have_css('opacity', '1')
+        time.sleep(5)
+        expect(page.locator('.loader')).to_have_css('opacity', '0')
+        time.sleep(0.1)
+        page.get_by_role("button", name="EXIT").click()
+        time.sleep(0.1)
+        
+        page.locator("#m3").click()
+        time.sleep(0.1)
+        expect(page.locator('.loader')).to_have_css('opacity', '1')
+        time.sleep(5)
+        expect(page.locator('.loader')).to_have_css('opacity', '0')
+        time.sleep(0.1)
+        page.get_by_role("button", name="EXIT").click()
+        time.sleep(0.1)
+
+        page.locator("#m1").click()
+        time.sleep(0.1)
+        expect(page.locator('.loader')).to_have_css('opacity', '1')
+        time.sleep(5)
+        expect(page.locator('.loader')).to_have_css('opacity', '0')
+        time.sleep(0.1)
+        page.get_by_role("button", name="EXIT").click()
+        time.sleep(0.1)
+        page.get_by_text("OK", exact=True).click()
+        time.sleep(0.1)
+
+        page.locator("#side-nav-simple-match").click()
+        time.sleep(1)
+
+        page.locator("#side-nav-tournament").click()
+        time.sleep(0.1)
+
+        time.sleep(3)
+        page.locator("#player-name").click()
+        time.sleep(0.1)
+        page.get_by_role("textbox", name="enter a name").fill("hehe")
+        time.sleep(0.1)
+        page.get_by_text("Add Player", exact=True).click()
+        time.sleep(0.1)
+        page.locator("#player-name").click()
+        time.sleep(0.1)
+        page.get_by_role("textbox", name="enter a name").fill("haha")
+        time.sleep(0.1)
+        page.get_by_text("Add Player", exact=True).click()
+        time.sleep(0.1)
+        page.locator("#player-name").click()
+        time.sleep(0.1)
+        page.get_by_role("textbox", name="enter a name").fill("hoho")
+        time.sleep(0.1)
+        page.get_by_text("Add Player", exact=True).click()
+        time.sleep(0.1)
+        
+        page.get_by_text("Create Tournament").click()
+        
+        source = page.get_by_text("hehe")
+        target = page.locator(".tournament-cont")
+        source.drag_to(target)
+        source = page.get_by_text("haha")
+        target = page.locator(".tournament-cont")
+        source.drag_to(target)
+        source = page.get_by_text("hoho")
+        target = page.locator(".tournament-cont")
+        source.drag_to(target)
+
+        page.locator("#m2").click()
+        time.sleep(0.1)
+        expect(page.locator('.loader')).to_have_css('opacity', '1')
+        time.sleep(5)
+        expect(page.locator('.loader')).to_have_css('opacity', '0')
+        time.sleep(0.1)
+        page.get_by_role("button", name="EXIT").click()
+        time.sleep(0.1)
+        
+        page.locator("#m3").click()
+        time.sleep(0.1)
+        expect(page.locator('.loader')).to_have_css('opacity', '1')
+        time.sleep(5)
+        expect(page.locator('.loader')).to_have_css('opacity', '0')
+        time.sleep(0.1)
+        page.get_by_role("button", name="EXIT").click()
+        time.sleep(0.1)
+
+        page.locator("#m1").click()
+        time.sleep(0.1)
+        expect(page.locator('.loader')).to_have_css('opacity', '1')
+        time.sleep(5)
+        expect(page.locator('.loader')).to_have_css('opacity', '0')
+        time.sleep(0.1)
+        page.get_by_role("button", name="EXIT").click()
+        time.sleep(0.1)
+        page.get_by_text("OK", exact=True).click()
+        time.sleep(0.1)
+
+        """
+        - TEST QUATRE: test tournament one machine
+        - l'user navigue vers la page tournament✅
+        - ROUTINE (x3): Dans le champ avec l'id="player-name", il entre les noms "hehe", "hoho", "haha"✅
+        - il clique sur l'élément dont le contenu est "Add Player"✅
+        - il clique sur l'élément dont le contenu est "Create Tournament"✅
+        - il drag and drop les trois divs avec les classes "user phantom" et enfants du div id="players"
+            vers le div avec la class="tournament-cont"✅
+        - il clique sur le div avec l'id="m2"✅
+        - => SUBROUTINE 1✅
+        - il clique sur le div avec l'id="m3"✅
+        - => SUBROUTINE 1✅
+        - il clique sur le div avec l'id="m1"✅
+        - => SUBROUTINE 1✅
+        - ✅
+        """
+
+
+
+
+
 
 
 
