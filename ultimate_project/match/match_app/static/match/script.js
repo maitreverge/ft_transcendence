@@ -638,7 +638,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 		// console.log("PLAYER2ID; ", window.player2Id)
 		if (window.player2Id != 0)
 		{
-			console.log("Pje suis ds le mode MULTY; ", window.player2Id)
+			// console.log("Pje suis ds le mode MULTY; ", window.player2Id);
 			
 			// if (data.plyIds && window.playerId == data.plyIds[0])
 			// {
