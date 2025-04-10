@@ -108,9 +108,9 @@ def run(playwright: Playwright) -> None:
         for browser in browsers:
             browser.close()
 
-    def routine_2(page1, page2):
+    def routine_timer(page1, page2):
         
-        # ! This routine check the timer
+        # ! This routine check the timer appeance
         # Get both loaders
         loader_p1 = page1.locator(".loader")
         loader_p2 = page2.locator(".loader")
@@ -141,7 +141,7 @@ def run(playwright: Playwright) -> None:
         login(page1, USER_2)
         login(page2, USER_3)
 
-        # Page 1 Goes to match by clicking button... #! NEED TO CHANGE THE LO
+        # Page 1 Goes to match by clicking button... #! MAYBE NEED TO CHANGE THE LOCATOR
         # page1.locator("#acc-profile").click()
         page1.goto(f"{BASE_URL}/tournament/simple-match/")
 
@@ -149,97 +149,32 @@ def run(playwright: Playwright) -> None:
         page2.goto(f"{BASE_URL}/tournament/simple-match/")
 
         
-        # !!!!!!!!!! 🪡🪡🪡🪡 WORK NEEDLE
-        # page1.locator("#user").click()
-        # page2.locator("#swal2-cancel swal2-styled").click()
-
         # user2 send invite
         page1.get_by_text("user3").click()
         # user3 declines
         page2.get_by_role("button", name="Decline").click()
-        # user2 accept user3 declines
+        # user2 accept user3 decline
         page1.get_by_role("button", name="OK").click()
 
-        # user 3 send invite
+        # user3 send invite
         page2.get_by_text("user2").click()
         # user2 Accept invite
         page1.get_by_role("button", name="Accept").click()
 
+        # Both players enters match
         page1.get_by_text("match:").click()
         page2.get_by_text("match:").click()
 
+        # Timer routine checking
+        routine_timer(page1, page2)
 
-        # page1.locator(".circle").click()
-        # page1.locator(".circle").click()
+        # Both players exit the same remote single match at the same time
+        page1.get_by_role("button", name="EXIT").click()
+        page2.get_by_role("button", name="EXIT").click()
 
-        routine_2(page1, page2)
+    def test_remote_tournament(browsers, contexts, pages, positions, window_sizes):
+        pass
 
-
-
-
-        # USER 3
-
-        # ! Save from recording playright
-        # {
-        #     page1.locator("#field-match").click()
-        #     page1.get_by_text("user3").click()
-        #     page1.get_by_role("button", name="OK").click()
-        #     page1.get_by_role("button", name="Accept").click()
-        #     page1.get_by_text("match:").click()
-
-
-
-
-        #     # USER 3
-        #     page2.locator("#field-match").click()
-        #     page2.get_by_role("button", name="Decline").click()
-        #     page2.get_by_text("user2").click()
-        #     page2.get_by_text("match:").click()
-        #     page2.locator(".circle").click()
-        # }
-
-
-
-
-
-        # - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
-        # - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
-        
-
-
-        # - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
-        # - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
-
-
-        # - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
-        
-        # - joueur A et joueur B excuent la routine 2
-        
-
-
-
-        # Page 1 => user 2 / 3
-
-        # time.sleep(100)
-
-        # logout(page1)
-        # logout(page2)
-
-        # page1.locator("#big-tournament").click()
-        # expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
-
-        # # Page 2 login after
-        # page2.locator("#big-tournament").click()
-        # expect(page
-        # expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")2).to_have_url(f"{BASE_URL}/tournament/tournament/")
-
-        # # Page 1 tries to navigate afterwards, and is no longer auth
-        # page1.locator("#side-match").click()
-        # expect(page1).to_have_url(f"{BASE_URL}/register/")
-        # page1.goto(f"{BASE_URL}/home/")
-        # expect(page1).to_have_url(f"{BASE_URL}/register/")
-
-        # time.sleep(10)
 
     # ! =============== INIT WINDOWS SIZES ===============
     browsers = []
@@ -267,6 +202,8 @@ def run(playwright: Playwright) -> None:
 
     # ! =============== KICKSTART TESTER HERE ===============
     test_remote_simple_match(browsers, contexts, pages, positions, window_sizes)
+
+    test_remote_tournament(browsers, contexts, pages, positions, window_sizes)
 
     print(f"✅ GAME TESTS ✅")
 
@@ -302,12 +239,12 @@ def run(playwright: Playwright) -> None:
     - on ouvre deux sessions avec deux user differents ✅
     - un des deux users acced a la page match simple par un click sur l'élément avec id="acc-profile" ✅ 
     - l'autre navigue directement à la page ✅
-    - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
-    - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
-    - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
-    - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
-    - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
-    - joueur A et joueur B excuent la routine 2
+    - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)✅
+    - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"✅
+    - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"✅
+    - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)✅
+    - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"✅
+    - joueur A et joueur B excuent la routine 2✅
     un 
     - TEST QUATRE: test tournament one machine
     - l'user navigue vers la page tournament
