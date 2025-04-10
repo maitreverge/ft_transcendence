@@ -1,99 +1,147 @@
 {% load static %}
+
 <div style="display:none;">
 
-	<head>
-		<link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
-		<script>
-			window.rasp = "{{ rasp }}";
-			window.pidom = "{{ pidom }}";
-			window.selfId = "{{ user_id }}";
-			window.selfName = "{{ user_name }}";							
-		</script>
-		<script src="{% static 'tournament/tournament.js' %}" onload="initTournament()"></script>
-	</head>
+    <head>
+        <link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
+        <script>
+            window.rasp = "{{ rasp }}";
+            window.pidom = "{{ pidom }}";
+            window.selfId = "{{ user_id }}";
+            window.selfName = "{{ user_name }}";							
+        </script>
+        <script src="{% static 'tournament/tournament.js' %}" onload="initTournament()"></script>
+    </head>
 </div>
-<div class="pt-4" id="simple-selections">
-	<h1 class="pl-2">Tournament</h1>
-	<div class="row d-flex">
-		<div class="col-lg-2 d-flex flex-column"></div>
-		<div class="col-lg-4">
 
-			<div class="card shadow mb-4">
-				<div class="card-header py-3">
-					<h6 class="m-0 text-center font-weight-bold text-primary">Player pool</h6>
-				</div>
-				<div class="card-header py-3">
-					<div class="d-flex align-items-center gap-2">
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 shadow-sm">
+            <div class="sidebar-sticky text-center">
+                <!-- Account Settings Title -->
+                <h1 class="h3 mb-3 text-gray-800">Tournament</h1>
+                <ul class="nav flex-column">
+                    <!-- Profile Section -->
+                    <li class="nav-item mb-3">
+                        <a id="acc-profile"
+                            class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+                            hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="fa-solid fa-table-tennis-paddle-ball"></i> Simple Match
+                        </a>
+                    </li>
+                    <li class="nav-item mb-3">
+                        <a class="tuto-overlay" id="tuto-overlay">
+                            <div class="tuto-box">
+                                <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
+                                    alt="Tutoriel" />
+                                <p>Clique ici pour démarrer un match !</p>
+                            </div>
+                        </a>
+                        <div id="overlayButton" onclick="replayTuto()"
+                            class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                            <i class="fas fa-info-circle"></i>INFO
+                        </div>
+                    </li>
+                    <!-- Security Button (Replaces Password & 2FA) -->
+                    <li class="nav-item mb-3">
+                        <a id="acc-security"
+                            class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                            <span class="mr-2">2D</span>
+                            <label for="dim" class="switch">
+                                <input type="checkbox" id="dim" hidden>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="ml-2">3D</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Main Content -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <!-- Content dynamically loaded here -->
+            <div id="account-content">
+                <div class="pt-4" id="simple-selections">
+                    <h1 class="pl-2">Tournament</h1>
+                    <div class="row d-flex">
+                        <div class="col-lg-2 d-flex flex-column"></div>
+                        <div class="col-lg-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 text-center font-weight-bold text-primary">Player pool</h6>
+                                </div>
+                                <div class="card-header py-3">
+                                    <div class="d-flex flex-column gap-2">
+                                        <input class="form-control border-0 w-100" id="player-name" type="text"
+                                            maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
+                                            oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
+                                        <button onclick="newPlayer(window.tournamentSocket)"
+                                            class="btn btn-primary d-flex align-items-center justify-content-between w-100">
+                                            <span class="text">Add Player</span>
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-arrow-right"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 d-flex flex-column">
+                            <div class="card shadow">
+                                <h6 class="m-0 text-center font-weight-bold text-primary">Tournaments</h6>
+                            </div>
+                            <div class="card shadow">
+                                <div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
 
-						<button onclick="newPlayer(window.tournamentSocket)"
-							class="w-50 btn btn-primary d-flex align-items-center justify-content-between">
-							<span class="text">Add Player</span>
-							<span class="icon text-white-50">
-								<i class="fas fa-arrow-right"></i>
-							</span>
-						</button>
+                                    <button onclick="newTournament(window.tournamentSocket)"
+                                        class="w-100 btn btn-primary d-flex align-items-center justify-content-between">
+                                        <span class="text">Create Tournament</span>
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                                    </button>
 
-						<input class="w-50 form-control border-0" id="player-name" type="text" maxlength="50"
-							pattern=".{1,50}" required placeholder="enter a name"
-							oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-					</div>
-				</div>
-
-			</div>
-		</div>
-		<div class="col-lg-4 d-flex flex-column">
-			<div class="card shadow">
-				<div class="card-header">
-					<div class="d-flex align-items-center justify-content-center" style="gap: 1rem;">
-						<div class="tuto-overlay" id="tuto-overlay">
-							<div class="tuto-box">
-								<img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
-									alt="Tutoriel" />
-								<p>Clique ici pour démarrer un match !</p>
-							</div>
-						</div>
-						<button id="overlayButton" onclick="replayTuto()"
-							class="btn btn-info d-flex align-items-center gap-2 m-0 font-weight-bold text-primary"><i
-								class="fas fa-info-circle"></i>INFO</button>
-					</div>
-				</div>
-			</div>
-			<div class="card shadow">
-				<div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
-					<h6 class="font-weight-bold text-primary mx-2">Dimensions:</h6>
-					<select id="dim" class="form-select w-auto">
-						<option value="2">2D</option>
-						<option value="3">3D</option>
-					</select>
-				</div>
-			</div>
-			<div class="card shadow">
-				<div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
-					<button class="font-weight-bold text-primary mx-2"
-						onclick="newTournament(window.tournamentSocket)">Create Tournament</button>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-2 d-flex flex-column"></div>
-	</div>
-	<div class="row d-flex align-items-stretch">
-		<div class="col-lg-2 d-flex flex-column"></div>
-		<div class="col-lg-4 mb-4">
-			<div class="card shadow h-100">
-				<div id="players" class="card-body p-2">
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-4 mb-4">
-			<div class="card shadow mb-4 h-100">
-				<div class="card-body">
-					<div id="tournaments">
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-2 d-flex flex-column"></div>
-	</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 d-flex flex-column"></div>
+                    </div>
+                    <div class="row d-flex align-items-stretch">
+                        <div class="col-lg-2 d-flex flex-column"></div>
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow h-100">
+                                <div id="players" class="card-body p-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow mb-4 h-100">
+                                <div class="card-body">
+                                    <div id="tournaments">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 d-flex flex-column"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
+<script>
+    if (typeof dim === 'undefined') {
+        const dim = document.getElementById('dim');
+    }
+    Object.defineProperty(dim, 'value', {
+        get() {
+            return dim.checked ? '3' : '2';
+        }
+    });
+</script>
+<!-- Add FontAwesome Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'tournament/tuto-overlay.js' %}"></script>
