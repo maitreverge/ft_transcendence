@@ -273,7 +273,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 		if (matchs.every(el => el.matchId != match.id)) {
 			if (match.id == window.selfMatchId)
 			{
-				if (window.busyElement)
+				if (window.busyElement)// je dois savoir si le match qui dois etre remove est lie a un joueur en remote et retourver ce joueur pour lui enlever la classe (quil l'ait ou non)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
 				if (window.selectedElement)	
@@ -435,7 +435,7 @@ function sendPlayerClick(socket, event, selected)
 {
 	// if (typeof stopMatch === 'function')
 	// 	stopMatch(window.selfMatchId);
-	window.selectedElement = selected;
+	// window.selectedElement = selected;
 	event.stopPropagation();
 	if (!window.busyElement)
 		window.busyElement = selected;
