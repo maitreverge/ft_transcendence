@@ -23,15 +23,14 @@
                 <h1 class="h3 mb-3 text-gray-800">Tournament</h1>
                 <ul class="nav flex-column">
                     <!-- Profile Section -->
-                    <li class="nav-item mb-3">
-                        <a id="acc-profile"
-                            class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+                    <li  class="nav-item mb-3">
+                        <a id="side-nav-simple-match" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
                             hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
                             <i class="fa-solid fa-table-tennis-paddle-ball"></i> Simple Match
                         </a>
                     </li>
-                    <li class="nav-item mb-3">
+                    <li  id="side-nav-info" class="nav-item mb-3">
                         <a class="tuto-overlay" id="tuto-overlay">
                             <div class="tuto-box">
                                 <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
@@ -45,9 +44,8 @@
                         </div>
                     </li>
                     <!-- Security Button (Replaces Password & 2FA) -->
-                    <li class="nav-item mb-3">
-                        <a id="acc-security"
-                            class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                    <li  id="side-nav-2d3d" class="nav-item mb-3">
+                        <a class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
                             <span class="mr-2">2D</span>
                             <label for="dim" class="switch">
                                 <input type="checkbox" id="dim" hidden>
