@@ -115,22 +115,30 @@ def run(playwright: Playwright) -> None:
         
         # ! This routine check the timer appeance
         # Get both loaders
-        loader_p1 = page1.locator(".loader")
-        loader_p2 = page2.locator(".loader")
+        # loader_p1 = page1.locator(".loader")
+        # loader_p2 = page2.locator(".loader")
+
+        expect(page1.locator('.loader')).to_have_css('opacity', '1')
+        expect(page2.locator('.loader')).to_have_css('opacity', '1')
+        
+        time.sleep(5)
+        
+        expect(page1.locator('.loader')).to_have_css('opacity', '0')
+        expect(page2.locator('.loader')).to_have_css('opacity', '0')
         
         # Check if loader has opacity 1
-        loader_style_1 = loader_p1.get_attribute("style")
-        loader_style_2 = loader_p2.get_attribute("style")
-        assert "opacity: 1" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
-        assert "opacity: 1" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
+        # loader_style_1 = loader_p1.get_attribute("style")
+        # loader_style_2 = loader_p2.get_attribute("style")
+        # assert "opacity: 1" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
+        # assert "opacity: 1" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
         
-        time.sleep(4)
+        # time.sleep(4)
         
         # Check if loader has opacity 0 after waiting
-        loader_style_1 = loader_p1.get_attribute("style")
-        loader_style_2 = loader_p2.get_attribute("style")
-        assert "opacity: 0" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
-        assert "opacity: 0" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
+        # loader_style_1 = loader_p1.get_attribute("style")
+        # loader_style_2 = loader_p2.get_attribute("style")
+        # assert "opacity: 0" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
+        # assert "opacity: 0" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
 
     def test_remote_simple_match(browsers, contexts, pages, positions, window_sizes):
 
@@ -145,8 +153,9 @@ def run(playwright: Playwright) -> None:
         login(page2, USER_3)
 
         # Page 1 Goes to match by clicking button... #! MAYBE NEED TO CHANGE THE LOCATOR
-        # page1.locator("#acc-profile").click()
-        page1.goto(f"{BASE_URL}/tournament/simple-match/")
+        page1.locator("#nav-match").click()
+        # side-nav-tournament
+        # page1.goto(f"{BASE_URL}/tournament/simple-match/")
 
         # Page 2 goes by straight link
         page2.goto(f"{BASE_URL}/tournament/simple-match/")
