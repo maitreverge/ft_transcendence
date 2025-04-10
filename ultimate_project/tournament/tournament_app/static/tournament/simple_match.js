@@ -380,12 +380,16 @@ function invitationCancelled(targetName) {
 
 function selectedBusy() {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy", "The player is busy", "", "")
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy", "The player is busy", "", "");
 
 	// alert("selectedBusy");
 	if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
+}
+
+function selfBusy() {
+	messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "");
 }
 
 function invitationRefused(targetName) {
@@ -519,8 +523,7 @@ function invitation(socket, data) {
 	{
 		case "back":	   		
 			if (data.response === "selfBusy")
-                messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "")
-				// alert("selfBusy");
+				selfBusy();		
 			else if (data.response === "selectedBusy")
 				selectedBusy();	
 			break;
