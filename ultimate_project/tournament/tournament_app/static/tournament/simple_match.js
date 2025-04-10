@@ -110,40 +110,40 @@ function loadSimpleMatchHtml(data, target) {
 	}
 }
 
-function setSelfMatchId() {
+// function setSelfMatchId() {
 
-	const matchsContainer = document.getElementById("matchs");
-	const matchElements = [...matchsContainer.children];
-	const dim = document.getElementById("dim");
+// 	const matchsContainer = document.getElementById("matchs");
+// 	const matchElements = [...matchsContainer.children];
+// 	const dim = document.getElementById("dim");
 
-    matchElements.forEach(match => {		
-		if (match.id == window.selfMatchId)
-			match.classList.add("self-match");					
-        match.onclick = function() {
-            // console.log("AVANT ", window.selfName, " ", )
-			// if ()
-			// console.log("AAAwindows2playername ", window.player2Name, typeof(window.player2Name));
-			let player2Id = -window.selfId;
-			if (!window.multy)
-			{
-				console.log("je suis qd mmm rentre ne taffole pas");
-				window.multy = false;
-				// console.log("AAAplayer2name est ! ", window.player2Name);
-				player2Id = 0;
-			}
-			fetch(
-				`/match/match${dim.value}d/` +
-				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${player2Id}&player2Name=${window.player2Name}`)
-			.then(response => {
-				if (!response.ok) 
-					throw new Error(`Error HTTP! Status: ${response.status}`);		  
-				return response.text();
-			})
-			.then(data => loadSimpleMatchHtml(data, "overlay-match"))
-			.catch(error => console.log(error));			
-		};					
-	});
-}
+//     matchElements.forEach(match => {		
+// 		if (match.id == window.selfMatchId)
+// 			match.classList.add("self-match");					
+//         match.onclick = function() {
+//             // console.log("AVANT ", window.selfName, " ", )
+// 			// if ()
+// 			// console.log("AAAwindows2playername ", window.player2Name, typeof(window.player2Name));
+// 			let player2Id = -window.selfId;
+// 			if (!window.multy)
+// 			{
+// 				console.log("je suis qd mmm rentre ne taffole pas");
+// 				window.multy = false;
+// 				// console.log("AAAplayer2name est ! ", window.player2Name);
+// 				player2Id = 0;
+// 			}
+// 			fetch(
+// 				`/match/match${dim.value}d/` +
+// 				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${player2Id}&player2Name=${window.player2Name}`)
+// 			.then(response => {
+// 				if (!response.ok) 
+// 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
+// 				return response.text();
+// 			})
+// 			.then(data => loadSimpleMatchHtml(data, "overlay-match"))
+// 			.catch(error => console.log(error));			
+// 		};					
+// 	});
+// }
 
 
 // matchWebsockets = []
@@ -216,8 +216,8 @@ function setSelfMatchId() {
 function enterMatch(match)
 {
 	const dim = document.getElementById("dim");
-	const player2Id = 0;
-	const player2Name = "";
+	let player2Id = 0;
+	let player2Name = "";
 	if (match.multy)
 	{
 		player2Id = match.otherId;
@@ -225,7 +225,7 @@ function enterMatch(match)
 	}
 	fetch(
 		`/match/match${dim.value}d/` +
-		`?matchId=${match.id}` +
+		`?matchId=${match.matchId}` +
 		`&playerId=${window.selfId}&playerName=${window.selfName}` +
 		`&player2Id=${player2Id}&player2Name=${player2Name}`
 	)
@@ -308,7 +308,7 @@ function updateMatchs(socket, matchs) {
 					moveSimplePlayerInMatch(el, match);
 			});	
 	});
-	setSelfMatchId();	
+	// setSelfMatchId();	
 }
 
 // function updateSimpleMatchPlayers(plys) {
@@ -455,12 +455,7 @@ function sendPlayerClick(socket, event, selected)
 	else
 		input.style.display = "none";	
 	if (name.trim() === "")
-		return;
-	if (selected.id == window.selfId)	
-	{
-		console.log("HOOOOOOO je remet player2NAME a NAME TETE de b");
-		window.multy = true;	
-	}
+		return;	
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
@@ -522,8 +517,7 @@ function invitation(socket, data) {
 
 	switch (data.subtype)
 	{
-		case "back":	
-            window.multy = false;			
+		case "back":	   		
 			if (data.response === "selfBusy")
                 messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "")
 				// alert("selfBusy");
