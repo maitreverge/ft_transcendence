@@ -46,14 +46,13 @@ def run(playwright: Playwright) -> None:
         # This block is registered by auto-playright
         page.get_by_text("user2", exact=True).click()
         page.get_by_role("textbox", name="enter a name").click()
-        page.get_by_role("textbox", name="enter a name").fill("test_player")
+        page.get_by_role("textbox", name="enter a name").fill("bobby")
         page.get_by_text("user2", exact=True).click()
         page.get_by_text("match:").click()
-        page.locator(".circle").click()
-
-        time.sleep(10)
-
-
+        expect(page.locator('.loader')).to_have_css('opacity', '1')
+        time.sleep(5)
+        expect(page.locator('.loader')).to_have_css('opacity', '0')
+        page.get_by_role("button", name="EXIT").click()
         logout()
 
     # ! =============== KICKSTART TESTER HERE ===============
@@ -68,3 +67,52 @@ def run(playwright: Playwright) -> None:
 
 with sync_playwright() as playwright:
     run(playwright)
+
+
+    """
+    DAN, PUT WHAT TO TEST HERE
+
+    - TEST MATCH SIMPLE ✅
+    - PREMIER TEST: test 1v1 solo
+    - Navigate to page Match simple
+
+    - START ROUTINE1 click sur l'element ayant les classes "user self-player" 
+    - dans l'input avec l'id="match-player-name", entre le nom "bobby"
+    - click ENCORE sur le meme elment qu'avant 
+    
+    
+    - START ROUTINE 2 click sur l'element avec les classes "match self-match"    - 
+    - l'élément avec la class "loader" doit avoir style="opacity: 1;"
+    - attendre 4 secondes
+    - l'élément avec la class "loader" doit avoir style="opacity: 0;"
+    - 
+    - DEUXIEME TEST:  test 1v1 solo part 2
+    - cliquer sur l'élément avec id="acc-profile" (on va devoir changer cet id, c'ets le template de thomas :)
+    - cliquer sur l'élément avec id="acc-profile" (on revient sur la page via une htmx)
+    - On rebalance le test a partir de START ROUTINE1
+
+    ✅
+    - TEST TROIS: test 1v1 remote
+    - on ouvre deux sessions avec deux user differents ✅
+    - un des deux users acced a la page match simple par un click sur l'élément avec id="acc-profile" ✅ 
+    - l'autre navigue directement à la page ✅
+    - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
+    - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
+    - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
+    - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
+    - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
+    - joueur A et joueur B excuent la routine 2
+    un 
+    - TEST QUATRE: test tournament one machine
+    - l'user navigue vers la page tournament
+    - ROUTINE (x3): Dans le champ avec l'id="player-name", il entre les noms "hehe", "hoho", "haha"
+    - il clique sur l'élément dont le contenu est "Add Player"
+    - il clique sur l'élément dont le contenu est "Create Tournament"
+    - il drag and drop les trois divs avec les classes "user phantom" dans le div avec l'idsur l'élément avec la classe "text" et dont le contenu est "Add Player" vers le div
+    -
+    -
+    -
+    -
+
+    
+    """
