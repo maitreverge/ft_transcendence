@@ -202,7 +202,7 @@ class Tournament():
 
 	async def save_tournament_matches(self, matches, tournament_id):
 		
-		from tournament_app.views import send_db as update_match
+		from tournament_app.views import send_db as sdb
 
 		path = "api/match/"
 		
@@ -215,8 +215,8 @@ class Tournament():
 			score_p1 = matches[_]["matchResult"]["score"][0]
 			score_p2 = matches[_]["matchResult"]["score"][1]
 			tournament = tournament_id
-			
 			# Compile each key in a JSON body
+			# HERE FOR MY DATA
 			data = {
 				"player1": p1,
 				"player2": p2,
@@ -225,7 +225,29 @@ class Tournament():
 				"score_p2": score_p2,
 				"tournament": tournament,
 			}
-			await update_match(path, data)
+			await sdb(path, data)
+			# Update Player 2 stats
+			data_p1 = {
+				"games_played": 1,
+				"games_won": 1 if win == p1 else 0,
+				"games_lost": 1 if win != p1 else 0,
+				"points_scored": score_p1,
+				"points_conceded": score_p2,
+			}
+			data_p2 = {
+				"games_played": 1,  
+				"games_won": 1 if win == p2 else 0,
+				"games_lost": 1 if win != p2 else 0,
+				"points_scored": score_p2,
+				"points_conceded": score_p1,
+			}
+			# Send updates to player statistics
+			path_p1 = f"api/player/{p1}/stats/update-stats/"
+			await sdb(path_p1, data_p1)
+			path_p2 = f"api/player/{p2}/stats/update-stats/"
+			await sdb(path_p2, data_p2)
+
+   
 
 	async def extract_last_tournament_id(self):
 		async with aiohttp.ClientSession() as session:

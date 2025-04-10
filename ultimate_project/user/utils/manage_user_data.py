@@ -3,6 +3,22 @@ from django.http import HttpRequest
 import os
 from typing import Tuple, Dict
 from django.http import JsonResponse
+from pprint import pprint
+from pprint import PrettyPrinter
+
+
+async def build_context(request: HttpRequest) -> Dict:
+    """Build the base context with username from Request if found"""
+    username = request.headers.get("X-Username")
+    context = {
+        "rasp": os.getenv("rasp", "false"),
+        "pidom": os.getenv("pi_domain", "localhost:8443"),
+    }
+    if username:
+        context["username"] = username
+    else:
+        context["username"] = None
+    return context
 
 async def get_user_info_w_username(username):
     """
@@ -14,10 +30,6 @@ async def get_user_info_w_username(username):
             response = await client.get(
                 f"http://databaseapi:8007/api/player/?username={username}"
             )
-
-            response_text = response.text  # For plain text responses
-            print("\n get_user_info_w_username response: ", response_text, "\n", flush=True) #rm
-
             if response.status_code == 200:
                 data = response.json()
                 if isinstance(data, list) and len(data) > 0:
@@ -128,42 +140,92 @@ async def delete_user_w_user_id(user_id):
         print(f"Exception in get_if_user_credentials_valid: {str(e)}", flush=True)
         return None
 
-async def build_context(request: HttpRequest) -> Dict:
-    """Build the base context with username from Request if found"""
-    username = request.headers.get("X-Username")
-    context = {
-        "rasp": os.getenv("rasp", "false"),
-        "pidom": os.getenv("pi_domain", "localhost:8443"),
-    }
-    if username:
-        context["username"] = username
-    else:
-        context["username"] = None
-    return context
 
-
-async def get_user_data(user_id):
+async def get_user_match_stats(username, user_id):
     """
-    Check if the user's credentials are valid using the database API.
+    Get sanitize match data for a user_id from the database API
     """
     try:
         async with httpx.AsyncClient() as client:
-            headers = {"Content-Type": "application/json"}
-            response = await client.get(
-                f"http://databaseapi:8007/api/player/{user_id}/",
-                headers=headers,   
-            )
-            if response.status_code == 204:
-                try:
-                    result = response.json()
-                    print(f"User deleted successfully.", flush=True)
-                    return result
-                except ValueError:
-                    print("User deleted successfully (non-JSON response)", flush=True)
-                    return {"success": True}
-            print(f"Error retrieving user credentials: HTTP {response.status_code} - {response.text}",
-                flush=True,)
+            #f"http://databaseapi:8007/api/player/?username={username}"
+            
+            print(f"user id {user_id}\n", flush=True)
+            response = await client.get(f"http://databaseapi:8007/api/player_stats/?player_id={user_id}")
+            
+            json_data = response.json()
+            print("JSON DATA\n\n:", flush=True)
+            pprint(json_data)
+            print("--\n", flush=True)
+            if response.status_code == 200:
+                return json_data
             return None
     except Exception as e:
-        print(f"Exception in get_if_user_credentials_valid: {str(e)}", flush=True)
+        print(f"Error getting user data for match: {str(e)}", flush=True)
         return None
+
+
+
+""" import requests
+from pprint import pprint
+
+url = 'http://localhost:8007/api/match/'
+
+response = requests.get(url)
+print(response.status_code)
+j = response.json()
+
+pprint(j)
+
+dico = {}
+
+for e in j:
+    if not e['player1'] in dico:
+        dico[e['player1']] = {
+            "first_name": e["player1_details"]['first_name'],
+            "last_name":  e["player1_details"]['last_name'],
+            "username": e["player1_details"]['username'],
+            "games_won": 0,
+            "games_lost": 0,
+            "points_won": 0,
+            "points_lost": 0,
+        }
+
+    if not e['player2'] in dico:
+        dico[e['player2']] = {
+            "first_name": e["player2_details"]['first_name'],
+            "last_name":  e["player2_details"]['last_name'],
+            "username": e["player2_details"]['username'],
+            "games_won": 0,
+            "games_lost": 0,
+            "points_won": 0,
+            "points_lost": 0,
+        }
+
+    if e['winner'] == e['player1']:
+        dico[e['player1']]['games_won'] += 1
+        dico[e['player2']]['games_lost'] += 1
+    
+        dico[e['player1']]['points_won'] += e['score_p1']
+        dico[e['player1']]['points_lost'] += e['score_p2']
+
+        dico[e['player2']]['points_won'] += e['score_p2']
+        dico[e['player2']]['points_lost'] += e['score_p1']
+    
+    else:
+        dico[e['player2']]['games_won'] += 1
+        dico[e['player1']]['games_lost'] += 1
+    
+        dico[e['player2']]['points_won'] += e['score_p2']
+        dico[e['player2']]['points_lost'] += e['score_p1']
+
+        dico[e['player1']]['points_won'] += e['score_p1']
+        dico[e['player1']]['points_lost'] += e['score_p2']
+
+pprint(dico)
+
+for k, e in dico.items():
+    t = e['games_won'] + e['games_lost']
+    print(f"{e['first_name']} {e['last_name']} ({e['username']})")
+    print(f"  won {e['games_won']} of {t} games")
+    print(f"  {e['points_lost'] / e['points_won'] * 100 - 100:+.0f}% better than adversary")
+    print() """

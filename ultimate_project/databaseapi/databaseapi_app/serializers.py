@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import Player, Tournament, Match
+from .models import Player, Tournament, Match, PlayerStatistics
+
+""" 
+🔄 Convert Django model instances (like your PlayerStatistics) to 
+JSON — so they can be sent over an API.
+
+📥 Validate and deserialize incoming JSON from requests — 
+so it can be saved to the database. """
 
 
 class PlayerSerializer(serializers.ModelSerializer):
@@ -56,6 +63,22 @@ class PlayerNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = ["username", "first_name", "last_name"]
+
+
+class PlayerStatisticsSerializer(serializers.ModelSerializer):
+    update_history = serializers.JSONField(required=False)
+    class Meta:
+        model = PlayerStatistics
+        fields = [
+            "player",
+            "games_played",
+            "games_won",
+            "games_lost",
+            "points_scored",
+            "points_conceded",
+            "last_updated",
+            "update_history",
+        ]
 
 
 class TournamentSerializer(serializers.ModelSerializer):

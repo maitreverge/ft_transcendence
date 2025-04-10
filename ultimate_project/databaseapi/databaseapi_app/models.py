@@ -65,6 +65,30 @@ class Player(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+class PlayerStatistics(models.Model):
+    # player will always be required for onetoone and foreign key
+    # will used player ID as theprimary key
+    player = models.OneToOneField(Player, primary_key=True, on_delete=models.CASCADE, related_name="statistics")
+
+    games_played = models.IntegerField(default=0)
+    games_won = models.IntegerField(default=0)
+    games_lost = models.IntegerField(default=0)
+    points_scored = models.IntegerField(default=0)
+    points_conceded = models.IntegerField(default=0)
+
+    # auto set when usign .save()
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    # history of data progression per day
+    # will use date(str) as key
+    update_history = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        db_table = "player_statistics"
+
+    def __str__(self):
+        return f"Stats for {self.player.username}"
+
 
 class FriendList(models.Model):
     #one user for one friend list
@@ -173,7 +197,6 @@ class Tournament(models.Model):
         return f"Tournament {self.id}"
 
 
-
 class Match(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -181,20 +204,25 @@ class Match(models.Model):
         to=Player,  # Explicit reference to Player model
         on_delete=models.CASCADE,  # If a player is deleted, the match is also deleted
         related_name="player1",
+        to_field="id", # to be more explicit but by default use id
     )
     player2 = models.ForeignKey(
         to=Player,
         on_delete=models.CASCADE,
         related_name="player2",
+        to_field="id", # to be more explicit but by default use id
     )
     winner = models.ForeignKey(  # Renamed from winner_match to winner
         to=Player,
         on_delete=models.CASCADE,
         related_name="winner_match",  # Keep the original related_name to avoid migration issues
+        to_field="id", # to be more explicit but by default use id
     )
 
     score_p1 = models.IntegerField(default=0)
     score_p2 = models.IntegerField(default=0)
+    
+    # need to add a start time and a end time for the match
 
     tournament = models.ForeignKey(
         to=Tournament,
