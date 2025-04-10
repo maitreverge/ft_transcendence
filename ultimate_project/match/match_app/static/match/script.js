@@ -642,7 +642,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 			
 			// if (data.plyIds && window.playerId == data.plyIds[0])
 			// {
-				console.log(data.plyIds[0]);
+				// console.log(data.plyIds[0]);
 				leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
 				rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
 			// }
@@ -654,9 +654,9 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 		}
 		else 
 		{
-			console.log("Pje suis ds le mode REMOTE; ", window.playerId)
-			console.log("Pje suis ds le mode REMOTE; joueur 0", data.plyIds[0], " ", data.names[0]);
-			console.log("Pje suis ds le mode REMOTE; joueur 1", data.plyIds[1], " ", data.names[1]);
+			// console.log("Pje suis ds le mode REMOTE; ", window.playerId)
+			// console.log("Pje suis ds le mode REMOTE; joueur 0", data.plyIds[0], " ", data.names[0]);
+			// console.log("Pje suis ds le mode REMOTE; joueur 1", data.plyIds[1], " ", data.names[1]);
 			if (data.plyIds)
 			{
 				if (window.playerId == data.plyIds[0])
