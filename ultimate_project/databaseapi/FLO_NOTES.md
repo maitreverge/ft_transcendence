@@ -48,7 +48,6 @@
 ```nginx
 
 ctn_nginx         | 2025/04/09 16:38:56 [warn] 29#29: *4 upstream sent duplicate header line: "date: Wed, 09 Apr 2025 16:38:55 GMT", previous value: "date: Wed, 09 Apr 2025 16:38:55 GMT", ignored while reading response header from upstream, client: 172.18.0.1, server: localhost, request: "GET /translations/en.json HTTP/1.1", upstream: "http://172.18.0.5:8005/translations/en.json", host: "localhost:8443", referrer: "https://localhost:8443/login/"
-ctn_api_gateway   | 
 ctn_nginx         | 2025/04/09 16:38:56 [warn] 29#29: *4 upstream sent duplicate header line: "server: uvicorn", previous value: "server: uvicorn", ignored while reading response header from upstream, client: 172.18.0.1, server: localhost, request: "GET /translations/en.json HTTP/1.1", upstream: "http://172.18.0.5:8005/translations/en.json", host: "localhost:8443", referrer: "https://localhost:8443/login/"
 
 ```
