@@ -220,7 +220,7 @@ function enterMatch(match)
 	let player2Name = "";
 	if (match.multy)
 	{
-		player2Id = match.otherId;
+		player2Id = -window.selfId;//match.otherId;
 		player2Name = match.otherName;
 	}
 	fetch(
