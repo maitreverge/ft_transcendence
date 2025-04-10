@@ -120,15 +120,37 @@ def run(playwright: Playwright) -> None:
         login(page1, USER_2)
         login(page2, USER_3)
 
-        # Go to match simple
+        # Page 1 Goes to match by clicking button... #! NEED TO CHANGE THE LO
+        # page1.locator("#acc-profile").click()
         page1.goto(f"{BASE_URL}/tournament/simple-match/")
+
+        # Page 2 goes by straight link
         page2.goto(f"{BASE_URL}/tournament/simple-match/")
 
+        
         # !!!!!!!!!! 🪡🪡🪡🪡 WORK NEEDLE
+        page1.locator("#user").click()
+        page2.locator("#swal2-cancel swal2-styled").click()
+
+        # - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
+        # - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
+        
+
+
+        # - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
+        # - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
+
+
+        # - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
+        
+        # - joueur A et joueur B excuent la routine 2
+        
+
+
 
         # Page 1 => user 2 / 3
 
-        time.sleep(10)
+        time.sleep(100)
 
         logout(page1)
         logout(page2)
@@ -205,10 +227,11 @@ def run(playwright: Playwright) -> None:
     - cliquer sur l'élément avec id="acc-profile" (on revient sur la page via une htmx)
     - On rebalance le test a partir de START ROUTINE1
 
+    ✅
     - TEST TROIS: test 1v1 remote
-    - on ouvre deux sessions avec deux user differents
-    - un des deux users acced a la page match simple par un click sur l'élément avec id="acc-profile" 
-    - l'autre navigue directement à la page 
+    - on ouvre deux sessions avec deux user differents ✅
+    - un des deux users acced a la page match simple par un click sur l'élément avec id="acc-profile" ✅ 
+    - l'autre navigue directement à la page ✅
     - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
     - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
     - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
@@ -218,10 +241,10 @@ def run(playwright: Playwright) -> None:
     un 
     - TEST QUATRE: test tournament one machine
     - l'user navigue vers la page tournament
-    - ROUTINEDans le champ avec l'id="player-name", il entre le nom "hehe"
-    -
-    -
-    -
+    - ROUTINE (x3): Dans le champ avec l'id="player-name", il entre les noms "hehe", "hoho", "haha"
+    - il clique sur l'élément dont le contenu est "Add Player"
+    - il clique sur l'élément dont le contenu est "Create Tournament"
+    - il drag and drop les trois divs avec les classes "user phantom" dans le div avec l'idsur l'élément avec la classe "text" et dont le contenu est "Add Player" vers le div
     -
     -
     -

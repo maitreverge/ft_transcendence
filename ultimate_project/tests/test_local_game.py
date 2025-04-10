@@ -1,238 +1,82 @@
-# from playwright.sync_api import Playwright, sync_playwright, expect
-# import time
-# import os
-# import pyotp
+from playwright.sync_api import Playwright, sync_playwright, expect
+from collections import Counter
+import time
+
+# USERS
+LOGIN = "user2"
+PASSWORD = "password"
+
+BASE_URL = "https://localhost:8443"
 
 
-# # USERS
-# USER_2 = "user2"
-# LOGIN_2 = "user3"
-# PASSWORD = "password"
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context(ignore_https_errors=True)
+    page = context.new_page()
 
-# SIMULTANEOUS_USERS = 2
+    def login():
+        expect(page).to_have_url(f"{BASE_URL}/login/")
 
-# BASE_URL = "https://localhost:8443"
+        # Fill in the username and password
+        page.locator("#username").fill(LOGIN)
+        page.locator("#password").fill(PASSWORD)
+        page.locator("#loginButton").click()
 
-# def run(playwright: Playwright) -> None:
+        expect(page).to_have_url(f"{BASE_URL}/home/")
 
-#     def get_ordinal_suffix(num):
-#         if num == 1:
-#             return "st"
-#         elif num == 2:
-#             return "nd"
-#         elif num == 3:
-#             return "rd"
-#         else:
-#             return "th"
+    def logout():
+        youpiBanane = page.locator("#youpiBanane")
+        logoutButton = page.locator("#logoutButton")
+        modalLogoutButton = page.locator("#modalLogoutButton")
+        assert "show" not in (youpiBanane.get_attribute("class") or "")
+        youpiBanane.click()
+        logoutButton.click()
+        modalLogoutButton.click()
+        expect(page).to_have_url(f"{BASE_URL}/login/")
 
-#     def get_screen_size():
-#         # This is a simple approach that works on many Linux systems
-#         # For more accurate results across all setups, consider a library like PyAutoGUI
-#         try:
-#             cmd = "xrandr | grep '*' | awk '{print $1}'"
-#             output = os.popen(cmd).read().strip().split("x")
-#             if len(output) == 2:
-#                 return int(output[0]), int(output[1])
-#         except:
-#             pass
-#         # Fallback to common resolution
-#         return 1920, 1080
+    def test_view(locator):
+        page.goto(f"{BASE_URL}/login/")
 
-#     def login(page, login, twofa = None):
-#         expect(page).to_have_url(f"{BASE_URL}/login/")
+        login()
 
-#         # Fill in the username and password
-#         page.locator("#username").fill(login)
-#         page.locator("#password").fill(PASSWORD)
-#         page.locator("#loginButton").click()
+        page.locator(f"#{locator}").click()
 
-#         time.sleep(2)
+        # Wait for the content to be available
+        page.wait_for_selector("#players", state="attached")
 
-#         # if twofa:
-#         #     totp = pyotp.TOTP(SECRET_2FA)
-#         #     expect(page).to_have_url(f"{BASE_URL}/two-factor-auth/")
+        # Extract username from self-player and assert it matches LOGIN
+        self_player_username = (
+            page.locator("#players .self-player").text_content().strip()
+        )
+        print(f"✅ Self player username: {self_player_username}")
 
-#         #     # Fill with a correct code
-#         #     for _ in range(3):
-#         #         current_code = totp.now()
-#         #         try:
-#         #             page.locator("#otp_input").fill(current_code)
-#         #             page.locator("#otp_verify").click()
-#         #             expect(page).to_have_url(f"{BASE_URL}/home/")
-#         #             print(
-#         #                 f"✅ 2FA connexion succed on {_ + 1}{get_ordinal_suffix(_ + 1)} try ✅",
-#         #                 flush=True,
-#         #             )
-#         #             break
-#         #         except Exception as e:
-#         #             print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
+        # Simple assertion to verify username matches
+        assert (
+            self_player_username == LOGIN
+        ), f"Username mismatch: found '{self_player_username}', expected '{LOGIN}'"
 
+        # Verify username persists after page reload
+        page.reload()
+        page.wait_for_selector("#players", state="attached")
+        time.sleep(0.5)  # Brief wait for content to load
 
-#         expect(page).to_have_url(f"{BASE_URL}/home/")
+        reload_username = page.locator("#players .self-player").text_content().strip()
+        assert (
+            reload_username == LOGIN
+        ), f"Username mismatch after reload: found '{reload_username}', expected '{LOGIN}'"
 
-#     def logout(page):
-#         youpiBanane = page.locator("#youpiBanane")
-#         logoutButton = page.locator("#logoutButton")
-#         modalLogoutButton = page.locator("#modalLogoutButton")
-#         assert "show" not in (youpiBanane.get_attribute("class") or "")
-#         youpiBanane.click()
-#         logoutButton.click()
-#         modalLogoutButton.click()
-#         expect(page).to_have_url(f"{BASE_URL}/login/")
+        logout()
 
-#     def init_win(browsers, contexts, pages, positions, window_sizes):
-#         for _ in range(SIMULTANEOUS_USERS):
-#             # Launch browser without specific size/position first
-#             browsers.append(
-#                 playwright.chromium.launch(
-#                     headless=False,
-#                     args=[
-#                         f"--window-position={positions[_][0]},{positions[_][1]}",
-#                         f"--window-size={window_sizes[_][0]},{window_sizes[_][1]}",
-#                     ],
-#                 )
-#             )
+    # ! =============== KICKSTART TESTER HERE ===============
 
-#             # Create context with viewport size matching our target window size
-#             contexts.append(
-#                 browsers[_].new_context(
-#                     ignore_https_errors=True,
-#                     viewport={
-#                         "width": window_sizes[_][0],
-#                         "height": window_sizes[_][1],
-#                     },
-#                 )
-#             )
+    test_view("nav-match")
+    test_view("nav-tournoi")
 
-#             pages.append(contexts[_].new_page())
+    print(f"✅ USERNAME PASSED INTO MATCH / TOURNAMENT ✅")
 
-#             # Also set position via JavaScript to ensure it takes effect
-#             pages[_].evaluate(
-#                 f"window.moveTo({positions[_][0]}, {positions[_][1]}); window.resizeTo({window_sizes[_][0]}, {window_sizes[_][1]});"
-#             )
-
-#     def destroy_obj(browsers, contexts):
-#         for context in contexts:
-#             context.close()
-#         for browser in browsers:
-#             browser.close()
+    context.close()
+    browser.close()
 
 
-#     def remote_simple_match(browsers, contexts, pages, positions, window_sizes):
-
-#         for _ in range(SIMULTANEOUS_USERS):
-#             pages[_].goto(f"{BASE_URL}/login/")
-        
-#         page1 = pages[0]
-#         page2 = pages[1]
-
-#         # Login both pages regular users
-#         login(page1, USER_2)
-#         login(page2, LOGIN_2)
-
-#         # Go to match simple
-#         page1.goto(f"{BASE_URL}/tournament/simple-match/")
-#         page2.goto(f"{BASE_URL}/tournament/simple-match/")
-        
-#         # !!!!!!!!!! 🪡🪡🪡🪡 WORK NEEDLE
-
-#         # Page 1 => user 2 / 3
-        
-        
-        
-#         time.sleep(10)
-        
-#         logout(page1)
-#         logout(page2)
-        
-#         # page1.locator("#big-tournament").click()
-#         # expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
-
-
-#         # # Page 2 login after
-#         # page2.locator("#big-tournament").click()
-#         # expect(page
-#         # expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")2).to_have_url(f"{BASE_URL}/tournament/tournament/")
-
-        
-#         # # Page 1 tries to navigate afterwards, and is no longer auth
-#         # page1.locator("#side-match").click()
-#         # expect(page1).to_have_url(f"{BASE_URL}/register/")
-#         # page1.goto(f"{BASE_URL}/home/")
-#         # expect(page1).to_have_url(f"{BASE_URL}/register/")
-
-
-
-#         # time.sleep(10)
-
-#     # ! =============== INIT WINDOWS SIZES ===============
-#     browsers = []
-#     contexts = []
-#     pages = []
-    
-
-#     screen_width, screen_height = get_screen_size()
-
-#     # Make windows narrow but tall (vertical shape)
-#     window_width = int(screen_width * 0.35)
-#     window_height = int(screen_height * 0.9)
-
-#     # Position one window at far left, one at far right
-#     left_position = 0
-#     right_position = screen_width - window_width
-
-#     # Position windows at left and right edges with different Y positions
-#     positions = [(left_position, 20), (right_position, 20)]
-
-#     # Set each window to be the same size
-#     window_sizes = [(window_width, window_height), (window_width, window_height)]
-
-#     # ! =============== KICKSTART TESTER HERE ===============
-#     remote_simple_match(browsers, contexts, pages, positions, window_sizes)
-
-
-#     print(f"✅ GAME TESTS ✅")
-
-#     destroy_obj(browsers, contexts)
-    
-    
-#     # context.close()
-#     # browser.close()
-
-#     """
-#     DAN, PUT WHAT TO TEST HERE
-
-#     - TEST MATCH SIMPLE
-#     - PREMIER TEST: test 1v1 solo
-#     - Navigate to page Match simple
-#     - START ROUTINE1 click sur l'element ayant les classes "user slef-player"
-#     - dans l'input avec l'id="match-player-name", entre le nom "bobby"
-#     - click ENCORE sur le meme elment qu'avant 
-#     - click sur l'element avec les classes "match self-match"    - 
-#     - l'élément avec la class "loader" doit avoir style="opacity: 1;"
-#     - attendre 4 secondes
-#     - l'élément avec la class "loader" doit avoir style="opacity: 0;"
-#     - 
-#     - DEUXIEME TEST:  test 1v1 solo part 2
-#     - cliquer sur l'élément avec id="acc-profile" (on va devoir changer cet id, c'ets le template de thomas :)
-#     - cliquer sur l'élément avec id="acc-profile" (on revient sur la page via une htmx)
-#     - On rebalance le test a partir de START ROUTINE1
-
-#     - TEST TROIS: test 1v1 remote
-#     - on ouvre deux sessions avec deux user differents
-#     - les deux users accedent a la pa
-#     -
-#     -
-#     -
-#     -
-#     -
-#     -
-#     -
-#     -
-#     -
-
-    
-#     """
-
-# with sync_playwright() as playwright:
-#     run(playwright)
+with sync_playwright() as playwright:
+    run(playwright)
