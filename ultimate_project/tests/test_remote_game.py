@@ -210,6 +210,25 @@ def run(playwright: Playwright) -> None:
         page1.get_by_role("button", name="Create Tournament").click()
 
         # User 2 move his ghost
+
+        # User3 move his ghost and himself
+        source2 = page2.get_by_text("ghost_user3")
+        # time.sleep(3)
+        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
+        # time.sleep(3)
+        source2.drag_to(target2)
+        # time.sleep(3)
+        
+        source2 = page2.get_by_text("user3", exact=True)
+        print(f"PAUSE HERE 2", flush=True)
+        # time.sleep(3)
+        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
+        print(f"PAUSE HERE 3", flush=True)
+        # time.sleep(3)
+        source2.drag_to(target2)
+        print(f"PAUSE HERE 4", flush=True)
+        # time.sleep(3)
+
         source1 = page1.get_by_text("ghost_user2")
         time.sleep(3)
         target1 = page1.locator(".tournament-cont")  # The div where it's dropped
@@ -218,23 +237,8 @@ def run(playwright: Playwright) -> None:
         print(f"PAUSE HERE", flush=True)
         time.sleep(3)
 
-        # User3 move his ghost and himself
-        source2 = page2.get_by_text("user3", exact=True)
-        print(f"PAUSE HERE 2", flush=True)
-        time.sleep(3)
-        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
-        print(f"PAUSE HERE 3", flush=True)
-        time.sleep(3)
-        source2.drag_to(target2)
-        print(f"PAUSE HERE 4", flush=True)
-        time.sleep(3)
 
-        source2 = page2.get_by_text("ghost_user3")
-        time.sleep(3)
-        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
-        time.sleep(3)
-        source2.drag_to(target2)
-        time.sleep(3)
+        # MATCH 1 = 
 
 
         time.sleep(100)
