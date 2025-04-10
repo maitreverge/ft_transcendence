@@ -484,20 +484,21 @@ function catchPlayersInMatch(lk)
 	const wscopy = websockets.map( ws => ({...ws}))
 	wscopy.push({playerId: window.selfId, playerName: window.selfName,
 		socket:window.tournamentSocket});
-	p1 = wscopy.find(ws => ws.playerId == lk.p1Id);
-	p2 = wscopy.find(ws => ws.playerId == lk.p2Id);
+	const p1 = wscopy.find(ws => ws.playerId == lk.p1Id);
+	const p2 = wscopy.find(ws => ws.playerId == lk.p2Id);
+	console.log("CATCH PLAYER ", p1, " and ", p2);
 	if (p1)
 		enterTournament(p1.socket, lk.tournamentId);
 	if (p2)
 		enterTournament(p2.socket, lk.tournamentId);
 	if (!p1 && !p2)
 		return [window.selfId, window.selfName, 0, ""];
+	else if (p1 && p2)
+		return [p1.playerId, p1.playerName, p2.playerId, p2.playerName];
 	else if (p1)
 		return [p1.playerId, p1.playerName, 0, ""];
 	else if (p2)
 		return [p2.playerId, p2.playerName, 0, ""];
-	else if (p1 && p2)
-		return [p1.playerId, p1.playerName, p2.playerId, p2.playerName];
 }
 
 // function enterMatch(lk, div, overlay, playerId, playerName) {
@@ -633,7 +634,7 @@ function linkMatch(lk)
 	localP1.innerText = lk.p1Name;
 	localP2.innerText = lk.p2Name;
 	// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-	const ws = websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id)
+	const ws = websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
 	console.log("WAIBECHAUSETTE ", ws);
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
 	{
@@ -657,9 +658,8 @@ function linkMatch(lk)
 			window.selfMatchId = lk.matchId;
 			// localMatch.classList.add("next-match");
 		}
-		const [playerId, playerName, player2Id, player2Name] = catchPlayersInMatch(
-			lk);
-		console.log("TOURNAMENT TO ENTER IN MATCH : ", playerId, " ",  playerName, " ", player2Id, " ", player2Name)
+		const [playerId, playerName, player2Id, player2Name] = catchPlayersInMatch(lk);
+		console.log("TOURNAMENT TO ENTER IN MATCH : ", playerId, " ",  playerName, " ", player2Id, " ", player2Name);
 		fetch(
 			`/match/match${dim.value}d/` +
 			`?matchId=${lk.matchId}` +
