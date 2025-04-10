@@ -108,6 +108,27 @@ def run(playwright: Playwright) -> None:
         for browser in browsers:
             browser.close()
 
+    def routine_2(page1, page2):
+        
+        # ! This routine check the timer
+        # Get both loaders
+        loader_p1 = page1.locator(".loader")
+        loader_p2 = page2.locator(".loader")
+        
+        # Check if loader has opacity 1
+        loader_style_1 = loader_p1.get_attribute("style")
+        loader_style_2 = loader_p2.get_attribute("style")
+        assert "opacity: 1" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
+        assert "opacity: 1" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
+        
+        time.sleep(4)
+        
+        # Check if loader has opacity 0 after waiting
+        loader_style_1 = loader_p1.get_attribute("style")
+        loader_style_2 = loader_p2.get_attribute("style")
+        assert "opacity: 0" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
+        assert "opacity: 0" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
+
     def test_remote_simple_match(browsers, contexts, pages, positions, window_sizes):
 
         for _ in range(SIMULTANEOUS_USERS):
@@ -129,8 +150,57 @@ def run(playwright: Playwright) -> None:
 
         
         # !!!!!!!!!! 🪡🪡🪡🪡 WORK NEEDLE
-        page1.locator("#user").click()
-        page2.locator("#swal2-cancel swal2-styled").click()
+        # page1.locator("#user").click()
+        # page2.locator("#swal2-cancel swal2-styled").click()
+
+        # user2 send invite
+        page1.get_by_text("user3").click()
+        # user3 declines
+        page2.get_by_role("button", name="Decline").click()
+        # user2 accept user3 declines
+        page1.get_by_role("button", name="OK").click()
+
+        # user 3 send invite
+        page2.get_by_text("user2").click()
+        # user2 Accept invite
+        page1.get_by_role("button", name="Accept").click()
+
+        page1.get_by_text("match:").click()
+        page2.get_by_text("match:").click()
+
+
+        # page1.locator(".circle").click()
+        # page1.locator(".circle").click()
+
+        routine_2(page1, page2)
+
+
+
+
+        # USER 3
+
+        # ! Save from recording playright
+        # {
+        #     page1.locator("#field-match").click()
+        #     page1.get_by_text("user3").click()
+        #     page1.get_by_role("button", name="OK").click()
+        #     page1.get_by_role("button", name="Accept").click()
+        #     page1.get_by_text("match:").click()
+
+
+
+
+        #     # USER 3
+        #     page2.locator("#field-match").click()
+        #     page2.get_by_role("button", name="Decline").click()
+        #     page2.get_by_text("user2").click()
+        #     page2.get_by_text("match:").click()
+        #     page2.locator(".circle").click()
+        # }
+
+
+
+
 
         # - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
         # - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
@@ -150,10 +220,10 @@ def run(playwright: Playwright) -> None:
 
         # Page 1 => user 2 / 3
 
-        time.sleep(100)
+        # time.sleep(100)
 
-        logout(page1)
-        logout(page2)
+        # logout(page1)
+        # logout(page2)
 
         # page1.locator("#big-tournament").click()
         # expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
