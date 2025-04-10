@@ -4,6 +4,8 @@ from fastapi.responses import RedirectResponse
 
 JWT_SECRET_KEY = os.getenv("JWT_KEY")
 
+#! FLO : POTENTIALLY UNSUDED MODULE => TO DELETE
+
 
 def block_authenticated_users():
     """
