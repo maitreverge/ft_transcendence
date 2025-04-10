@@ -13,6 +13,7 @@ SIMULTANEOUS_USERS = 2
 
 BASE_URL = "https://localhost:8443"
 
+
 def run(playwright: Playwright) -> None:
 
     def get_screen_size():
@@ -28,7 +29,7 @@ def run(playwright: Playwright) -> None:
         # Fallback to common resolution
         return 1920, 1080
 
-    def login(page, login, twofa = None):
+    def login(page, login, twofa=None):
         expect(page).to_have_url(f"{BASE_URL}/login/")
 
         # Fill in the username and password
@@ -57,7 +58,6 @@ def run(playwright: Playwright) -> None:
         #             break
         #         except Exception as e:
         #             print(f"💀 2FA connexion failed {_ + 1} times, retrying 💀", flush=True)
-
 
         expect(page).to_have_url(f"{BASE_URL}/home/")
 
@@ -108,12 +108,11 @@ def run(playwright: Playwright) -> None:
         for browser in browsers:
             browser.close()
 
-
     def test_remote_simple_match(browsers, contexts, pages, positions, window_sizes):
 
         for _ in range(SIMULTANEOUS_USERS):
             pages[_].goto(f"{BASE_URL}/login/")
-        
+
         page1 = pages[0]
         page2 = pages[1]
 
@@ -124,35 +123,29 @@ def run(playwright: Playwright) -> None:
         # Go to match simple
         page1.goto(f"{BASE_URL}/tournament/simple-match/")
         page2.goto(f"{BASE_URL}/tournament/simple-match/")
-        
+
         # !!!!!!!!!! 🪡🪡🪡🪡 WORK NEEDLE
 
         # Page 1 => user 2 / 3
-        
-        
-        
+
         time.sleep(10)
-        
+
         logout(page1)
         logout(page2)
-        
+
         # page1.locator("#big-tournament").click()
         # expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
-
 
         # # Page 2 login after
         # page2.locator("#big-tournament").click()
         # expect(page
         # expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")2).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
-        
         # # Page 1 tries to navigate afterwards, and is no longer auth
         # page1.locator("#side-match").click()
         # expect(page1).to_have_url(f"{BASE_URL}/register/")
         # page1.goto(f"{BASE_URL}/home/")
         # expect(page1).to_have_url(f"{BASE_URL}/register/")
-
-
 
         # time.sleep(10)
 
@@ -160,7 +153,6 @@ def run(playwright: Playwright) -> None:
     browsers = []
     contexts = []
     pages = []
-    
 
     screen_width, screen_height = get_screen_size()
 
@@ -178,15 +170,16 @@ def run(playwright: Playwright) -> None:
     # Set each window to be the same size
     window_sizes = [(window_width, window_height), (window_width, window_height)]
 
+    # Initialize windows before running tests
+    init_win(browsers, contexts, pages, positions, window_sizes)
+
     # ! =============== KICKSTART TESTER HERE ===============
     test_remote_simple_match(browsers, contexts, pages, positions, window_sizes)
-
 
     print(f"✅ GAME TESTS ✅")
 
     destroy_obj(browsers, contexts)
-    
-    
+
     # context.close()
     # browser.close()
 
@@ -222,10 +215,10 @@ def run(playwright: Playwright) -> None:
     - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
     - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"
     - joueur A et joueur B excuent la routine 2
-    
-    - TEST QUATRE: test 
-    -
-    -
+    un 
+    - TEST QUATRE: test tournament one machine
+    - l'user navigue vers la page tournament
+    - ROUTINEDans le champ avec l'id="player-name", il entre le nom "hehe"
     -
     -
     -
@@ -236,6 +229,7 @@ def run(playwright: Playwright) -> None:
 
     
     """
+
 
 with sync_playwright() as playwright:
     run(playwright)
