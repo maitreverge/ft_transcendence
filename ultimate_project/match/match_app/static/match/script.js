@@ -640,17 +640,17 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 		{
 			console.log("Pje suis ds le mode MULTY; ", window.player2Id)
 			
-			if (data.plyIds && window.playerId == data.plyIds[0])
-			{
+			// if (data.plyIds && window.playerId == data.plyIds[0])
+			// {
 				console.log(data.plyIds[0]);
 				leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
 				rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
-			}
-			else
-			{
-				leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-				rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
-			}
+			// }
+			// else
+			// {
+				// leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+				// rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
+			// }
 		}
 		else 
 		{

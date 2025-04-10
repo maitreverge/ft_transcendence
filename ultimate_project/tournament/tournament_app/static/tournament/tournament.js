@@ -451,7 +451,7 @@ function dropTournament(div, tournamentId) {
 // 	});
 // }
 
-function catchPlayersInMatch(lk, playerId, playerName)
+function catchPlayersInMatch2(lk, playerId, playerName)
 {
 	const wss = websockets.filter(
 		ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
@@ -477,6 +477,27 @@ function catchPlayersInMatch(lk, playerId, playerName)
 	if (player2Id)
 		enterTournament(wss[1].socket, lk.tournamentId);
 	return [playerId, playerName, player2Id, player2Name];
+}
+
+function catchPlayersInMatch(lk)
+{
+	const wscopy = websockets.map( ws => ({...ws}))
+	wscopy.push({playerId: window.selfId, playerName: window.selfName,
+		socket:window.tournamentSocket});
+	p1 = wscopy.find(ws => ws.playerId == lk.p1Id);
+	p2 = wscopy.find(ws => ws.playerId == lk.p2Id);
+	if (p1)
+		enterTournament(p1.socket, lk.tournamentId);
+	if (p2)
+		enterTournament(p2.socket, lk.tournamentId);
+	if (!p1 && !p2)
+		return [window.selfId, window.selfName, 0, ""];
+	else if (p1)
+		return [p1.playerId, p1.playerName, 0, ""];
+	else if (p2)
+		return [p2.playerId, p2.playerName, 0, ""];
+	else if (p1 && p2)
+		return [p1.playerId, p1.playerName, p2.playerId, p2.playerName];
 }
 
 // function enterMatch(lk, div, overlay, playerId, playerName) {
@@ -637,7 +658,7 @@ function linkMatch(lk)
 			// localMatch.classList.add("next-match");
 		}
 		const [playerId, playerName, player2Id, player2Name] = catchPlayersInMatch(
-			lk, window.selfId, window.selfName);
+			lk);
 		console.log("TOURNAMENT TO ENTER IN MATCH : ", playerId, " ",  playerName, " ", player2Id, " ", player2Name)
 		fetch(
 			`/match/match${dim.value}d/` +
