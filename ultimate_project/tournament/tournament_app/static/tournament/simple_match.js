@@ -110,30 +110,42 @@ function loadSimpleMatchHtml(data, target) {
 	}
 }
 
-function setSelfMatchId() {
+// function setSelfMatchId() {
 
-	const matchsContainer = document.getElementById("matchs");
-	const matchElements = [...matchsContainer.children];
-	const dim = document.getElementById("dim");
+// 	const matchsContainer = document.getElementById("matchs");
+// 	const matchElements = [...matchsContainer.children];
+// 	const dim = document.getElementById("dim");
 
-    matchElements.forEach(match => {		
-		if (match.id == window.selfMatchId)
-			match.classList.add("self-match");					
-        match.onclick = function() {
-            // console.log("AVANT ", window.selfName, " ", )
-			fetch(
-				`/match/match${dim.value}d/` +
-				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${-window.selfId}&player2Name=${window.player2Name}`)
-			.then(response => {
-				if (!response.ok) 
-					throw new Error(`Error HTTP! Status: ${response.status}`);		  
-				return response.text();
-			})
-			.then(data => loadSimpleMatchHtml(data, "overlay-match"))
-			.catch(error => console.log(error))
-		};					
-	});
-}
+//     matchElements.forEach(match => {		
+// 		if (match.id == window.selfMatchId)
+// 			match.classList.add("self-match");					
+//         match.onclick = function() {
+//             // console.log("AVANT ", window.selfName, " ", )
+// 			// if ()
+// 			// console.log("AAAwindows2playername ", window.player2Name, typeof(window.player2Name));
+// 			let player2Id = -window.selfId;
+// 			if (!window.multy)
+// 			{
+// 				console.log("je suis qd mmm rentre ne taffole pas");
+// 				window.multy = false;
+// 				// console.log("AAAplayer2name est ! ", window.player2Name);
+// 				player2Id = 0;
+// 			}
+// 			fetch(
+// 				`/match/match${dim.value}d/` +
+// 				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${player2Id}&player2Name=${window.player2Name}`)
+// 			.then(response => {
+// 				if (!response.ok) 
+// 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
+// 				return response.text();
+// 			})
+// 			.then(data => loadSimpleMatchHtml(data, "overlay-match"))
+// 			.catch(error => console.log(error));			
+// 		};					
+// 	});
+// }
+
+
 // matchWebsockets = []
 // function newMatchPlayer(socket) {
   
@@ -201,6 +213,31 @@ function setSelfMatchId() {
 // 	}	
 // }
 
+function enterMatch(match)
+{
+	const dim = document.getElementById("dim");
+	let player2Id = 0;
+	let player2Name = "";
+	if (match.multy)
+	{
+		player2Id = match.otherId;
+		player2Name = match.otherName;
+	}
+	fetch(
+		`/match/match${dim.value}d/` +
+		`?matchId=${match.matchId}` +
+		`&playerId=${window.selfId}&playerName=${window.selfName}` +
+		`&player2Id=${player2Id}&player2Name=${player2Name}`
+	)
+	.then(response => {
+		if (!response.ok) 
+			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+		return response.text();
+	})
+	.then(data => loadSimpleMatchHtml(data, "overlay-match"))
+	.catch(error => console.log(error));	
+}
+
 function moveSimplePlayerInMatch(matchElement, match) {
 
 	console.log("MOVE SIMPLE PLAYER IN MATCH", match);
@@ -221,6 +258,9 @@ function addToMatchs(socket, matchsContainer, match) {
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
+	if (div.id == window.selfMatchId)
+		div.classList.add("self-match");	
+	div.onclick = ()=> enterMatch(match);
     matchsContainer.appendChild(div);
 	moveSimplePlayerInMatch(div, match);
 }
@@ -268,7 +308,7 @@ function updateMatchs(socket, matchs) {
 					moveSimplePlayerInMatch(el, match);
 			});	
 	});
-	setSelfMatchId();	
+	// setSelfMatchId();	
 }
 
 // function updateSimpleMatchPlayers(plys) {
@@ -410,11 +450,12 @@ function sendPlayerClick(socket, event, selected)
 			return;
 		}
 		input.style.display = "block";	
+		
 	}
 	else
 		input.style.display = "none";	
 	if (name.trim() === "")
-		return;		
+		return;	
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
@@ -476,7 +517,7 @@ function invitation(socket, data) {
 
 	switch (data.subtype)
 	{
-		case "back":				
+		case "back":	   		
 			if (data.response === "selfBusy")
                 messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "")
 				// alert("selfBusy");
