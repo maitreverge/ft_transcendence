@@ -224,7 +224,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 						"playerId": applicantId,
 						"playerName": applicantName, 
 						"otherId": other_id,
-						"otherName": other_name		
+						"otherName": other_name,
+						"multy": True if applicantId == -other_id else False		
 					})
 					return match_id
 				return None

@@ -144,6 +144,8 @@ function setSelfMatchId() {
 		};					
 	});
 }
+
+
 // matchWebsockets = []
 // function newMatchPlayer(socket) {
   
@@ -211,6 +213,31 @@ function setSelfMatchId() {
 // 	}	
 // }
 
+function enterMatch(match)
+{
+	const dim = document.getElementById("dim");
+	const player2Id = 0;
+	const player2Name = "";
+	if (match.multy)
+	{
+		player2Id = match.otherId;
+		player2Name = match.otherName;
+	}
+	fetch(
+		`/match/match${dim.value}d/` +
+		`?matchId=${match.id}` +
+		`&playerId=${window.selfId}&playerName=${window.selfName}` +
+		`&player2Id=${player2Id}&player2Name=${player2Name}`
+	)
+	.then(response => {
+		if (!response.ok) 
+			throw new Error(`Error HTTP! Status: ${response.status}`);		  
+		return response.text();
+	})
+	.then(data => loadSimpleMatchHtml(data, "overlay-match"))
+	.catch(error => console.log(error));	
+}
+
 function moveSimplePlayerInMatch(matchElement, match) {
 
 	console.log("MOVE SIMPLE PLAYER IN MATCH", match);
@@ -231,6 +258,9 @@ function addToMatchs(socket, matchsContainer, match) {
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
+	if (div.id == window.selfMatchId)
+		div.classList.add("self-match");	
+	div.onclick = ()=> enterMatch(match);
     matchsContainer.appendChild(div);
 	moveSimplePlayerInMatch(div, match);
 }
