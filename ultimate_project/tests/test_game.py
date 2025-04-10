@@ -5,7 +5,7 @@ import pyotp
 
 
 # USERS
-LOGIN_1 = "user2"
+USER_2 = "user2"
 LOGIN_2 = "user3"
 PASSWORD = "password"
 
@@ -14,16 +14,6 @@ SIMULTANEOUS_USERS = 2
 BASE_URL = "https://localhost:8443"
 
 def run(playwright: Playwright) -> None:
-
-    def get_ordinal_suffix(num):
-        if num == 1:
-            return "st"
-        elif num == 2:
-            return "nd"
-        elif num == 3:
-            return "rd"
-        else:
-            return "th"
 
     def get_screen_size():
         # This is a simple approach that works on many Linux systems
@@ -48,6 +38,7 @@ def run(playwright: Playwright) -> None:
 
         time.sleep(2)
 
+        # ! 2FA CONNEXION BLOCK
         # if twofa:
         #     totp = pyotp.TOTP(SECRET_2FA)
         #     expect(page).to_have_url(f"{BASE_URL}/two-factor-auth/")
@@ -118,9 +109,7 @@ def run(playwright: Playwright) -> None:
             browser.close()
 
 
-    def test_reg_users(browsers, contexts, pages, positions, window_sizes):
-
-        init_win(browsers, contexts, pages, positions, window_sizes)
+    def remote_simple_match(browsers, contexts, pages, positions, window_sizes):
 
         for _ in range(SIMULTANEOUS_USERS):
             pages[_].goto(f"{BASE_URL}/login/")
@@ -128,27 +117,41 @@ def run(playwright: Playwright) -> None:
         page1 = pages[0]
         page2 = pages[1]
 
-        # Page 1 login first
-        login(page1, LOGIN_REG)
+        # Login both pages regular users
+        login(page1, USER_2)
+        login(page2, LOGIN_2)
 
-        # Page 1 Nagiguate the website
-        page1.locator("#big-tournament").click()
-        expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
+        # Go to match simple
+        page1.goto(f"{BASE_URL}/tournament/simple-match/")
+        page2.goto(f"{BASE_URL}/tournament/simple-match/")
+        
+        # !!!!!!!!!! 🪡🪡🪡🪡 WORK NEEDLE
+
+        # Page 1 => user 2 / 3
+        
+        
+        
+        time.sleep(10)
+        
+        logout(page1)
+        logout(page2)
+        
+        # page1.locator("#big-tournament").click()
+        # expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
 
-        # Page 2 login after
-        login(page2, LOGIN_REG)
-        page2.locator("#big-tournament").click()
-        expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")
+        # # Page 2 login after
+        # page2.locator("#big-tournament").click()
+        # expect(page
+        # expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")2).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
         
-        # Page 1 tries to navigate afterwards, and is no longer auth
-        page1.locator("#side-match").click()
-        expect(page1).to_have_url(f"{BASE_URL}/register/")
-        page1.goto(f"{BASE_URL}/home/")
-        expect(page1).to_have_url(f"{BASE_URL}/register/")
+        # # Page 1 tries to navigate afterwards, and is no longer auth
+        # page1.locator("#side-match").click()
+        # expect(page1).to_have_url(f"{BASE_URL}/register/")
+        # page1.goto(f"{BASE_URL}/home/")
+        # expect(page1).to_have_url(f"{BASE_URL}/register/")
 
-        logout(page2)
 
 
         # time.sleep(10)
@@ -176,16 +179,51 @@ def run(playwright: Playwright) -> None:
     window_sizes = [(window_width, window_height), (window_width, window_height)]
 
     # ! =============== KICKSTART TESTER HERE ===============
-    test_reg_users(browsers, contexts, pages, positions, window_sizes)
+    remote_simple_match(browsers, contexts, pages, positions, window_sizes)
 
-    test_2fa_users(browsers, contexts, pages, positions, window_sizes)
 
-    print(f"✅ SAMETIME AUTH PASSED ✅")
+    print(f"✅ GAME TESTS ✅")
 
     destroy_obj(browsers, contexts)
+    
+    
     # context.close()
     # browser.close()
 
+    """
+    DAN, PUT WHAT TO TEST HERE
+
+    - TEST MATCH SIMPLE
+    - PREMIER TEST: test 1v1 solo
+    - Navigate to page Match simple
+    - START ROUTINE1 click sur l'element ayant les classes "user self-player"
+    - dans l'input avec l'id="match-player-name", entre le nom "bobby"
+    - click ENCORE sur le meme elment qu'avant 
+    - click sur l'element avec les classes "match self-match"    - 
+    - l'élément avec la class "loader" doit avoir style="opacity: 1;"
+    - attendre 4 secondes
+    - l'élément avec la class "loader" doit avoir style="opacity: 0;"
+    - 
+    - DEUXIEME TEST:  test 1v1 solo part 2
+    - cliquer sur l'élément avec id="acc-profile" (on va devoir changer cet id, c'ets le template de thomas :)
+    - cliquer sur l'élément avec id="acc-profile" (on revient sur la page via une htmx)
+    - On rebalance le test a partir de START ROUTINE1
+
+    - TEST TROIS: test 1v1 remote
+    - on ouvre deux sessions avec deux user differents
+    - un des deux users acced a la page match simple par un click sur l'élément avec id="acc-profile" 
+    - l'autre navigue directement à la page 
+    - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)
+    - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"
+    - l'autre A clique 
+    -
+    -
+    -
+    -
+    -
+
+    
+    """
 
 with sync_playwright() as playwright:
     run(playwright)
