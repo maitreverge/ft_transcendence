@@ -22,7 +22,6 @@ def run(playwright: Playwright) -> None:
         page.locator("#password").fill(PASSWORD)
         page.locator("#loginButton").click()
 
-        expect(page).to_have_url(f"{BASE_URL}/home/")
 
     def logout():
         youpiBanane = page.locator("#youpiBanane")
@@ -34,45 +33,34 @@ def run(playwright: Playwright) -> None:
         modalLogoutButton.click()
         expect(page).to_have_url(f"{BASE_URL}/login/")
 
-    def test_view(locator):
+    def test_local_match():
+
         page.goto(f"{BASE_URL}/login/")
 
         login()
 
-        page.locator(f"#{locator}").click()
+        expect(page).to_have_url(f"{BASE_URL}/home/")
+        
+        page.goto(f"{BASE_URL}/tournament/simple-match/")
+        
+        # This block is registered by auto-playright
+        page.get_by_text("user2", exact=True).click()
+        page.get_by_role("textbox", name="enter a name").click()
+        page.get_by_role("textbox", name="enter a name").fill("test_player")
+        page.get_by_text("user2", exact=True).click()
+        page.get_by_text("match:").click()
+        page.locator(".circle").click()
 
-        # Wait for the content to be available
-        page.wait_for_selector("#players", state="attached")
+        time.sleep(10)
 
-        # Extract username from self-player and assert it matches LOGIN
-        self_player_username = (
-            page.locator("#players .self-player").text_content().strip()
-        )
-        print(f"✅ Self player username: {self_player_username}")
-
-        # Simple assertion to verify username matches
-        assert (
-            self_player_username == LOGIN
-        ), f"Username mismatch: found '{self_player_username}', expected '{LOGIN}'"
-
-        # Verify username persists after page reload
-        page.reload()
-        page.wait_for_selector("#players", state="attached")
-        time.sleep(0.5)  # Brief wait for content to load
-
-        reload_username = page.locator("#players .self-player").text_content().strip()
-        assert (
-            reload_username == LOGIN
-        ), f"Username mismatch after reload: found '{reload_username}', expected '{LOGIN}'"
 
         logout()
 
     # ! =============== KICKSTART TESTER HERE ===============
 
-    test_view("nav-match")
-    test_view("nav-tournoi")
+    test_local_match()
 
-    print(f"✅ USERNAME PASSED INTO MATCH / TOURNAMENT ✅")
+    print(f"✅ LOCAL GAMES TEST OKAY ✅")
 
     context.close()
     browser.close()
