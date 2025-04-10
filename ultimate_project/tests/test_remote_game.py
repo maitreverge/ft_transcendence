@@ -142,15 +142,10 @@ def run(playwright: Playwright) -> None:
 
     def test_remote_simple_match(browsers, contexts, pages, positions, window_sizes):
 
-        for _ in range(SIMULTANEOUS_USERS):
-            pages[_].goto(f"{BASE_URL}/login/")
-
         page1 = pages[0]
         page2 = pages[1]
 
         # Login both pages regular users
-        login(page1, USER_2)
-        login(page2, USER_3)
 
         # Page 1 Goes to match by clicking button... #! MAYBE NEED TO CHANGE THE LOCATOR
         page1.locator("#nav-match").click()
@@ -204,8 +199,8 @@ def run(playwright: Playwright) -> None:
     # - l'user A clique sur le lien vers la page tournament
     # - Dans le champ avec l'id="player-name", chacun d'entre eux entre les noms "hehe" OU "hoho"
 
-        page1.locator("#player-name").fill("hehe")
-        page2.locator("#player-name").fill("haha")
+        page1.locator("#player-name").fill("ghost_user2")
+        page2.locator("#player-name").fill("ghost_user3")
 
     # - chacun d'entre eux clique sur l'élément dont le contenu est "Add Player"
         page1.get_by_text("Add Player", exact=True).click()
@@ -213,30 +208,36 @@ def run(playwright: Playwright) -> None:
 
     # - chacun d'entre eux clique sur l'élément dont le contenu est "Create Tournament"
         page1.get_by_role("button", name="Create Tournament").click()
-        page2.get_by_role("button", name="Create Tournament").click()
 
-    # - chacun d'entre eux drag and drop le div avec les classes "user phantom" et enfant du div id="players"
-
-        # source = page1.query_selector(".user phamtom")  # The div to be dragged
-
-        # source = page.get_by_text("hehe")
-        # target = page.locator(".tournament-cont")
-        # source.drag_to(target)
-        # source = page.get_by_text("haha")
-        # target = page.locator(".tournament-cont")
-        # source.drag_to(target)
-        # source = page.get_by_text("hoho")
-        # target = page.locator(".tournament-cont")
-        # source.drag_to(target)
-
-        source1 = page1.get_by_text("hehe")
+        # User 2 move his ghost
+        source1 = page1.get_by_text("ghost_user2")
+        time.sleep(3)
         target1 = page1.locator(".tournament-cont")  # The div where it's dropped
+        time.sleep(3)
         source1.drag_to(target1)
+        print(f"PAUSE HERE", flush=True)
+        time.sleep(3)
 
-
-        source2 = page2.get_by_text("haha")
+        # User3 move his ghost and himself
+        source2 = page2.get_by_text("user3", exact=True)
+        print(f"PAUSE HERE 2", flush=True)
+        time.sleep(3)
         target2 = page2.locator(".tournament-cont")  # The div where it's dropped
+        print(f"PAUSE HERE 3", flush=True)
+        time.sleep(3)
         source2.drag_to(target2)
+        print(f"PAUSE HERE 4", flush=True)
+        time.sleep(3)
+
+        source2 = page2.get_by_text("ghost_user3")
+        time.sleep(3)
+        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
+        time.sleep(3)
+        source2.drag_to(target2)
+        time.sleep(3)
+
+
+        time.sleep(100)
 
 
 
@@ -265,7 +266,13 @@ def run(playwright: Playwright) -> None:
     init_win(browsers, contexts, pages, positions, window_sizes)
 
     # ! =============== KICKSTART TESTER HERE ===============
-    test_remote_simple_match(browsers, contexts, pages, positions, window_sizes)
+    for _ in range(SIMULTANEOUS_USERS):
+        pages[_].goto(f"{BASE_URL}/login/")
+
+    login(pages[0], USER_2)
+    login(pages[1], USER_3)
+
+    # test_remote_simple_match(browsers, contexts, pages, positions, window_sizes)
 
     test_remote_tournament(browsers, contexts, pages, positions, window_sizes)
 
