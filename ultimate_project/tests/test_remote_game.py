@@ -80,10 +80,10 @@ def run(playwright: Playwright) -> None:
             browsers.append(
                 playwright.chromium.launch(
                     headless=False,
-                    args=[
-                        f"--window-position={positions[_][0]},{positions[_][1]}",
-                        f"--window-size={window_sizes[_][0]},{window_sizes[_][1]}",
-                    ],
+                    # args=[
+                    #     f"--window-position={positions[_][0]},{positions[_][1]}",
+                    #     f"--window-size={window_sizes[_][0]},{window_sizes[_][1]}",
+                    # ],
                 )
             )
 
@@ -91,19 +91,19 @@ def run(playwright: Playwright) -> None:
             contexts.append(
                 browsers[_].new_context(
                     ignore_https_errors=True,
-                    viewport={
-                        "width": window_sizes[_][0],
-                        "height": window_sizes[_][1],
-                    },
+                    # viewport={
+                    #     "width": window_sizes[_][0],
+                    #     "height": window_sizes[_][1],
+                    # },
                 )
             )
 
             pages.append(contexts[_].new_page())
 
             # Also set position via JavaScript to ensure it takes effect
-            pages[_].evaluate(
-                f"window.moveTo({positions[_][0]}, {positions[_][1]}); window.resizeTo({window_sizes[_][0]}, {window_sizes[_][1]});"
-            )
+            # pages[_].evaluate(
+            #     f"window.moveTo({positions[_][0]}, {positions[_][1]}); window.resizeTo({window_sizes[_][0]}, {window_sizes[_][1]});"
+            # )
 
     def destroy_obj(browsers, contexts):
         for context in contexts:
@@ -204,12 +204,12 @@ def run(playwright: Playwright) -> None:
     # - l'user A clique sur le lien vers la page tournament
     # - Dans le champ avec l'id="player-name", chacun d'entre eux entre les noms "hehe" OU "hoho"
 
-        page1.locator("#player-name").fill("ghost_user2")
-        page2.locator("#player-name").fill("ghost_user3")
+        page1.locator("#player-name").fill("hehe")
+        page2.locator("#player-name").fill("haha")
 
     # - chacun d'entre eux clique sur l'élément dont le contenu est "Add Player"
-        page1.get_by_role("button", name="Add Player").click()
-        page2.get_by_role("button", name="Add Player").click()
+        page1.get_by_text("Add Player", exact=True).click()
+        page2.get_by_text("Add Player", exact=True).click()
 
     # - chacun d'entre eux clique sur l'élément dont le contenu est "Create Tournament"
         page1.get_by_role("button", name="Create Tournament").click()
@@ -217,17 +217,27 @@ def run(playwright: Playwright) -> None:
 
     # - chacun d'entre eux drag and drop le div avec les classes "user phantom" et enfant du div id="players"
 
+        # source = page1.query_selector(".user phamtom")  # The div to be dragged
+
+        # source = page.get_by_text("hehe")
+        # target = page.locator(".tournament-cont")
+        # source.drag_to(target)
+        # source = page.get_by_text("haha")
+        # target = page.locator(".tournament-cont")
+        # source.drag_to(target)
+        # source = page.get_by_text("hoho")
+        # target = page.locator(".tournament-cont")
+        # source.drag_to(target)
+
+        source1 = page1.get_by_text("hehe")
+        target1 = page1.locator(".tournament-cont")  # The div where it's dropped
+        source1.drag_to(target1)
 
 
-        source = page1.query_selector(".user phamtom")  # The div to be dragged
-        target = page1.query_selector(".tournament-cont")  # The div where it's dropped
+        source2 = page2.get_by_text("haha")
+        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
+        source2.drag_to(target2)
 
-        source.drag_to(target)
-
-
-
-
-        pass
 
 
     # ! =============== INIT WINDOWS SIZES ===============
@@ -239,7 +249,7 @@ def run(playwright: Playwright) -> None:
 
     # Make windows narrow but tall (vertical shape)
     window_width = int(screen_width)
-    window_height = int(screen_height )
+    window_height = int(screen_height)
 
     # Position one window at far left, one at far right
     left_position = 0
@@ -266,61 +276,6 @@ def run(playwright: Playwright) -> None:
     # context.close()
     # browser.close()
 
-    """
-    DAN, PUT WHAT TO TEST HERE
-
-    - TEST MATCH SIMPLE
-    - PREMIER TEST: test 1v1 solo
-    - Navigate to page Match simple
-
-    - START ROUTINE1 click sur l'element ayant les classes "user self-player"
-    - dans l'input avec l'id="match-player-name", entre le nom "bobby"
-    - click ENCORE sur le meme elment qu'avant 
-    
-    
-    - START ROUTINE 2 click sur l'element avec les classes "match self-match"    - 
-    - l'élément avec la class "loader" doit avoir style="opacity: 1;"
-    - attendre 4 secondes
-    - l'élément avec la class "loader" doit avoir style="opacity: 0;"
-    - 
-    - DEUXIEME TEST:  test 1v1 solo part 2
-    - cliquer sur l'élément avec id="acc-profile" (on va devoir changer cet id, c'ets le template de thomas :)
-    - cliquer sur l'élément avec id="acc-profile" (on revient sur la page via une htmx)
-    - On rebalance le test a partir de START ROUTINE1
-
-    ✅
-    - TEST TROIS: test 1v1 remote
-    - on ouvre deux sessions avec deux user differents ✅
-    - un des deux users acced a la page match simple par un click sur l'élément avec id="acc-profile" ✅ 
-    - l'autre navigue directement à la page ✅
-    - joueur A clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)✅
-    - joueur B clique sur l'élément avec les classe "swal2-cancel swal2-styled"✅
-    - l'autre A clique sur l'élément avec les classes "swal2-confirm swal2-styled"✅
-    - joueur B clique sur l'élément avec la classe "user" (et UNIQUEMENT la classe user)✅
-    - joueur A clique sur l'élément avec les classes "swal2-confirm swal2-styled"✅
-    - joueur A et joueur B excuent la routine 2✅
-    un 
-
-    
-
-
-
-
-
-    - TEST CINQ: test tournament remote
-    - on lance deux navigateurs
-    - l'user A navigue vers la page tournament
-    - l'user A clique sur le lien vers la page tournament
-    - Dans le champ avec l'id="player-name", chacun d'entre eux entre les noms "hehe" OU "hoho"
-    - chacun d'entre eux clique sur l'élément dont le contenu est "Add Player"
-    - chacun d'entre eux clique sur l'élément dont le contenu est "Create Tournament"
-    - chacun d'entre eux drag and drop le div avec les classes "user phantom" et enfant du div id="players"
-        vers le div avec la class="tournament-cont"
-    
-    - apres, c'est la merde... 
-    -
-    
-    """
 
 
 with sync_playwright() as playwright:
