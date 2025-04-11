@@ -273,8 +273,3 @@ button {
 		/* Adjust width */
 	}
 
-	/* Main content area should have space beside it */
-	main {
-		margin-left: 260px;
-		/* Add some space for the sidebar */
-	}
