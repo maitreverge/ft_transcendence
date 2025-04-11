@@ -115,7 +115,7 @@
     role="button"
   >
     <span id="nav-match" class="mr-2 d-none d-md-inline small">
-      <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+      <i class="d-none d-lg-inline fa-solid fa-table-tennis-paddle-ball"></i>
     <span data-translate="Match simple">Match simple</span>
     </span>
   </a>
@@ -130,7 +130,7 @@
     role="button"
   >
     <span id="nav-tournoi" class="mr-2 d-none d-md-inline small">
-      <i class="fas fa-trophy"></i>
+      <i class="d-none d-lg-inline fas fa-trophy"></i>
       <span data-translate="Tournoi">Tournoi</span>
     </span>
   </a>
@@ -145,7 +145,7 @@
     role="button"
   >
     <span id="nav-profile" class="mr-2 d-none d-md-inline text-dark-gray small">
-      <i class="fa-solid fa-user"></i>
+      <i class="d-none d-lg-inline fa-solid fa-user"></i>
       <span data-translate="Profil">Profile</span>
     </span>
   </a>
@@ -160,7 +160,7 @@
     role="button"
   >
     <span id="nav-stats" class="mr-2 d-none d-md-inline text-dark-gray small">
-      <i class="fa-solid fa-chart-simple"></i>
+      <i class="d-none d-lg-inline fa-solid fa-chart-simple"></i>
       <span data-translate="Statistiques">Stats</span>
     </span>
   </a>
@@ -183,9 +183,9 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <span class="mr-2 d-none d-lg-inline text-gray-600 small" 
+        <span class="mr-2 d-inline text-gray-600 small" 
           {% if request.headers.X_User_ID %}data-user-id="{{ request.headers.X_User_ID }}"{% endif %}>
-          {% if username %}Welcome, {{ username }}{% else %}Guest{% endif %}
+          {% if username %}{{ username }}{% else %}Guest{% endif %}
         </span>
         <img
           class="img-profile rounded-circle"
