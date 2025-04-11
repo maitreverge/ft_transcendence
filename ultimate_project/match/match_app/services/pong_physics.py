@@ -27,6 +27,7 @@ async def bounces(self):
 
 	await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
 	await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
+	await self.vert_bounce
 	await self.vert_bounce(op.le, limit=self.y_top)
 	await self.vert_bounce(op.ge, limit=self.y_bot)
 		
@@ -57,6 +58,11 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		self.vect[1] = scl * y 				
 		self.wall_flag = False
 
+def updown_side_pad_bounce(self):
+	if self.is_updown_side_pad_intersecting()
+
+	
+
 async def vert_bounce(self, cmp, limit):
 	
 	# if self.are_pads_intersecting():
@@ -79,7 +85,15 @@ async def vert_bounce(self, cmp, limit):
 # 		self.is_pad_intersecting(op.ge, limit=self.x_rght_pad, pad_y_idx=1) or \
 # 		self.is_pad_intersecting(op.le, limit=self.x_left_pad, pad_y_idx=0)
 
-def is_pad_intersecting(self, cmp, limit, pad_y_idx):
+def is_sidepad_intersecting(self, cmp, limit, pad_y_idx):
+
+	return self.segments_intersect(
+			(self.ball[0], self.ball[1]),
+			(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
+			(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
+			(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
+
+def is_pad_intersecting(self, cmp, limit, pad_y_idx): #opti cmp!!!!!
 
 	return cmp(self.ball[0] + self.vect[0], limit) and \
 		self.segments_intersect(
