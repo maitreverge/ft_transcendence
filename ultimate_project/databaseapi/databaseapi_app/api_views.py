@@ -30,7 +30,7 @@ class MatchFilter(filters.FilterSet):
 class PlayerStatisticsFilter(filters.FilterSet):
     # use the id of the player model using the '__' to acess the id
     player = filters.CharFilter(field_name='player__id', lookup_expr='icontains')  # Filter by player's username
-
+    # use with /?player_id={id}
     class Meta:
         model = PlayerStatistics
         fields = ['player_id']
@@ -116,12 +116,10 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
                 if player_stats.c_lose_streak > player_stats.worst_lose_streak:
                     player_stats.worst_lose_streak = player_stats.c_lose_streak
             
-            # daily stats tracking system
             now = timezone.localtime(timezone.now())
             today_str = now.date().isoformat()
             print(f"\nTODAY STR {today_str}\n\n", flush=True) #rm
-            # Build daily tracking of stat
-            # if data for the current day already exist
+            # Build daily stat history
             if today_str in player_stats.stats_history:
                 existing_record = player_stats.stats_history[today_str]
                 existing_record["games_played"] += data["games_played"]
@@ -170,7 +168,23 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
             return Response({
                 "error": "Player statistics not found"
             }, status=status.HTTP_404_NOT_FOUND)
-
+    
+    #detail false because do not depend on primary key will be 
+    # /api/playerstats/get-top-players/
+    @action(detail=False, methods=['GET'], url_path='get-top-players')
+    def get_top_players(self, request):
+        """
+        Custom action to get top players by win rate
+        """
+        try:
+            top_players = PlayerStatistics.objects.top_by_win_rate()
+            serialized_data = PlayerStatisticsSerializer(top_players, many=True).data
+            return Response(serialized_data)
+        except Exception as e:
+            return Response(
+                {"error": f"Something went wrong: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     def retrieve(self, request, *args, **kwargs):
         try:

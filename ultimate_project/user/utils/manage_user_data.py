@@ -147,11 +147,7 @@ async def get_user_match_stats(username, user_id):
     """
     try:
         async with httpx.AsyncClient() as client:
-            #f"http://databaseapi:8007/api/player/?username={username}"
-            
-            print(f"user id {user_id}\n", flush=True)
             response = await client.get(f"http://databaseapi:8007/api/player_stats/?player_id={user_id}")
-            
             json_data = response.json()
             print("JSON DATA\n\n:", flush=True)
             pprint(json_data)
@@ -160,72 +156,6 @@ async def get_user_match_stats(username, user_id):
                 return json_data
             return None
     except Exception as e:
-        print(f"Error getting user data for match: {str(e)}", flush=True)
+        print(f"Error getting user stats: {str(e)}", flush=True)
         return None
 
-
-
-""" import requests
-from pprint import pprint
-
-url = 'http://localhost:8007/api/match/'
-
-response = requests.get(url)
-print(response.status_code)
-j = response.json()
-
-pprint(j)
-
-dico = {}
-
-for e in j:
-    if not e['player1'] in dico:
-        dico[e['player1']] = {
-            "first_name": e["player1_details"]['first_name'],
-            "last_name":  e["player1_details"]['last_name'],
-            "username": e["player1_details"]['username'],
-            "games_won": 0,
-            "games_lost": 0,
-            "points_won": 0,
-            "points_lost": 0,
-        }
-
-    if not e['player2'] in dico:
-        dico[e['player2']] = {
-            "first_name": e["player2_details"]['first_name'],
-            "last_name":  e["player2_details"]['last_name'],
-            "username": e["player2_details"]['username'],
-            "games_won": 0,
-            "games_lost": 0,
-            "points_won": 0,
-            "points_lost": 0,
-        }
-
-    if e['winner'] == e['player1']:
-        dico[e['player1']]['games_won'] += 1
-        dico[e['player2']]['games_lost'] += 1
-    
-        dico[e['player1']]['points_won'] += e['score_p1']
-        dico[e['player1']]['points_lost'] += e['score_p2']
-
-        dico[e['player2']]['points_won'] += e['score_p2']
-        dico[e['player2']]['points_lost'] += e['score_p1']
-    
-    else:
-        dico[e['player2']]['games_won'] += 1
-        dico[e['player1']]['games_lost'] += 1
-    
-        dico[e['player2']]['points_won'] += e['score_p2']
-        dico[e['player2']]['points_lost'] += e['score_p1']
-
-        dico[e['player1']]['points_won'] += e['score_p1']
-        dico[e['player1']]['points_lost'] += e['score_p2']
-
-pprint(dico)
-
-for k, e in dico.items():
-    t = e['games_won'] + e['games_lost']
-    print(f"{e['first_name']} {e['last_name']} ({e['username']})")
-    print(f"  won {e['games_won']} of {t} games")
-    print(f"  {e['points_lost'] / e['points_won'] * 100 - 100:+.0f}% better than adversary")
-    print() """

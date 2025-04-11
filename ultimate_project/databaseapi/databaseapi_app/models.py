@@ -25,6 +25,12 @@ class PlayerManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         return self.create_user(username, email, password, **extra_fields)
 
+class PlayerStatisticsManager(models.Manager):
+    def top_by_win_rate(self):
+        # Query the players, filter out those with 0 games played, and order by win_rate
+        return self.get_queryset().filter(games_played__gt=0).order_by('-win_rate')
+
+
 
 #  ================= MODELS MANAGED BY THIS MICROSERVICE (user) =================
 class Player(AbstractBaseUser, PermissionsMixin):
@@ -93,6 +99,10 @@ class PlayerStatistics(models.Model):
 
     # will use date(str) as key
     stats_history = models.JSONField(default=dict, blank=True)
+    
+    #PlayerStatistics.objects.get(...) objects is the default manager but can have
+    # a custom one
+    objects = PlayerStatisticsManager() # Custom manager
 
     class Meta:
         db_table = "player_statistics"

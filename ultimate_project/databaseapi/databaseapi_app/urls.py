@@ -17,6 +17,9 @@ urlpatterns = [
     path('api/check-2fa/', views.check_2fa, name="check_2fa"),
     #! DO NOT APPEND TRAILING SLASH TO UUID - damm DO NOT APPEND SLASH
     path('api/player/<int:player_id>/uuid', views.uuid, name="uuid_view"),
-    path('api/player/<int:player_id>/stats/update-stats/', PlayerStatisticsViewSet.as_view({'post': 'update_stats'}))
+    
+    #API endpoint for custom action for stats
+    path('api/player/<int:player_id>/stats/update-stats/', PlayerStatisticsViewSet.as_view({'post': 'update_stats'})),
+    path('api/player/stats/get-top-players/', PlayerStatisticsViewSet.as_view({'get': 'get_top_players'})),
     
 ]
