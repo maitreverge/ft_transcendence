@@ -23,7 +23,7 @@
     <div id="homelogo" class="sidebar-brand-text mx-3">Pong <sup>42</sup></div>
 </a>
   <!-- Sidebar Toggle (Topbar) -->
-  <li class="nav-item dropdown no-arrow mx-1 d-md-none">
+  <li class="d-flex align-items-center nav-item dropdown no-arrow mx-1 d-md-none">
     <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-bars"></i>
@@ -105,7 +105,7 @@
     <option value="tl">🇦🇱 TlhIngan</option>
   </select>
   <a
-    class="nav-link"
+    class="nav-link d-none d-md-inline"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/tournament/simple-match/"
@@ -120,7 +120,7 @@
     </span>
   </a>
   <a
-    class="nav-link"
+    class="nav-link d-none d-md-inline"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/tournament/tournament/"
@@ -135,7 +135,7 @@
     </span>
   </a>
   <a
-    class="nav-link"
+    class="nav-link d-none d-md-inline"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/account/profile/"
@@ -150,7 +150,7 @@
     </span>
   </a>
   <a
-    class="nav-link"
+    class="nav-link d-none d-md-inline"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/account/game-stats/"
@@ -168,69 +168,9 @@
 
   <ul class="navbar-nav ml-auto">
     <!-- Nav Item - Alerts -->
-    <li class="nav-item dropdown no-arrow mx-1">
-      <a
-        class="nav-link dropdown-toggle text-primary"
-        href="#"
-        id="alertsDropdown"
-        role="button"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <i class="fa-solid fa-bolt"></i>
-        <!-- Counter - Alerts -->
-        <span class="badge badge-danger badge-counter">3+</span>
-      </a>
-      <!-- Dropdown - Alerts -->
-      <div
-        class="dropdown-list dropdown-menu 
-        dropdown-menu-right shadow animated--grow-in"
-        aria-labelledby="alertsDropdown"
-      >
-        <h6 class="dropdown-header">Alerts Center</h6>
-        <a class="dropdown-item d-flex align-items-center" href="#">
-          <div class="mr-3">
-            <div class="icon-circle bg-primary">
-              <i class="fa-solid fa-heart"></i>
-            </div>
-          </div>
-          <div>
-            <div class="small text-gray-500">December 12, 2019</div>
-            <span class="font-weight-bold">
-              Paris Hilton wants to be your friend!
-            </span>
-          </div>
-        </a>
-        <a class="dropdown-item d-flex align-items-center" href="#">
-          <div class="mr-3">
-            <div class="icon-circle bg-success">
-              <i class="fa-solid fa-heart"></i>
-            </div>
-          </div>
-          <div>
-            <div class="small text-gray-500">December 7, 2019</div>
-            Sylvain Duriff wants to be your friend!
-          </div>
-        </a>
-        <a class="dropdown-item d-flex align-items-center" href="#">
-          <div class="mr-3">
-            <div class="icon-circle bg-warning">
-              <i class="fas fa-exclamation-triangle text-white"></i>
-            </div>
-          </div>
-          <div>
-            <div class="small text-gray-500">December 2, 2019</div>
-            Alert: A tournament is about to start!
-          </div>
-        </a>
-        <a class="dropdown-item text-center small text-gray-500" href="#"
-          >Show All Alerts</a
-        >
-      </div>
-    </li>
+    
 
-    <div class="topbar-divider d-none d-sm-block"></div>
+    <!-- <div class="topbar-divider d-none d-sm-block"></div> -->
 
     <!-- Nav Item - User Information -->
     <li id="youpiBanane" class="nav-item dropdown no-arrow">
