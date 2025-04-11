@@ -17,7 +17,8 @@ async def score_point(self, cmp, limit, score_idx):
 		await self.send_start(0)
 		self.tasks.append(
 			self.myEventLoop.create_task(self.watch_cat(self.point_delay)))
-
+		self.wall_flag = False
+		
 async def max_score_rise(self, ply_idx):
 	
 	from match_app.services.pong import State
