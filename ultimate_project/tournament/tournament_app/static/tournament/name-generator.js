@@ -1,23 +1,40 @@
-        // Liste de prénoms
-        const names = ["Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah", "Ian", "Jack"];
+const usedNames = new Set();
 
-        // Fonction pour générer un prénom aléatoire
-        function getRandomName() {
-            const randomIndex = Math.floor(Math.random() * names.length);
-            return names[randomIndex];
+function generateRandomName() {
+    const names = ['Alex', 'Sam', 'Leo', 'Mia', 'Nina', 'Tom', 'Eva', 'Max', 'Luna', 'Zac'];
+    const availableNames = names.filter(name => !usedNames.has(name));
+
+    if (availableNames.length === 0) {
+        return 'Player' + Math.floor(Math.random() * 1000); // fallback si tous les noms sont pris
+    }
+
+    const index = Math.floor(Math.random() * availableNames.length);
+    return availableNames[index];
+}
+
+
+function prefillName() {
+    const input = document.getElementById('player-name');
+    input.value = generateRandomName();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    prefillName();
+});
+
+const observer = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+        for (const node of mutation.addedNodes) {
+            if (
+                node.nodeType === 1 &&
+                node.classList.contains('swal2-container') &&
+                node.textContent.includes('won the tournament!')
+            ) {
+                console.log('Tournoi terminé, reset des noms...');
+                usedNames.clear();
+            }
         }
+    }
+});
 
-        // Fonction d'initialisation au chargement de la page
-        window.onload = function() {
-            // Remplir le champ d'input avec un prénom aléatoire au chargement
-            document.getElementById('player-name').value = getRandomName();
-        };
-
-        // Fonction appelée lors du clic sur le bouton
-        function newPlayer(socket) {
-            // Remplir le champ d'input avec un prénom aléatoire à chaque clic
-            document.getElementById('player-name').value = getRandomName();
-            
-            // Ton code pour ajouter un joueur...
-            console.log("Ajout d'un joueur via socket:", socket);
-        }
+observer.observe(document.body, { childList: true, subtree: true });

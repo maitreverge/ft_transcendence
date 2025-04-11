@@ -65,7 +65,7 @@
                                         <input class="form-control border-0 w-100" id="player-name" type="text"
                                             maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
                                             oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-                                        <button onclick="newPlayer(window.tournamentSocket)"
+                                        <button onclick="newPlayer(window.tournamentSocket); prefillName();"
                                             class="btn btn-primary d-flex align-items-center justify-content-between w-100">
                                             <span class="text">Add Player</span>
                                             <span class="icon text-white-50">
