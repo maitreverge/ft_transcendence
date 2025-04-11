@@ -27,10 +27,11 @@ async def handle_get_game_stats(request, username, context):
             return render(request, "partials/game_stats/error_stats.html", context), True
         context["user"] = user
         main_stats, stats_history = await manage_user_data.get_user_match_stats(username, user["id"])        
-        
         if (main_stats == None or stats_history == None):
             context["error"] = "No player statistics found. Please try again later."
             return render(request, "partials/game_stats/error_stats.html", context), True
+
+        
 
         return render(request, "partials/game_stats/game_stats.html", context), False
     except Exception as e:
