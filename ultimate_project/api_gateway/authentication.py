@@ -10,7 +10,7 @@ import secrets
 import hashlib
 import uuid
 import time
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 
 router = APIRouter()
 
@@ -27,6 +27,7 @@ CSRF_SECRET = os.getenv("CSRF_SECRET_KEY", secrets.token_hex(32))
 
 
 def generate_django_csrf_token():
+    
     serializer = URLSafeTimedSerializer(CSRF_SECRET)
     # Include current timestamp and random component
     token_data = {
@@ -35,7 +36,19 @@ def generate_django_csrf_token():
     }
     return serializer.dumps(token_data)
 
-# def check_csrf_token():
+def validate_csrf_token(token, max_age=3600 * 6):
+    
+    if not token:
+        return False
+        
+    serializer = URLSafeTimedSerializer(CSRF_SECRET)
+    
+    try:
+        # Verify hte token signature and expiration
+        serializer.loads(token, max_age=max_age)
+        return True
+    except (BadSignature, SignatureExpired):    
+        return False
 
 
 
@@ -112,7 +125,7 @@ async def login_fastAPI(
     access_payload = {
         "user_id": auth_data.get("user_id", 0),
         "username": username,
-        "uuid": my_uuid,  # ! Include UUID in the payload ...
+        "uuid": my_uuid,  # ! IMPORTANT Include UUID in the payload ...
         "exp": expire_access,
     }
     refresh_payload = {
@@ -143,7 +156,7 @@ async def login_fastAPI(
         secure=True,
         samesite="Lax",
         path="/",
-        max_age=60 * 60 * 6,
+        max_age=60 * 60 * 6, # 6 hours
     )
 
     # Refresh token
@@ -154,7 +167,7 @@ async def login_fastAPI(
         secure=True,
         samesite="Lax",
         path="/",
-        max_age=60 * 60 * 24 * 7,
+        max_age=60 * 60 * 24 * 7, # 7 days
     )
 
     # Generate and set CSRF token
@@ -165,7 +178,8 @@ async def login_fastAPI(
         secure=True,
         samesite="Lax",
         path="/",
-        max_age=60 * 60 * 6,  # 6 hours, same as access token
+        # max_age=60 * 60 * 24 * 21,  # 21 days => gets logged out after 21 days
+        max_age=60 # 1 minute
     )
 
     # Debug log for headers
@@ -255,10 +269,12 @@ def is_authenticated(request: Request):
 
     csrftoken = request.cookies.get("csrftoken")
     if not csrftoken:
+        print("❌ CSRF token not found", flush=True)
         return False, None
 
-    # if not csrftoken == generate_django_csrf_token():
-    #     return False, None
+    if not validate_csrf_token(csrftoken):
+        print("❌❌❌❌❌v CSRF token is invalid", flush=True)
+        return False, None
     
 
     # Get the access token from cookies
