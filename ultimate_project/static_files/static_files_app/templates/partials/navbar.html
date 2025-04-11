@@ -3,9 +3,8 @@
 
 <nav
     id="navbar"
-  class="navbar navbar-expand navbar-light 
+  class="p-0 navbar navbar-expand navbar-light 
   bg-white topbar static-top shadow custom-navbar-height"
-  style="height: 4.375rem;padding: 0;"
 >
 <a  id="homelogo"
     class="h-100 text-white bg-gradient-primary sidebar-brand  
@@ -17,10 +16,9 @@
     hx-target="#main_div"
     hx-on="htmx:beforeRequest: toggleSidebar(false);"
     >
-    <div class="sidebar-brand-icon rotate-n-15">
-    <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
-    </div>
-    <div id="homelogo" class="sidebar-brand-text mx-3">Pong <sup>42</sup></div>
+    <div class="h-100 d-flex align-items-center  mr-2 justify-content-center">
+    <i class="mr-2 fa-solid fa-table-tennis-paddle-ball  rotate-n-15"></i>
+    <strong class="ml-2">Pong <sup>42</sup></strong></div>
 </a>
   <!-- Sidebar Toggle (Topbar) -->
   <li class="d-flex align-items-center nav-item dropdown no-arrow mx-1 d-md-none">
