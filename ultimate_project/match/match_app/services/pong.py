@@ -68,13 +68,15 @@ class Pong:
 		
 		self.pad_height = 40
 		self.pads_y = [50, 50]	
-		self.pads_offset = 3
+		self.pads_offset = 5
 		self.pads_width = 10
 		self.ball_ray = 1
 		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_ray
 		self.x_rght_pad = 100 - self.x_left_pad
-		self.y_top = 0 + self.ball_ray
-		self.y_bot = 100 - self.ball_ray
+		# self.y_top = 0 + self.ball_ray
+		self.y_top = 30 + self.ball_ray
+		# self.y_bot = 100 - self.ball_ray
+		self.y_bot = 70 - self.ball_ray
 	
 	def launchTask(self):
 
