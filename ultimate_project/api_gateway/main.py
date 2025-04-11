@@ -60,11 +60,21 @@ EXCLUDED_PATH = [
     "/match/stop-match/undefined/undefined/",
 ]
 
-# TODO : To let error pages go through when non authenticated
-# KNOWN_PATHS = [
-#     "/login",
-
-# ]
+KNOWN_PATHS = [
+    "/login/",
+    "/register/",
+    "/home/",
+    "/two-factor-auth/", # 2FA route for login worklow
+    "/tournament/simple-match/",
+    "/tournament/tournament/",
+    "/account/profile/",
+    "/account/game-stats/",
+    "/account/security/",
+    "/account/security/setup-2fa/",
+    "/account/security/setup-2fa/verify-2fa/",
+    "/account/confidentiality/",
+    "/account/confidentiality/delete-account",
+]
 
 
 # ! NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
@@ -83,6 +93,16 @@ async def bouncer_middleware(request: Request, call_next):
     # if request.url.path not in KNOWN_PATHS:
     #     print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
     #     response = await call_next(request)
+    #     return response
+
+    # # Logout if CSRF token is missing for connected user
+    # if is_auth and "csrftoken" not in request.cookies:
+    #     print(" !!!!!!!!!!! CSRF token missing for connected user, logging out !!!!!!!!!!!")
+    #     if "HX-Request" in request.headers:
+    #     response = await call_next(request)
+    #     # Clear JWT cookies
+    #     response.delete_cookie(key="access_token", path="/")
+    #     response.delete_cookie(key="refresh_token", path="/")
     #     return response
 
     # Let go through the Middleware everyting included in EXCLUDED_PATH
@@ -301,7 +321,6 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 
 
 # ======= 🛠️ Main Function Handling the Reverse Proxy for the Route 🛠️ =======
-
 
 async def reverse_proxy_handler(
     target_service: str,

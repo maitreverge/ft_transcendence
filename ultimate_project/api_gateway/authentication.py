@@ -9,6 +9,8 @@ import re
 import secrets
 import hashlib
 import uuid
+import time
+from itsdangerous import URLSafeTimedSerializer
 
 router = APIRouter()
 
@@ -21,11 +23,20 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
 CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
 
+CSRF_SECRET = os.getenv("CSRF_SECRET_KEY", secrets.token_hex(32))
+
 
 def generate_django_csrf_token():
-    secret = secrets.token_hex(32)
-    hashed_token = hashlib.sha256(secret.encode()).hexdigest()
-    return hashed_token
+    serializer = URLSafeTimedSerializer(CSRF_SECRET)
+    # Include current timestamp and random component
+    token_data = {
+        "random": secrets.token_hex(32),
+        "timestamp": int(time.time()) # need for checking the revserse checking function just bellow
+    }
+    return serializer.dumps(token_data)
+
+# def check_csrf_token():
+
 
 
 # @router.post("/auth/login/")
@@ -241,6 +252,15 @@ def is_authenticated(request: Request):
     Returns:
         tuple: (is_authenticated, user_info)
     """
+
+    csrftoken = request.cookies.get("csrftoken")
+    if not csrftoken:
+        return False, None
+
+    # if not csrftoken == generate_django_csrf_token():
+    #     return False, None
+    
+
     # Get the access token from cookies
     access_token = request.cookies.get("access_token")
     if not access_token:

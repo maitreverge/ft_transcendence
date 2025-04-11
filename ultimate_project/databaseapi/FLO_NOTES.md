@@ -43,9 +43,12 @@
 
 🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
 
-🟧 LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
 
 ======================================= DONE =====================================
+
+
+
+✅ LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
 
 ✅ XSS
 
@@ -61,6 +64,21 @@
 
 
 
+
+
+
+
+--------------------------------------------------------------------------------
+									TESTING 42
+--------------------------------------------------------------------------------
+🖥️==🖥️
+TIMEFRAME 1 :
+# SIMPLE MATCHES
+- Test user2 VS user3 in a simple remote match 🖥️==🖥️
+- User 4 vs his own ghost 🖥️
+# TOURNAMENT
+- user5 VS user6 vs user7 vs user8 tournament 🖥️==🖥️==🖥️==🖥️
+- user9 vs his own 4 ghosts 🖥️
 
 
 
