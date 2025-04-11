@@ -635,39 +635,48 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	{
 		pads[3].innerText = data.score[0] + " | " + data.score[1];
 		// console.log("PLAYER2ID; ", window.player2Id)
-		if (window.player2Id != 0)
+		if (window.selfMatchId != window.matchId)
 		{
-			// console.log("Pje suis ds le mode MULTY; ", window.player2Id);
-			
-			// if (data.plyIds && window.playerId == data.plyIds[0])
-			// {
-				// console.log(data.plyIds[0]);
-				leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-				rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
-			// }
-			// else
-			// {
-				// leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-				// rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
-			// }
-		}
-		else 
+			leftNameElement.innerHTML = data.names[0];
+			rightNameElement.innerHTML = data.names[1];
+		}	
+		else
 		{
-			// console.log("Pje suis ds le mode REMOTE; ", window.playerId)
-			// console.log("Pje suis ds le mode REMOTE; joueur 0", data.plyIds[0], " ", data.names[0]);
-			// console.log("Pje suis ds le mode REMOTE; joueur 1", data.plyIds[1], " ", data.names[1]);
-			if (data.plyIds)
+		
+			if (window.player2Id != 0)
 			{
-				if (window.playerId == data.plyIds[0])
-				{
+				// console.log("Pje suis ds le mode MULTY; ", window.player2Id);
+				
+				// if (data.plyIds && window.playerId == data.plyIds[0])
+				// {
+					// console.log(data.plyIds[0]);
 					leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-					rightNameElement.innerHTML = data.names[1];
-				}
-				else
+					rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
+				// }
+				// else
+				// {
+					// leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+					// rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
+				// }
+			}
+			else 
+			{
+				// console.log("Pje suis ds le mode REMOTE; ", window.playerId)
+				// console.log("Pje suis ds le mode REMOTE; joueur 0", data.plyIds[0], " ", data.names[0]);
+				// console.log("Pje suis ds le mode REMOTE; joueur 1", data.plyIds[1], " ", data.names[1]);
+				if (data.plyIds)
 				{
-					leftNameElement.innerHTML = data.names[0];
-					rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-				} 
+					if (window.playerId == data.plyIds[0])
+					{
+						leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+						rightNameElement.innerHTML = data.names[1];
+					}
+					else
+					{
+						leftNameElement.innerHTML = data.names[0];
+						rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+					} 
+				}
 			}
 		}
 	}
@@ -677,10 +686,10 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
         if (window.selfName == data.winnerName)
             gifUrl = "https://dansylvain.github.io/pictures/sdurif.webp";
 		else if (spec.style.display != "none")
-			{
-				gifUrl = "https://dansylvain.github.io/pictures/tennis.webp";
-				spec.style.display = "none";
-			}
+		{
+			gifUrl = "https://dansylvain.github.io/pictures/tennis.webp";
+			spec.style.display = "none";
+		}
 		else 
 			gifUrl = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
 
