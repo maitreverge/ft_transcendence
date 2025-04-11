@@ -66,7 +66,8 @@ class PlayerNestedSerializer(serializers.ModelSerializer):
 
 
 class PlayerStatisticsSerializer(serializers.ModelSerializer):
-    stats_history = serializers.JSONField(required=False)
+    #stats_history = serializers.JSONField(required=False)
+    
     class Meta:
         model = PlayerStatistics
         fields = [
@@ -87,6 +88,34 @@ class PlayerStatisticsSerializer(serializers.ModelSerializer):
             "last_updated",
             "stats_history", #lifetime daily stat history
         ]
+    
+    #override orignal reprsentation data
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        main_stats = {key: data[key] for key in data if key != 'stats_history'}
+        stats_history = data.get('stats_history', {})
+        formatted_stats_history = {
+            date: {
+                "average_score": stats.get("average_score", 0.0),
+                "best_win_streak": stats.get("best_win_streak", 0),
+                "games_lost": stats.get("games_lost", 0),
+                "games_played": stats.get("games_played", 0),
+                "games_won": stats.get("games_won", 0),
+                "nb_tournaments_played": stats.get("nb_tournaments_played", 0),
+                "nb_tournaments_won": stats.get("nb_tournaments_won", 0),
+                "points_conceded": stats.get("points_conceded", 0),
+                "points_scored": stats.get("points_scored", 0),
+                "win_rate": stats.get("win_rate", 0.0),
+                "worst_lose_streak": stats.get("worst_lose_streak", 0),
+            }
+            for date, stats in stats_history.items()
+        }
+        
+        payload = {}
+        payload["main_stats"] = main_stats
+        payload["stats_history"] = formatted_stats_history
+        return payload
+
 
 
 class TournamentSerializer(serializers.ModelSerializer):

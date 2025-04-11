@@ -30,8 +30,6 @@ class PlayerStatisticsManager(models.Manager):
         # Query the players, filter out those with 0 games played, and order by win_rate
         return self.get_queryset().filter(games_played__gt=0).order_by('-win_rate')
 
-
-
 #  ================= MODELS MANAGED BY THIS MICROSERVICE (user) =================
 class Player(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)

@@ -26,22 +26,11 @@ async def handle_get_game_stats(request, username, context):
             context["error"] = "We couldn't find a user with the provided information. Please check your credentials and try again."
             return render(request, "partials/game_stats/error_stats.html", context), True
         context["user"] = user
-        data = await manage_user_data.get_user_match_stats(username, user["id"])        
-        if isinstance(data, list):
-            if len(data) > 0:  # Ensure the list is not empty
-                for player_stat in data:
-                    average_score = player_stat.get("average_score", 0.0)
-                    best_win_streak = player_stat.get("best_win_streak", 0)
-                    c_lose_streak = player_stat.get("c_lose_streak", 0)
-                    c_win_streak = player_stat.get("c_win_streak", 0)
-                    games_lost = player_stat.get("games_lost", 0)
-                    games_played = player_stat.get("games_played", 0)
-                    games_won = player_stat.get("games_won", 0)
-                    nb_tournaments_played = player_stat.get("nb_tournaments_played", 0)
-                    print("LOOP CALLED\n", flush=True)   
-            else:
-                context["error"] = "No player statistics found. Please try again later."
-                return render(request, "partials/game_stats/error_stats.html", context), True
+        main_stats, stats_history = await manage_user_data.get_user_match_stats(username, user["id"])        
+        
+        if (main_stats == None or stats_history == None):
+            context["error"] = "No player statistics found. Please try again later."
+            return render(request, "partials/game_stats/error_stats.html", context), True
 
         return render(request, "partials/game_stats/game_stats.html", context), False
     except Exception as e:

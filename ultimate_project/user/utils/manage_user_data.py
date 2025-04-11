@@ -148,14 +148,37 @@ async def get_user_match_stats(username, user_id):
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://databaseapi:8007/api/player_stats/?player_id={user_id}")
-            json_data = response.json()
-            print("JSON DATA\n\n:", flush=True)
-            pprint(json_data)
-            print("--\n", flush=True)
+            response_data = response.json()
+            
+            print("BEFORE ACCESS WITH KEY\n", flush=True)
+            
+            payload = response_data[0]
+            main_stats = payload.get('main_stats', {})
+            stats_history = payload.get('stats_history', {})
+            
+            #print("JSON DATA\n\n:", flush=True)
+            #pprint(response_data)
+            #print("--\n", flush=True)
+            """ print("PAYLOAD:",  flush=True)
+            for key, value in payload.items():
+                print(f"{key}: {value}",  flush=True)
+            
+            print("Main Stats:",  flush=True)
+            for key, value in main_stats.items():
+                print(f"{key}: {value}",  flush=True)
+            print("\nStats History:", flush=True)
+            if stats_history:  # Check if stats_history is not empty
+                for date, stats in stats_history.items():
+                    print(f"Date: {date}",  flush=True)
+                    for stat_key, stat_value in stats.items():
+                        print(f"  {stat_key}: {stat_value}",  flush=True)
+            else:
+                print("No stats history available.",  flush=True) """
+    
             if response.status_code == 200:
-                return json_data
-            return None
+                return main_stats, stats_history
+            return None, None
     except Exception as e:
         print(f"Error getting user stats: {str(e)}", flush=True)
-        return None
+        return None, None
 
