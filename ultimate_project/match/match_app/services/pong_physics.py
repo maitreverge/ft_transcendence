@@ -25,10 +25,10 @@ def pad_command(self, player, pad_idx):
 
 async def bounces(self):
 
-	await self.horz_bounce(op.le, limit=16, pad_y_idx=0, dir=+1)
-	await self.horz_bounce(op.ge, limit=84, pad_y_idx=1, dir=-1)
-	await self.vert_bounce(op.le, limit=1)
-	await self.vert_bounce(op.ge, limit=99)
+	await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
+	await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
+	await self.vert_bounce(op.le, limit=self.y_top)
+	await self.vert_bounce(op.ge, limit=self.y_bot)
 	
 async def vert_bounce(self, cmp, limit):
 	
@@ -76,8 +76,8 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 def are_pads_intersecting(self):
 
 	return \
-		self.is_pad_intersecting(op.ge, limit=84, pad_y_idx=1) or \
-		self.is_pad_intersecting(op.le, limit=16, pad_y_idx=0)
+		self.is_pad_intersecting(op.ge, limit=self.x_rght_pad, pad_y_idx=1) or \
+		self.is_pad_intersecting(op.le, limit=self.x_left_pad, pad_y_idx=0)
 
 def is_pad_intersecting(self, cmp, limit, pad_y_idx):
 

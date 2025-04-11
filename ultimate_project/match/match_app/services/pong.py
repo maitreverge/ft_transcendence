@@ -35,7 +35,7 @@ class Pong:
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 6
+		self.max_score = 60
 		self.point_delay = 1
 		self.start_delay = 4
 		self.max_wait_delay = 2000
@@ -50,19 +50,29 @@ class Pong:
 
 		self.has_wall = False
 		self.pad_height = 40	
-		self.pads_y = [self.pad_height / 2, self.pad_height / 2]
-		self.pad_width = 10
+		self.pads_y = [self.pad_height / 2, self.pad_height / 2]		
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
-		self.ball_speed = 1
+		self.ball_speed = 0.2
 		self.vect = self.get_random_vector() 
 		self.pad_speed = 4
 		self.max_ball_speed = 10
 		self.ball_acceleration = 1.1
-		self.bounce_delay = 0.05
-		self.send_delay = 0.05
-		self.gear_delay = 0.05
+		self.bounce_delay = 0.01
+		self.send_delay = 0.01
+		self.gear_delay = 0.01
+		self.init_sides_pos()
 
+	def init_sides_pos(self):
+		
+		self.pads_offset = 5
+		self.pads_width = 10
+		self.ball_ray = 1
+		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_ray
+		self.x_rght_pad = 100 - self.x_left_pad
+		self.y_top = 0 + self.ball_ray
+		self.y_bot = 100 - self.ball_ray
+	
 	def launchTask(self):
 
 		self.myEventLoop = asyncio.new_event_loop()
@@ -212,8 +222,8 @@ class Pong:
 				"winnerId": w_and_l[0][0],
 				"looserId": w_and_l[1][0],
 				"names": self.names,
-				"winnerName":  w_and_l[0][1],
-				"looserName":  w_and_l[1][1],
+				"winnerName": w_and_l[0][1],
+				"looserName": w_and_l[1][1],
 				"score": self.score
 				})) 
 			except Exception as e:
