@@ -44,32 +44,3 @@ function showTutoOverlayIfFirstTime() {
 }
 
 showTutoOverlayIfFirstTime();
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    const switcherElementContainer = document.getElementById('side-nav-2d3d');
-    const mainContentContainer = document.getElementById('mainContentContainer');
-    const switcherElement = document.getElementById('switch2d3d');
-    
-    function moveSideNavElement() {
-        const windowWidth = window.innerWidth; // Obtenir la largeur du viewport
-
-        // Si la largeur est <= 576px, déplace l'élément dans le main container
-        if (windowWidth <= 576) {
-            if (!mainContentContainer.contains(switcherElement)) {
-                mainContentContainer.appendChild(switcherElement); // Déplacer l'élément vers le main container
-            }
-        } else { 
-            // Si la largeur est > 576px, déplace l'élément dans la sidebar
-            if (!switcherElementContainer.contains(switcherElement)) {
-                switcherElementContainer.appendChild(switcherElement); // Déplacer l'élément vers la sidebar
-            }
-        }
-    }
-
-    // Vérifier la position initiale et la déplacer en fonction de la taille de l'écran
-    moveSideNavElement();
-
-    // Ajouter un écouteur d'événements pour surveiller le redimensionnement de la fenêtre
-    window.addEventListener('resize', moveSideNavElement);
-});
