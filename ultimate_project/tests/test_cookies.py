@@ -20,6 +20,10 @@ def run(playwright: Playwright) -> None:
     )
     page = context.new_page()
 
+    # Added timeouts
+    page.set_default_timeout(20000) # 20 seconds timeout for Playright
+    page.set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
+
     def logout():
         youpiBanane = page.locator("#youpiBanane")
         logoutButton = page.locator("#logoutButton")

@@ -24,6 +24,11 @@ def setup_playwright(playwright: Playwright):
         browser = playwright.chromium.launch(headless=False)
         context = browser.new_context(ignore_https_errors=True)
         page = context.new_page()
+
+        # Added timeouts
+        page.set_default_timeout(20000) # 20 seconds timeout for Playright
+        page.set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
+
         print("✅ Successfully initialized the page.", flush=True)
         return page, context, browser
     except Exception as e:

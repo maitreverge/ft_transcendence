@@ -99,6 +99,8 @@ def run(playwright: Playwright) -> None:
     contexts = []
     pages = []
 
+    # ! IMPORTANT : I did not add global pages timeouts for this tests
+
     # Positions des fenêtres (2 par ligne)
     positions = [(0, 0), (800, 0), (0, 600), (800, 600)]
 
