@@ -141,7 +141,7 @@ button {
 
 .tournament-cont {
 	width: 100%;
-	height: 14rem;
+	height: calc(14rem + 220px);;
 	background-color: rgb(109, 94, 96);	
 	border-radius: 5%;
 	padding: 5px;
@@ -273,3 +273,23 @@ button {
 		/* Adjust width */
 	}
 
+/* OVERLAY PATTERN */
+
+
+
+#tournament-cont {
+	position: relative; /* Nécessaire pour positionner #overlay-pattern si besoin */
+
+  }
+  
+  #pattern {
+	border-radius: 5px;
+
+  }
+  #overlay-pattern {
+	width: 100%;          /* Ou une largeur spécifique si nécessaire */
+	min-width: 300px;     /* Largeur minimale */
+	margin: 0 auto;       /* Centre l'élément horizontalement dans son parent */
+  }
+  #matchs-cont {
+  }
