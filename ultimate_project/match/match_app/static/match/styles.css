@@ -15,7 +15,7 @@
     top:-20%; */
 	left:5%;
     background-image: url('pal_left.png');
-	background-size: cover;
+	background-size: 100% 100%;
 	background-position: center;
 	background-repeat: no-repeat;
    
@@ -28,7 +28,7 @@
 	/* top:-20%; */
 	right:5%;
     background-image: url('pal_right.png');
-	background-size: contain;
+	background-size: 100% 100%;
 	background-position: center;
 	background-repeat: no-repeat;
 
