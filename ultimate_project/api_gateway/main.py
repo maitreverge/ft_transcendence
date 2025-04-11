@@ -48,6 +48,8 @@ AUTH_PATH = [
     "/auth/register/",
     "/two-factor-auth/",
     "/auth/verify-2fa/",
+    r"/api/player/\d+/uuid",  # Regex pattern for /api/player/{id}/uuid
+    "/api/check-2fa/",
 ]
 
 EXCLUDED_PATH = [
@@ -84,6 +86,7 @@ async def bouncer_middleware(request: Request, call_next):
     Main Middleware to filter authenticated users from non-auth users
     """
     is_auth, user_info = authentication.is_authenticated(request)
+    is_csrf_valid = authentication.csrf_validator(request)
 
     print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
     print(f"=============           {request.url.path} ================\n")
@@ -111,7 +114,7 @@ async def bouncer_middleware(request: Request, call_next):
         response = await call_next(request)
         return response
 
-    if is_auth and request.url.path in AUTH_PATH:
+    if (is_auth and is_csrf_valid) and request.url.path in AUTH_PATH:
         print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
@@ -122,8 +125,13 @@ async def bouncer_middleware(request: Request, call_next):
         else:
             response = RedirectResponse(url="/home/")
         return response
+    
+    # elif not is_auth and request.url.path in AUTH_PATH:
+    #     print(f"👍 Bounder Middleware non trigered 👍")
+    #     response = await call_next(request)
+    #     return response
 
-    elif not is_auth and request.url.path not in AUTH_PATH:
+    elif (not is_auth or not is_csrf_valid) and (request.url.path not in AUTH_PATH):
         print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:

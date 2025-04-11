@@ -69,8 +69,8 @@ def validate_csrf_token(token):
         #     return False
 
         # Extract the random bytes and the signature
-        random_bytes = decoded[:32]
-        original_signature = decoded[32:]
+        random_bytes = decoded[:16]
+        original_signature = decoded[8:]
 
         print(f"Random bytes: {random_bytes.hex()[:10]}...")
         print(f"Original sig: {original_signature.hex()[:10]}...")
@@ -292,6 +292,17 @@ def refresh_access_token(refresh_payload):
 
     return new_access_token
 
+def csrf_validator(request):
+
+    csrftoken = request.cookies.get("csrftoken")
+    if not csrftoken:
+        print("❌ CSRF token not found", flush=True)
+        return False
+
+    if not validate_csrf_token(csrftoken):
+        print("❌❌❌❌❌v CSRF token is invalid", flush=True)
+        return False
+    return True
 
 # Function to check if a user is authenticated based on cookies
 def is_authenticated(request: Request):
@@ -304,15 +315,6 @@ def is_authenticated(request: Request):
     Returns:
         tuple: (is_authenticated, user_info)
     """
-
-    csrftoken = request.cookies.get("csrftoken")
-    if not csrftoken:
-        print("❌ CSRF token not found", flush=True)
-        return False, None
-
-    if not validate_csrf_token(csrftoken):
-        print("❌❌❌❌❌v CSRF token is invalid", flush=True)
-        return False, None
 
     # Get the access token from cookies
     access_token = request.cookies.get("access_token")
