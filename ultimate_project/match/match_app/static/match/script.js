@@ -539,8 +539,11 @@ function applyMove(pads) {
 	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
 	// pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
 	pads[4].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
-	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
-	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
+	// pads[0].style.transform = `translateY(${actualPads[0]}px)`;
+	// pads[1].style.transform = `translateY(${actualPads[1]}px)`;
+
+	pads[0].style.transform = `translateY(${targetPads[0]}px)`;
+	pads[1].style.transform = `translateY(${targetPads[1]}px)`;
 	requestAnimationFrame(() => animate(pads));
 }
 
