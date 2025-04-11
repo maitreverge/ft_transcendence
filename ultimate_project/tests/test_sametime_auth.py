@@ -147,7 +147,7 @@ def run(playwright: Playwright) -> None:
 
         
         # Page 1 tries to navigate afterwards, and is no longer auth
-        page1.locator("#nav-match").click()
+        page1.locator("#side-nav-simple-match").click()
         expect(page1).to_have_url(f"{BASE_URL}/register/")
         page1.goto(f"{BASE_URL}/home/")
         expect(page1).to_have_url(f"{BASE_URL}/register/")
@@ -181,7 +181,7 @@ def run(playwright: Playwright) -> None:
 
         
         # Page 1 tries to navigate afterwards, and is no longer auth
-        page1.locator("#nav-match").click()
+        page1.locator("#side-nav-simple-match").click()
         expect(page1).to_have_url(f"{BASE_URL}/register/")
         page1.goto(f"{BASE_URL}/home/")
         expect(page1).to_have_url(f"{BASE_URL}/register/")
