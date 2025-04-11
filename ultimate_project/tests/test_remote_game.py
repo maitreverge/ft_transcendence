@@ -120,7 +120,7 @@ def run(playwright: Playwright) -> None:
         expect(page1.locator(".loader")).to_have_css("opacity", "1")
         expect(page2.locator(".loader")).to_have_css("opacity", "1")
 
-        time.sleep(4)
+        time.sleep(4.5)
 
         expect(page1.locator(".loader")).to_have_css("opacity", "0")
         expect(page2.locator(".loader")).to_have_css("opacity", "0")
@@ -196,27 +196,38 @@ def run(playwright: Playwright) -> None:
 
 
     def launch_tournament(page1, page2, match2_player2, match3_player1, match3_player2):
-        # User3 move his ghost and himself
-        source2 = page2.get_by_text(match2_player2, exact=True)
-        # time.sleep(3)
-        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
-        # time.sleep(3)
-        source2.drag_to(target2)
-        # time.sleep(3)
-
-        source2 = page2.get_by_text(match3_player1, exact=True)
-        # time.sleep(3)
-        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
-        # time.sleep(3)
-        source2.drag_to(target2)
-        # time.sleep(3)
-
-        source1 = page1.get_by_text(match3_player2, exact=True)
-        time.sleep(3)
+        
+        # user2 tries to move a non player of him
+        source1 = page1.get_by_text(match3_player1, exact=True)
         target1 = page1.locator(".tournament-cont")
-        time.sleep(3)
         source1.drag_to(target1)
-        time.sleep(3)
+        time.sleep(0.5)
+        expect(page1.locator("#swal2-html-container")).to_have_text("Not your player!")
+        page1.get_by_text("OK", exact=True).click()
+
+        # user3 tries to move a non player of him
+        source2 = page2.get_by_text(match3_player2, exact=True)
+        target2 = page2.locator(".tournament-cont")
+        source2.drag_to(target2)
+        time.sleep(0.5)
+        expect(page2.locator("#swal2-html-container")).to_have_text("Not your player!")
+        page2.get_by_text("OK", exact=True).click()
+
+
+        # User3 move his ghost...
+        source2 = page2.get_by_text(match2_player2, exact=True)
+        target2 = page2.locator(".tournament-cont")
+        source2.drag_to(target2)
+
+        # ... and himself
+        source2 = page2.get_by_text(match3_player1, exact=True)
+        target2 = page2.locator(".tournament-cont")
+        source2.drag_to(target2)
+
+        # User 2 moves his ghost
+        source1 = page1.get_by_text(match3_player2, exact=True)
+        target1 = page1.locator(".tournament-cont")
+        source1.drag_to(target1)
 
     def test_remote_tournament(pages):
 
