@@ -17,19 +17,11 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-document.addEventListener('click', (event) => {
-    const overlay = document.getElementById('tuto-overlay');
-    const overlayButton = document.getElementById('overlayButton');
-    if (!overlay) return;
-
-    if (event.target !=  overlayButton) {
-        overlay.style.display = 'none';
-    }
-});
-
 function replayTuto() {
     const overlay = document.getElementById('tuto-overlay');
+    console.log("enter replay tuto func");
     if (!overlay) return;
+    console.log("overlay found");
 
     overlay.style.display = 'flex';
     localStorage.removeItem('tutoSimpleMatchSeen');
