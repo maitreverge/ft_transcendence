@@ -207,13 +207,13 @@ class Tournament():
 		path = "api/match/"
 		
         # Loops 3 times because there is 3 matches within a tournament
-		for _ in range(3):
-            # `or 0` Handles `None` users
-			p1 = max(1, matches[_]["matchResult"]["p1Id"] or 0)
-			p2 = max(1, matches[_]["matchResult"]["p2Id"] or 0)
-			win = max(1, matches[_]["matchResult"]["winnerId"] or 0)
-			score_p1 = matches[_]["matchResult"]["score"][0]
-			score_p2 = matches[_]["matchResult"]["score"][1]
+		for i in range(3):
+			# `or 0` Handles `None` users
+			p1 = max(1, matches[i]["matchResult"]["p1Id"] or 0)
+			p2 = max(1, matches[i]["matchResult"]["p2Id"] or 0)
+			win = max(1, matches[i]["matchResult"]["winnerId"] or 0)
+			score_p1 = matches[i]["matchResult"]["score"][0]
+			score_p2 = matches[i]["matchResult"]["score"][1]
 			tournament = tournament_id
 			# Compile each key in a JSON body
 			# HERE FOR MY DATA
@@ -226,13 +226,15 @@ class Tournament():
 				"tournament": tournament,
 			}
 			await sdb(path, data)
-			# Update Player 2 stats
+			# Update Players stats
 			data_p1 = {
 				"games_played": 1,
 				"games_won": 1 if win == p1 else 0,
 				"games_lost": 1 if win != p1 else 0,
 				"points_scored": score_p1,
 				"points_conceded": score_p2,
+				"nb_tournaments_played": 1 if i == 0 else 0,
+				"nb_tournaments_won": 1 if win == p1 and i == 2 else 0,
 			}
 			data_p2 = {
 				"games_played": 1,  
@@ -240,6 +242,8 @@ class Tournament():
 				"games_lost": 1 if win != p2 else 0,
 				"points_scored": score_p2,
 				"points_conceded": score_p1,
+				"nb_tournaments_played": 1 if i == 0 else 0,
+				"nb_tournaments_won": 1 if win == p2 and i == 2 else 0,
 			}
 			# Send updates to player statistics
 			path_p1 = f"api/player/{p1}/stats/update-stats/"

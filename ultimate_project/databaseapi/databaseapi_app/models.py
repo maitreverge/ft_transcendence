@@ -75,13 +75,24 @@ class PlayerStatistics(models.Model):
     games_lost = models.IntegerField(default=0)
     points_scored = models.IntegerField(default=0)
     points_conceded = models.IntegerField(default=0)
+    
+    win_rate = models.FloatField(default=0.00)  # Stores win rate as a percentage
+    average_score = models.FloatField(default=0.00)  # Stores average score per game
+    
+    best_win_streak = models.IntegerField(default=0)
+    worst_lose_streak = models.IntegerField(default=0)
+    
+    c_win_streak = models.IntegerField(default=0) #current win streak
+    c_lose_streak = models.IntegerField(default=0) #current lose streak
+    
+    nb_tournaments_played = models.IntegerField(default=0) #current lose streak
+    nb_tournaments_won = models.IntegerField(default=0) #current lose streak
 
     # auto set when usign .save()
     last_updated = models.DateTimeField(auto_now=True)
-    
-    # history of data progression per day
+
     # will use date(str) as key
-    update_history = models.JSONField(default=dict, blank=True)
+    stats_history = models.JSONField(default=dict, blank=True)
 
     class Meta:
         db_table = "player_statistics"

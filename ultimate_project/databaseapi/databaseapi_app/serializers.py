@@ -66,7 +66,7 @@ class PlayerNestedSerializer(serializers.ModelSerializer):
 
 
 class PlayerStatisticsSerializer(serializers.ModelSerializer):
-    update_history = serializers.JSONField(required=False)
+    stats_history = serializers.JSONField(required=False)
     class Meta:
         model = PlayerStatistics
         fields = [
@@ -76,8 +76,16 @@ class PlayerStatisticsSerializer(serializers.ModelSerializer):
             "games_lost",
             "points_scored",
             "points_conceded",
+            "win_rate",
+            "average_score",
+            "best_win_streak",
+            "c_win_streak",
+            "worst_lose_streak",
+            "c_lose_streak",
+            "nb_tournaments_played",
+    		"nb_tournaments_won",
             "last_updated",
-            "update_history",
+            "stats_history", #lifetime daily stat history
         ]
 
 

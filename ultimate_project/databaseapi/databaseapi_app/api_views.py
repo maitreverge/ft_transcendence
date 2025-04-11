@@ -62,7 +62,19 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
     def update_stats(self, request, player_id=None):
         try:
             # Get the player statistics by player_id
-            player_stats, created = PlayerStatistics.objects.get_or_create(player=player_id)
+            print(f"Printing player stats for player_id {player_id}", flush=True)
+            try:
+                player_id = int(player_id)
+                if player_id <= 1:
+                    return Response({
+                        "message": "Player not updated because player is an admin or a bot"
+                    }, status=status.HTTP_204_NO_CONTENT)
+            except (TypeError, ValueError):
+                return Response({
+                    "message": "Invalid player_id"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            player_obj = Player.objects.get(id=player_id)
+            player_stats, created = PlayerStatistics.objects.get_or_create(player=player_obj)
             print(f"Printing player stats for player_id {player_id} info: {player_stats}", flush=True)
             #debug to rm
             if created:
@@ -76,40 +88,79 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
                 "games_lost": 1 if request.data.get("winner") != player_id else 0,
                 "points_scored": request.data.get('points_scored', 0),
                 "points_conceded": request.data.get('points_conceded', 0),
+                "nb_tournaments_played": request.data.get('nb_tournaments_played', 0),
+    			"nb_tournaments_won": request.data.get('nb_tournaments_won', 0),
             }
+            # global user stats
             player_stats.games_played += data["games_played"]
             player_stats.games_won += data["games_won"]
             player_stats.games_lost += data["games_lost"]
             player_stats.points_scored += data["points_scored"]
             player_stats.points_conceded += data["points_conceded"]
-            update_record = {
-                "games_played": data["games_played"],
-                "games_won": data["games_won"],
-                "games_lost": data["games_lost"],
-                "points_scored": data["points_scored"],
-                "points_conceded": data["points_conceded"],
-            }
+            player_stats.nb_tournaments_played += data["nb_tournaments_played"]
+            player_stats.nb_tournaments_won += data["nb_tournaments_won"]
+    
+            gp_total = player_stats.games_played
+            gw_total = player_stats.games_won
+            ps_total = player_stats.points_scored
+            player_stats.win_rate = round((gw_total / gp_total) * 100, 2) if gp_total > 0 else 0.0
+            player_stats.average_score = round(ps_total / gp_total, 2) if gp_total > 0 else 0.0
+            if data["games_won"] == 1:
+                player_stats.c_win_streak += 1
+                player_stats.c_lose_streak = 0
+                if player_stats.c_win_streak > player_stats.best_win_streak:
+                    player_stats.best_win_streak = player_stats.c_win_streak
+            elif data["games_lost"] == 1:
+                player_stats.c_lose_streak += 1
+                player_stats.c_win_streak = 0
+                if player_stats.c_lose_streak > player_stats.worst_lose_streak:
+                    player_stats.worst_lose_streak = player_stats.c_lose_streak
+            
+            # daily stats tracking system
             now = timezone.localtime(timezone.now())
             today_str = now.date().isoformat()
             print(f"\nTODAY STR {today_str}\n\n", flush=True) #rm
-            if today_str in player_stats.update_history:
-                existing_record = player_stats.update_history[today_str]
+            # Build daily tracking of stat
+            # if data for the current day already exist
+            if today_str in player_stats.stats_history:
+                existing_record = player_stats.stats_history[today_str]
                 existing_record["games_played"] += data["games_played"]
                 existing_record["games_won"] += data["games_won"]
                 existing_record["games_lost"] += data["games_lost"]
                 existing_record["points_scored"] += data["points_scored"]
                 existing_record["points_conceded"] += data["points_conceded"]
+                gp = existing_record["games_played"]
+                gw = existing_record["games_won"]
+                ps = existing_record["points_scored"]
+                existing_record["win_rate"] = round((gw / gp) * 100, 2) if gp > 0 else 0.0
+                existing_record["average_score"] = round(ps / gp, 2) if gp > 0 else 0.0
+                # will have the best win streak in history
+                existing_record["worst_lose_streak"] = player_stats.worst_lose_streak
+                existing_record["best_win_streak"] = player_stats.best_win_streak
+                existing_record["nb_tournaments_played"] += data["nb_tournaments_played"]
+                existing_record["nb_tournaments_won"] += data["nb_tournaments_won"]
             else:
-                player_stats.update_history[today_str] = update_record
+                # if data for the current day doesnt exist already
+                games_played = data["games_played"]
+                games_won = data["games_won"]
+                points_scored = data["points_scored"]
+                update_record = {
+                    **data, #original data
+                    "win_rate": round((games_won / games_played) * 100, 2) if games_played > 0 else 0.0,
+                    "average_score": round(points_scored / games_played, 2) if games_played > 0 else 0.0,
+                    "best_win_streak": player_stats.best_win_streak,
+                    "worst_lose_streak": player_stats.worst_lose_streak,
+                }
+                player_stats.stats_history[today_str] = update_record
             # Max 30 days history for game stats per day
-            thirty_days_ago = timezone.now() - timedelta(days=30)
+            """ thirty_days_ago = timezone.now() - timedelta(days=30)
             filtered_history = {}
             for key_str, value in player_stats.update_history.items():
                 key_date = datetime.fromisoformat(key_str).date()
                 if key_date >= thirty_days_ago.date():
                     filtered_history[key_str] = value
             player_stats.update_history.clear()
-            player_stats.update_history = filtered_history
+            player_stats.update_history = filtered_history """
             player_stats.save()
             return Response({
                 "message": "Player stats updated successfully",
