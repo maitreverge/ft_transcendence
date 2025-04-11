@@ -36,7 +36,8 @@ def generate_django_csrf_token():
     }
     return serializer.dumps(token_data)
 
-def validate_csrf_token(token, max_age=3600 * 6):
+
+def validate_csrf_token(token, max_age=60): # 1 minute
     
     if not token:
         return False
@@ -590,7 +591,8 @@ async def verify_2fa_and_login(
             secure=True,
             samesite="Lax",
             path="/",
-            max_age=60 * 60 * 6,  # 6 hours, same as access token
+            # max_age=60 * 60 * 6,  # 6 hours, same as access token
+            max_age=60,  # 6 hours, same as access token
         )
 
         # Debug log for headers
@@ -846,7 +848,7 @@ async def register_fastAPI(
             secure=True,
             samesite="Lax",
             path="/",
-            max_age=60 * 60 * 6,  # 6 hours, same as access token
+            max_age=60,  # 6 hours, same as access token
         )
 
         return json_response

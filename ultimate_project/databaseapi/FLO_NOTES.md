@@ -43,6 +43,8 @@
 
 🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
 
+🟧 Refactor some blocks of authentication (the cookies setup) 
+
 
 ======================================= DONE =====================================
 
