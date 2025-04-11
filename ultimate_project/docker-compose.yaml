@@ -126,6 +126,8 @@ services:
       name: api_gateway
       pi_domain: ${PI_DOMAIN}
       JWT_KEY: ${JWT_KEY}
+      CSRF_SECRET_KEY: ${CSRF_SECRET_KEY}
+
     image: img_api_gateway
     networks:
       - transcendence_network
