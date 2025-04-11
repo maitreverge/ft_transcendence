@@ -17,13 +17,13 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 shadow-sm">
+        <nav class="col-0 col-sm-4 col-md-3 col-lg-2 d-none d-sm-block bg-light p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
             <div class="sidebar-sticky text-center">
                 <!-- Account Settings Title -->
-                <h1 class="h3 mb-3 text-gray-800">Tournament</h1>
+                <h1 class="h3 mb-3 text-gray-800">Match</h1>
                 <ul class="nav flex-column">
                     <!-- Profile Section -->
-                    <li  class="nav-item mb-3">
+                    <li class="nav-item mb-3">
                         <a id="side-nav-simple-match" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
                             hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
@@ -31,13 +31,6 @@
                         </a>
                     </li>
                     <li  id="side-nav-info" class="nav-item mb-3">
-                        <a class="tuto-overlay" id="tuto-overlay">
-                            <div class="tuto-box">
-                                <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
-                                    alt="Tutoriel" />
-                                <p>Clique ici pour démarrer un match !</p>
-                            </div>
-                        </a>
                         <div id="overlayButton" onclick="replayTuto()"
                             class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
                             <i class="fas fa-info-circle"></i>INFO
@@ -45,7 +38,7 @@
                     </li>
                     <!-- Security Button (Replaces Password & 2FA) -->
                     <li  id="side-nav-2d3d" class="nav-item mb-3">
-                        <a class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                        <a id="switch2d3d" class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
                             <span class="mr-2">2D</span>
                             <label for="dim" class="switch">
                                 <input type="checkbox" id="dim" hidden>
@@ -57,6 +50,14 @@
                 </ul>
             </div>
         </nav>
+        <a class="tuto-overlay" id="tuto-overlay">
+            <div class="tuto-box">
+                <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp"
+                    alt="Tutoriel" />
+                    <button onclick="document.getElementById('tuto-overlay').style.display='none'" class="btn btn-danger mt-3">Fermer</button>
+                <p>Clique ici pour démarrer un match !</p>
+            </div>
+        </a>
         <!-- Main Content -->
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <!-- Content dynamically loaded here -->
