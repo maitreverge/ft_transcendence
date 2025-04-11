@@ -53,25 +53,39 @@ def generate_csrf_token():
 
 
 def validate_csrf_token(token):
-
-    # if not token:
-    #     return False
+    if not token:
+        return False
 
     try:
+        print(f"Validating token: {token[:10]}...")
+
         # Decode the token
         decoded = base64.urlsafe_b64decode(token.encode("utf-8"))
+        print(f"Decoded length: {len(decoded)}")
+
+        # Ensure decoded is long enough to contain both random_bytes and signature
+        # if len(decoded) < 64:  # 32 bytes for random + 32 for SHA256
+        #     print(f"Decoded token too short: {len(decoded)} bytes")
+        #     return False
 
         # Extract the random bytes and the signature
         random_bytes = decoded[:32]
         original_signature = decoded[32:]
+
+        print(f"Random bytes: {random_bytes.hex()[:10]}...")
+        print(f"Original sig: {original_signature.hex()[:10]}...")
 
         # Recalculate signature
         expected_signature = hmac.new(
             CSRF_SECRET.encode(), random_bytes, digestmod=hashlib.sha256
         ).digest()
 
+        print(f"Expected sig: {expected_signature.hex()[:10]}...")
+
         # Compare signatures using constant-time comparison
-        return hmac.compare_digest(original_signature, expected_signature)
+        result = hmac.compare_digest(original_signature, expected_signature)
+        print(f"Signature match: {result}")
+        return result
     except Exception as e:
         print(f"CSRF validation error: {e}", flush=True)
         return False
