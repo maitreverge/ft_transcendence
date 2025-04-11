@@ -23,12 +23,80 @@
     <div id="homelogo" class="sidebar-brand-text mx-3">Pong <sup>42</sup></div>
 </a>
   <!-- Sidebar Toggle (Topbar) -->
-  <button
-    id="sidebarToggleTop"
-    class="btn btn-link d-md-none rounded-circle mr-3"
+  <li class="nav-item dropdown no-arrow mx-1 d-md-none">
+    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-bars"></i>
+        <!-- Counter - Alerts -->
+    </a>
+    <!-- Dropdown - Alerts -->
+    <div class="dropdown-list dropdown-menu dropdown-menu-left shadow animated--grow-in"
+        aria-labelledby="alertsDropdown">
+        <h6 class="dropdown-header">
+            Menu
+        </h6>
+        <a
+            class="nav-link"
+            hx-trigger="click"
+            hx-push-url="true"
+            hx-get="/tournament/simple-match/"
+            hx-target="#main_div"
+            hx-on="htmx:beforeRequest: toggleSidebar(true);"
+            id="userDropdown"
+            role="button"
+        >
+            <span id="nav-match" class="mr-2">
+            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+            <span data-translate="Match simple">Match simple</span>
+            </span>
+        </a>
+        <a
+    class="nav-link"
+    hx-trigger="click"
+    hx-push-url="true"
+    hx-get="/tournament/tournament/"
+    hx-target="#main_div"
+    hx-on="htmx:beforeRequest: toggleSidebar(true);"
+    id="userDropdown"
+    role="button"
   >
-    <i class="fa fa-bars"></i>
-  </button>
+    <span id="nav-tournoi" class="mr-2">
+      <i class="fas fa-trophy"></i>
+      <span data-translate="Tournoi">Tournoi</span>
+    </span>
+  </a>
+  <a
+    class="nav-link"
+    hx-trigger="click"
+    hx-push-url="true"
+    hx-get="/account/profile/"
+    hx-target="#main_div"
+    hx-on="htmx:beforeRequest: toggleSidebar(true);"
+    id="userDropdown"
+    role="button"
+  >
+    <span id="nav-profile" class="mr-2">
+      <i class="fa-solid fa-user"></i>
+      <span data-translate="Profil">Profile</span>
+    </span>
+  </a>
+  <a
+    class="nav-link"
+    hx-trigger="click"
+    hx-push-url="true"
+    hx-get="/account/game-stats/"
+    hx-target="#main_div"
+    hx-on="htmx:beforeRequest: toggleSidebar(true);"
+    id="userDropdown"
+    role="button"
+  >
+    <span id="nav-stats" class="mr-2">
+      <i class="fa-solid fa-chart-simple"></i>
+      <span data-translate="Statistiques">Stats</span>
+    </span>
+  </a>
+    </div>
+</li>
   <select id="language-selector" class="ml-2 " onchange="changeLanguage(event)">
     <option value="en">🇬🇧 English</option>
     <option value="fr">🇫🇷 Français</option>
