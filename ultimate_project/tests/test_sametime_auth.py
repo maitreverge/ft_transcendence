@@ -115,6 +115,9 @@ def run(playwright: Playwright) -> None:
                 f"window.moveTo({positions[_][0]}, {positions[_][1]}); window.resizeTo({window_sizes[_][0]}, {window_sizes[_][1]});"
             )
 
+            pages[_].set_default_timeout(20000) # 20 seconds timeout for Playright
+            pages[_].set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
+
     def destroy_obj(browsers, contexts):
         for context in contexts:
             context.close()
