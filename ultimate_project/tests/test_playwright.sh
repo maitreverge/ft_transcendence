@@ -23,18 +23,15 @@ sleep 1
 python3 tests/test_2fa.py
 sleep 1
 python3 tests/test_cookies.py
-#python3 tests/test_delete_user.py
+sleep 1
 python3 tests/test_username.py
 sleep 1
 python3 tests/test_sametime_auth.py
 sleep 1
+python3 tests/test_xss_sql.py
+sleep 1
 python3 tests/test_navigation.py
 check_result "Playwright tests"
-
-# This container needs to restart to re-create users to be deleted
-echo "♻️ Recreating delete users for testing ♻️"
-docker restart ctn_databaseapi
-echo "✅ Deleted users recreated ✅"
 
 end=$(date +%s)
 elapsed=$((end - start))

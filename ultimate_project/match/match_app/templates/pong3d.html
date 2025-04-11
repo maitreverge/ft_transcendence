@@ -43,8 +43,10 @@
 
 
 <div id="match">
-	<!-- <div id="p3"></div> -->
-	<h1 id="spec" style="display: none">Je suis spectateur</h1>
+
+    <div id="spec">
+        <img src="https://dansylvain.github.io/pictures/tennis.webp">
+    </div>
 
     <div id="center_buttons">
         <button class="config_buttons", onclick="actionRestViewUP()">rest view UP</button>
@@ -56,8 +58,9 @@
 
     <script class="match-script" src="{% static 'match/script3d.js' %}"></script>
 
-    <div id="countdown3d">3</div>
-    
+    <div id="countdown3d"></div>
+    <div id="waiting">Waiting</div>
+
 	<div id="end-cont" style="display:none">
 	    <div id="end"></div>
 	</div>
@@ -98,16 +101,4 @@
         }
     });
 
-    var countdownElement = document.getElementById('countdown3d');
-    var countdownText = ['3', '2', '1', 'GO!', ''];
-
-    var currentIndex = 0;
-
-    var countdownInterval = setInterval(() => {
-        countdownElement.textContent = countdownText[currentIndex];
-
-        if (++currentIndex === countdownText.length) {
-            clearInterval(countdownInterval);
-        }
-    }, 1000);
 </script>

@@ -1,5 +1,6 @@
 var tjs_keyup = null;
 var tjs_keydown = null;
+var is_towplayer = false;
 
 function stopMatch(matchId) {
     // unregister the event listeners
@@ -8,57 +9,57 @@ function stopMatch(matchId) {
     if (tjs_keydown)
         document.removeEventListener("keydown", tjs_keydown);
 
-	if (!matchId)
-	{
-		console.log("matchID EST NULLE");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-		return;
-	}
+    if (!matchId)
+    {
+        console.log("matchID EST NULLE");
+        const oldScripts = document.querySelectorAll("script.match-script");
+        console.log("olscript len", oldScripts.length);
+        oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
+        return;
+    }
 
-	if (window.selfMatchId == matchId)
-	{
-		fetch(`/match/stop-match/${window.selfId}/${matchId}/`)
-		.then(response => {
-			if (!response.ok)
-				throw new Error(`Error HTTP! Status: ${response.status}`);
-			return response.text();
-		})
-		.then(data => console.log(data))
-		.catch(error => console.log(error))
-	}
-	else
-		document.getElementById('match').remove()
-	console.log("YOUHOUHOUHOU");
-	// if (window.selfMatchId != window.matchId)
-	// {
-		console.log("jypigequeuedalle");
-		if (!window.matchSocket)
-			console.log("LE WEBSOCKET ETS NULL.");
-		else
-		{
-			console.log("je sais pas ce qu eje fou la");
-			if (window.matchSocket.readyState === WebSocket.OPEN)
-			{
-				console.log("je vais envoyer 42");
-				window.stopFlag = true
-				window.matchSocket.close(3666);
-				window.matchSocket2.close(3666);
-			}
-			else
-			{
-				console.log("La WebSocket était déjà fermée.");
-			}
-			console.log("je nai pas plante");
-		}
-		console.log("toujours vivant");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-	// }
-	// else
-	// 	console.log("pas spec!!");
+    if (window.selfMatchId == matchId)
+    {
+        fetch(`/match/stop-match/${window.selfId}/${matchId}/`)
+        .then(response => {
+            if (!response.ok)
+                throw new Error(`Error HTTP! Status: ${response.status}`);
+            return response.text();
+        })
+        .then(data => console.log(data))
+        .catch(error => console.log(error))
+    }
+    else
+        document.getElementById('match').remove()
+    console.log("YOUHOUHOUHOU");
+    // if (window.selfMatchId != window.matchId)
+    // {
+        console.log("jypigequeuedalle");
+        if (!window.matchSocket)
+            console.log("LE WEBSOCKET ETS NULL.");
+        else
+        {
+            console.log("je sais pas ce qu eje fou la");
+            if (window.matchSocket.readyState === WebSocket.OPEN)
+            {
+                console.log("je vais envoyer 42");
+                window.stopFlag = true
+                window.matchSocket.close(3666);
+                window.matchSocket2.close(3666);
+            }
+            else
+            {
+                console.log("La WebSocket était déjà fermée.");
+            }
+            console.log("je nai pas plante");
+        }
+        console.log("toujours vivant");
+        const oldScripts = document.querySelectorAll("script.match-script");
+        console.log("olscript len", oldScripts.length);
+        oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
+    // }
+    // else
+    //  console.log("pas spec!!");
 }
 
 window.tjs_container = document.getElementById('scene-container');
@@ -71,9 +72,9 @@ window.tjs_container.appendChild(window.tjs_renderer.domElement);
 
 window.tjs_textureLoader = window.tjs_textureLoader || new THREE.TextureLoader();
 
-window.tjs_rgeo = window.tjs_rgeo || new THREE.BoxGeometry(10, 5, 40 * (60 / 100));
+window.tjs_rgeo = window.tjs_rgeo || new THREE.BoxGeometry(3, 5, 40 * (60 / 100));
 window.tjs_sgeo = window.tjs_sgeo || new THREE.SphereGeometry(2, 32, 32);
-window.tjs_tgeo = window.tjs_tgeo || new THREE.BoxGeometry(95, 5, 60);
+window.tjs_tgeo = window.tjs_tgeo || new THREE.BoxGeometry(84.5, 5, 60);
 
 function tjs_loadfull(url) {
     return [
@@ -86,21 +87,20 @@ function tjs_loadfull(url) {
     ]
 }
 
-
 window.tjs_tmat = tjs_loadfull('https://threejs.org/examples/textures/terrain/grasslight-big.jpg');
 window.tjs_rmat = tjs_loadfull('https://threejs.org/examples/textures/hardwood2_diffuse.jpg');
 
 window.tjs_smat = window.tjs_smat || new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/sprite.png') });
 
-window.tjs_r1 = window.tjs_r1 || new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
-window.tjs_r2 = window.tjs_r2 || new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
+window.tjs_r1 = new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
+window.tjs_r2 = new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
 
-window.tjs_table = window.tjs_table || new THREE.Mesh(window.tjs_tgeo, window.tjs_tmat);
-window.tjs_table.position.x = 47.5;
+window.tjs_table = new THREE.Mesh(window.tjs_tgeo, window.tjs_tmat);
+window.tjs_table.position.x = 48.75;
 window.tjs_table.position.y = -5;
 window.tjs_table.position.z = 30;
 
-window.tjs_ball = window.tjs_ball || new THREE.Mesh(window.tjs_sgeo, window.tjs_smat);
+window.tjs_ball = new THREE.Mesh(window.tjs_sgeo, window.tjs_smat);
 
 window.tjs_scene.add(window.tjs_ball);
 window.tjs_scene.add(window.tjs_r1);
@@ -109,11 +109,11 @@ window.tjs_scene.add(window.tjs_table);
 
 window.tjs_r1.position.z = -20;
 window.tjs_r1.position.y = 0;
-window.tjs_r1.position.x = 5;
+window.tjs_r1.position.x = 10.5;
 
 window.tjs_r2.position.z = -20;
 window.tjs_r2.position.y = 0;
-window.tjs_r2.position.x = 90;
+window.tjs_r2.position.x = 87.5;
 
 window.tjs_ball.position.x = -1;
 window.tjs_ball.position.z = -1;
@@ -304,6 +304,8 @@ function setCommands3D(socket, socket2) {
         }
 
         if (socket2 && socket2.readyState === WebSocket.OPEN) {
+            is_towplayer = true;
+
             if (keysPressed["+"]) {
                 socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
             }
@@ -349,27 +351,83 @@ function setCommands3D(socket, socket2) {
     tjs_keyup = handleKeyUp;
 }
 
+function startCountdown3D(delay)
+{
+    const countdownEl = document.getElementById("countdown3d");
+    const countdownEndsAt = window.gameStartTimestamp * 1000 + delay * 1000;
+
+	function updateCountdown3D() {
+        const now = Date.now();
+        const remaining = Math.ceil((countdownEndsAt - now) / 1000);
+
+        if (remaining > 0) {
+            countdownEl.textContent = remaining;
+            requestAnimationFrame(updateCountdown3D);
+        } else if (remaining > -1) {
+            countdownEl.textContent = "GO!";
+            requestAnimationFrame(updateCountdown3D);
+        } else {
+            countdownEl.textContent = "";
+            window.gameStartTimestamp = undefined;
+        }
+    }
+
+	updateCountdown3D();
+}
+
 function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingState) {
     const data = JSON.parse(event.data);
+
+    if (data.timestamp && !data.state) {
+        if (window.gameStartTimestamp === undefined) {
+            window.gameStartTimestamp = data.timestamp;
+            delay = data.delay;
+            console.log("✅ Premier timestamp enregistré:", data.timestamp);
+
+            startCountdown3D(delay);
+        } else {
+            console.log("⏩ Timestamp déjà reçu, ignoré.");
+        }
+        return;
+    }
+
     if (data.names)
-	{
-        document.getElementById("inst-left").innerHTML = data.names[0] + "<br> keys: enter / +"
-	    document.getElementById("inst-right").innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-	}
+    {
+        if (is_towplayer)
+        {
+            document.getElementById("inst-left").innerHTML = data.names[0] + "<br> keys: enter / +";
+            document.getElementById("inst-right").innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+        } else {
+            document.getElementById("inst-left").innerHTML = data.names[0];
+            document.getElementById("inst-right").innerHTML = data.names[1];
+        }
+    }
+
     if (data.state == "end")
     {
-        const winnerId = data.winnerId == window.playerId ? window.selfName : window.player2Name;
+        let gifUrl;
+        if (window.selfName == data.winnerName)
+            gifUrl = "https://dansylvain.github.io/pictures/sdurif.webp";
+        else if (spec.style.display != "none")
+        {
+            gifUrl = "https://dansylvain.github.io/pictures/tennis.webp";
+            spec.style.display = "none";
+        }
+        else
+            gifUrl = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
 
-        end.innerHTML = `The winner is: ${winnerId} <br>
-        Score: ${data.score[0]} : ${data.score[1]}
-                <img src="https://media1.tenor.com/m/Xd5ZJk8TV84AAAAd/christ-cosmique.gif"
-             alt="Winner GIF"
-             class="winner-gif">
+        end.innerHTML = `The winner is: ${data.winnerName} <br>
+        Score: ${data.score[0]} : ${data.score[1]} <br>
+        <img src="${gifUrl}"
+        alt="Winner GIF"
+        class="winner-gif">
+        `;
 
-             `
-        + end.innerHTML;
         endCont.classList.add("end-cont");
+        console.log("🏁 Match terminé, reset du timestamp");
+        window.gameStartTimestamp = undefined;
     }
+
     if (waitingState[0] != data.state)
     {
         waitingState[0] = data.state;
