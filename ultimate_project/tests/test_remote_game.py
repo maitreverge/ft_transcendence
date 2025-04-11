@@ -114,10 +114,6 @@ def run(playwright: Playwright) -> None:
     def routine_timer(page1, page2):
         
         # ! This routine check the timer appeance
-        # Get both loaders
-        # loader_p1 = page1.locator(".loader")
-        # loader_p2 = page2.locator(".loader")
-
         expect(page1.locator('.loader')).to_have_css('opacity', '1')
         expect(page2.locator('.loader')).to_have_css('opacity', '1')
         
@@ -125,22 +121,12 @@ def run(playwright: Playwright) -> None:
         
         expect(page1.locator('.loader')).to_have_css('opacity', '0')
         expect(page2.locator('.loader')).to_have_css('opacity', '0')
-        
-        # Check if loader has opacity 1
-        # loader_style_1 = loader_p1.get_attribute("style")
-        # loader_style_2 = loader_p2.get_attribute("style")
-        # assert "opacity: 1" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
-        # assert "opacity: 1" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
-        
-        # time.sleep(4)
-        
-        # Check if loader has opacity 0 after waiting
-        # loader_style_1 = loader_p1.get_attribute("style")
-        # loader_style_2 = loader_p2.get_attribute("style")
-        # assert "opacity: 0" in loader_style_1, f"Expected opacity: 1 in style page user2, got: {loader_style_1}"
-        # assert "opacity: 0" in loader_style_2, f"Expected opacity: 1 in style page user3, got: {loader_style_2}"
 
-    def test_remote_simple_match(browsers, contexts, pages, positions, window_sizes):
+        # both players exit match
+        page1.get_by_role("button", name="EXIT").click()
+        page2.get_by_role("button", name="EXIT").click()
+        
+    def test_remote_simple_match(pages):
 
         page1 = pages[0]
         page2 = pages[1]
@@ -176,31 +162,51 @@ def run(playwright: Playwright) -> None:
         routine_timer(page1, page2)
 
         # Both players exit the same remote single match at the same time
-        page1.get_by_role("button", name="EXIT").click()
-        page2.get_by_role("button", name="EXIT").click()
+        # page1.get_by_role("button", name="EXIT").click()
+        # page2.get_by_role("button", name="EXIT").click()
 
-    def test_remote_tournament(browsers, contexts, pages, positions, window_sizes):
+    def launch_tournament(page1, page2, match2_player2, match3_player1, match3_player2):
+        # User3 move his ghost and himself
+        source2 = page2.get_by_text(match2_player2, exact=True)
+        # time.sleep(3)
+        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
+        # time.sleep(3)
+        source2.drag_to(target2)
+        # time.sleep(3)
+        
+        source2 = page2.get_by_text(match3_player1, exact=True)
+        # time.sleep(3)
+        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
+        # time.sleep(3)
+        source2.drag_to(target2)
+        # time.sleep(3)
+
+        source1 = page1.get_by_text(match3_player2, exact=True)
+        time.sleep(3)
+        target1 = page1.locator(".tournament-cont")
+        time.sleep(3)
+        source1.drag_to(target1)
+        time.sleep(3)
+    
+    def test_remote_tournament(pages):
 
         page1 = pages[0]
         page2 = pages[1]
 
-        # Page 1 Goes to match by clicking button... #! MAYBE NEED TO CHANGE THE LOCATOR
-        # page1.locator("#acc-profile").click()
+        # Page 1 Goes to match by clicking button... #! NEED TO SWITCH SELECTORS ONCE FINISHED
         page1.goto(f"{BASE_URL}/tournament/tournament/")
-
+        # page1.locator("#side-nav-tournament").click()
 
         # Page 2 goes by straight link
         page2.goto(f"{BASE_URL}/tournament/tournament/")
 
-        # ! WORK NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDLE
-    #     - TEST CINQ: test tournament remote
-    # - on lance deux navigateurs
-    # - l'user A navigue vers la page tournament
-    # - l'user A clique sur le lien vers la page tournament
-    # - Dans le champ avec l'id="player-name", chacun d'entre eux entre les noms "hehe" OU "hoho"
+        match2_player2 = "ghost_user3"
+        match3_player1 = USER_3
+        match3_player2 = "ghost_user2"
 
-        page1.locator("#player-name").fill("ghost_user2")
-        page2.locator("#player-name").fill("ghost_user3")
+
+        page1.locator("#player-name").fill(match3_player2)
+        page2.locator("#player-name").fill(match2_player2)
 
     # - chacun d'entre eux clique sur l'élément dont le contenu est "Add Player"
         page1.get_by_text("Add Player", exact=True).click()
@@ -209,39 +215,25 @@ def run(playwright: Playwright) -> None:
     # - chacun d'entre eux clique sur l'élément dont le contenu est "Create Tournament"
         page1.get_by_role("button", name="Create Tournament").click()
 
-        # User 2 move his ghost
+        launch_tournament(page1, page2, match2_player2, match3_player1, match3_player2)
 
-        # User3 move his ghost and himself
-        source2 = page2.get_by_text("ghost_user3")
-        # time.sleep(3)
-        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
-        # time.sleep(3)
-        source2.drag_to(target2)
-        # time.sleep(3)
-        
-        source2 = page2.get_by_text("user3", exact=True)
-        print(f"PAUSE HERE 2", flush=True)
-        # time.sleep(3)
-        target2 = page2.locator(".tournament-cont")  # The div where it's dropped
-        print(f"PAUSE HERE 3", flush=True)
-        # time.sleep(3)
-        source2.drag_to(target2)
-        print(f"PAUSE HERE 4", flush=True)
-        # time.sleep(3)
+        # ? match 1
+        # ? MATCH 2 / 3
+        # ! ================== WORK NEEEEEEEDLE ===================
 
-        source1 = page1.get_by_text("ghost_user2")
-        time.sleep(3)
-        target1 = page1.locator(".tournament-cont")  # The div where it's dropped
-        time.sleep(3)
-        source1.drag_to(target1)
-        print(f"PAUSE HERE", flush=True)
-        time.sleep(3)
+        # User2 VS ghost_user3 (left match)
+        page1.locator("#m2").click()
+        page2.locator("#m2").click()
+
+        routine_timer(page1, page2)
 
 
-        # MATCH 1 = 
+        # swal2-confirm swal2-styled  => OK du tournament
 
 
-        time.sleep(100)
+
+        time.sleep(1000)
+
 
 
 
@@ -276,9 +268,9 @@ def run(playwright: Playwright) -> None:
     login(pages[0], USER_2)
     login(pages[1], USER_3)
 
-    # test_remote_simple_match(browsers, contexts, pages, positions, window_sizes)
+    test_remote_simple_match(pages)
 
-    test_remote_tournament(browsers, contexts, pages, positions, window_sizes)
+    test_remote_tournament(pages)
 
     print(f"✅ GAME TESTS ✅")
 
