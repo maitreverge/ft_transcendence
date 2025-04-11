@@ -1,8 +1,23 @@
 const usedNames = new Set();
 
 function generateRandomName() {
-    const names = ['Alex', 'Sam', 'Leo', 'Mia', 'Nina', 'Tom', 'Eva', 'Max', 'Luna', 'Zac'];
-    const availableNames = names.filter(name => !usedNames.has(name));
+const names = [
+  'Neo',
+  'Trinity',
+  'Link',
+  'Mario',
+  'Cortana',
+  'Ada',
+  'Bilbo',
+  'Gandalf',
+  'Tux',
+  'Woz',
+  'Jedi',
+  'Spock',
+  'R2D2',
+  'Yoshi',
+  'Lain',
+];    const availableNames = names.filter(name => !usedNames.has(name));
 
     if (availableNames.length === 0) {
         return 'Player' + Math.floor(Math.random() * 1000); // fallback si tous les noms sont pris
