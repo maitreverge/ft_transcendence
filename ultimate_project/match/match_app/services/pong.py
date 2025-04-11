@@ -49,8 +49,9 @@ class Pong:
 	def init_physics(self):
 
 		self.has_wall = False
-		self.pad_height = 40	
-		self.pads_y = [self.pad_height / 2, self.pad_height / 2]		
+		# self.pad_height = 100	
+		# self.pads_y = [self.pad_height / 2 + 50, self.pad_height / 2 + 50]		
+		# self.pads_y = [50, 50]		
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
 		self.ball_speed = 0.2
@@ -61,11 +62,13 @@ class Pong:
 		self.bounce_delay = 0.01
 		self.send_delay = 0.01
 		self.gear_delay = 0.01
-		self.init_sides_pos()
+		self.init_bounces_sides()
 
-	def init_sides_pos(self):
+	def init_bounces_sides(self):
 		
-		self.pads_offset = 5
+		self.pad_height = 40
+		self.pads_y = [50, 50]	
+		self.pads_offset = 3
 		self.pads_width = 10
 		self.ball_ray = 1
 		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_ray
