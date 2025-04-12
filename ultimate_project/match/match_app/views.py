@@ -8,9 +8,10 @@ pongs = []
 
 def new_match(request: HttpRequest):
     
+	multy = int(request.GET.get("multy"))
 	p1 = (int(request.GET.get("p1Id")), request.GET.get("p1Name"))
 	p2 = (int(request.GET.get("p2Id")), request.GET.get("p2Name"))
-	pong = Pong(p1, p2)
+	pong = Pong(multy, p1, p2)
 	pongs.append(pong)
 	return JsonResponse({"matchId": pong.id}, status=201)
 

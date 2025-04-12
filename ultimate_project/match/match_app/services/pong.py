@@ -24,10 +24,11 @@ class Pong:
 		self.init_vars(p1, p2)
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
-	def init_vars(self, p1, p2):
+	def init_vars(self, multy, p1, p2):
 
 		Pong.id += 1
-		self.id = Pong.id	
+		self.id = Pong.id
+		self.multy = multy	
 		self.plyIds = [p1[0], p2[0]]
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
@@ -215,7 +216,8 @@ class Pong:
 		print(f"STOP playerId: {playerId}", flush=True)
 
 		if not playerId or playerId in self.plyIds: 	
-			if not self.winner and all((playerId, self.start_flag)):							
+			if not any((self.winner, self.multy)) and \
+				all((playerId, self.start_flag)):							
 				self.winner = self.plyIds[0] \
 					if playerId == self.plyIds[1] else self.plyIds[1]				
 			await self.sendFinalState()

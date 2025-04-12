@@ -49,10 +49,11 @@ class Tournament():
 	async def start_match(self, p1, p2, local_match_id):
 
 		print(f"START MATCH p1:{p1[0]} {p1[1]} p2:{p2[0]} {p2[1]} lmt:{local_match_id}", flush=True)
+		multy = self.is_multyplayers(p1, p2)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
-    				f"http://match:8002/match/new-match/"
-					f"?p1Id={p1[0]}&p1Name={p1[1]}&p2Id={p2[0]}&p2Name={p2[1]}"
+    				f"http://match:8002/match/new-match/?multy={multy}"
+					f"&p1Id={p1[0]}&p1Name={p1[1]}&p2Id={p2[0]}&p2Name={p2[1]}"
 				) as response:
 				if response.status == 201:
 					data = await response.json()
@@ -76,6 +77,15 @@ class Tournament():
 					err = await response.text()
 					print(f"Error HTTP {response.status}: {err}", flush=True)
 	
+	def is_multyplayers(self, p1, p2):
+		
+		p1_creator_id = next(
+			(p.creator_id for p in self.players if p.id == p1[0]), None)
+		p2_creator_id = next(
+			(p.creator_id for p in self.players if p.id == p2[0]), None)
+		return p1_creator_id == p2_creator_id
+
+
 	async def match_result(self, data):
 
 		match_id = data.get('matchId')		
@@ -162,8 +172,8 @@ class Tournament():
 	async def end_remove(self):
 
 		print(f"END REMOVE", flush=True)
-		await asyncio.sleep(20)
-		await self.del_tournament()
+		# await asyncio.sleep(20)
+		# await self.del_tournament()
 
 	def get_next_players(self):
 

@@ -18,6 +18,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
+		self.creator_id = int(self.scope["url_route"]["kwargs"]["creator_id"])
 		print(f"CONNECT TOURNAMENT {self.id} {self.name}", flush=True)
 		players.append(self)
 		await self.send_list("player", players)
@@ -114,9 +115,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def new_player(self, player_name):
 
 		player_name = html.escape(player_name)
-		twins_players = [p for p in players if p.name == player_name]
-		if len(twins_players) >= 1:
-			print(f"playername is yet exist", flush=True)
+		twin_player = next((p for p in players if p.name == player_name), None)
+		if twin_player:			
 			id = 0
 		else:
 			TournamentConsumer.id -= 1
