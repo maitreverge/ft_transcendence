@@ -163,8 +163,8 @@ class Tournament():
 			"looserId": looser[0],
 			"winnerName": winner[1],
 			"looserName": looser[1],
-			"p1Id": winner[0],
-			"p2Id": looser[0],
+			"p1Id": link_match.get('p1Id'),
+			"p2Id": link_match.get('p2Id'),
 			"score": [0, 0]
 		}
 		await self.match_result(data)
@@ -243,7 +243,7 @@ class Tournament():
 					return full_response[-1]["id"]
 
 	async def send_db(self, tournament_result):
-
+		
 		from tournament_app.views import send_db as sdb
 		path = "api/tournament/"
 		winner = max(1, tournament_result["winnerId"] or 0)

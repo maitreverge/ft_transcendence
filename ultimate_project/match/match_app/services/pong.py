@@ -19,9 +19,9 @@ class Pong:
 
 	id = 0
 
-	def __init__(self, p1, p2):
+	def __init__(self, multy, p1, p2):
 
-		self.init_vars(p1, p2)
+		self.init_vars(multy, p1, p2)
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
 	def init_vars(self, multy, p1, p2):
