@@ -153,9 +153,9 @@ async def get_user_match_stats(username, user_id):
             main_stats = payload.get('main_stats', {})
             stats_history = payload.get('stats_history', {})
     
-            #print("JSON DATA\n\n:", flush=True)
-            #pprint(response_data)
-            #print("--\n", flush=True)
+            print("JSON DATA\n\n:", flush=True)
+            pprint(response_data)
+            print("--\n", flush=True)
             """ print("PAYLOAD:",  flush=True)
             for key, value in payload.items():
                 print(f"{key}: {value}",  flush=True)

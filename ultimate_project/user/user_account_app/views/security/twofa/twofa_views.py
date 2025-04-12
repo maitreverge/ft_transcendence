@@ -80,7 +80,8 @@ async def verify_2fa_view(request):
             response, is_error_page = await handle_get_verify(request, context["username"], context)
             is_success_page = False
         if request.headers.get("HX-Request"):
-            return (response)
+            if request.headers.get("HX-Target") == "account-content":
+                return (response)
         if is_error_page:
             context["page"] = "partials/security/twofa/error_2fa.html"
         elif is_success_page:
@@ -91,7 +92,8 @@ async def verify_2fa_view(request):
     except Exception as e:
         print(f"\n❌ Exception in verify_2fa_view: {e}\n", flush=True)
         if request.headers.get("HX-Request"):
-            return render(request, "partials/security/twofa/error_2fa.html", context)
+            if request.headers.get("HX-Target") == "account-content":
+                return render(request, "partials/security/twofa/error_2fa.html", context)
         context["page"] = "partials/security/twofa/error_2fa.html"
         return render(request, "layouts/account.html", context)
 
@@ -141,7 +143,8 @@ async def setup_2fa_view(request):
     try:
         response, is_error_page = await handle_get_setup(request, context["username"], context)
         if request.headers.get("HX-Request"):
-            return (response)
+            if request.headers.get("HX-Target") == "account-content":
+                return (response)
         if is_error_page:
             context["page"] = "partials/security/twofa/error_2fa.html"
         else:
@@ -150,7 +153,8 @@ async def setup_2fa_view(request):
     except Exception as e:
         print(f"\n❌ Exception in setup_2fa_view: {e}\n", flush=True)
         if request.headers.get("HX-Request"):
-            return render(request, "partials/security/twofa/error_2fa.html", context)
+            if request.headers.get("HX-Target") == "account-content":
+                return render(request, "partials/security/twofa/error_2fa.html", context)
         context["page"] = "partials/security/twofa/error_2fa.html"
         return render(request, "layouts/account.html", context)
 
@@ -223,7 +227,8 @@ async def disable_2fa_view(request):
             response, is_error_page = await handle_get_disable(request, username, context)
             is_success_page = False
         if request.headers.get("HX-Request"):
-            return (response)
+            if request.headers.get("HX-Target") == "account-content":
+                return (response)
         if is_error_page:
             context["page"] = "partials/security/twofa/error_2fa.html"
         elif is_success_page:
@@ -234,6 +239,7 @@ async def disable_2fa_view(request):
     except Exception as e:
         print(f"\n❌ Exception in disable_2fa_view: {e}\n", flush=True)
         if request.headers.get("HX-Request"):
-            return render(request, "partials/security/twofa/error_2fa.html", context)
+            if request.headers.get("HX-Target") == "account-content":
+                return render(request, "partials/security/twofa/error_2fa.html", context)
         context["page"] = "partials/security/twofa/error_2fa.html"
         return render(request, "layouts/account.html", context)
