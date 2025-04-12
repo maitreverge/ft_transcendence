@@ -7,6 +7,7 @@ if (typeof window.applyBackground === 'undefined') {
             main.style.backgroundSize = 'cover';
             main.style.backgroundPosition = 'center';
             main.style.transition = 'background-image 0.3s ease';
+
         }
     };
 }
@@ -16,6 +17,7 @@ document.querySelectorAll('.side-nav').forEach(item => {
         const bg = item.getAttribute('data-bg');
         // console.log("bg 1: ", bg)
         window.currentBg = bg;
+        window.currentNav = item.querySelector('a'); // on garde une référence au lien entier
         window.applyBackground(bg);
 
     });
@@ -31,6 +33,7 @@ function setFirstBgImage()
 
         const bg = firstItem.getAttribute('data-bg');
         window.currentBg = bg;
+        window.currentNav = firstItem.querySelector('a');
         // console.log("bg 2: ", bg)
         window.applyBackground(bg);
     }
@@ -58,3 +61,10 @@ if (typeof window.currentBg == 'undefined')
     setFirstBgImage();
     window.applyBackground(window.currentBg);
 }
+
+document.getElementById('main_content').addEventListener('click', () => {
+    
+    console.log(window.currentNav);
+    window.currentNav.click();
+});
+
