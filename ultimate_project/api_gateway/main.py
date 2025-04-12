@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import (
     HTTPException as StarletteHTTPException,
-) 
+)
 import httpx
 import logging
 import json
@@ -13,7 +13,6 @@ from csrf_tokens import csrf_validator
 
 
 # from fastapi.middleware.cors import CORSMiddleware
-
 
 
 # =================== 🚀 FastAPI Application Setup for API Gateway 🚀 ==================
@@ -65,14 +64,18 @@ EXCLUDED_PATH = [
     "/translations/fr.json",
     "/translations/tl.json",
     "/match/stop-match/undefined/undefined/",
-    "/docs/"
+    "/docs/",
+    "/docs",  # Add without trailing slash
+    "/openapi.json",  # OpenAPI schema
+    "/redoc/",  # ReDoc UI
+    "/redoc",  # ReDoc UI without trailing slash
 ]
 
 KNOWN_PATHS = [
     "/login/",
     "/register/",
     "/home/",
-    "/two-factor-auth/", # 2FA route for login worklow
+    "/two-factor-auth/",  # 2FA route for login worklow
     "/tournament/simple-match/",
     "/tournament/tournament/",
     "/account/profile/",
@@ -91,9 +94,25 @@ async def bouncer_middleware(request: Request, call_next):
     """
     Main Middleware to filter authenticated users from non-auth users
     """
-    print(f"============= URL REQUEST ENTERING BOUNCER {request.url.path} ================\n")
-    print(f"============= URL REQUEST ENTERING COOKIES {request.cookies} ================\n")
-    
+    print(
+        f"============= URL REQUEST ENTERING BOUNCER {request.url.path} ================\n"
+    )
+    print(
+        f"============= URL REQUEST ENTERING COOKIES {request.cookies} ================\n"
+    )
+
+    # HOOOOOOOOOOOOOOOOOO LA CONDITION DIGOULASSE
+    if (
+        request.url.path.startswith("/docs")
+        or request.url.path.startswith("/openapi.json")
+        or request.url.path.startswith("/redoc")
+    ):
+        print(
+            f"👍 Allowing direct access to API documentation at {request.url.path} 👍"
+        )
+        response = await call_next(request)
+        return response
+
     is_auth, user_info = is_authenticated(request)
     is_csrf_valid = csrf_validator(request)
 
@@ -223,7 +242,6 @@ async def jwt_refresh_middleware(request: Request, call_next):
     return response
 
 
-
 # This middleware is used to debug incoming cookies in FastAPI.
 # It prints the incoming cookies to the console for debugging purposes.
 # [Middleware n°4]
@@ -288,6 +306,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 
 
 # ============ 🛠️ Main Function Handling the Reverse Proxy for the Route 🛠️ ============
+
 
 async def reverse_proxy_handler(
     target_service: str,
@@ -423,6 +442,7 @@ async def reverse_proxy_handler(
 
 # =============================== 🏠 REDIRECT TO HOME 🏠 ===============================
 
+
 @app.get("/")
 async def redirect_to_home():
     """
@@ -457,14 +477,12 @@ async def tournament_proxy(path: str, request: Request):
       - If `path` is "simple-match/", returns specific content.
     """
 
-
     is_auth, user_info = is_authenticated(request)
 
     if is_auth:
         user_id = user_info.get("user_id")
     else:
         user_id = 0
-
 
     print(
         "################## NEW USER CREATED #######################",
@@ -653,6 +671,7 @@ async def databaseapi_proxy(path: str, request: Request):
 
 # ============================= 📜 AUTHENTICATION ROUTE 📜 =============================
 
+
 @app.api_route("/login/{path:path}", methods=["GET"])
 @app.api_route("/login", methods=["GET"])
 async def login_page_route(request: Request, path: str = ""):
@@ -714,7 +733,7 @@ async def register_page_route(request: Request):
     username = form_data.get("username")
     password = form_data.get("password")
     email = form_data.get("email")
-    
+
     # Create a new response object
     response = Response()
 
@@ -814,6 +833,7 @@ async def delete_profile_proxy(request: Request):
             print(f"🗑️ Error processing deletion response: {str(e)}", flush=True)
 
     return response
+
 
 # ================================== 📜 STATIC FILES 📜 ================================
 
