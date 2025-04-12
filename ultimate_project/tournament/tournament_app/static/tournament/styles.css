@@ -275,6 +275,7 @@ button {
 	background-color: rgb(109, 94, 96);	
 	border-radius: 5%;
 	padding: 5px;
+    margin-bottom: 1rem;
     
 }
   
@@ -303,4 +304,8 @@ button {
   .pattern-pl {
     flex: 1;
     text-align: center; /* pour centrer le texte dans chaque bloc */
+  }
+
+  #m1, #firstline, #m2, #m3, #secline {
+    border-radius: 5%;
   }
