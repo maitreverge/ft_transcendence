@@ -213,3 +213,48 @@
     </li>
   </ul>
 </nav>
+<style>
+ #language-selector {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 10px 40px 10px 10px;
+    background-color: #111;
+    color: #00ff99;
+    font-size: 16px;
+    border: 2px solid #00ff99;
+    border-radius: 25px;
+    width: 200px;
+    background-image: url('https://image.shutterstock.com/image-vector/dropdown-icon-260nw-424274738.jpg');
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    transition: all 0.3s ease;
+  }
+
+  /* Effet au survol */
+  #language-selector:hover {
+    background-color: #222;
+    border-color: #00ff99;
+    box-shadow: 0 0 15px #00ff99;
+  }
+
+  #language-selector:focus {
+    outline: none;
+    border-color: #ff007f;
+    box-shadow: 0 0 10px #ff007f;
+  }
+
+  /* Option styles */
+  option {
+    padding: 10px;
+    background-color: #222;
+    color: #00ff99;
+    border: none;
+    transition: background-color 0.3s;
+  }
+
+  option:hover {
+    background-color: #00ff99;
+    color: #111;
+  }
+</style>
