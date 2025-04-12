@@ -14,8 +14,6 @@
 
 🟧 Beautify register / login / 2fa landing pages
 
-🟧 Find a way to lock the database routes as well
-
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
 🟧 DELETE THIS FLO_NOTES FILES
@@ -39,6 +37,10 @@
 
 
 ======================================= DONE =====================================
+
+
+
+✅ Find a way to lock the database routes as well (bouncer middleware do not let pass non auth requests)
 
 ✅ https://docs.djangoproject.com/en/5.1/ref/csrf/#csrf-limitations ==> Proteger les routes de POST / PUT / DELETE avec des decorateurs CSRF adequats (inutile, because le middleware bouncer)
 
