@@ -11,6 +11,7 @@ import uuid
 from csrf_tokens import generate_csrf_token, validate_csrf_token    
 from generate_cookies import generate_cookies
 from auth_validators import verify_jwt, refresh_access_token
+from auth_utils import update_uuid, delete_uuid
 
 router = APIRouter()
 
@@ -30,9 +31,6 @@ async def login_fastAPI(
     username: str,
     password: str,
 ):
-    """
-    Vérifie les identifiants via `databaseAPI`, puis génère un JWT stocké en cookie.
-    """
 
     print(f"🔐 User {username} tries to connect...", flush=True)
 
@@ -78,29 +76,20 @@ async def login_fastAPI(
     )
 
     # Store the UUID in the database, for preventing double login on the same account
+    # !!!! REFACTOR UUID 
     my_uuid = str(uuid.uuid4())
-    try:
-        session_response = requests.put(
-            f"http://databaseapi:8007/api/player/{auth_data.get('user_id', 0)}/uuid",
-            json={"uuid": my_uuid},
-            headers={"Content-Type": "application/json"},
-        )
-        if session_response.status_code != 200:
-            print(
-                f"⚠️ Failed to update UUID: {session_response.status_code}",
-                flush=True,
-            )
-    except Exception as e:
-        print(f"⚠️ Error updating UUID: {str(e)}", flush=True)
+    user_id = auth_data.get('user_id', 0)
+    
+    update_uuid(my_uuid, user_id, "regular login")
 
     access_payload = {
-        "user_id": auth_data.get("user_id", 0),
+        "user_id": user_id,
         "username": username,
         "uuid": my_uuid,  # ! IMPORTANT Include UUID in the payload ...
         "exp": expire_access,
     }
     refresh_payload = {
-        "user_id": auth_data.get("user_id", 0),
+        "user_id": user_id,
         "username": username,
         # "uuid": my_uuid,  #!... but not in the refresh token
         "exp": expire_refresh,
@@ -110,8 +99,8 @@ async def login_fastAPI(
     access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
     refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
-    print(f"Access Token: {access_token[:20]}...", flush=True)
-    print(f"Refresh Token: {refresh_token[:20]}...", flush=True)
+    # print(f"Access Token: {access_token[:20]}...", flush=True)
+    # print(f"Refresh Token: {refresh_token[:20]}...", flush=True)
 
     # Create a JSONResponse with success message
     json_response = JSONResponse(
@@ -129,33 +118,14 @@ async def login_fastAPI(
 
 # Function to handle user logout
 async def logout_fastAPI(request: Request):
-    """
-    Logout a user by clearing their JWT cookies.
 
-    Args:
-        request (Request): The FastAPI request object
-
-    Returns:
-        JSONResponse with cleared cookies and redirect header
-    """
     print("🚪 Logout requested", flush=True)
 
     # Get user ID from the token to clear the session
     access_token = request.cookies.get("access_token")
+    
     if access_token:
-        try:
-            payload = verify_jwt(access_token)
-            if payload:
-                user_id = payload.get("user_id")
-                # Clear the active session in the database
-                requests.put(
-                    f"http://databaseapi:8007/api/player/{user_id}/uuid",
-                    json={"uuid": None},
-                    headers={"Content-Type": "application/json"},
-                )
-        except Exception as e:
-            print(f"⚠️ Error clearing session during logout: {str(e)}", flush=True)
-            # Continue with logout even if session clearing fails
+        delete_uuid(access_token)
 
     # Create response
     response = JSONResponse(content={"success": True, "message": "Déconnexion réussie"})
@@ -314,20 +284,7 @@ async def verify_2fa_and_login(
         # Generate a unique session ID
         my_uuid = str(uuid.uuid4())
 
-        # Store the UUID in the database
-        try:
-            session_response = requests.put(
-                f"http://databaseapi:8007/api/player/{user_id}/uuid",
-                json={"uuid": my_uuid},
-                headers={"Content-Type": "application/json"},
-            )
-            if session_response.status_code != 200:
-                print(
-                    f"⚠️ Failed to update UUID during 2FA: {session_response.status_code}",
-                    flush=True,
-                )
-        except Exception as e:
-            print(f"⚠️ Error updating UUID during 2FA: {str(e)}", flush=True)
+        update_uuid(my_uuid, user_id, "2FA Login")
 
         access_payload = {
             "user_id": user_id,
@@ -528,30 +485,19 @@ async def register_fastAPI(
         # Generate a unique session ID
         my_uuid = str(uuid.uuid4())
 
-        # Store the UUID in the database
-        try:
-            session_response = requests.put(
-                f"http://databaseapi:8007/api/player/{user_data.get('id', 0)}/uuid",
-                json={"uuid": my_uuid},
-                headers={"Content-Type": "application/json"},
-            )
-            if session_response.status_code != 200:
-                print(
-                    f"⚠️ Failed to update UUID during registration: {session_response.status_code}",
-                    flush=True,
-                )
-        except Exception as e:
-            print(f"⚠️ Error updating UUID during registration: {str(e)}", flush=True)
+        user_id = user_data.get('id', 0)
+
+        update_uuid(my_uuid, user_id, "Register")
 
         # Create payloads for tokens
         access_payload = {
-            "user_id": user_data.get("id", 0),
+            "user_id": user_id,
             "username": username,
             "uuid": my_uuid,
             "exp": expire_access,
         }
         refresh_payload = {
-            "user_id": user_data.get("id", 0),
+            "user_id": user_id,
             "username": username,
             "exp": expire_refresh,
         }
@@ -562,20 +508,13 @@ async def register_fastAPI(
 
         # Debug logging
         print(f"Registration successful for {username}", flush=True)
-        print(f"Access Token: {access_token}...", flush=True)
-        print(f"Refresh Token: {refresh_token}...", flush=True)
-
-        # Set redirect header for HTMX
-        # response.headers["HX-Redirect"] = "/home"
+        # print(f"Access Token: {access_token}...", flush=True)
+        # print(f"Refresh Token: {refresh_token}...", flush=True)
 
         # Create the response object
         json_response = JSONResponse(
             content={"success": True, "message": "Inscription réussie"}
         )
-
-        # Copy headers from our response to the JSONResponse
-        # for key, value in response.headers.items():
-        #     json_response.headers[key] = value
 
         generate_cookies(json_response, access_token, refresh_token)    
 
