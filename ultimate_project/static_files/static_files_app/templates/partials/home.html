@@ -1,59 +1,105 @@
 <div class="container-fluid">
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 id="home-page" data-translate="Accueil" class="h3 mb-0 text-gray-800">ACCUEIL</h1>
-  </div>
-  <div class="row justify-content-center">
-    <a
-      id="field-match"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/tournament/simple-match/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-primary text-white shadow py-5">
-        <div id="big-match-simple" class="card-body" data-translate="Match simple">Match simple</div>
-      </div>
-    </a>
-    <a
-      id="field-tournoi"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/tournament/tournament/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-warning text-white shadow py-5">
-        <div id="big-tournament" class="card-body" data-translate="Tournoi">Tournament</div>
-      </div>
-    </a>
-    <a
-      id="field-profile"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/account/profile/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-success text-white shadow py-5">
-        <div id="big-profile" class="card-body" data-translate="Profil"> Profile </div>
-      </div>
-    </a>
-    <a
-      id="field-stats"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/account/game-stats/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-info text-white shadow py-5">
-        <div id="big-stats" class="card-body" data-translate="Statistiques"> Stats</div>
-      </div>
-    </a>
-  </div>
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-0 col-sm-4 col-md-3 col-lg-2 d-none d-sm-block bg-light p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
+            <div class="sidebar-sticky text-center">
+                <!-- Account Settings Title -->
+                <h1 class="h3 mb-3 text-gray-800">Match</h1>
+                <ul class="nav flex-column">
+                    <!-- Profile Section -->
+                    <li class="nav-item mb-3">
+                        <a id="side-nav-match" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>Match
+                        </a>
+                    </li>
+                    <li class="nav-item mb-3">
+                        <a id="side-nav-tournament" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i> Tournament
+                        </a>
+                    </li>
+                    <li class="nav-item mb-3">
+                        <a id="side-nav-profile" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mb-3">
+                        <a id="side-nav-stats" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>Statistics
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Main Content -->
+        <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-10 px-4">
+            <!-- Content dynamically loaded here -->
+            <div id="account-content">
+                <div class="pt-4" id="simple-selections">
+                    <h1 class="pl-2">Simple match</h1>
+                    <div class="row d-flex">
+                        <div class="col-lg-2 d-flex flex-column"></div>
+                        <div class="col-lg-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 text-center font-weight-bold text-primary">Player pool</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 text-center font-weight-bold text-primary">Match</h6>
+                                </div>
+                            </div>
+                            <div class="d-sm-none card shadow">
+                                <div class="card-header py-3">
+                                    <div id="overlayButton" onclick="replayTuto()"
+                                    class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                                        <i class="fas fa-info-circle"></i>INFO
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2 card shadow">
+                                <a id="switch2d3d" class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                                    <span class="mr-2">2D</span>
+                                    <label for="dim" class="switch">
+                                        <input type="checkbox" id="dim" hidden>
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span class="ml-2">3D</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row d-flex align-items-stretch">
+                        <div class="col-lg-2 d-flex flex-column"></div>
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow h-100">
+                                <div id="players" class="card-body p-2">
+                                </div>
+                                <input class="m-2 w-auto form-control border-0" id="match-player-name" type="text"
+                                    maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
+                                    oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-4">
+                            <div class="card shadow mb-4 h-100">
+                                <div class="card-body">
+                                    <div id="matchs">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 d-flex flex-column"></div>
+                    </div>
+                    <div id="overlay-match"></div>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
