@@ -1,8 +1,8 @@
+from fastapi import Request
 import os
 import jwt
 import datetime
 import requests
-from fastapi import Request
 
 SECRET_JWT_KEY = os.getenv("JWT_KEY")
 ACCESS_TOKEN_EXPIRE_MINUTES = 15

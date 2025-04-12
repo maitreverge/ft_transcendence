@@ -1,16 +1,13 @@
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import JSONResponse
-from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 import requests
 import jwt
 import datetime
 import os
 import pyotp
 import re
-import uuid
-from csrf_tokens import generate_csrf_token, validate_csrf_token    
+import uuid 
 from generate_cookies import generate_cookies
-from auth_validators import verify_jwt, refresh_access_token
 from auth_utils import update_uuid, delete_uuid
 
 router = APIRouter()

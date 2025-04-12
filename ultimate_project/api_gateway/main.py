@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException, Response, Query
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import (
     HTTPException as StarletteHTTPException,
