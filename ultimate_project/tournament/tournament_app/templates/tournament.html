@@ -24,6 +24,12 @@
                 <ul class="nav flex-column pt-5">
                     <!-- Profile Section -->
                     <li class="nav-item mb-3">
+                        <a id="side-nav-home" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/home/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item mb-3">
                         <a id="side-nav-simple-match" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
                             hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
