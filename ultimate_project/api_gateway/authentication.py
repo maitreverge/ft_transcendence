@@ -35,19 +35,16 @@ CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
 
 
 def generate_csrf_token():
+    """Generate a CSRF token that matches the 24-byte format we're seeing"""
+    # Generate 16 bytes of random data (to match what we see in validation)
+    random_bytes = secrets.token_bytes(16)
 
-    # Generate random token
-    random_bytes = secrets.token_bytes(32)
-
-    # Create a signature using HMAC
-    # HMAC mix a hashed data from a base hash + a secret key
+    # ! IF ENCODING WITH hashlib.sha256 HERE........................
     signature = hmac.new(
         CSRF_SECRET.encode(), random_bytes, digestmod=hashlib.sha256
-    ).digest()
+    ).digest()[:8]
 
-    # ! Note : the `.digestgenerate_django_csrf_token()` outputs the final binary for hashing
-
-    # Combine token and signature and encode for cookie storage
+    # Combine token and signature to make a 24-byte token
     token_with_sig = random_bytes + signature
     return base64.urlsafe_b64encode(token_with_sig).decode("utf-8")
 
@@ -57,30 +54,32 @@ def validate_csrf_token(token):
         return False
 
     try:
-        print(f"Validating token: {token[:10]}...")
+        print(f"Validating token: {token}...")
 
         # Decode the token
         decoded = base64.urlsafe_b64decode(token.encode("utf-8"))
         print(f"Decoded length: {len(decoded)}")
 
-        # Ensure decoded is long enough to contain both random_bytes and signature
-        # if len(decoded) < 64:  # 32 bytes for random + 32 for SHA256
-        #     print(f"Decoded token too short: {len(decoded)} bytes")
-        #     return False
+        # For 24-byte tokens:
+        if len(decoded) == 24:
+            # 16 bytes random + 8 bytes signature
+            random_bytes = decoded[:16]
+            original_signature = decoded[16:]  # Last 8 bytes
+        else:
+            print(f"Unknown token format with length {len(decoded)}")
+            return False
 
-        # Extract the random bytes and the signature
-        random_bytes = decoded[:16]
-        original_signature = decoded[8:]
+        print(f"Random bytes: {random_bytes.hex()}")
+        print(f"Original sig: {original_signature.hex()}")
 
-        print(f"Random bytes: {random_bytes.hex()[:10]}...")
-        print(f"Original sig: {original_signature.hex()[:10]}...")
-
-        # Recalculate signature
+        # ! ...................... IT DOES NEED THE SAME hashlib.sha256 HERE 
         expected_signature = hmac.new(
             CSRF_SECRET.encode(), random_bytes, digestmod=hashlib.sha256
-        ).digest()
+        ).digest()[
+            :8
+        ]  # Take first 8 bytes to match
 
-        print(f"Expected sig: {expected_signature.hex()[:10]}...")
+        print(f"Expected sig: {expected_signature.hex()}")
 
         # Compare signatures using constant-time comparison
         result = hmac.compare_digest(original_signature, expected_signature)
@@ -292,6 +291,7 @@ def refresh_access_token(refresh_payload):
 
     return new_access_token
 
+
 def csrf_validator(request):
 
     csrftoken = request.cookies.get("csrftoken")
@@ -303,6 +303,7 @@ def csrf_validator(request):
         print("❌❌❌❌❌v CSRF token is invalid", flush=True)
         return False
     return True
+
 
 # Function to check if a user is authenticated based on cookies
 def is_authenticated(request: Request):
