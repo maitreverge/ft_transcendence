@@ -225,47 +225,39 @@ button {
 
   /* THOMAS TEMPLATE STYLES */
 
-  	/* Sidebar Button Styles */
-	.sidebar-btn {
-		font-size: 0.85rem;
-		/* Slightly smaller font */
-		padding: 0.5rem 1rem;
-		/* Smaller padding */
-		border-width: 2px;
-		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-	}
+  .sidebar-sticky {
+	height: 100%; /* Assure que le ul peut prendre toute la hauteur */
+	display: flex;
+	flex-direction: column;
+}
 
-	/* When clicked, fill with color */
-	.sidebar-btn.active,
-	.sidebar-btn:focus {
-		color: white !important;
-	}
+.sidebar-sticky ul.nav {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
 
-	/* Outline with Blue Border */
-	.btn-outline-primary {
-		border-color: #007bff;
-		color: #007bff;
-	}
+.sidebar-sticky li.nav-item {
+	flex: 1; /* prend 25% car 4 items */
+	display: flex;
+	align-items: center;
+}
 
-	/* When active, the button background changes to blue */
-	.btn-outline-primary.active,
-	.btn-outline-primary:focus {
-		background-color: #007bff !important;
-		border-color: #007bff !important;
-	}
+.sidebar-btn {
+	height: 75%;
+	width: 100%;
+	transition: background-color 0.3s, color 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 
-	/* When hovering, the button gets a darker blue */
-	.sidebar-btn:hover {
-		background-color: #007bff;
-		color: white;
-		border-color: #0056b3;
-	}
+#main_content {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
 
-	/* Sidebar Styling: Reduce sidebar width for better content presentation */
-	.sidebar {
-		width: 250px;
-		/* Adjust width */
-	}
 
 /* OVERLAY PATTERN */
 
