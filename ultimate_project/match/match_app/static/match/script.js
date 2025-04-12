@@ -24,7 +24,7 @@ function stopMatch(matchId)
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
 			return response.text();
 		})
-		.then(data => console.log(data))
+		// .then(data => console.log(data))
 		.catch(error => console.log(error))
 	}
 	else

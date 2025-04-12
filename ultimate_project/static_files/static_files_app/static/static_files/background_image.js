@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log("%%%%%%%% func onload executed %%%%%%%%");
     const firstItem = document.querySelector('.side-nav');
     console.log("first item: ", firstItem);
-
+    
     if (firstItem) {
         console.log("%%%%%%%% first item found %%%%%%%%");
 
@@ -31,6 +31,5 @@ window.addEventListener('DOMContentLoaded', () => {
 
 document.body.addEventListener('htmx:afterSwap', () => {
     console.log("%%%%%%%% HTMX content swapped %%%%%%%%");
-    applyBackground(); // réapplique l'image de fond
     // Si tu as des styles CSS spécifiques qui ne sont pas appliqués, tu peux les réinitialiser ici
 });
