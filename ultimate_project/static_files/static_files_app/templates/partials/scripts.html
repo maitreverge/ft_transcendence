@@ -53,11 +53,15 @@ function stopMatch()
       closeWebsockets();
     };
   }
-
-  interceptUrlChanges();
-
+  
   console.log("Attachement de l'event popstate...");
   window.addEventListener("popstate", () => {
+
+    if (window.location.pathname.includes("/home")) {
+        console.log("Retour sur la page home, aucune requête HTMX effectuée.");
+        return; // On ne fait rien si c'est la page home
+    }
+
     console.log("popstate event triggered!");
     htmx.ajax("GET", window.location.pathname, {
       target: "#main_div",
@@ -66,6 +70,7 @@ function stopMatch()
     });
     // closeWebsockets();
   });
-
+  
+  interceptUrlChanges();
 
 </script>
