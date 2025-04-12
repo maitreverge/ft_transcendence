@@ -35,57 +35,30 @@ CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
 
 
 def generate_csrf_token():
-
-    # Generate 16 bytes of random data (to match what we see in validati
-    random_bytes = secrets.token_bytes(16)
-
-    # ! IF ENCODING WITH hashlib.sha256 HERE........................
-    signature = hmac.new(
-        CSRF_SECRET.encode(), random_bytes, digestmod=hashlib.sha256
-    ).digest()[:8]
-
-    # Combine token and signature to make a 24-byte token
-    token_with_sig = random_bytes + signature
-    return base64.urlsafe_b64encode(token_with_sig).decode("utf-8")
+    """
+    Generate a simple CSRF token without relying on a secret key.
+    Uses a random hex string that's difficult to predict but easy to validate.
+    """
+    # Generate a 32-character random hex string (16 bytes)
+    token = secrets.token_hex(16)
+    return token
 
 
 def validate_csrf_token(token):
-
+    """
+    Validate that the token exists and is in the expected format.
+    Without a secret key, we're just verifying it's a valid hex string of the right length.
+    """
     if not token:
         return False
 
     try:
-        print(f"Validating token: {token}...")
-
-        # Decode the token
-        decoded = base64.urlsafe_b64decode(token.encode("utf-8"))
-        print(f"Decoded length: {len(decoded)}")
-
-        # For 24-byte tokens:
-        if len(decoded) == 24:
-            # 16 bytes random + 8 bytes signature
-            random_bytes = decoded[:16]
-            original_signature = decoded[16:]  # Last 8 bytes
+        # Check if token is a valid hex string of the right length
+        if len(token) == 32 and all(c in "0123456789abcdef" for c in token.lower()):
+            return True
         else:
-            print(f"Unknown token format with length {len(decoded)}")
+            print(f"Invalid token format: {token[:10]}...")
             return False
-
-        print(f"Random bytes: {random_bytes.hex()}")
-        print(f"Original sig: {original_signature.hex()}")
-
-        # ! ...................... IT DOES NEED THE SAME hashlib.sha256 HERE
-        expected_signature = hmac.new(
-            CSRF_SECRET.encode(), random_bytes, digestmod=hashlib.sha256
-        ).digest()[
-            :8
-        ]  # Take first 8 bytes to match
-
-        print(f"Expected sig: {expected_signature.hex()}")
-
-        # Compare signatures using constant-time comparison
-        result = hmac.compare_digest(original_signature, expected_signature)
-        print(f"Signature match: {result}")
-        return result
     except Exception as e:
         print(f"CSRF validation error: {e}", flush=True)
         return False

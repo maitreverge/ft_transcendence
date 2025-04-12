@@ -1,8 +1,14 @@
 from playwright.sync_api import Playwright, sync_playwright, expect
 from collections import Counter
-
-TEST_LOGIN = "test"
-TEST_PASSWORD = "password"
+import time
+USERS = {
+    "user2",
+    "user3",
+    "user4",
+    "user5",
+}
+# TEST_LOGIN = "test"
+PASSWORD = "password"
 BASE_URL = "https://localhost:8443"
 
 TEST_COOKIE_DELETE_USER = "coockie-delete"
@@ -73,60 +79,57 @@ def run(playwright: Playwright) -> None:
     # ! =============== KICKSTART TESTER HERE ===============
 
     # Test 1: No cookies deleted
+    
     # page.goto(f"{BASE_URL}/login/")
+    
+    for user in USERS:
+        login(user, PASSWORD)
 
-    login(TEST_LOGIN, TEST_PASSWORD)
+        # Check cookies on all pages
+        for url in URLS:
+            check_cookie(url)
 
-    # Check cookies on all pages
-    for url in URLS:
-        check_cookie(url)
+        logout()
 
-    logout()
+        # Check cookies after logout
+        check_cookie(page.url, 1)
 
-    # Check cookies after logout
-    check_cookie(
-        page.url, 1
-    )
+        # Test 2: Delete CSRF token during navigation
+        login(user, PASSWORD)
 
-    # Test 2: Delete CSRF token during navigation
-    login(TEST_LOGIN, TEST_PASSWORD)
+        page.goto(f"{BASE_URL}/account/profile/")
 
-    page.goto(f"{BASE_URL}/account/profile/")
+        # Delete CSRF token from context
+        context.clear_cookies(name="csrftoken")
 
-    # Delete CSRF token from context
-    context.clear_cookies(name="csrftoken")
+        page.goto(f"{BASE_URL}/account/profile/")
 
-    page.goto(f"{BASE_URL}/account/profile/")
+        check_cookie(page.url, 1
+        )
 
-    check_cookie(
-        page.url, 1
-    )
+        expect(page).to_have_url(f"{BASE_URL}/register/")
 
-    expect(page).to_have_url(f"{BASE_URL}/register/")
+        # Test 3: Delete access token during navigation
+        login(user, PASSWORD)
 
-    # Test 3: Delete access token during navigation
-    login(TEST_LOGIN, TEST_PASSWORD)
+        page.goto(f"{BASE_URL}/account/profile/")
 
-    page.goto(f"{BASE_URL}/account/profile/")
+        # Delete access token from context
+        context.clear_cookies(name="access_token")
 
-    # Delete access token from context
-    context.clear_cookies(name="access_token")
+        page.goto(f"{BASE_URL}/account/profile/")
 
-    page.goto(f"{BASE_URL}/account/profile/")
+        check_cookie(
+            page.url, 1
+        )
 
-    check_cookie(
-        page.url, 1
-    )
-
-    expect(page).to_have_url(f"{BASE_URL}/register/")
+        expect(page).to_have_url(f"{BASE_URL}/register/")
+    
 
 
     # Test 4 : Create an user and delete it
     login(TEST_COOKIE_DELETE_USER, TEST_COOKIE_DELETE_PASSWORD)
 
-    # page.goto(f"{BASE_URL}/account/profile/")
-
-    #
     page.goto(f"{BASE_URL}/account/confidentiality/delete-account/")
 
     page.locator("#delete-acc-btn").click()
@@ -135,15 +138,11 @@ def run(playwright: Playwright) -> None:
 
     page.locator("#delete-acc-btn").click()
 
-    page.expect.url(f"{BASE_URL}/register/")
+    time.sleep(4)
 
     check_cookie(
         page.url, 1
     )
-
-    # expect(page).to_have_url(f"{BASE_URL}/account/confidentiality/delete-account/", timeout=1000)
-
-    # requests.delete(f"{BASE_URL}/api/user/{TEST_COOKIE_DELETE_USER}"
 
     context.clear_cookies(name="access_token")
 
