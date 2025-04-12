@@ -139,13 +139,7 @@ button {
     background-color: rgb(8, 234, 250);
 }
 
-.tournament-cont {
-	width: 100%;
-	height: calc(14rem + 220px);;
-	background-color: rgb(109, 94, 96);	
-	border-radius: 5%;
-	padding: 5px;
-}
+
 
 #match-player-name {
 	display: none;
@@ -275,12 +269,14 @@ button {
 
 /* OVERLAY PATTERN */
 
-
-
-#tournament-cont {
-	position: relative; /* Nécessaire pour positionner #overlay-pattern si besoin */
-
-  }
+.tournament-cont {
+	width: 100%;
+    min-height: 14rem; /* Hauteur minimale */
+	background-color: rgb(109, 94, 96);	
+	border-radius: 5%;
+	padding: 5px;
+    
+}
   
   #pattern {
 	border-radius: 5px;
@@ -291,5 +287,20 @@ button {
 	min-width: 300px;     /* Largeur minimale */
 	margin: 0 auto;       /* Centre l'élément horizontalement dans son parent */
   }
-  #matchs-cont {
+ 
+  #secline {
+    display: flex;
+    justify-content: space-around; /* ou space-between / center selon l'espacement que tu veux */
+    gap: 1rem; /* optionnel, pour espacer les matchs */
+  }
+
+  .pattern-pl-cont {
+    display: flex;
+    justify-content: space-between; /* ou center / start / end selon le rendu souhaité */
+    gap: 0.5rem; /* optionnel, pour un petit espace entre les joueurs */
+  }
+
+  .pattern-pl {
+    flex: 1;
+    text-align: center; /* pour centrer le texte dans chaque bloc */
   }
