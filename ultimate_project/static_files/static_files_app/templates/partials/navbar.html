@@ -14,7 +14,7 @@
     hx-push-url="true"
     hx-get="/home/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(false);"
+    role="button"
     >
     <div class="h-100 d-flex align-items-center  mr-2 justify-content-center">
     <i class="mr-2 fa-solid fa-table-tennis-paddle-ball  rotate-n-15"></i>
@@ -39,7 +39,6 @@
             hx-push-url="true"
             hx-get="/tournament/simple-match/"
             hx-target="#main_div"
-            hx-on="htmx:beforeRequest: toggleSidebar(true);"
             id="userDropdown"
             role="button"
         >
@@ -54,7 +53,6 @@
     hx-push-url="true"
     hx-get="/tournament/tournament/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -69,7 +67,6 @@
     hx-push-url="true"
     hx-get="/account/profile/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -84,7 +81,6 @@
     hx-push-url="true"
     hx-get="/account/game-stats/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -108,7 +104,6 @@
     hx-push-url="true"
     hx-get="/tournament/simple-match/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -123,7 +118,6 @@
     hx-push-url="true"
     hx-get="/tournament/tournament/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -138,7 +132,6 @@
     hx-push-url="true"
     hx-get="/account/profile/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -153,7 +146,6 @@
     hx-push-url="true"
     hx-get="/account/game-stats/"
     hx-target="#main_div"
-    hx-on="htmx:beforeRequest: toggleSidebar(true);"
     id="userDropdown"
     role="button"
   >
@@ -202,7 +194,6 @@
           hx-push-url="true"
           hx-get="/account/profile/"
           hx-target="#main_div"
-          hx-on="htmx:beforeRequest: toggleSidebar(true);"
         >
           <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
           <span data-translate="Profil"> Profile </span>

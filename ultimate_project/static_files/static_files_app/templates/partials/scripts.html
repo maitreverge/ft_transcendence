@@ -14,6 +14,7 @@
 <script src="{% static 'static_files/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 <script src="{% static 'static_files/purify.min.js' %}"></script>
 <script src="{% static 'static_files/three.js' %}"></script>
+
 <script>
   // this function is part of the history logic
   window.addEventListener("beforeunload", () => {
@@ -57,7 +58,6 @@ function stopMatch()
 
   console.log("Attachement de l'event popstate...");
   window.addEventListener("popstate", () => {
-    toggleSidebar(true);
     console.log("popstate event triggered!");
     htmx.ajax("GET", window.location.pathname, {
       target: "#main_div",
@@ -67,15 +67,5 @@ function stopMatch()
     // closeWebsockets();
   });
 
-  // this function toggles the sidebar on and off
-  function toggleSidebar(show) {
-    console.log("toggleSidebar called");
-    const sidebar = document.querySelector("#accordionSidebar");
-    if (!sidebar) return;
-    if (show) {
-      sidebar.classList.remove("d-none");
-    } else {
-      sidebar.classList.add("d-none");
-    }
-  }
+
 </script>

@@ -25,8 +25,8 @@ document.querySelectorAll('.side-nav').forEach(item => {
     });
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-    // console.log("%%%%%%%% func onload executed %%%%%%%%");
+function setFirstBgImage()
+{
     const firstItem = document.querySelector('.side-nav');
     // console.log("first item: ", firstItem);
     
@@ -38,11 +38,18 @@ window.addEventListener('DOMContentLoaded', () => {
         // console.log("bg 2: ", bg)
         window.applyBackground(bg);
     }
+}
+window.addEventListener('DOMContentLoaded', () => {
+    // console.log("%%%%%%%% func onload executed %%%%%%%%");
+    setFirstBgImage();
+    
 });
 
 document.body.addEventListener('htmx:afterSwap', () => {
     console.log("%%%%%%%% HTMX content swapped %%%%%%%%");
-    if (window.currentBg) {
+    if (!window.currentBg)
+        setFirstBgImage();
+    else {
         // Attendre un court instant avant d'appliquer l'image de fond
         setTimeout(() => {
             window.applyBackground(window.currentBg); // Réappliquer l'image de fond
