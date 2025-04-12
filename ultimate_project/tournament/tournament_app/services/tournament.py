@@ -107,6 +107,8 @@ class Tournament():
 
 		if self.n_match == 1:
 			await self.send_all_players(match_result)
+			link_match = self.create_inter_link()
+			await self.send_all_players(link_match)
 		elif self.n_match == 2:		
 			await self.send_all_players(match_result)
 			nxt_plys = self.get_next_players()
@@ -125,6 +127,9 @@ class Tournament():
 			await self.send_db(tournament_result)
 			asyncio.create_task(self.end_remove())
 			self.launch = False
+
+	def create_inter_link(self):
+		pass
 
 	def create_fake_link(self, match_result, local_match_id, nxt_plys):
 		
