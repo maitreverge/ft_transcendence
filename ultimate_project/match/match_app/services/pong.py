@@ -165,10 +165,12 @@ class Pong:
 				print(f"stopped by wathdog", flush=True)
 				await self.stop(None)
 				return
+			if not self.start_flag:
+				await self.are_alives_players()
 			delay += 1
 			await asyncio.sleep(1.00)
 
-	async def check_alives_players(self):
+	async def are_alives_players(self):
 
 		async with aiohttp.ClientSession() as session:
 			async with session.get(
@@ -185,8 +187,10 @@ class Pong:
 
 	async def alives_players_strategy(self, data):
 
-		alives_players = (data.get("p1Id"), data.get("p1Id"))
-		if not all(alives_players):
+		alives_players = (data.get("p1"), data.get("p2"))
+		if all(alives_players):
+			return
+		if not any(alives_players):
 			self.winner = None
 		elif alives_players[0]:
 			self.winner = self.plyIds[0]

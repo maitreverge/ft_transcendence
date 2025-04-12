@@ -4,6 +4,7 @@ from tournament_app.services.tournament import Tournament
 from typing import List
 import aiohttp
 import html
+from django.http import JsonResponse
 
 players : List["TournamentConsumer"] = []
 tournaments : List["Tournament"] = []
@@ -74,12 +75,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	@staticmethod
 	def watch_dog(request):
 
-		p1_id = request.GET.get('p1Id')
-		p2_id = request.GET.get('p2Id')
-		return {
-			"p1": next((p for p in players if p.id == p1_id), None),
-			"p2": next((p for p in players if p.id == p2_id), None)
-		}
+		p1_id = int(request.GET.get('p1Id'))
+		p2_id = int(request.GET.get('p2Id'))
+		return JsonResponse({
+			"p1": any(p.id == p1_id for p in players),
+			"p2": any(p.id == p2_id for p in players)
+		})
 
 	@staticmethod
 	def find_tournament(data):
