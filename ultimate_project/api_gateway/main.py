@@ -65,6 +65,7 @@ EXCLUDED_PATH = [
     "/translations/fr.json",
     "/translations/tl.json",
     "/match/stop-match/undefined/undefined/",
+    "/docs/"
 ]
 
 KNOWN_PATHS = [

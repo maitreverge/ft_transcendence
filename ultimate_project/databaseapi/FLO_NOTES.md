@@ -16,8 +16,6 @@
 
 🟧 Find a way to lock the database routes as well
 
-⚠️ Lock all the routes (lock les routes visibles dans le front)
-
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
 🟧 DELETE THIS FLO_NOTES FILES
@@ -30,11 +28,6 @@
 
 🟧 Switch from `user_prod.csv` to `user.csv` in correction 
 
-🟧 https://docs.djangoproject.com/en/5.1/ref/csrf/#csrf-limitations
-==> Proteger les routes de POST / PUT / DELETE avec des decorateurs CSRF adequats
-
-🟧 Mettre un decorateur sur l'API gateway ?
-
 🟧 Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
 
 🟧 Avoir les pages d'erreurs 404/500 sur `login/` et `regsiter/`
@@ -43,12 +36,15 @@
 
 🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
 
-🟧 Refactor some blocks of authentication (the cookies setup, CRSF stuff) 
 
 
 ======================================= DONE =====================================
 
+✅ https://docs.djangoproject.com/en/5.1/ref/csrf/#csrf-limitations ==> Proteger les routes de POST / PUT / DELETE avec des decorateurs CSRF adequats (inutile, because le middleware bouncer)
 
+✅ Lock all the routes (lock les routes visibles dans le front)
+
+✅ Refactor some blocks of authentication (the cookies setup, CRSF stuff) 
 
 ✅ LIMITER LA LENGHT DES INPUTS DANS LES FORMULAIRES
 
