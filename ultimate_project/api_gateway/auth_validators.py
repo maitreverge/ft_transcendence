@@ -3,8 +3,11 @@ import jwt
 import datetime
 import requests
 from fastapi import Request
+
 SECRET_JWT_KEY = os.getenv("JWT_KEY")
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
+
+# ! ALL DEPENDENCIES ARE IN THE AUTHENTICATION.PY FILE
 
 
 # Function to verify JWT token
@@ -26,7 +29,7 @@ def verify_jwt(token):
         return None  # Token expired
     except jwt.InvalidTokenError:
         return None  # Invalid token
-    
+
 
 # Function to generate a new access token using a valid refresh token
 def refresh_access_token(refresh_payload):
