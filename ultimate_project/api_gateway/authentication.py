@@ -7,18 +7,9 @@ import datetime
 import os
 import pyotp
 import re
-import secrets
-import hashlib
 import uuid
-import time
-import hmac
-
-# import secrets
-# import hashlib
-# import hmac
-import base64
-
-# import time
+from csrf_tokens import generate_csrf_token, validate_csrf_token    
+from generate_cookies import generate_cookies
 
 router = APIRouter()
 
@@ -30,39 +21,6 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 # API urls for checking users IDs
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
 CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
-
-CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
-
-
-def generate_csrf_token():
-    """
-    Generate a simple CSRF token without relying on a secret key.
-    Uses a random hex string that's difficult to predict but easy to validate.
-    """
-    # Generate a 32-character random hex string (16 bytes)
-    token = secrets.token_hex(16)
-    return token
-
-
-def validate_csrf_token(token):
-    """
-    Validate that the token exists and is in the expected format.
-    Without a secret key, we're just verifying it's a valid hex string of the right length.
-    """
-    if not token:
-        return False
-
-    try:
-        # Check if token is a valid hex string of the right length
-        if len(token) == 32 and all(c in "0123456789abcdef" for c in token.lower()):
-            return True
-        else:
-            print(f"Invalid token format: {token[:10]}...")
-            return False
-    except Exception as e:
-        print(f"CSRF validation error: {e}", flush=True)
-        return False
-
 
 # @router.post("/auth/login/")
 async def login_fastAPI(
@@ -159,39 +117,7 @@ async def login_fastAPI(
         content={"success": True, "message": "Connexion réussie"}
     )
 
-    # Access token
-    json_response.set_cookie(
-        key="access_token",
-        value=access_token,
-        httponly=True,
-        secure=True,
-        samesite="Lax",
-        path="/",
-        max_age=60 * 60 * 6,  # 6 hours
-    )
-
-    # Refresh token
-    json_response.set_cookie(
-        key="refresh_token",
-        value=refresh_token,
-        httponly=True,
-        secure=True,
-        samesite="Lax",
-        path="/",
-        max_age=60 * 60 * 24 * 7,  # 7 days
-    )
-
-    # Generate and set CSRF token
-    json_response.set_cookie(
-        key="csrftoken",
-        value=generate_csrf_token(),
-        httponly=True,
-        secure=True,
-        samesite="Lax",
-        path="/",
-        # max_age=60 * 60 * 24 * 21,  # 21 days => gets logged out after 21 days
-        # max_age=60,  # 1 minute
-    )
+    generate_cookies(json_response, access_token, refresh_token)
 
     # Debug log for headers
     print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
@@ -583,40 +509,7 @@ async def verify_2fa_and_login(
             content={"success": True, "message": "2FA verification successful"}
         )
 
-        # Set cookies on the response
-        json_response.set_cookie(
-            key="access_token",
-            value=access_token,
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-            path="/",
-            max_age=60 * 60 * 6,  # 6 hours
-        )
-
-        json_response.set_cookie(
-            key="refresh_token",
-            value=refresh_token,
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-            path="/",
-            max_age=60 * 60 * 24 * 7,  # 7 days
-        )
-
-        # Generate and set CSRF token
-        # csrf_token = secrets.token_urlsafe(64)
-        # REMVOE NOW INA MIDDLEWARE
-        json_response.set_cookie(
-            key="csrftoken",
-            value=generate_csrf_token(),
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-            path="/",
-            # max_age=60 * 60 * 6,  # 6 hours, same as access token
-            # max_age=60,  # 6 hours, same as access token
-        )
+        generate_cookies(json_response, access_token, refresh_token)    
 
         # Debug log for headers
         print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
@@ -840,39 +733,7 @@ async def register_fastAPI(
         # for key, value in response.headers.items():
         #     json_response.headers[key] = value
 
-        # Set JWT cookies
-        json_response.set_cookie(
-            key="access_token",
-            value=access_token,
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-            path="/",
-            max_age=60 * 60 * 6,  # 6 hours
-        )
-
-        json_response.set_cookie(
-            key="refresh_token",
-            value=refresh_token,
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-            path="/",
-            max_age=60 * 60 * 24 * 7,  # 7 days
-        )
-
-        # Generate and set CSRF token
-        # csrf_token = secrets.token_urlsafe(64)
-        # NOW IN A MIDDLEWARE
-        json_response.set_cookie(
-            key="csrftoken",
-            value=generate_csrf_token(),
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-            path="/",
-            # max_age=60,  # 6 hours, same as access token
-        )
+        generate_cookies(json_response, access_token, refresh_token)    
 
         return json_response
 
