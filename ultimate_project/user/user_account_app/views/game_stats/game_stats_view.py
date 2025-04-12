@@ -28,9 +28,12 @@ async def handle_get_game_stats(request, username, context):
             context["error"] = "No player statistics found. Please try again later."
             return render(request, "partials/game_stats/error_stats.html", context), True
         context['main_stats'] = main_stats
+        context['stats_history'] = stats_history
+        
+        
         return render_to_string("partials/game_stats/stats/overview.html", context,  request=request), False
     except Exception as e:
-        print(f"ERROR CAUGHT: {e}", flush=True)
+        print(f"ERROR CAUGHT: {e}", flush=True) #rm
         context["error"] = "An error occurred while retrieving player statistics. Please try again later."
         return render(request, "partials/game_stats/error_stats.html", context), True
     
@@ -46,13 +49,18 @@ async def game_stats_overview(request: HttpRequest):
         
         if request.headers.get("HX-Request"):
             header = request.headers.get("HX-Target")
-            if is_error_page:
-                return (response)
             if header == "account-content":
-                    context["page_stats"] = response # will be rendered html
-                    return render(request, "partials/game_stats/game_stats.html", context)
+                if is_error_page:
+                    return (response)
+                # first load case when we click on side bar  button
+                context["page_stats"] = response # will be rendered html
+                return render(request, "partials/game_stats/game_stats.html", context)
             elif header == "stats-content":
-                    # because response is str html
+                # case when we click on page button juts reload inner content
+                if is_error_page: # error page are not render to string but render direcly
+                    return (response)
+                else:
+                    # because response is str html for just inner overview or match history
                     return HttpResponse(response)
 
         if is_error_page:

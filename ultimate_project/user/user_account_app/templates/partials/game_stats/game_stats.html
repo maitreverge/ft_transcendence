@@ -24,16 +24,21 @@
   </div>
 
   <!-- Main Content -->
-  <div id="stats-content" class="px-0">
+  <div id="stats-content" class="container-fluid px-0">
     {{ page_stats|safe }}
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="{% static 'static_files/js/demo/chart-area-demo.js' %}"></script>
 <script src="{% static 'static_files/js/demo/chart-pie-demo.js' %}"></script>
 
 <style>
+  #game-stats-content {
+    margin-top: 20px;
+  }
+
   .sidebar-btn {
     font-size: 0.85rem;
     padding: 0.5rem 1rem;
@@ -86,3 +91,4 @@
     padding-right: 1.5rem;
   }
 </style>
+

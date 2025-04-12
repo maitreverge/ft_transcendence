@@ -148,9 +148,14 @@ async def get_user_match_stats(username, user_id):
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://databaseapi:8007/api/player_stats/?player_id={user_id}")
-            response_data = response.json()            
+            response_data = response.json()
+            print("JSON DATA\n\n:", flush=True)
+            pprint(response_data)
+            print("--\n", flush=True)
+            
             payload = response_data[0]
             main_stats = payload.get('main_stats', {})
+            
             stats_history = payload.get('stats_history', {})
     
             print("JSON DATA\n\n:", flush=True)

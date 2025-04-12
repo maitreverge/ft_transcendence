@@ -58,6 +58,7 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
     serializer_class = PlayerStatisticsSerializer
     filterset_class = PlayerStatisticsFilter
 
+    #update only for a real player not bot or admin
     @action(detail=True, methods=['POST'], url_path='update-stats')
     def update_stats(self, request, player_id=None):
         try:
@@ -74,14 +75,7 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
                     "message": "Invalid player_id"
                 }, status=status.HTTP_400_BAD_REQUEST)
             player_obj = Player.objects.get(id=player_id)
-            player_stats, created = PlayerStatistics.objects.get_or_create(player=player_obj)
-            print(f"Printing player stats for player_id {player_id} info: {player_stats}", flush=True)
-            #debug to rm
-            if created:
-                print("New stats created for player w id :", player_id)
-            else:
-                print("Existing stats found for player w id:", player_id)
-            
+            player_stats = PlayerStatistics.objects.get(player=player_obj)
             data = {
                 "games_played": 1,  
                 "games_won": 1 if request.data.get("winner") == player_id else 0,
@@ -118,7 +112,6 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
             
             now = timezone.localtime(timezone.now())
             today_str = now.date().isoformat()
-            print(f"\nTODAY STR {today_str}\n\n", flush=True) #rm
             # Build daily stat history
             if today_str in player_stats.stats_history:
                 existing_record = player_stats.stats_history[today_str]
@@ -185,6 +178,7 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
                 {"error": f"Something went wrong: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+    
     
     def retrieve(self, request, *args, **kwargs):
         try:

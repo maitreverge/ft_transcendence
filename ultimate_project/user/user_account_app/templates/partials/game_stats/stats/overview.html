@@ -1,89 +1,72 @@
 {% load static %}
-<div id="overview-content" class="container-fluid">
-  <p>Games Played: {{ main_stats.games_played }}</p>
-  <p>Games Won: {{ main_stats.games_won }}</p>
-  <p>Games Lost: {{ main_stats.games_lost }}</p>
-
+<div id="overview-content" class="container-fluid px-0 mt-4">
+  <!-- Top card -->
   <div class="row">
-    <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-primary shadow h-100 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-primary text-uppercase mb-1"
-              >
-                Earnings (Monthly)
-              </div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-            </div>
-            <div class="col-auto">
-              <i class="fas fa-calendar fa-2x text-gray-300"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-primary shadow h-100 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-primary text-uppercase mb-1"
-              >
-                Earnings (Monthly)
-              </div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-            </div>
-            <div class="col-auto">
-              <i class="fas fa-calendar fa-2x text-gray-300"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-primary shadow h-100 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-primary text-uppercase mb-1"
-              >
-                Earnings (Monthly)
-              </div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-            </div>
-            <div class="col-auto">
-              <i class="fas fa-calendar fa-2x text-gray-300"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card border-left-primary shadow h-100 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-              <div
-                class="text-xs font-weight-bold text-primary text-uppercase mb-1"
-              >
-                Earnings (Monthly)
-              </div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-            </div>
-            <div class="col-auto">
-              <i class="fas fa-calendar fa-2x text-gray-300"></i>
-            </div>
-          </div>
-        </div>
+    <div class="col-12">
+      <div class="poly-card text-center">
+        <p class="label-text mb-1">Games Played</p>
+        <h1 class="games-number mb-1 mt-1">{{ main_stats.games_played }}</h1>
+        <div class="accent-bar mx-auto mt-1"></div>
       </div>
     </div>
   </div>
+  <div class="row mt-4">
+    <!-- Games Won / Lost Pie Chart -->
+    <div class="col-md-6 mb-4 d-flex justify-content-center">
+      <div class="pie-chart-container">
+        <canvas id="gamesPie"></canvas>
+        <div class="chart-center-label">{{ main_stats.win_rate }}%</div>
+      </div>
+    </div>
+  
+    <!-- Points Scored / Conceded Pie Chart -->
+    <div class="col-md-6 mb-4 d-flex justify-content-center">
+      <div class="pie-chart-container">
+        <canvas id="pointsPie"></canvas>
+        <div class="chart-center-label">{{ main_stats.average_score }}</div>
+      </div>
+    </div>
+  </div>
+  
 </div>
 
+
+<script src="{% static 'stats/overview.js' %}"></script>
+
+<style>
+  #overview-content .poly-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1.25rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .label-text {
+    font-size: 1rem;
+    color: #374151;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .games-number {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  .accent-bar {
+    height: 4px;
+    width: 5rem;
+    background: #007bff;
+    border-radius: 2px;
+  }
+
+  body {
+    background: linear-gradient(145deg, #e2e8f0, #f1f5f9);
+  }
+</style>

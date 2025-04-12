@@ -69,64 +69,54 @@
     </nav>
 
     <!-- Main Content -->
+
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 py-4">
       <!-- Content dynamically loaded here -->
       <div id="account-content">
+        <!-- prettier-ignore -->
         {% if page %}
-          {% if "<" in page %}
-            {{ page|safe }}
-          {% else %}
-            {% include page %}
-          {% endif %}
+            {% if "<" in page %}
+                {{ page|safe }}
+            {% else %}
+                {% include page %}
+            {% endif %}
         {% endif %}
       </div>
     </main>
   </div>
 
   <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-  <style>
-    .sidebar-btn {
-      font-size: 0.85rem;
-      padding: 0.5rem 1rem;
-      border-width: 2px;
-      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
-    .sidebar-btn.active,
-    .sidebar-btn:focus {
-      color: white !important;
-    }
-    .btn-outline-primary {
-      border-color: #007bff;
-      color: #007bff;
-    }
-    .btn-outline-primary.active,
-    .btn-outline-primary:focus {
-      background-color: #007bff !important;
-      border-color: #007bff !important;
-    }
-    .sidebar-btn:hover {
-      background-color: #007bff;
-      color: white;
-      border-color: #0056b3;
-    }
-    .sidebar {
-      width: 250px;
-    }
-    main {
-      margin-left: 260px;
-    }
-  </style>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const buttons = document.querySelectorAll(".sidebar-btn");
-
-      buttons.forEach((button) => {
-        button.addEventListener("click", function () {
-          buttons.forEach((btn) => btn.classList.remove("active"));
-          this.classList.add("active");
-        });
-      });
-    });
-  </script>
 </div>
+
+<style>
+  .sidebar-btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-width: 2px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+  .sidebar-btn.active,
+  .sidebar-btn:focus {
+    color: white !important;
+  }
+  .btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+  }
+  .btn-outline-primary.active,
+  .btn-outline-primary:focus {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+  }
+  .sidebar-btn:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+  }
+  .sidebar {
+    width: 250px;
+  }
+  main {
+    margin-left: 260px;
+  }
+</style>
