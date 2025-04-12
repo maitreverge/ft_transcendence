@@ -85,12 +85,14 @@ async def bouncer_middleware(request: Request, call_next):
     """
     Main Middleware to filter authenticated users from non-auth users
     """
+    print(f"============= URL REQUEST ENTERING BOUNCER {request.url.path} ================\n")
+    print(f"============= URL REQUEST ENTERING COOKIES {request.cookies} ================\n")
+    
     is_auth, user_info = authentication.is_authenticated(request)
     is_csrf_valid = authentication.csrf_validator(request)
 
-    print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
-    print(f"=============           {request.url.path} ================\n")
-    print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
+    # print(f"=============           {request.url.path} ================\n")
+    # print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
 
     # TODO : To let error pages go through when non authenticated
     # if request.url.path not in KNOWN_PATHS:
@@ -114,7 +116,8 @@ async def bouncer_middleware(request: Request, call_next):
         response = await call_next(request)
         return response
 
-    if (is_auth and is_csrf_valid) and request.url.path in AUTH_PATH:
+    # if (is_auth and is_csrf_valid) and request.url.path in AUTH_PATH:
+    if (is_auth) and request.url.path in AUTH_PATH:
         print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
@@ -143,7 +146,7 @@ async def bouncer_middleware(request: Request, call_next):
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
             response.delete_cookie(key="csrftoken", path="/")
-            response.delete_cookie(key="HX-CsrfToken", path="/")
+            # response.delete_cookie(key="HX-CsrfToken", path="/")
         else:
             print(f"🔄 Standard request, using RedirectResponse", flush=True)
             response = RedirectResponse(url="/register/")
@@ -151,7 +154,7 @@ async def bouncer_middleware(request: Request, call_next):
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
             response.delete_cookie(key="csrftoken", path="/")
-            response.delete_cookie(key="HX-CsrfToken", path="/")
+            # response.delete_cookie(key="HX-CsrfToken", path="/")
         return response
 
     print(f"👍 Bounder Middleware non trigered 👍")
@@ -274,12 +277,12 @@ async def jwt_refresh_middleware(request: Request, call_next):
 # [Middleware n°4]
 @app.middleware("http")
 async def debug_cookies_middleware(request: Request, call_next):
-    print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
+    print(f"🔍🔍🔍🔍🔍🔍🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
     response = await call_next(request)
     if "set-cookie" in response.headers:
         set_cookie_headers = response.headers.getlist("set-cookie")
         for cookie in set_cookie_headers:
-            print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
+            print(f"🔍🔍🔍🔍🔍🔍🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
     return response
 
 
