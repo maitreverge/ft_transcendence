@@ -142,12 +142,16 @@ async def bouncer_middleware(request: Request, call_next):
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
+            response.delete_cookie(key="csrftoken", path="/")
+            response.delete_cookie(key="HX-CsrfToken", path="/")
         else:
             print(f"🔄 Standard request, using RedirectResponse", flush=True)
             response = RedirectResponse(url="/register/")
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
+            response.delete_cookie(key="csrftoken", path="/")
+            response.delete_cookie(key="HX-CsrfToken", path="/")
         return response
 
     print(f"👍 Bounder Middleware non trigered 👍")

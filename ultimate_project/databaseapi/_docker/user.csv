@@ -18,3 +18,4 @@ test-first_name,test-last_name,test,test@test.com,password,False
 two-fa-first_name,two-fa-last_name,test_2fa,test_2fa@hehe.com,password,True,S3EF2KESUQR45MRTL7MXDSJVI6JQDG4R
 same-auth,same-auth,same_auth,same_auth@hehe.com,password,False
 same-auth-hehe,same-auth-haha,same_auth_2fa,same_auth_2fa@hehe.com,password,True,AJUF2KESUQR45MRTL7MXDSJVI6JQDG42
+coockie-delete,coockie-delete,coockie-delete,coockie-delete@hehe.com,password,False

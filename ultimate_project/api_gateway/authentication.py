@@ -35,8 +35,8 @@ CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
 
 
 def generate_csrf_token():
-    """Generate a CSRF token that matches the 24-byte format we're seeing"""
-    # Generate 16 bytes of random data (to match what we see in validation)
+
+    # Generate 16 bytes of random data (to match what we see in validati
     random_bytes = secrets.token_bytes(16)
 
     # ! IF ENCODING WITH hashlib.sha256 HERE........................
@@ -50,15 +50,16 @@ def generate_csrf_token():
 
 
 def validate_csrf_token(token):
+    
     if not token:
         return False
 
     try:
-        print(f"Validating token: {token}...")
+        # print(f"Validating token: {token}...")
 
         # Decode the token
         decoded = base64.urlsafe_b64decode(token.encode("utf-8"))
-        print(f"Decoded length: {len(decoded)}")
+        # print(f"Decoded length: {len(decoded)}")
 
         # For 24-byte tokens:
         if len(decoded) == 24:
@@ -66,11 +67,11 @@ def validate_csrf_token(token):
             random_bytes = decoded[:16]
             original_signature = decoded[16:]  # Last 8 bytes
         else:
-            print(f"Unknown token format with length {len(decoded)}")
+            # print(f"Unknown token format with length {len(decoded)}")
             return False
 
-        print(f"Random bytes: {random_bytes.hex()}")
-        print(f"Original sig: {original_signature.hex()}")
+        # print(f"Random bytes: {random_bytes.hex()}")
+        # print(f"Original sig: {original_signature.hex()}")
 
         # ! ...................... IT DOES NEED THE SAME hashlib.sha256 HERE 
         expected_signature = hmac.new(
@@ -79,11 +80,11 @@ def validate_csrf_token(token):
             :8
         ]  # Take first 8 bytes to match
 
-        print(f"Expected sig: {expected_signature.hex()}")
+        # print(f"Expected sig: {expected_signature.hex()}")
 
         # Compare signatures using constant-time comparison
         result = hmac.compare_digest(original_signature, expected_signature)
-        print(f"Signature match: {result}")
+        # print(f"Signature match: {result}")
         return result
     except Exception as e:
         print(f"CSRF validation error: {e}", flush=True)
@@ -295,13 +296,15 @@ def refresh_access_token(refresh_payload):
 def csrf_validator(request):
 
     csrftoken = request.cookies.get("csrftoken")
+    
     if not csrftoken:
-        print("❌ CSRF token not found", flush=True)
+        print("❌ CSRF token not found ❌", flush=True)
         return False
-
-    if not validate_csrf_token(csrftoken):
-        print("❌❌❌❌❌v CSRF token is invalid", flush=True)
+    elif not validate_csrf_token(csrftoken):
+        print("❌ CSRF token is invalid ❌", flush=True)
         return False
+    
+    print("✅ CSRF token is valid ✅", flush=True)
     return True
 
 
@@ -424,6 +427,13 @@ async def logout_fastAPI(request: Request):
 
     response.delete_cookie(
         key="refresh_token",
+        path="/",
+        httponly=True,
+        samesite="Lax",
+    )
+
+    response.delete_cookie(
+        key="csrftoken",
         path="/",
         httponly=True,
         samesite="Lax",
