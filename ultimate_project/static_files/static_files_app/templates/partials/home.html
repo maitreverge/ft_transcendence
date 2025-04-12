@@ -1,31 +1,37 @@
+{% load static %}
+
+<link
+href="{% static 'static_files/styles.css' %}"
+rel="stylesheet"
+/>
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
         <nav class="col-0 col-sm-4 col-md-3 col-lg-2 d-none d-sm-block bg-light p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
             <div class="sidebar-sticky text-center">
                 <!-- Account Settings Title -->
-                <h1 class="h3 mb-3 text-gray-800">Match</h1>
+                <h1 class="h3 mb-3 text-gray-800">HOME</h1>
                 <ul class="nav flex-column">
                     <!-- Profile Section -->
-                    <li class="nav-item mb-3">
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/beau-cameleon-dans-nature_23-2151731209.jpg?t=st=1744443745~exp=1744447345~hmac=40163ff597e5479c7a0c9f4e7c7ff2cc8b0aae1e38a8ed65848a545f9ee2eaac&w=1060">
                         <a id="side-nav-match" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
                             <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>Match
                         </a>
                     </li>
-                    <li class="nav-item mb-3">
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/vue-du-cameleon-couleurs-neons-vives_23-2151682848.jpg?t=st=1744443789~exp=1744447389~hmac=896b1f25653acadc53b7056bdba64e040877cdcbc42274a2e5ea0d20ff4d7358&w=1060">
                         <a id="side-nav-tournament" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
                             <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i> Tournament
                         </a>
                     </li>
-                    <li class="nav-item mb-3">
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/vue-du-cameleon-couleurs-neons-vives_23-2151682728.jpg?t=st=1744443812~exp=1744447412~hmac=cb8e19bf64e5e049fdae618b39a8755604029a28b789c02267b60d7ee3a24c59&w=1060">
                         <a id="side-nav-profile" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
                             <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>Profile
                         </a>
                     </li>
-                    <li class="nav-item mb-3">
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/vue-du-cameleon-couleurs-neons-vives_23-2151682742.jpg?t=st=1744443826~exp=1744447426~hmac=35456dbabec73546fe8e75b6c9898260a71d876752b371fcfddb5f26c4ad02bc&w=1060">
                         <a id="side-nav-stats" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
                             <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>Statistics
@@ -35,71 +41,43 @@
             </div>
         </nav>
         <!-- Main Content -->
-        <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-10 px-4">
-            <!-- Content dynamically loaded here -->
-            <div id="account-content">
-                <div class="pt-4" id="simple-selections">
-                    <h1 class="pl-2">Simple match</h1>
-                    <div class="row d-flex">
-                        <div class="col-lg-2 d-flex flex-column"></div>
-                        <div class="col-lg-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 text-center font-weight-bold text-primary">Player pool</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 text-center font-weight-bold text-primary">Match</h6>
-                                </div>
-                            </div>
-                            <div class="d-sm-none card shadow">
-                                <div class="card-header py-3">
-                                    <div id="overlayButton" onclick="replayTuto()"
-                                    class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                                        <i class="fas fa-info-circle"></i>INFO
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-2 card shadow">
-                                <a id="switch2d3d" class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                                    <span class="mr-2">2D</span>
-                                    <label for="dim" class="switch">
-                                        <input type="checkbox" id="dim" hidden>
-                                        <span class="slider"></span>
-                                    </label>
-                                    <span class="ml-2">3D</span>
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row d-flex align-items-stretch">
-                        <div class="col-lg-2 d-flex flex-column"></div>
-                        <div class="col-lg-4 mb-4">
-                            <div class="card shadow h-100">
-                                <div id="players" class="card-body p-2">
-                                </div>
-                                <input class="m-2 w-auto form-control border-0" id="match-player-name" type="text"
-                                    maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
-                                    oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-                            </div>
-                        </div>
-                        <div class="col-lg-4 mb-4">
-                            <div class="card shadow mb-4 h-100">
-                                <div class="card-body">
-                                    <div id="matchs">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 d-flex flex-column"></div>
-                    </div>
-                    <div id="overlay-match"></div>
-                </div>
-            </div>
+        <main id="main_content" role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-10 px-4">
+            
         </main>
     </div>
 </div>
+<script>
+    document.querySelectorAll('.side-nav').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            const bg = item.getAttribute('data-bg');
+            console.log("bg 1: ", bg)
+
+            const main = document.getElementById('main_content');
+            main.style.backgroundImage = `url(${bg})`;
+            main.style.backgroundSize = 'cover';
+            main.style.backgroundPosition = 'center';
+            main.style.transition = 'background-image 0.3s ease';
+        });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        console.log("%%%%%%%% func onload executed %%%%%%%%");
+        const firstItem = document.querySelector('.side-nav');
+        console.log("first item: ", firstItem);
+
+        if (firstItem) {
+            console.log("%%%%%%%% first item found %%%%%%%%");
+
+            const bg = firstItem.getAttribute('data-bg');
+            console.log("bg 2: ", bg)
+            const main = document.getElementById('main_content');
+            main.style.backgroundImage = `url(${bg})`;
+            main.style.backgroundSize = 'cover';
+            main.style.backgroundPosition = 'center';
+            main.style.transition = 'background-image 0.3s ease';
+        }
+    });
+
+    
+</script>
+    
