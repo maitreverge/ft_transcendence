@@ -1,5 +1,19 @@
 import secrets
 
+def csrf_validator(request):
+
+    csrftoken = request.cookies.get("csrftoken")
+
+    if not csrftoken:
+        print("❌ CSRF token not found ❌", flush=True)
+        return False
+    elif not validate_csrf_token(csrftoken):
+        print("❌ CSRF token is invalid ❌", flush=True)
+        return False
+
+    print("✅ CSRF token is valid ✅", flush=True)
+    return True
+
 def generate_csrf_token():
     """
     Generate a simple CSRF token without relying on a secret key.

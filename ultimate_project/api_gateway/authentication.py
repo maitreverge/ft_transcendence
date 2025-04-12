@@ -10,6 +10,7 @@ import re
 import uuid
 from csrf_tokens import generate_csrf_token, validate_csrf_token    
 from generate_cookies import generate_cookies
+from auth_validators import verify_jwt, refresh_access_token
 
 router = APIRouter()
 
@@ -123,73 +124,6 @@ async def login_fastAPI(
     print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
 
     return json_response
-
-
-# Function to verify JWT token
-def verify_jwt(token):
-    """
-    Verify a JWT token and return the payload if valid.
-
-    Args:
-        token (str): The JWT token to verify
-
-    Returns:
-        dict: The decoded token payload if valid, None otherwise
-    """
-    try:
-        # Verify the token with our secret key
-        payload = jwt.decode(token, SECRET_JWT_KEY, algorithms=["HS256"])
-        return payload
-    except jwt.ExpiredSignatureError:
-        return None  # Token expired
-    except jwt.InvalidTokenError:
-        return None  # Invalid token
-
-
-# Function to generate a new access token using a valid refresh token
-def refresh_access_token(refresh_payload):
-    """
-    Generate a new access token from a valid refresh token payload.
-
-    Args:
-        refresh_payload (dict): The decoded refresh token payload
-
-    Returns:
-        str: The newly generated access token
-    """
-    # Create a new access token with the same user info
-    user_id = refresh_payload.get("user_id")
-    username = refresh_payload.get("username")  # Extract username from refresh token
-
-    # Get the current UUID for this user
-    try:
-        response = requests.get(f"http://databaseapi:8007/api/player/{user_id}/uuid")
-        uuid_value = None
-        if response.status_code == 200:
-            session_data = response.json()
-            uuid_value = session_data.get("uuid")
-    except Exception as e:
-        print(f"⚠️ Error retrieving UUID during refresh: {str(e)}", flush=True)
-        uuid_value = None
-
-    # Set expiration for new access token
-    expire_access = datetime.datetime.utcnow() + datetime.timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-    )
-
-    # Create payload for new access token
-    access_payload = {
-        "user_id": user_id,
-        "username": username,
-        "uuid": uuid_value,
-        "exp": expire_access,
-    }
-
-    # Generate and return the new access token
-    new_access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
-    print(f"🔄 Generated new access token: {new_access_token[:20]}...", flush=True)
-
-    return new_access_token
 
 
 def csrf_validator(request):
