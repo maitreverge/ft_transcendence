@@ -36,10 +36,6 @@ class Tournament():
 		tournaments[:] = [t for t in tournaments if t.id != self.id]
 		await TournamentConsumer.send_tournaments()
 
-	# def end_remove(self):
-	# 	from tournament_app.services.tournament_consumer import tournaments
-	# 	tournaments[:] = [t for t in tournaments if t.id != self.id]
-
 	async def launchTournament(self):
 
 		self.launch = True

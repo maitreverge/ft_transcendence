@@ -244,6 +244,22 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			await SimpleConsumer.match_update()
 
 	@staticmethod
+	def watch_dog(request):
+	
+		match_id = int(request.GET.get('matchId'))
+		match = next(
+			(m for m in matchs if m.get("matchId") == match_id), None)
+		if match:
+			p1_id = int(request.GET.get('p1Id'))
+			p2_id = int(request.GET.get('p2Id'))
+			return {
+				"p1": any(p.get('playerId') == p1_id for p in players),
+				"p2": any(p.get('playerId') == p1_id for p in players)
+			}
+		else:
+			return None
+		
+	@staticmethod
 	async def match_update():
 
 		print(f"SIMPLE MATCH UPDATE {matchs}", flush=True)		
@@ -281,7 +297,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			matchs[:] = [m for m in matchs if m.get("matchId") != match_id]
 			await SimpleConsumer.send_list('match', matchs)
 			await SimpleConsumer.send_db(data)
-	
 
 	@staticmethod
 	async def send_db(match_results):

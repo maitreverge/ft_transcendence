@@ -32,9 +32,14 @@ def simple_match(request: HttpRequest, user_id):
     )
 
 def watch_dog(request : HttpRequest):
-        
-    return t_cs.TournamentConsumer.watch_dog(request)
-     
+
+    simple_ret = sm_cs.SimpleConsumer.watch_dog(request)  
+    if simple_ret:
+        return JsonResponse(simple_ret) 
+    tou_ret = t_cs.TournamentConsumer.watch_dog(request)
+    if tou_ret:
+        return JsonResponse(tou_ret)
+    return JsonResponse({"error": "No match found"}, status=500)
 
 @csrf_exempt
 async def match_players_update(request: HttpRequest):

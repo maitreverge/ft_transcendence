@@ -175,7 +175,8 @@ class Pong:
 		async with aiohttp.ClientSession() as session:
 			async with session.get(
 				f"http://tournament:8001/tournament/watch-dog/"
-				f"?p1Id={self.plyIds[0]}&p2Id={self.plyIds[1]}"
+				f"?matchId={self.id}"
+				f"&p1Id={self.plyIds[0]}&p2Id={self.plyIds[1]}"
 			) as response:				
 				if response.status not in (200, 201):
 					err = await response.text()

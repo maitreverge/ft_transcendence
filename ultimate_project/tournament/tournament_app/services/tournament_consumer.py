@@ -4,7 +4,7 @@ from tournament_app.services.tournament import Tournament
 from typing import List
 import aiohttp
 import html
-from django.http import JsonResponse
+# from django.http import JsonResponse
 
 players : List["TournamentConsumer"] = []
 tournaments : List["Tournament"] = []
@@ -61,31 +61,35 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	@staticmethod
 	async def match_result(data):
 
-		tournament = TournamentConsumer.find_tournament(data)
+		tournament = TournamentConsumer.find_tournament(data.get('matchId'))
 		if tournament:
 			await tournament.match_result(data)
 
 	@staticmethod
 	async def match_players_update(data):
 
-		tournament = TournamentConsumer.find_tournament(data)
+		tournament = TournamentConsumer.find_tournament(data.get('matchId'))
 		if tournament:
 			await tournament.match_players_update(data)
 
 	@staticmethod
 	def watch_dog(request):
 
-		p1_id = int(request.GET.get('p1Id'))
-		p2_id = int(request.GET.get('p2Id'))
-		return JsonResponse({
-			"p1": any(p.id == p1_id for p in players),
-			"p2": any(p.id == p2_id for p in players)
-		})
+		match_id = int(request.GET.get('matchId'))
+		tournament = TournamentConsumer.find_tournament(match_id)
+		if tournament: 
+			p1_id = int(request.GET.get('p1Id'))
+			p2_id = int(request.GET.get('p2Id'))
+			return {
+				"p1": any(p.id == p1_id for p in players),
+				"p2": any(p.id == p2_id for p in players)
+			}
+		else:
+			return None
 
 	@staticmethod
-	def find_tournament(data):
-
-		match_id = data.get('matchId')
+	def find_tournament(match_id):
+		
 		return next((
 			t for t in tournaments
 			if any(match_id == m.get("matchId") for m in t.matchs)
