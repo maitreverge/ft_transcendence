@@ -18,7 +18,7 @@ if (typeof window.applyBackground === 'undefined') {
 document.querySelectorAll('.side-nav').forEach(item => {
     item.addEventListener('mouseenter', () => {
         const bg = item.getAttribute('data-bg');
-        console.log("bg 1: ", bg)
+        // console.log("bg 1: ", bg)
         window.currentBg = bg;
         const main = document.getElementById('main_content');
         main.style.backgroundImage = `url(${bg})`;
@@ -29,16 +29,16 @@ document.querySelectorAll('.side-nav').forEach(item => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-    console.log("%%%%%%%% func onload executed %%%%%%%%");
+    // console.log("%%%%%%%% func onload executed %%%%%%%%");
     const firstItem = document.querySelector('.side-nav');
-    console.log("first item: ", firstItem);
+    // console.log("first item: ", firstItem);
     
     if (firstItem) {
-        console.log("%%%%%%%% first item found %%%%%%%%");
+        // console.log("%%%%%%%% first item found %%%%%%%%");
 
         const bg = firstItem.getAttribute('data-bg');
         window.currentBg = bg;
-        console.log("bg 2: ", bg)
+        // console.log("bg 2: ", bg)
         const main = document.getElementById('main_content');
         main.style.backgroundImage = `url(${bg})`;
         main.style.backgroundSize = 'cover';
@@ -48,7 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 document.body.addEventListener('htmx:afterSwap', () => {
-    console.log("%%%%%%%% HTMX content swapped %%%%%%%%");
+    // console.log("%%%%%%%% HTMX content swapped %%%%%%%%");
     if (currentBg) {
         applyBackground(window.currentBg);
      } // Réapplique l'image de fond stockée
