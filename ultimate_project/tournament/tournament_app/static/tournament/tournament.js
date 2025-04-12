@@ -633,7 +633,7 @@ function linkMatch(lk)
 	console.log("WAIBECHAUSETTE ", ws);
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
 	{
-		window.selfMatchId = lk.matchId;
+		// window.selfMatchId = lk.matchId;
 		localMatch.classList.add("next-match");
 	}
 	else
