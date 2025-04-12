@@ -72,6 +72,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			await tournament.match_players_update(data)
 
 	@staticmethod
+	def watch_dog(request):
+
+		p1_id = request.GET.get('p1Id')
+		p2_id = request.GET.get('p2Id')
+		return {
+			"p1": next((p for p in players if p.id == p1_id), None),
+			"p2": next((p for p in players if p.id == p2_id), None)
+		}
+
+	@staticmethod
 	def find_tournament(data):
 
 		match_id = data.get('matchId')

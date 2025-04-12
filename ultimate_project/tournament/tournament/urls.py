@@ -36,5 +36,6 @@ urlpatterns = [
         "tournament/tournament-pattern/<int:tournament_id>/",
         views.tournament_pattern
     ),
+    path("tournament/watch-dog/", views.watch_dog), 
 ]
 

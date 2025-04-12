@@ -168,6 +168,32 @@ class Pong:
 			delay += 1
 			await asyncio.sleep(1.00)
 
+	async def check_alives_players(self):
+
+		async with aiohttp.ClientSession() as session:
+			async with session.get(
+				f"http://tournament:8001/tournament/watch-dog/"
+				f"?p1Id={self.plyIds[0]}&p2Id={self.plyIds[1]}"
+			) as response:				
+				if response.status not in (200, 201):
+					err = await response.text()
+					print(f"Error HTTP {response.status}: {err}", flush=True)
+					return
+				data = await response.json()
+				print(f"PLAYERS CHECKING ALIVE: {data}", flush=True)
+				await self.alives_players_strategy(data)
+
+	async def alives_players_strategy(self, data):
+
+		alives_players = (data.get("p1Id"), data.get("p1Id"))
+		if not all(alives_players):
+			self.winner = None
+		elif alives_players[0]:
+			self.winner = self.plyIds[0]
+		elif alives_players[1]:
+			self.winner = self.plyIds[1]	
+		await self.stop(None)
+
 	async def watch_cat(self, pause_delay):
 
 		self.pause = True

@@ -31,6 +31,11 @@ def simple_match(request: HttpRequest, user_id):
         },
     )
 
+def watch_dog(request : HttpRequest):
+    
+    return t_cs.TournamentConsumer.watch_dog(request)
+     
+
 @csrf_exempt
 async def match_players_update(request: HttpRequest):
     
