@@ -63,6 +63,12 @@ color: var(--title-color);
 text-decoration: none;
 }
 
+.title-color
+{
+  background-color: var(--title-color);
+
+}
+
 
 .sidebar {
 background-color: var(--navbars-color);
