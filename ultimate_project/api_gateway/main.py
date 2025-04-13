@@ -7,6 +7,7 @@ from starlette.exceptions import (
 import httpx
 import logging
 import json
+import re
 
 # Custom Imports
 import authentication as auth
@@ -59,17 +60,18 @@ EXCLUDED_PATH = [
     r"^/favicon.ico/?$",
     r"^/translations/[a-z]{2}.json/?$",
     r"^/match/stop-match/undefined/undefined/?$",
-    # Swagger UI related routes
+    
+    # SwaggerUI related routes
     r"^/docs/?$",
     r"^/openapi.json/?$",
     r"^/redoc/?$",
 ]
 
 KNOWN_PATHS = [
-    r"^/login/.*$",
-    r"^/register/.*$",
-    r"^/home/.*$",
-    r"^/two-factor-auth/.*$",
+    r"^/login/?$",
+    r"^/register/?$",
+    r"^/home/?$",
+    r"^/two-factor-auth/?$",
     r"^/tournament/simple-match/.*$",
     r"^/tournament/tournament/.*$",
     r"^/account/.*$",
@@ -91,83 +93,48 @@ async def bouncer_middleware(request: Request, call_next):
     is_auth, user_info = is_authenticated(request)
     is_csrf_valid = csrf_validator(request)
     
-    # HOOOOOOOOOOOOOOOOOO LA CONDITION DIGOULASSE
-    # if (
-    #     request.url.path.startswith("/docs")
-    #     or request.url.path.startswith("/openapi.json")
-    #     or request.url.path.startswith("/redoc")
-    # ):
-    #     print(
-    #         f"👍 Allowing direct access to API documentation at {request.url.path} 👍"
-    #     )
-    #     response = await call_next(request)
-    #     return response
-
-
-    
-    # TODO : To let error pages go through when non authenticated
-    if not is_auth and request.url.path not in AUTH_PATH:
-        print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
-        response = await call_next(request)
-        return response
-
-    # TODO : To let error pages go through when non authenticated
-    # ! LEGACY TRY FOR 404 IN NON AUTH LOGIN PATHS
-    # if request.url.path not in KNOWN_PATHS:
-    #     print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
-    #     response = await call_next(request)
-    #     return response
-
-    # # Logout if CSRF token is missing for connected user
-    # if is_auth and "csrftoken" not in request.cookies:
-    #     print(" !!!!!!!!!!! CSRF token missing for connected user, logging out !!!!!!!!!!!")
-    #     if "HX-Request" in request.headers:
-    #     response = await call_next(request)
-    #     # Clear JWT cookies
-    #     response.delete_cookie(key="access_token", path="/")
-    #     response.delete_cookie(key="refresh_token", path="/")
-    #     return response
-
     # Let go through the Middleware everyting included in EXCLUDED_PATH
-    if request.url.path in EXCLUDED_PATH:
-        print(f"👍 Bounder Middleware non trigered 👍")
+    if any(re.match(pattern, request.url.path) for pattern in EXCLUDED_PATH):
+        print(f"\n👍 Bounder Middleware non trigered 👍\n")
         response = await call_next(request)
         return response
+    
+    # Check if path starts with an AUTH_PATH pattern but doesn't exactly match any known pattern
+    if not is_auth and not any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
+        # First check if this path starts with any AUTH_PATH pattern but doesn't match any KNOWN_PATHS
+        if any(request.url.path.startswith(pattern.replace(r'^', '').replace(r'/?$', '')) for pattern in AUTH_PATH) and \
+           not any(re.match(pattern, request.url.path) for pattern in KNOWN_PATHS):
+            print(f"⛔ Path starts with auth path but is invalid: {request.url.path} ⛔")
+            exc = StarletteHTTPException(status_code=404, detail="Not Found")
+            return await http_exception_handler(request, exc)
+            
 
-    # if (is_auth and is_csrf_valid) and request.url.path in AUTH_PATH:
-    if (is_auth) and request.url.path in AUTH_PATH:
-        print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
-        # Check if this is an HTMX request
+    if (is_auth) and any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
+        print(f"\n⬅️ Authenticated user request auth pages, redirecting to home ⬅️\n")
+        
         if "HX-Request" in request.headers:
             response = Response(status_code=200)
-            response.headers["HX-Location"] = (
-                "/home/"  # Use HX-Location for SPA navigation
-            )
+            response.headers["HX-Location"] = ("/home/")
         else:
             response = RedirectResponse(url="/home/")
         return response
 
-    elif (not is_auth or not is_csrf_valid) and (request.url.path not in AUTH_PATH):
-        print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
+    elif (not is_auth or not is_csrf_valid) and not any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
+        print(f"\n⛔ Bounder Middleware Trigerred, non auth request ⛔\n")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
-            print(f"🔄 HTMX request detected, using HX-Location", flush=True)
-            # HX-Location makes HTMX do a client-side redirect without a full page reload
             response = Response(status_code=200)
             response.headers["HX-Location"] = "/register/"
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
             response.delete_cookie(key="csrftoken", path="/")
-            # response.delete_cookie(key="HX-CsrfToken", path="/")
         else:
-            print(f"🔄 Standard request, using RedirectResponse", flush=True)
             response = RedirectResponse(url="/register/")
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
             response.delete_cookie(key="csrftoken", path="/")
-            # response.delete_cookie(key="HX-CsrfToken", path="/")
         return response
 
     print(f"👍 Bounder Middleware non trigered 👍")
