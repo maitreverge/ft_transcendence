@@ -4,6 +4,7 @@ from tournament_app.services.tournament import Tournament
 from typing import List
 import aiohttp
 import html
+# from django.http import JsonResponse
 
 players : List["TournamentConsumer"] = []
 tournaments : List["Tournament"] = []
@@ -17,6 +18,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 		self.id = int(self.scope["url_route"]["kwargs"]["user_id"])
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
+		self.creator_id = int(self.scope["url_route"]["kwargs"]["creator_id"])
 		print(f"CONNECT TOURNAMENT {self.id} {self.name}", flush=True)
 		players.append(self)
 		await self.send_list("player", players)
@@ -60,21 +62,35 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	@staticmethod
 	async def match_result(data):
 
-		tournament = TournamentConsumer.find_tournament(data)
+		tournament = TournamentConsumer.find_tournament(data.get('matchId'))
 		if tournament:
 			await tournament.match_result(data)
 
 	@staticmethod
 	async def match_players_update(data):
 
-		tournament = TournamentConsumer.find_tournament(data)
+		tournament = TournamentConsumer.find_tournament(data.get('matchId'))
 		if tournament:
 			await tournament.match_players_update(data)
 
 	@staticmethod
-	def find_tournament(data):
+	def watch_dog(request):
 
-		match_id = data.get('matchId')
+		match_id = int(request.GET.get('matchId'))
+		tournament = TournamentConsumer.find_tournament(match_id)
+		if tournament: 
+			p1_id = int(request.GET.get('p1Id'))
+			p2_id = int(request.GET.get('p2Id'))
+			return {
+				"p1": any(p.id == p1_id for p in players),
+				"p2": any(p.id == p2_id for p in players)
+			}
+		else:
+			return None
+
+	@staticmethod
+	def find_tournament(match_id):
+		
 		return next((
 			t for t in tournaments
 			if any(match_id == m.get("matchId") for m in t.matchs)
@@ -99,9 +115,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 	async def new_player(self, player_name):
 
 		player_name = html.escape(player_name)
-		twins_players = [p for p in players if p.name == player_name]
-		if len(twins_players) >= 1:
-			print(f"playername is yet exist", flush=True)
+		twin_player = next((p for p in players if p.name == player_name), None)
+		if twin_player:			
 			id = 0
 		else:
 			TournamentConsumer.id -= 1

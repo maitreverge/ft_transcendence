@@ -210,10 +210,11 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	async def start_match(self,
 		applicantId, applicantName, other_id, other_name):
 
+		multy = True if applicantId == -other_id else False
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
-    				f"http://match:8002/match/new-match/"
-    				f"?p1Id={applicantId}&p1Name={applicantName}"
+    				f"http://match:8002/match/new-match/?multy={multy}"
+    				f"&p1Id={applicantId}&p1Name={applicantName}"
     				f"&p2Id={other_id}&p2Name={other_name}"
 				) as response:
 				if response.status == 201:
@@ -225,7 +226,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 						"playerName": applicantName, 
 						"otherId": other_id,
 						"otherName": other_name,
-						"multy": True if applicantId == -other_id else False		
+						"multy": multy		
 					})
 					return match_id
 				return None
@@ -243,6 +244,22 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 				if m.get("matchId") != match_id]
 			await SimpleConsumer.match_update()
 
+	@staticmethod
+	def watch_dog(request):
+	
+		match_id = int(request.GET.get('matchId'))
+		match = next(
+			(m for m in matchs if m.get("matchId") == match_id), None)
+		if match:
+			p1_id = int(request.GET.get('p1Id'))
+			p2_id = int(request.GET.get('p2Id'))
+			return {
+				"p1": any(p.get('playerId') == p1_id for p in players),
+				"p2": any(p.get('playerId') == p1_id for p in players)
+			}
+		else:
+			return None
+		
 	@staticmethod
 	async def match_update():
 
@@ -281,7 +298,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			matchs[:] = [m for m in matchs if m.get("matchId") != match_id]
 			await SimpleConsumer.send_list('match', matchs)
 			await SimpleConsumer.send_db(data)
-	
 
 	@staticmethod
 	async def send_db(match_results):

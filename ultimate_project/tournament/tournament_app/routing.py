@@ -9,6 +9,6 @@ websocket_urlpatterns = [
 		SimpleConsumer.as_asgi()),
     re_path(
 		r"^ws/tournament/tournament/"
-		r"(?P<user_id>-?\d+)/(?P<user_name>\w+)/$",
+		r"(?P<user_id>-?\d+)/(?P<user_name>\w+)/(?P<creator_id>-?\d+)/$",
 		TournamentConsumer.as_asgi())
 ]
