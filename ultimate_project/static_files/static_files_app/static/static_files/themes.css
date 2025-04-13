@@ -1,20 +1,18 @@
-[data-theme="light"] {
-    --background-color: red;
-    --navbars-color: blue;
-    --logo-color: pink;
-    --main-color: yellow;
-    --text-color: black;
-    --title-color: orange;
+[data-theme="dark"] {
+    --background-color: #0d1b2a;
+    --navbars-color: #415a77;
+    --main-color: #1b263b;
+    --text-color: #e0e1dd;
+    --title-color: #778da9;
   }
 
 /* Thème sombre */
-[data-theme="dark"] {
-    --background-color: #121212;
-    --navbars-color: #1f1f1f;
-    --logo-color: #f1c40f;
-    --main-color: #1a1a1a;
-    --text-color: #ecf0f1;
-    --title-color: #ffffff;
+[data-theme="light"] {
+    --background-color: #eaf4f4;
+    --navbars-color: #a4c3b2;
+    --main-color: #cce3de;
+    --text-color: #6b9080;
+    --title-color: #f6fff8;
   }
 
 /* Cibler les éléments spécifiques du site */
@@ -34,7 +32,7 @@ color: var(--text-color);
 #homelogo  {
   font-size: 30px;
   margin-left: 0;
-  background-color: var(--logo-color);
+  background-color: var(--title-color);
   color: var(--main-color);
   font-weight: bold;
   }
