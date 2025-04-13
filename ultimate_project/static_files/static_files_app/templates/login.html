@@ -13,7 +13,7 @@
                   <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                 </div>
 
-                <!-- Formulaire de connexion HTMX -->
+                <!-- ! LOGIN MAIN FORM -->
                 <form
                   class="user"
                   hx-post="/auth/login/"
@@ -54,11 +54,9 @@
                       value="Login"
                     />
                   </div>
-
-                  <!-- ! END FORM  -->
                 </form>
 
-                <!-- ! Feedback error from the backend -->
+                <!-- ! Feedback error div for the backend -->
                 <div id="login-form" class="text-center text-danger mt-2"></div>
 
                 <!-- ! Spinning button  -->
@@ -71,7 +69,6 @@
                   </div>
                 </div>
 
-                <!-- ! Horizontal Line Separator -->
                 <hr />
 
                 <!-- ! Link towards register  -->
@@ -97,8 +94,6 @@
     </div>
   </div>
 </div>
-<!-- Add Animate.css for shake animation -->
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
 
 <script>
   document.addEventListener("htmx:beforeSwap", function (evt) {
@@ -127,7 +122,6 @@
           const usernameInput = document.getElementById("username");
           if (usernameInput) {
             const usernameValue = usernameInput.value;
-            console.log("Storing username for 2FA:", usernameValue);
             sessionStorage.setItem("2fa_username", usernameValue);
 
             // Set username as global variable as another backup
@@ -177,7 +171,7 @@
           messageElement.textContent = sanitizedMessage;
         }
       } catch (e) {
-        console.error("Erreur de traitement de la réponse:", e);
+        console.error("Error from LOGIN JS Script :", e);
       }
     }
   });
