@@ -33,6 +33,11 @@ span
 {
   color: var(--text-color);
 }
+
+span:hover
+{
+  color: var(--background-color);
+}
 #homelogo  {
   font-size: 30px;
   margin-left: 0;
