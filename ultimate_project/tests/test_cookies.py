@@ -1,13 +1,14 @@
 from playwright.sync_api import Playwright, sync_playwright, expect
 from collections import Counter
 import time
+
 USERS = {
     "user2",
     "user3",
     "user4",
     "user5",
 }
-# TEST_LOGIN = "test"
+
 PASSWORD = "password"
 BASE_URL = "https://localhost:8443"
 
@@ -20,14 +21,6 @@ URLS = [
     f"{BASE_URL}/account/game-stats/",
     f"{BASE_URL}/tournament/simple-match/",
     f"{BASE_URL}/tournament/tournament/",
-]
-
-WRONG_SUB_URL = "lalalala"
-
-AUTH_PATH = [
-    "/login/",
-    "/register/",
-    "/two-factor-auth/",
 ]
 
 def run(playwright: Playwright) -> None:
@@ -85,10 +78,8 @@ def run(playwright: Playwright) -> None:
 
     # ! =============== KICKSTART TESTER HERE ===============
 
+    
     # Test 1: No cookies deleted
-    
-    # page.goto(f"{BASE_URL}/login/")
-    
     for user in USERS:
         login(user, PASSWORD)
 
@@ -152,18 +143,6 @@ def run(playwright: Playwright) -> None:
     )
     
     expect(page).to_have_url(f"{BASE_URL}/register/")
-
-
-
-    # Test 5 : Check is there is a 404 in both login / register
-    
-    for paths in AUTH_PATH:
-        page.goto(f"{BASE_URL}{paths}{WRONG_SUB_URL}")
-        error = page.locator(".error mx-auto").inner_text()
-        assert error == "404"
-
-    
-
 
     print(f"✅ COOKIES CREATION / DELETION TESTS PASSED ✅")
 

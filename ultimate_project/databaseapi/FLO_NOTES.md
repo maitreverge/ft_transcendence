@@ -28,8 +28,6 @@
 
 🟧 Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
 
-🟧 Avoir les pages d'erreurs 404/500 sur `login/` et `regsiter/`
-
 🟧 ADMIN DOIT RESTER ID 1
 
 🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
@@ -39,6 +37,7 @@
 ======================================= DONE =====================================
 
 
+✅ Avoir les pages d'erreurs 404/500 sur `login/` et `regsiter/`
 
 ✅ Find a way to lock the database routes as well (bouncer middleware do not let pass non auth requests)
 
