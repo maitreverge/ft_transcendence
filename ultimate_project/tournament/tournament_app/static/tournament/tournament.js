@@ -628,18 +628,20 @@ function linkMatch(lk)
 	}
 	localP1.innerText = lk.p1Name;
 	localP2.innerText = lk.p2Name;
+	setNextMatch(lk, localMatch);
 	// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-	const ws = window.websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
-	console.log("WAIBECHAUSETTE ", ws);
-	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
-	{
-		// window.selfMatchId = lk.matchId;
-		localMatch.classList.add("next-match");
-	}
-	else
-		localMatch.classList.add("spec-match");
 
-	localMatch.onclick = ()=> enterTournamentMatch(lk, overlay);
+	// const ws = window.websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
+	// console.log("WAIBECHAUSETTE ", ws);
+	// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
+	// {
+	// 	// window.selfMatchId = lk.matchId;
+	// 	localMatch.classList.add("next-match");
+	// }
+	// else
+	// 	localMatch.classList.add("spec-match");
+	if (lk.p1Id && lk.p2Id)
+		localMatch.onclick = ()=> enterTournamentMatch(lk, overlay);
 	//  function() {
 		// const scripts = Array.from(document.getElementsByTagName("script"));
 		// scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
@@ -678,6 +680,18 @@ function linkMatch(lk)
 		// })
 		// .catch(error => console.log(error))
 	// };
+}
+
+function setNextMatch(lk, localMatch)
+{
+	const ws = window.websockets.find(ws =>
+		ws.playerId == lk.p1Id ||
+		ws.playerId == lk.p2Id
+	);
+	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
+		localMatch.classList.add("next-match");	
+	else
+		localMatch.classList.add("spec-match");
 }
 
 function enterTournamentMatch(lk, overlay)
@@ -720,14 +734,11 @@ function isYetInMatch()
 
 function setSelfMatchId(lk)
 {
-	const ws = window.websockets.find(
-		ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id
+	const ws = window.websockets.find(ws =>
+		ws.playerId == lk.p1Id ||
+		ws.playerId == lk.p2Id
 	)
-	if (
-		window.selfId == lk.p1Id ||
-		window.selfId == lk.p2Id ||
-		ws
-	)	
+	if (window.selfId == lk.p1Id ||	window.selfId == lk.p2Id ||	ws)	
 		window.selfMatchId = lk.matchId;	
 }
 
