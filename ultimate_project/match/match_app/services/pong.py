@@ -58,11 +58,11 @@ class Pong:
 		self.ball_speed = 0.2
 		self.vect = self.get_random_vector() 
 		self.pad_speed = 2
-		self.max_ball_speed = 100 # //! 10
+		self.max_ball_speed = 2 # //! 10
 		self.ball_acceleration = 1.3
-		self.bounce_delay = 0.01
-		self.send_delay = 0.01
-		self.gear_delay = 0.01
+		self.bounce_delay = 0.005
+		self.send_delay = 0.005
+		self.gear_delay = 0.005
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
@@ -74,10 +74,10 @@ class Pong:
 		self.ball_ray = 1
 		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_ray
 		self.x_rght_pad = 100 - self.x_left_pad
-		self.y_top = 0 + self.ball_ray
-		# self.y_top = 30 + self.ball_ray
-		self.y_bot = 100 - self.ball_ray
-		# self.y_bot = 70 - self.ball_ray
+		# self.y_top = 0 + self.ball_ray
+		self.y_top = 40 + self.ball_ray
+		# self.y_bot = 100 - self.ball_ray
+		self.y_bot = 60 - self.ball_ray
 	
 	def launchTask(self):
 
@@ -225,6 +225,24 @@ class Pong:
 			await self.sendFinalState()
 			return True
 		return False
+
+	async def bounce_send_state(self):		
+		
+		for p in self.users:
+			if self.state != State.end:
+				try:												
+					await p["socket"].send(text_data=json.dumps({
+						"state": self.state.name,
+						"yp1": self.pads_y[0],
+						"yp2": self.pads_y[1],
+						"plyIds": self.plyIds,
+						"names": self.names,
+						"ball": self.ball,
+						"score": self.score,
+						"hasWall": self.has_wall
+					}))                  
+				except Exception as e:
+					pass
 
 	async def sendState(self):		
 		
