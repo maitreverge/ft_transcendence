@@ -83,3 +83,7 @@ body, h5 {
 	/* font-family: var(--font-title); */
   
   }
+
+  #homelogo {
+	font-size: 30px;
+  }
