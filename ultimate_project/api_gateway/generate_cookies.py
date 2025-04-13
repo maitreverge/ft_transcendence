@@ -31,6 +31,5 @@ def generate_cookies(json_response, access_token, refresh_token):
         secure=True,
         samesite="Lax",
         path="/",
-        # max_age=60 * 60 * 24 * 21,  # 21 days => gets logged out after 21 days
-        # max_age=60,  # 1 minute
+        max_age=60 * 60 * 24 * 21,  # 21 days => gets logged out after 21 days
     )
