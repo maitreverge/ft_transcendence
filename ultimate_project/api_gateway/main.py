@@ -42,82 +42,77 @@ services = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ====================== 📜 PATHS FOR BOUNDER MIDDLEWARE📜 =======================
+# =================== 📜 REGEX PATHS FOR BOUNDER MIDDLEWARE📜 ====================
+
 AUTH_PATH = [
-    "/login",
-    "/register",
-    "/login/",
-    "/register/",
-    "/auth/login/",
-    "/auth/register/",
-    "/two-factor-auth/",
-    "/auth/verify-2fa/",
-    r"/api/player/\d+/uuid",  # Regex pattern for /api/player/{id}/uuid
-    "/api/check-2fa/",
+    r"^/login/?$",
+    r"^/register/?$",
+    r"^/auth/login/?$",
+    r"^/auth/register/?$",
+    r"^/two-factor-auth/?$",
+    r"^/auth/verify-2fa/?$",
+    r"/api/player/\d+/uuid",
+    r"^/api/check-2fa/?$",
 ]
 
 EXCLUDED_PATH = [
-    "/favicon.ico",
-    "/translations/de.json",
-    "/translations/en.json",
-    "/translations/es.json",
-    "/translations/fr.json",
-    "/translations/tl.json",
-    "/match/stop-match/undefined/undefined/",
+    r"^/favicon.ico/?$",
+    r"^/translations/[a-z]{2}.json/?$",
+    r"^/match/stop-match/undefined/undefined/?$",
     # Swagger UI related routes
-    "/docs/",
-    "/docs",
-    "/openapi.json",
-    "/redoc/",
-    "/redoc",
+    r"^/docs/?$",
+    r"^/openapi.json/?$",
+    r"^/redoc/?$",
 ]
 
 KNOWN_PATHS = [
-    "/login/",
-    "/register/",
-    "/home/",
-    "/two-factor-auth/",  # 2FA route for login worklow
-    "/tournament/simple-match/",
-    "/tournament/tournament/",
-    "/account/profile/",
-    "/account/game-stats/",
-    "/account/security/",
-    "/account/security/setup-2fa/",
-    "/account/security/setup-2fa/verify-2fa/",
-    "/account/confidentiality/",
-    "/account/confidentiality/delete-account",
+    r"^/login/.*$",
+    r"^/register/.*$",
+    r"^/home/.*$",
+    r"^/two-factor-auth/.*$",
+    r"^/tournament/simple-match/.*$",
+    r"^/tournament/tournament/.*$",
+    r"^/account/.*$",
 ]
 
 
-# ! NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
 @app.middleware("http")
 async def bouncer_middleware(request: Request, call_next):
     """
     Main Middleware to filter authenticated users from non-auth users
     """
     print(
-        f"======== URL REQUEST ENTERING BOUNCER {request.url.path} ============\n"
+        f"======== 👮 URL ENTERING BOUNCER = {request.url.path} ============\n"
     )
     print(
-        f"======== URL REQUEST ENTERING COOKIES {request.cookies} =============\n"
+        f"======== 👮 COOKIES ENTERING BOUNCER = {request.cookies} ============\n"
     )
-
-    # HOOOOOOOOOOOOOOOOOO LA CONDITION DIGOULASSE
-    if (
-        request.url.path.startswith("/docs")
-        or request.url.path.startswith("/openapi.json")
-        or request.url.path.startswith("/redoc")
-    ):
-        print(
-            f"👍 Allowing direct access to API documentation at {request.url.path} 👍"
-        )
-        response = await call_next(request)
-        return response
 
     is_auth, user_info = is_authenticated(request)
     is_csrf_valid = csrf_validator(request)
+    
+    # HOOOOOOOOOOOOOOOOOO LA CONDITION DIGOULASSE
+    # if (
+    #     request.url.path.startswith("/docs")
+    #     or request.url.path.startswith("/openapi.json")
+    #     or request.url.path.startswith("/redoc")
+    # ):
+    #     print(
+    #         f"👍 Allowing direct access to API documentation at {request.url.path} 👍"
+    #     )
+    #     response = await call_next(request)
+    #     return response
+
+
+    
+    # TODO : To let error pages go through when non authenticated
+    if not is_auth and request.url.path not in AUTH_PATH:
+        print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
+        response = await call_next(request)
+        return response
 
     # TODO : To let error pages go through when non authenticated
+    # ! LEGACY TRY FOR 404 IN NON AUTH LOGIN PATHS
     # if request.url.path not in KNOWN_PATHS:
     #     print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
     #     response = await call_next(request)
