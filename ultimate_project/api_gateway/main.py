@@ -7,7 +7,9 @@ from starlette.exceptions import (
 import httpx
 import logging
 import json
-import authentication
+
+# Custom Imports
+import authentication as auth
 from auth_validators import is_authenticated
 from csrf_tokens import csrf_validator
 
@@ -15,17 +17,17 @@ from csrf_tokens import csrf_validator
 # from fastapi.middleware.cors import CORSMiddleware
 
 
-# =================== 🚀 FastAPI Application Setup for API Gateway 🚀 ==================
+# =================== 🚀 FastAPI Application Setup for API Gateway 🚀 ============
 
 app = FastAPI(
     title="API Gateway",
     description="This API Gateway routes requests to various microservices. \
         Define endpoints to get any data here :)",
     version="1.0.0",
-    # docs_url=None, # TODO FLO : Uncomment this line to disable access to SwaggerUI
+    # docs_url=None, # ! Comment this line to enable access to SwaggerUI
 )
 
-# ======================= 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 =======================
+# ======================= 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 =================
 
 services = {
     "tournament": "http://tournament:8001",
@@ -35,14 +37,12 @@ services = {
     "databaseapi": "http://databaseapi:8007",
 }
 
-# ============================= 📜 LOGGER CONFIGURATION 📜 =============================
+# ============================= 📜 LOGGER CONFIGURATION 📜 =======================
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ================================ 📜 EXCLUDED PATHS 📜 ================================
-
-# Exclude Path for the
+# ====================== 📜 PATHS FOR BOUNDER MIDDLEWARE📜 =======================
 AUTH_PATH = [
     "/login",
     "/register",
@@ -64,11 +64,12 @@ EXCLUDED_PATH = [
     "/translations/fr.json",
     "/translations/tl.json",
     "/match/stop-match/undefined/undefined/",
+    # Swagger UI related routes
     "/docs/",
-    "/docs",  # Add without trailing slash
-    "/openapi.json",  # OpenAPI schema
-    "/redoc/",  # ReDoc UI
-    "/redoc",  # ReDoc UI without trailing slash
+    "/docs",
+    "/openapi.json",
+    "/redoc/",
+    "/redoc",
 ]
 
 KNOWN_PATHS = [
@@ -95,10 +96,10 @@ async def bouncer_middleware(request: Request, call_next):
     Main Middleware to filter authenticated users from non-auth users
     """
     print(
-        f"============= URL REQUEST ENTERING BOUNCER {request.url.path} ================\n"
+        f"======== URL REQUEST ENTERING BOUNCER {request.url.path} ============\n"
     )
     print(
-        f"============= URL REQUEST ENTERING COOKIES {request.cookies} ================\n"
+        f"======== URL REQUEST ENTERING COOKIES {request.cookies} =============\n"
     )
 
     # HOOOOOOOOOOOOOOOOOO LA CONDITION DIGOULASSE
@@ -180,7 +181,7 @@ async def bouncer_middleware(request: Request, call_next):
     return response
 
 
-# ============================== 🌟 FASTAPI MIDDLEWARE 🌟 ==============================
+# ============================== 🌟 FASTAPI MIDDLEWARE 🌟 ========================
 
 # Current middleware chain
 # 1️⃣ - Client sends an HTTP request.
@@ -247,12 +248,12 @@ async def jwt_refresh_middleware(request: Request, call_next):
 # [Middleware n°4]
 @app.middleware("http")
 async def debug_cookies_middleware(request: Request, call_next):
-    print(f"🔍🔍🔍🔍🔍🔍🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
+    print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
     response = await call_next(request)
     if "set-cookie" in response.headers:
         set_cookie_headers = response.headers.getlist("set-cookie")
         for cookie in set_cookie_headers:
-            print(f"🔍🔍🔍🔍🔍🔍🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
+            print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
     return response
 
 
@@ -305,7 +306,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     )
 
 
-# ============ 🛠️ Main Function Handling the Reverse Proxy for the Route 🛠️ ============
+# ========= 🛠️ Main Function Handling the Reverse Proxy for the Route 🛠️ =========
 
 
 async def reverse_proxy_handler(
@@ -440,7 +441,7 @@ async def reverse_proxy_handler(
     )
 
 
-# =============================== 🏠 REDIRECT TO HOME 🏠 ===============================
+# ============================ 🏠 REDIRECT TO HOME 🏠 ============================
 
 
 @app.get("/")
@@ -451,7 +452,7 @@ async def redirect_to_home():
     return RedirectResponse(url="/home/")
 
 
-# ============================ 🏆 Tournament Route Setup 🏆 ============================
+# ========================= 🏆 Tournament Route Setup 🏆 =========================
 
 
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
@@ -508,7 +509,7 @@ async def tournament_proxy(path: str, request: Request):
         return await reverse_proxy_handler("static_files", "error/", request)
 
 
-# ================================== ⚽ MATCH ROUTE ⚽ =================================
+# =============================== ⚽ MATCH ROUTE ⚽ ==============================
 
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
@@ -586,7 +587,7 @@ async def match_proxy(
     #     return await proxy_request("static_files", "/home/", request)
 
 
-# ============================== 🚀 USER SERVICE ROUTE 🚀 ==============================
+# =========================== 🚀 USER SERVICE ROUTE 🚀 ===========================
 
 
 # WILL BE SUED INT EH FURTUR FOR THE FRIENDSHIP SYSTEM
@@ -624,7 +625,7 @@ async def user_account_route(path: str, request: Request):
         )
 
 
-# ============================== 🗂️ API DATABASE PROXY 🗂️ ==============================
+# =========================== 🗂️ API DATABASE PROXY 🗂️ ===========================
 
 
 @app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
@@ -669,7 +670,7 @@ async def databaseapi_proxy(path: str, request: Request):
     return await reverse_proxy_handler("databaseapi", f"api/{path}", request)
 
 
-# ============================= 📜 AUTHENTICATION ROUTE 📜 =============================
+# ========================== 📜 AUTHENTICATION ROUTE 📜 ==========================
 
 
 @app.api_route("/login/{path:path}", methods=["GET"])
@@ -696,7 +697,7 @@ async def login_page_route(request: Request):
     # Create a new response object
     response = Response()
 
-    return await authentication.login_fastAPI(request, response, username, password)
+    return await auth.login_fastAPI(request, response, username, password)
 
 
 # Add logout endpoint
@@ -706,7 +707,7 @@ async def logout_route(request: Request):
     """
     Handles user logout by clearing JWT cookies
     """
-    return await authentication.logout_fastAPI(request)
+    return await auth.logout_fastAPI(request)
 
 
 @app.api_route("/register/{path:path}", methods=["GET"])
@@ -737,7 +738,7 @@ async def register_page_route(request: Request):
     # Create a new response object
     response = Response()
 
-    return await authentication.register_fastAPI(
+    return await auth.register_fastAPI(
         request, response, username, password, email, first_name, last_name
     )
 
@@ -788,7 +789,7 @@ async def verify_2fa_login(request: Request):
     response = Response()
 
     # Process the 2FA verification and generate JWT
-    return await authentication.verify_2fa_and_login(request, response, username, token)
+    return await auth.verify_2fa_and_login(request, response, username, token)
 
 
 @app.api_route("/user/delete-profile/", methods=["GET", "POST"])
@@ -826,7 +827,6 @@ async def delete_profile_proxy(request: Request):
 
                 # ! REDIRECT RELOAD THE SPA HERE
                 response.headers["HX-Redirect"] = "/register/"
-                # response = RedirectResponse(url="/register/")
 
                 print("🗑️ Cookies cleared and redirect set", flush=True)
         except Exception as e:

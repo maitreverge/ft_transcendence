@@ -6,7 +6,9 @@ import datetime
 import os
 import pyotp
 import re
-import uuid 
+import uuid
+
+# Custom Imports
 from generate_cookies import generate_cookies
 from auth_utils import update_uuid, delete_uuid
 
@@ -21,7 +23,7 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
 CHECK_2FA_URL = "http://databaseapi:8007/api/check-2fa/"
 
-# @router.post("/auth/login/")
+
 async def login_fastAPI(
     request: Request,
     response: Response,
@@ -72,11 +74,10 @@ async def login_fastAPI(
         days=REFRESH_TOKEN_EXPIRE_DAYS
     )
 
-    # Store the UUID in the database, for preventing double login on the same account
-    # !!!! REFACTOR UUID 
     my_uuid = str(uuid.uuid4())
-    user_id = auth_data.get('user_id', 0)
-    
+    user_id = auth_data.get("user_id", 0)
+
+    # Store the UUID in the database, for preventing double login behaviour
     update_uuid(my_uuid, user_id, "regular login")
 
     access_payload = {
@@ -96,10 +97,6 @@ async def login_fastAPI(
     access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
     refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
-    # print(f"Access Token: {access_token[:20]}...", flush=True)
-    # print(f"Refresh Token: {refresh_token[:20]}...", flush=True)
-
-    # Create a JSONResponse with success message
     json_response = JSONResponse(
         content={"success": True, "message": "Connexion réussie"}
     )
@@ -112,19 +109,16 @@ async def login_fastAPI(
     return json_response
 
 
-
-# Function to handle user logout
 async def logout_fastAPI(request: Request):
 
     print("🚪 Logout requested", flush=True)
 
     # Get user ID from the token to clear the session
     access_token = request.cookies.get("access_token")
-    
+
     if access_token:
         delete_uuid(access_token)
 
-    # Create response
     response = JSONResponse(content={"success": True, "message": "Déconnexion réussie"})
 
     # Clear cookies by setting them with empty values and making them expire immediately
@@ -134,14 +128,12 @@ async def logout_fastAPI(request: Request):
         httponly=True,  # Must match how it was set
         samesite="Lax",  # Must match how it was set
     )
-
     response.delete_cookie(
         key="refresh_token",
         path="/",
         httponly=True,
         samesite="Lax",
     )
-
     response.delete_cookie(
         key="csrftoken",
         path="/",
@@ -161,37 +153,20 @@ async def verify_2fa_and_login(
     username: str,
     token: str,
 ):
-    """
-    Verifies 2FA code and generates JWT tokens if valid.
 
-    Args:
-        request (Request): The FastAPI request object
-        response (Response): The FastAPI response object
-        username (str): The username
-        token (str): The 2FA verification code
+    print(f"🔐 Verifying 2FA for {username}, otp: {token}", flush=True)
 
-    Returns:
-        JSONResponse with JWT tokens if 2FA code is valid
-    """
-    print(f"🔐 Verifying 2FA for {username}, token: {token}", flush=True)
-    print(f"🔐 Request form data: {await request.form()}", flush=True)
-    print(f"🔐 Request headers: {request.headers}", flush=True)
-
+    # Try to get username from form directly as fallback
     if not username or not token:
-        print("❌ Username or token missing", flush=True)
-        if not username:
-            print("❌ Username is missing", flush=True)
-        if not token:
-            print("❌ Token is missing", flush=True)
+        print("❌ One or more required fields missing", flush=True)
+        # Extract form data once instead of twice
+        form_data = await request.form()
 
-        # Try to get username from form directly as fallback
         if not username:
-            form_data = await request.form()
             username = form_data.get("username")
             print(f"🔑 Extracted username from form: {username}", flush=True)
 
         if not token:
-            form_data = await request.form()
             token = form_data.get("token")
             print(f"🔑 Extracted token from form: {token}", flush=True)
 
@@ -209,7 +184,6 @@ async def verify_2fa_and_login(
     try:
         # Get user data first to retrieve the secret
         get_user_url = f"http://databaseapi:8007/api/player/?username={username}"
-        print(f"🔍 Querying database API for user: {get_user_url}", flush=True)
         user_response = requests.get(get_user_url)
 
         if user_response.status_code != 200:
@@ -231,21 +205,19 @@ async def verify_2fa_and_login(
         # Check if we got a list of users or a paginated response
         if isinstance(user_data, list) and len(user_data) > 0:
             user = user_data[0]
-            print(f"✅ Found user in list format", flush=True)
         elif (
             isinstance(user_data, dict)
             and user_data.get("results")
             and len(user_data["results"]) > 0
         ):
             user = user_data["results"][0]
-            print(f"✅ Found user in paginated response", flush=True)
         else:
             print(f"❌ User not found in response", flush=True)
             return JSONResponse(
                 content={"success": False, "message": "User not found"}, status_code=404
             )
 
-        print(f"🔍 User object: {user}", flush=True)
+        # print(f"🔍 User object: {user}", flush=True)
 
         # Verify the 2FA token
         secret = user.get("_two_fa_secret")
@@ -299,15 +271,15 @@ async def verify_2fa_and_login(
         refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
         # Log for debug
-        print(f"2FA Verified. Access Token: {access_token[:20]}...", flush=True)
-        print(f"2FA Verified. Refresh Token: {refresh_token[:20]}...", flush=True)
+        # print(f"2FA Verified. Access Token: {access_token[:20]}...", flush=True)
+        # print(f"2FA Verified. Refresh Token: {refresh_token[:20]}...", flush=True)
 
         # Create a JSONResponse with success message
         json_response = JSONResponse(
             content={"success": True, "message": "2FA verification successful"}
         )
 
-        generate_cookies(json_response, access_token, refresh_token)    
+        generate_cookies(json_response, access_token, refresh_token)
 
         # Debug log for headers
         print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
@@ -340,13 +312,11 @@ async def register_fastAPI(
     first_name: str,
     last_name: str,
 ):
-    """
-    Register a new user and return a JWT token.
-    """
-    print(f"🔐 Tentative d'inscription pour {username}", flush=True)
+    print(f"🔐 Registering attempt for {username}", flush=True)
 
     # Regex patterns for input validation
     name_pattern = r"^(?!.*--)[a-zA-ZÀ-ÿ0-9\-]+$"
+
     # Validate first name
     if not re.match(name_pattern, first_name):
         return JSONResponse(
@@ -389,14 +359,15 @@ async def register_fastAPI(
             status_code=400,
         )
 
-    # Check if username already exists first (industry standard to check one field at a time)
+    # ! From here, every function call to the DB can raise an exception
     try:
-        # Query for existing users with this username
+        # * STEP 1 : Query DB for checking duplicates username
         check_username_url = "http://databaseapi:8007/api/player/?username=" + username
         username_response = requests.get(check_username_url)
 
         if username_response.status_code == 200:
             user_data = username_response.json()
+
             # Handle case where user_data is a list (checking if username exists)
             if isinstance(user_data, list) and len(user_data) > 0:
                 return JSONResponse(
@@ -406,6 +377,7 @@ async def register_fastAPI(
                     },
                     status_code=400,
                 )
+
             # Handle case where user_data is a dict with count key
             elif isinstance(user_data, dict) and user_data.get("count", 0) > 0:
                 return JSONResponse(
@@ -416,7 +388,7 @@ async def register_fastAPI(
                     status_code=400,
                 )
 
-        # Then check if email already exists
+        # * STEP 2 : Query DB for checking duplicates emails
         check_email_url = "http://databaseapi:8007/api/player/?email=" + email
         email_response = requests.get(check_email_url)
 
@@ -443,7 +415,7 @@ async def register_fastAPI(
 
         # If no duplicates, create the new user
         create_user_url = "http://databaseapi:8007/api/player/"
-        registration_data = {
+        payload = {
             "username": username,
             "email": email,
             "password": password,
@@ -451,13 +423,10 @@ async def register_fastAPI(
             "last_name": last_name,
         }
 
-        # Debug info
-        print(f"📝 Sending registration data: {registration_data}", flush=True)
-
         create_response = requests.post(
             create_user_url,
-            json=registration_data,
-            headers={"Content-Type": "application/json"},  # Ensure correct content type
+            json=payload,
+            headers={"Content-Type": "application/json"},
         )
 
         # Check if user creation was successful
@@ -479,11 +448,9 @@ async def register_fastAPI(
             days=REFRESH_TOKEN_EXPIRE_DAYS
         )
 
-        # Generate a unique session ID
+        # Generate and update the user's UUID
         my_uuid = str(uuid.uuid4())
-
-        user_id = user_data.get('id', 0)
-
+        user_id = user_data.get("id", 0)
         update_uuid(my_uuid, user_id, "Register")
 
         # Create payloads for tokens
@@ -499,21 +466,19 @@ async def register_fastAPI(
             "exp": expire_refresh,
         }
 
-        # Generate tokens
+        # Generate JWT tokens
         access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
         refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
         # Debug logging
         print(f"Registration successful for {username}", flush=True)
-        # print(f"Access Token: {access_token}...", flush=True)
-        # print(f"Refresh Token: {refresh_token}...", flush=True)
 
         # Create the response object
         json_response = JSONResponse(
             content={"success": True, "message": "Inscription réussie"}
         )
 
-        generate_cookies(json_response, access_token, refresh_token)    
+        generate_cookies(json_response, access_token, refresh_token)
 
         return json_response
 

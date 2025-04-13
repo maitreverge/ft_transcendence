@@ -30,6 +30,8 @@ python3 tests/test_sametime_auth.py
 sleep 1
 python3 tests/test_xss_sql.py
 sleep 1
+python3 tests/test_remote_game.py
+sleep 1
 python3 tests/test_navigation.py
 check_result "Playwright tests"
 
