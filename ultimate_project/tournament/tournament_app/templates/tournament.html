@@ -17,30 +17,29 @@
 <div class="container-fluid m-0 p-0">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-0 col-sm-4 col-md-4 col-lg-3 col-xl-2 d-none d-sm-block bg-light p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
+        <nav class="col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block bg-light p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
             <div class="sidebar-sticky text-center">
                 <!-- Account Settings Title -->
-                <h1 class="h3 mb-3 text-gray-800 pt-2">Tournament</h1>
+                <h1 class="mb-3 text-gray-800 pt-2"><strong>Tournament</strong></h1>
                 <ul class="nav flex-column pt-5">
                     <!-- Profile Section -->
                     <li class="nav-item mb-3">
                         <a id="side-nav-home" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/home/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
-                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i> Home
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Home</h5>
                         </a>
                     </li>
                     <li class="nav-item mb-3">
-                        <a id="side-nav-simple-match" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-                            hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
+                        <a id="side-nav-tournament" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
-                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i> Simple Match
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Tournament</h5>
                         </a>
                     </li>
                     <li  id="side-nav-info" class="nav-item mb-3">
                         <div id="overlayButton" onclick="replayTuto()"
-                            class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                            <i class="mr-2 fas fa-info-circle"></i>INFO
-                        </div>
+                            class="nav-link btn btn-outline-primary rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                            <i class="mr-2 fas fa-info-circle"></i><h5>INFO</h5>
+                    </div>
                     </li>
                 </ul>
             </div>
@@ -54,7 +53,7 @@
             </div>
         </a>
         <!-- Main Content -->
-        <main role="main" class="col-12 col-md-8 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 m-0 p-0">
+        <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0">
             <!-- Content dynamically loaded here -->
             <div id="account-content">
                 <div id="simple-selections">

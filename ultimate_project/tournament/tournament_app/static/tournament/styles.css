@@ -301,3 +301,55 @@ button {
   #m1, #firstline, #m2, #m3, #secline {
     border-radius: 5%;
   }
+
+  /* tests */
+
+  #simple-selections {
+    background-color: lightgray;
+  }
+
+  @media (min-width: 576px) {
+    #simple-selections {
+      background-color: lightblue;
+    }
+  }
+
+  @media (min-width: 768px) {
+    #simple-selections {
+      background-color: orange;
+    }
+  }
+
+  @media (min-width: 992px) {
+    #simple-selections {
+      background-color: lightgreen;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    #simple-selections {
+      background-color: red;
+    }
+  }
+
+    body, h5 {
+  font-family: 'Inter', sans-serif;
+  /* font-family: var(--font-body); */
+  font-size: clamp(13px, 1.2vw, 40px);
+}
+
+h1 {
+	font-family: 'Orbitron', sans-serif;
+	font-size: clamp(24px, 1.2vw, 60px);
+  
+	/* font-family: var(--font-title); */
+  
+  }
+
+h2, h3, h4, h6, .title, .button-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(13px, 1.2vw, 26px);
+
+  /* font-family: var(--font-title); */
+
+}
