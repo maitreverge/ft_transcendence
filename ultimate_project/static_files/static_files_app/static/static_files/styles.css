@@ -29,32 +29,7 @@
 	height: 25%;
 } */
 
-.sidebar-sticky {
-	height: 100%; /* Assure que le ul peut prendre toute la hauteur */
-	display: flex;
-	flex-direction: column;
-}
 
-.sidebar-sticky ul.nav {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-}
-
-.sidebar-sticky li.nav-item {
-	flex: 1; /* prend 25% car 4 items */
-	display: flex;
-	align-items: center;
-}
-
-.sidebar-btn {
-	height: 75%;
-	width: 100%;
-	transition: background-color 0.3s, color 0.3s;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
 
 #main_content {
 	background-size: cover;
@@ -82,8 +57,4 @@ body, h5 {
   
 	/* font-family: var(--font-title); */
   
-  }
-
-  #homelogo {
-	font-size: 30px;
   }

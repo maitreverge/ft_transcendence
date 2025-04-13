@@ -3,13 +3,13 @@
 
 <nav
     id="navbar"
-  class="p-0 navbar navbar-expand navbar-light 
-  bg-white topbar static-top shadow custom-navbar-height"
+  class="p-0 navbar navbar-expand 
+  topbar static-top shadow custom-navbar-height"
 >
 <a  id="homelogo"
-    class="h-100 text-white bg-gradient-primary sidebar-brand  
+    class="h-100 sidebar-brand  
     align-items-center justify-content-center nav-link"
-    style="width: 200px;"
+    style="width: 230px;"
     hx-trigger="click"
     hx-push-url="true"
     hx-get="/home/"
@@ -173,7 +173,7 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <span class="mr-2 d-inline text-gray-600 small" 
+        <span class="mr-2 d-inline small" 
           {% if request.headers.X_User_ID %}data-user-id="{{ request.headers.X_User_ID }}"{% endif %}>
           {% if username %}{{ username }}{% else %}Guest{% endif %}
         </span>
@@ -214,35 +214,7 @@
   </ul>
 </nav>
 <style>
- #language-selector {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    padding: 10px 10px 10px 10px;
-    background-color: #111;
-    color: #00ff99;
-    font-size: 16px;
-    border: 2px solid #00ff99;
-    border-radius: 25px;
-    width: 120px;
-    background-image: none;
-    background-position: right 10px center;
-    background-repeat: no-repeat;
-    transition: all 0.3s ease;
-  }
-
-  /* Effet au survol */
-  #language-selector:hover {
-    background-color: #222;
-    border-color: #00ff99;
-    box-shadow: 0 0 15px #00ff99;
-  }
-
-  #language-selector:focus {
-    outline: none;
-    border-color: #ff007f;
-    box-shadow: 0 0 10px #ff007f;
-  }
+ 
 
   /* Option styles */
   option {
