@@ -284,3 +284,50 @@ input:checked + .slider:before {
 button {
 	margin:10px;
 }
+
+/* #players {
+	width: fit-content;
+	height: fit-content;
+	
+	border-style:solid;
+	border-radius:5px;
+	border-width: 5px;
+	border-color: rgb(43, 150, 226);
+	/* background-color: yellow; */
+/* } */ */
+
+#players {
+	display: flex;
+	flex-direction: column;
+	margin-top: 10px;
+}
+
+
+.winner {
+	background-color: rgb(8, 250, 20) !important;		
+}
+
+.looser {
+	background-color: rgb(250, 8, 48) !important;	
+}
+
+.undef {
+	background-color: hwb(0 9% 5%) !important;
+}
+
+.phantom::before {
+    font-size: 30;
+	content: "👻  ";
+	margin-right: 4px;
+}
+
+.phantom {
+	background-size: cover;
+    background-color: rgb(8, 234, 250);
+}
+
+
+
+#match-player-name {
+	display: none;
+}
