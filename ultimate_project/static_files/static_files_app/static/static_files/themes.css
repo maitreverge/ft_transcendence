@@ -1,10 +1,10 @@
 [data-theme="light"] {
-    --background-color: #f5f7fa;
-    --navbars-color: #e3e6ec;
-    --logo-color: #2c3e50;
-    --main-color: #ffffff;
-    --text-color: #2c3e50;
-    --title-color: #1a1a1a;
+    --background-color: red;
+    --navbars-color: blue;
+    --logo-color: pink;
+    --main-color: yellow;
+    --text-color: black;
+    --title-color: orange;
   }
 
 /* Thème sombre */
@@ -25,19 +25,36 @@ body {
     background-color: var(--background-color);
 }
 
-#homelogo  {
-font-size: 30px;
-margin-left: 0;
-background-color: var(--logo-color);
-color: var(--main-color);
-font-weight: bold;
+#homelogo:hover  {
+
+color: var(--text-color);
+
 }
+
+#homelogo  {
+  font-size: 30px;
+  margin-left: 0;
+  background-color: var(--logo-color);
+  color: var(--main-color);
+  font-weight: bold;
+  }
 
 /* Navbar */
 .navbar {
 background-color: var(--navbars-color);
 }
 
+.background_color
+{
+  background-color: var(--background-color);
+}
+
+.navbars_color
+{
+  background-color: var(--navbars-color) !important;
+  color: var(--title-color) !important;
+
+}
 .navbar a {
 color: var(--text-color);
 text-decoration: none;
@@ -55,6 +72,8 @@ background-color: var(--navbars-color);
     
 .sidebar a {
 color: var(--text-color);
+background-color: var(--background-color);
+
 }
 
 .sidebar a:hover {
@@ -81,7 +100,7 @@ footer {
     }
     
 .container-fluid {
-    background-color: var(--main-color);
+    background-color: var(--background-color);
 
 }
 footer p {
@@ -159,6 +178,10 @@ font-size: 1.1em;
     transition: all 0.3s ease;
   }
 
+  #language-selector option {
+    background-color: var(--logo-color);
+    color: var(--background-color);
+    }
   /* Effet au survol */
   #language-selector:hover {
     background-color: var(--logo-color);
