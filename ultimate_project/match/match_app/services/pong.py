@@ -229,14 +229,11 @@ class Pong:
 	async def sendState(self):		
 		
 		while self.state != State.end:	
-			self.users = [p for p in match_consumer.players
-				if self.id == p["matchId"]]
 			for p in self.users:
-				state = self.state
-				if state != State.end:
+				if self.state != State.end:
 					try:												
 						await p["socket"].send(text_data=json.dumps({
-							"state": state.name,
+							"state": self.state.name,
 							"yp1": self.pads_y[0],
 							"yp2": self.pads_y[1],
 							"plyIds": self.plyIds,
