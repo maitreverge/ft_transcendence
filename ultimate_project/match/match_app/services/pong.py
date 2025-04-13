@@ -36,7 +36,7 @@ class Pong:
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 2
+		self.max_score = 20
 		self.point_delay = 1
 		self.start_delay = 4
 		self.max_wait_delay = 2000
@@ -333,6 +333,13 @@ Pong.is_pad_intersecting = physics.is_pad_intersecting
 
 Pong.left_upside_pad_bounce = physics.left_upside_pad_bounce
 Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
+Pong.left_downside_pad_bounce = physics.left_downside_pad_bounce
+Pong.is_downleft_pads_intersect = physics.is_downleft_pads_intersect
+
+Pong.right_upside_pad_bounce = physics.right_upside_pad_bounce
+Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
+Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
+Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
 
 Pong.segments_intersect = physics.segments_intersect
 Pong.scale_vector = physics.scale_vector
