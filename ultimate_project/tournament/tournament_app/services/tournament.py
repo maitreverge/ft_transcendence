@@ -14,6 +14,7 @@ class Tournament():
 		self.players = []
 		self.matchs = []
 		self.n_match = 0
+		self.r_match = 0
 
 	async def append_player(self, player):
 
@@ -49,6 +50,7 @@ class Tournament():
 	async def start_match(self, p1, p2, local_match_id):
 
 		print(f"START MATCH p1:{p1[0]} {p1[1]} p2:{p2[0]} {p2[1]} lmt:{local_match_id}", flush=True)
+		
 		multy = self.is_multyplayers(p1, p2)
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
@@ -58,14 +60,9 @@ class Tournament():
 				if response.status == 201:
 					data = await response.json()
 					match_id = data.get('matchId', None)					
-					link_match = {
-						"type": "linkMatch",
-						"tournamentId": self.id,
-						"localMatchId": local_match_id,			
-						"matchId": match_id,
-						"p1Id": p1[0], "p2Id": p2[0],
-						"p1Name": p1[1], "p2Name": p2[1],
-					}
+					link_match = self.create_link_match(
+						p1, p2, match_id, local_match_id
+					)
 					match = {
 						"matchId": match_id,						
 						"linkMatch": link_match
@@ -85,18 +82,33 @@ class Tournament():
 			(p.creator_id for p in self.players if p.id == p2[0]), None)
 		return p1_creator_id == p2_creator_id
 
+	def create_link_match(self, p1, p2, match_id, local_match_id):
+
+		self.n_match += 1
+		return {
+			"type": "linkMatch",
+			"tournamentId": self.id,
+			"localMatchId": local_match_id,			
+			"matchId": match_id,
+			"p1Id": p1[0],
+			"p2Id": p2[0],
+			"p1Name": p1[1],
+			"p2Name": p2[1],
+			"nMatch": self.n_match
+		} 
 
 	async def match_result(self, data):
 
+		self.r_match += 1
 		match_id = data.get('matchId')		
-		self.n_match += 1
 		match = next(
 			(m for m in self.matchs if m.get('matchId') == match_id), None)
 		if match:
 			match_result = {				
 				"type": "matchResult",
 				"tournamentId": self.id,
-				"localMatchId": match.get('linkMatch', {}).get('localMatchId'),			
+				"localMatchId": match.get('linkMatch', {}).get('localMatchId'),
+				"nMatch": match.get('linkMatch', {}).get('nMatch'),			
 				**data			
 			}
 			match['matchResult'] = match_result
@@ -105,11 +117,11 @@ class Tournament():
 
 	async def workflow(self, match_result):
 
-		if self.n_match == 1:
+		if self.r_match == 1:
 			await self.send_all_players(match_result)
-			link_match = self.create_inter_link()
+			link_match = self.create_inter_link(match_result, "m1")
 			await self.send_all_players(link_match)
-		elif self.n_match == 2:		
+		elif self.r_match == 2:		
 			await self.send_all_players(match_result)
 			nxt_plys = self.get_next_players()
 			if not None in (nxt_plys[0][0], nxt_plys[1][0]):
@@ -120,7 +132,7 @@ class Tournament():
 				link_match = self.create_fake_link(match_result, "m1", nxt_plys)
 				await self.send_all_players(link_match)
 				await self.create_fake_match(link_match, nxt_plys)
-		elif self.n_match == 3:
+		elif self.r_match == 3:
 			await self.send_all_players(match_result)
 			tournament_result = self.get_tournament_result(match_result)
 			await self.send_all_players(tournament_result)
@@ -128,8 +140,31 @@ class Tournament():
 			asyncio.create_task(self.end_remove())
 			self.launch = False
 
-	def create_inter_link(self):
-		pass
+	def create_inter_link(self, match_result, local_match_id):
+				
+		winner_id = match_result.get('winnerId')
+		winner_name = match_result.get('winnerName')	
+		n_match = match_result.get('nMatch')
+		if n_match == 1:
+			p1_id = winner_id
+			p2_name = winner_name
+			p2_id = 0
+			p2_name = " - "
+		elif n_match == 2:
+			p1_id = 0
+			p1_name = " - "
+			p2_id = winner_id
+			p2_name = winner_name
+		return {
+			"type": "linkMatch",
+			"tournamentId": self.id,
+			"localMatchId": local_match_id,			
+			"matchId": 0,
+			"p1Id": p1_id,
+			"p2Id": p2_id,
+			"p1Name": p1_name,
+			"p2Name": p2_name
+		}
 
 	def create_fake_link(self, match_result, local_match_id, nxt_plys):
 		
