@@ -55,14 +55,14 @@ class Pong:
 		# self.pads_y = [50, 50]		
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
-		self.ball_speed = 0.2
+		self.ball_speed = 0.8
 		self.vect = self.get_random_vector() 
 		self.pad_speed = 2
 		self.max_ball_speed = 2 # //! 10
 		self.ball_acceleration = 1.3
-		self.bounce_delay = 0.005
-		self.send_delay = 0.005
-		self.gear_delay = 0.005
+		self.bounce_delay = 0.05
+		self.send_delay = 0.05
+		self.gear_delay = 0.05
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
@@ -90,7 +90,9 @@ class Pong:
 		]
 		try:
 			self.myEventLoop.run_until_complete(
-				asyncio.gather(*self.tasks, return_exceptions=True))
+				asyncio.gather(*self.tasks))
+		except Exception as e:
+			print(f"\033[31mException raised: {e}\033[0m", flush=True)
 		finally:
 			self.myEventLoop.close()				
 			from match_app.views import del_pong
@@ -328,6 +330,10 @@ Pong.vert_bounce = physics.vert_bounce
 Pong.horz_bounce = physics.horz_bounce
 # Pong.are_pads_intersecting = physics.are_pads_intersecting
 Pong.is_pad_intersecting = physics.is_pad_intersecting
+
+Pong.left_upside_pad_bounce = physics.left_upside_pad_bounce
+Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
+
 Pong.segments_intersect = physics.segments_intersect
 Pong.scale_vector = physics.scale_vector
 Pong.get_magnitude = physics.get_magnitude

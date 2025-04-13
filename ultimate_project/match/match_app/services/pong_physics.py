@@ -27,6 +27,10 @@ async def bounces(self):
 
 	await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
 	await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
+	# print(f"yeee", flush=True)
+	
+	await self.left_upside_pad_bounce()
+	# print(f"yoooooo", flush=True)
 	# await self.vert_bounce
 	await self.vert_bounce(op.le, limit=self.y_top)
 	await self.vert_bounce(op.ge, limit=self.y_bot)
@@ -86,13 +90,34 @@ async def vert_bounce(self, cmp, limit):
 # 		self.is_pad_intersecting(op.ge, limit=self.x_rght_pad, pad_y_idx=1) or \
 # 		self.is_pad_intersecting(op.le, limit=self.x_left_pad, pad_y_idx=0)
 
-# def calculate_pads_segments(self):
-	
-# 	lu = [[left_limit, self.yp1 - self.pad_height / 2], [left_limit - self.pads_width, self.yp1 - self.pad_height / 2]]
-# 	ld = [[left_limit, self.yp1 + self.pad_height / 2], [left_limit - self.pads_width, self.yp1 + self.pad_height / 2]]
-# 	ru = [[rght_limit, self.yp2 - self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 - self.pad_height / 2]]
-# 	rd = [[rght_limit, self.yp2 + self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 + self.pad_height / 2]]
+	# ru = [[rght_limit, self.yp2 - self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 - self.pad_height / 2]]
+	# rd = [[rght_limit, self.yp2 + self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 + self.pad_height / 2]]
+async def left_upside_pad_bounce(self):
+	# print(f"houlaaaa", flush=True)
+	if self.is_upleft_pads_intersect(self.x_left_pad) and self.wall_flag:
+		print(f"houlaaaa 000", flush=True)
+		bounce_vect = [0, 0]
+		bounce_vect[1] = (self.yp1 - self.pad_height / 2) - self.ball[1]
+		bounce_vect[0] = self.scale_vector(
+			bounce_vect[1], self.vect[0], self.vect[1])	
+		self.ball[0] += bounce_vect[0]				
+		self.ball[1] += bounce_vect[1]
+		await self.bounce_send_state()
+		self.vect[1] = -self.vect[1]		
+		self.wall_flag = False
+	# print(f"houlaaaa 222", flush=True)
 
+def is_upleft_pads_intersect(self, left_limit):
+	# print(f"isupleft", flush=True)
+	lu = ((left_limit, self.pads_y[0] - self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] - self.pad_height / 2))
+	ld = ((left_limit, self.pads_y[0] + self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] + self.pad_height / 2))
+	# print(f"isupleft 222", flush=True)
+	return self.segments_intersect(
+		(self.ball[0], self.ball[1]),
+		(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
+		lu[0],
+		lu[1]
+	)
 # def is_upsidepad_intersecting(self, cmp, limit, pad_y_idx):
 
 # 	if (self.vect[1] > 0) #hor case ==
@@ -120,7 +145,7 @@ def is_pad_intersecting(self, cmp, limit, pad_y_idx): #opti cmp!!!!!
 			(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
 	
 def segments_intersect(self, A, B, C, D, eps=1e-9):
-
+	# print(f"segment", flush=True)
 	def orientation(p, q, r):
 		# Déterminant orienté
 		val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
