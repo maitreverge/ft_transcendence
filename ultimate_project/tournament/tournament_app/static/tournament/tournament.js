@@ -621,11 +621,11 @@ function linkMatch(lk)
 	// overlay.style = "transform:translate(-180px, 200px);"
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
-	if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
-	{
-		console.log("je sors de link match parceque p1 ou p2 ne sont pas vide");
-		return;
-	}
+	// if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
+	// {
+	// 	console.log("je sors de link match parceque p1 ou p2 ne sont pas vide");
+	// 	return;
+	// }
 	localP1.innerText = lk.p1Name;
 	localP2.innerText = lk.p2Name;
 	setNextMatch(lk, localMatch);
@@ -689,9 +689,17 @@ function setNextMatch(lk, localMatch)
 		ws.playerId == lk.p2Id
 	);
 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
+	{
+		console.log("ADD NEXT MATCH selfid ", window.selfId, " p1id ", lk.p1Id, " p2id ", lk.p2Id, " ws ", ws);
+		localMatch.classList.remove("spec-match");
 		localMatch.classList.add("next-match");	
+	}
 	else
+	{
+		console.log("ADD SPEC MATCH selfid ", window.selfId, " p1id ", lk.p1Id, " p2id ", lk.p2Id, " ws ", ws);
+		localMatch.classList.remove("next-match");
 		localMatch.classList.add("spec-match");
+	}
 }
 
 function enterTournamentMatch(lk, overlay)

@@ -145,9 +145,10 @@ class Tournament():
 		winner_id = match_result.get('winnerId')
 		winner_name = match_result.get('winnerName')	
 		n_match = match_result.get('nMatch')
+		print(f"n_match ******************************************************************* {n_match}", flush=True)
 		if n_match == 1:
 			p1_id = winner_id
-			p2_name = winner_name
+			p1_name = winner_name
 			p2_id = 0
 			p2_name = " - "
 		elif n_match == 2:
@@ -168,6 +169,7 @@ class Tournament():
 
 	def create_fake_link(self, match_result, local_match_id, nxt_plys):
 		
+		self.n_match += 1
 		match_id = -match_result.get('matchId')
 		link_match = {
 			"type": "linkMatch",
@@ -177,7 +179,8 @@ class Tournament():
 			"p1Id": nxt_plys[0][0],
 			"p2Id": nxt_plys[1][0],
 			"p1Name": nxt_plys[0][1],
-			"p2Name": nxt_plys[1][1]
+			"p2Name": nxt_plys[1][1],
+			"nMatch": self.n_match
 		}
 		match = {
 			"matchId": match_id,						
@@ -205,7 +208,8 @@ class Tournament():
 			"looserName": looser[1],
 			"p1Id": link_match.get('p1Id'),
 			"p2Id": link_match.get('p2Id'),
-			"score": [0, 0]
+			"score": [0, 0],
+			"nMatch": link_match.get('nMatch')
 		}
 		await self.match_result(data)
 
