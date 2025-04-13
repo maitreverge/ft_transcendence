@@ -183,6 +183,11 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
+        "daphne.access": {  # ! DAPHNE loggers to block healhchecks
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 

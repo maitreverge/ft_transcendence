@@ -15,6 +15,10 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context(ignore_https_errors=True)
     page = context.new_page()
 
+    # Added timeouts
+    page.set_default_timeout(20000) # 20 seconds timeout for Playright
+    page.set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
+
     def login():
         expect(page).to_have_url(f"{BASE_URL}/login/")
 

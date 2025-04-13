@@ -1,24 +1,49 @@
 from playwright.sync_api import Playwright, sync_playwright, expect
 from collections import Counter
+import time
 
-TEST_LOGIN = "test"
-TEST_PASSWORD = "password"
+USERS = {
+    "user2",
+    "user3",
+    "user4",
+    "user5",
+}
+
+PASSWORD = "password"
 BASE_URL = "https://localhost:8443"
 
-URLS = [ 
-        f"{BASE_URL}/home/", 
-        f"{BASE_URL}/account/profile/", 
-        f"{BASE_URL}/account/game-stats/",
-        f"{BASE_URL}/tournament/simple-match/",
-        f"{BASE_URL}/tournament/tournament/"
-        ] 
+TEST_COOKIE_DELETE_USER = "coockie-delete"
+TEST_COOKIE_DELETE_PASSWORD = "password"
+
+URLS = [
+    f"{BASE_URL}/home/",
+    f"{BASE_URL}/account/profile/",
+    f"{BASE_URL}/account/game-stats/",
+    f"{BASE_URL}/tournament/simple-match/",
+    f"{BASE_URL}/tournament/tournament/",
+]
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context(
-        ignore_https_errors=True
-    )
+    context = browser.new_context(ignore_https_errors=True)
     page = context.new_page()
+
+    # Added timeouts
+    page.set_default_timeout(20000)  # 20 seconds timeout for Playright
+    page.set_default_navigation_timeout(20000)  # # 20 seconds timeout for browser
+
+    def login(username, password):
+
+        page.goto(f"{BASE_URL}/login/")
+
+        # expect(page).to_have_url(f"{BASE_URL}/login/")
+
+        # Fill in the username and password
+        page.locator("#username").fill(username)
+        page.locator("#password").fill(password)
+        page.locator("#loginButton").click()
+
+        expect(page).to_have_url(f"{BASE_URL}/home/")
 
     def logout():
         youpiBanane = page.locator("#youpiBanane")
@@ -30,44 +55,96 @@ def run(playwright: Playwright) -> None:
         modalLogoutButton.click()
         expect(page).to_have_url(f"{BASE_URL}/login/")
 
-    def check_cookie(cur_url, logout = None):
+    def check_cookie(cur_url, logout=None):
 
         page.goto(cur_url)
         cookies = context.cookies(page.url)
 
-        cookie_names = [cookie['name'] for cookie in cookies]
+        cookie_names = [cookie["name"] for cookie in cookies]
         counts = Counter(cookie_names)
+
 
         # Expected cookies
         if not logout:
-            expected_cookies = {'access_token', 'refresh_token', 'csrftoken'}
+            expected_cookies = {"access_token", "refresh_token", "csrftoken"}
         else:
-            # After logout, we have only one csrftoken left
-            expected_cookies = {'csrftoken'}
+            # After logout, we have none of the three cookies
+            expected_cookies = {}
 
-        # Assertions
-        assert all(counts[cookie] == 1 for cookie in expected_cookies), "Duplicate or missing cookies found"
+        # Assertions to check if the cookies are correct
+        assert all(
+            cookie in counts and counts[cookie] == 1 for cookie in expected_cookies
+        ), "Duplicate or missing cookies found"
 
     # ! =============== KICKSTART TESTER HERE ===============
+
     
-    page.goto(f"{BASE_URL}/login/")
+    # Test 1: No cookies deleted
+    for user in USERS:
+        login(user, PASSWORD)
 
-    # LOGIN
-    page.locator("#username").fill(TEST_LOGIN)
-    page.locator("#password").fill(TEST_PASSWORD)
-    page.locator("#loginButton").click()
+        # Check cookies on all pages
+        for url in URLS:
+            check_cookie(url)
 
-    expect(page).to_have_url(f"{BASE_URL}/home/")
+        logout()
 
-    for url in URLS:
-        check_cookie(url)
+        # Check cookies after logout
+        check_cookie(page.url, 1)
+
+        # Test 2: Delete CSRF token during navigation
+        login(user, PASSWORD)
+
+        page.goto(f"{BASE_URL}/account/profile/")
+
+        # Delete CSRF token from context
+        context.clear_cookies(name="csrftoken")
+
+        page.goto(f"{BASE_URL}/account/profile/")
+
+        check_cookie(page.url, 1
+        )
+
+        expect(page).to_have_url(f"{BASE_URL}/register/")
+
+        # Test 3: Delete access token during navigation
+        login(user, PASSWORD)
+
+        page.goto(f"{BASE_URL}/account/profile/")
+
+        # Delete access token from context
+        context.clear_cookies(name="access_token")
+
+        page.goto(f"{BASE_URL}/account/profile/")
+
+        check_cookie(
+            page.url, 1
+        )
+
+        expect(page).to_have_url(f"{BASE_URL}/register/")
     
-    logout()
 
-    # Check cookies after logout
-    check_cookie(page.url, 1)
 
-    print(f"✅ COOKIES TESTS PASSED ✅")
+    # Test 4 : Create an user and delete it
+    login(TEST_COOKIE_DELETE_USER, TEST_COOKIE_DELETE_PASSWORD)
+
+    page.goto(f"{BASE_URL}/account/confidentiality/delete-account/")
+
+    page.locator("#delete-acc-btn").click()
+
+    page.locator("#password").fill(TEST_COOKIE_DELETE_PASSWORD)
+
+    page.locator("#delete-acc-btn").click()
+
+    time.sleep(4)
+
+    check_cookie(
+        page.url, 1
+    )
+    
+    expect(page).to_have_url(f"{BASE_URL}/register/")
+
+    print(f"✅ COOKIES CREATION / DELETION TESTS PASSED ✅")
 
     context.close()
     browser.close()

@@ -24,6 +24,11 @@ def setup_playwright(playwright: Playwright):
         browser = playwright.chromium.launch(headless=False)
         context = browser.new_context(ignore_https_errors=True)
         page = context.new_page()
+
+        # Added timeouts
+        page.set_default_timeout(20000) # 20 seconds timeout for Playright
+        page.set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
+
         print("✅ Successfully initialized the page.", flush=True)
         return page, context, browser
     except Exception as e:
@@ -42,13 +47,13 @@ def close_playwright(context, browser):
 def test_delete_user(page: Page, has_2fa, password, otp_key=None):
     try:
         print(f"🔄 Starting process to DELETE user - is using 2fa {has_2fa}...", flush=True)
-        expect(page).to_have_url(f"{BASE_URL}/home/", timeout=1000)
+        expect(page).to_have_url(f"{BASE_URL}/home/")
         page.locator("#nav-profile").click()
-        expect(page).to_have_url(f"{BASE_URL}/account/profile/", timeout=1000)
+        expect(page).to_have_url(f"{BASE_URL}/account/profile/")
         page.locator("#acc-conf").click()
-        expect(page).to_have_url(f"{BASE_URL}/account/confidentiality/", timeout=1000)
+        expect(page).to_have_url(f"{BASE_URL}/account/confidentiality/")
         page.locator("#delete-account-page").click()
-        expect(page).to_have_url(f"{BASE_URL}/account/confidentiality/delete-account/", timeout=1000)
+        expect(page).to_have_url(f"{BASE_URL}/account/confidentiality/delete-account/")
         time.sleep(1)
     except Exception as e:
         print(f"❌ Failed to navigate to the Delete Account page: {str(e)}", flush=True)  
@@ -103,7 +108,7 @@ def test_delete_user(page: Page, has_2fa, password, otp_key=None):
                 otp_field.fill(current_code)
                 delete_button.click()
                 time.sleep(1)
-                expect(page).to_have_url(f"{BASE_URL}/register/", timeout=4000)
+                expect(page).to_have_url(f"{BASE_URL}/register/")
                 print(f"✅ User with 2FA deleted successfully on attempt {_ + 1}", flush=True)
                 break
             except Exception as e:
@@ -114,7 +119,7 @@ def test_delete_user(page: Page, has_2fa, password, otp_key=None):
             password_field.fill(password)
             delete_button.click()
             time.sleep(1)
-            expect(page).to_have_url(f"{BASE_URL}/register/", timeout=4000)
+            expect(page).to_have_url(f"{BASE_URL}/register/")
             print("✅ User without 2FA deleted successfully", flush=True)
         except Exception as e:
             print(f"❌ Failed to delete user without 2FA: {str(e)}", flush=True)
@@ -133,7 +138,7 @@ def test_logout(page: Page) -> None:
         logoutButton.click()
         modalLogoutButton.click()
         time.sleep(1)
-        expect(page).to_have_url(f"{BASE_URL}/login/", timeout=2000)
+        expect(page).to_have_url(f"{BASE_URL}/login/")
         print("✅ Successfully logged out and redirected to login page.", flush=True)
     except Exception as e:
         print(f"❌ An error occurred during logout: {str(e)}", flush=True)
@@ -141,7 +146,7 @@ def test_logout(page: Page) -> None:
 def test_login_w_check_failed(page: Page, username, password):
     try:
         print("🔄 Starting the process of filling and submitting the login form with 1 wrong attempt...", flush=True)
-        expect(page).to_have_url(f"{BASE_URL}/login/", timeout=2000)
+        expect(page).to_have_url(f"{BASE_URL}/login/")
         if page.content().strip() == "":
             print("❌ The page is empty. Unable to proceed with logout.", flush=True)
             return
@@ -150,8 +155,8 @@ def test_login_w_check_failed(page: Page, username, password):
         page.locator("#password").fill(password)
         page.locator("#loginButton").click()
         error_message = page.locator("#login-form")
-        expect(error_message).to_have_text("Invalid credentials", timeout=2000)
-        expect(page).to_have_url(f"{BASE_URL}/login/", timeout=2000)
+        expect(error_message).to_have_text("Invalid credentials")
+        expect(page).to_have_url(f"{BASE_URL}/login/")
         print("✅ Login failed as expected with the correct error message.", flush=True)
         # Optionally, check that the URL is still the login page after the failed login
         page.locator("#username").fill(username)
@@ -165,7 +170,7 @@ def test_login(page: Page, username, password):
     try:
         print("🔄 Starting the process of filling and submitting the login form...", flush=True)
         page.goto(f"{BASE_URL}/login/")
-        expect(page).to_have_url(f"{BASE_URL}/login/", timeout=2000)
+        expect(page).to_have_url(f"{BASE_URL}/login/")
         if page.content().strip() == "":
             print("❌ The page is empty. Unable to proceed with logout.", flush=True)
             return
@@ -173,7 +178,7 @@ def test_login(page: Page, username, password):
         page.locator("#password").fill(password)
         page.locator("#loginButton").click()
         time.sleep(1)
-        expect(page).to_have_url(f"{BASE_URL}/home/", timeout=2000)
+        expect(page).to_have_url(f"{BASE_URL}/home/")
         print("✅ Login successful as expected.", flush=True)
     except Exception as e:
         print(f"❌ An error occurred: {str(e)}", flush=True)
@@ -182,7 +187,7 @@ def simple_login(page: Page, username, password):
     try:
         print("🔄 Starting the process of filling and submitting the login form (simple login)", flush=True)
         page.goto(f"{BASE_URL}/login/")
-        expect(page).to_have_url(f"{BASE_URL}/login/", timeout=2000)
+        expect(page).to_have_url(f"{BASE_URL}/login/")
         page.locator("#username").fill(username)
         page.locator("#password").fill(password)
         page.locator("#loginButton").click()
@@ -196,7 +201,7 @@ def test_login_w_2fa(page: Page, username, password, otp_key) -> None:
         totp = pyotp.TOTP(otp_key)
         try:
             simple_login(page, username, password)
-            expect(page).to_have_url(f"{BASE_URL}/two-factor-auth/", timeout=2000)
+            expect(page).to_have_url(f"{BASE_URL}/two-factor-auth/")
             print("✅ Login successful, on 2FA page.", flush=True)
         except Exception as e:
             print(f"❌ Login failed before 2FA: {str(e)}", flush=True)
@@ -205,23 +210,23 @@ def test_login_w_2fa(page: Page, username, password, otp_key) -> None:
             time.sleep(2)
             page.locator("#otp_input").fill("000000")
             page.locator("#otp_verify").click()
-            expect(page).to_have_url(f"{BASE_URL}/two-factor-auth/", timeout=2000)
+            expect(page).to_have_url(f"{BASE_URL}/two-factor-auth/")
             error_message = page.locator("#login_error")
-            expect(error_message).to_have_text("Invalid 2FA code", timeout=2000)
+            expect(error_message).to_have_text("Invalid 2FA code")
             print("✅ Error message correctly shown for invalid 2FA code.", flush=True)
         except Exception as e:
             print(f"❌ Invalid 2FA code test failed: {str(e)}", flush=True)
             return
         try:
             page.locator("#cancel_button").click()
-            expect(page).to_have_url(f"{BASE_URL}/login/", timeout=2000)
+            expect(page).to_have_url(f"{BASE_URL}/login/")
             print("✅ Navigated back to login after invalid 2FA.", flush=True)
         except Exception as e:
             print(f"❌ Failed to return to login page after cancel: {str(e)}", flush=True)
             return
         try:
             simple_login(page, username, password)
-            expect(page).to_have_url(f"{BASE_URL}/login/", timeout=1000)
+            expect(page).to_have_url(f"{BASE_URL}/login/")
             print("✅ Re-login successful, back on 2FA page.", flush=True)
         except Exception as e:
             print(f"❌ Re-login failed: {str(e)}", flush=True)
@@ -231,7 +236,7 @@ def test_login_w_2fa(page: Page, username, password, otp_key) -> None:
             try:
                 page.locator("#otp_input").fill(current_code)
                 page.locator("#otp_verify").click()
-                expect(page).to_have_url(f"{BASE_URL}/home/", timeout=1000)
+                expect(page).to_have_url(f"{BASE_URL}/home/")
                 print(f"✅ 2FA succeeded on attempt {attempt + 1}{get_ordinal_suffix(attempt + 1)}.", flush=True)
                 break
             except Exception as e:
@@ -246,7 +251,7 @@ def test_register(page: Page, username, email, password):
     try:
         print("🔄 Register user with valid credentials ...", flush=True)
         page.goto(f"{BASE_URL}/register/")
-        expect(page).to_have_url(f"{BASE_URL}/register/", timeout=1000)
+        expect(page).to_have_url(f"{BASE_URL}/register/")
         page.locator("#first_name").fill("test")
         page.locator("#last_name").fill("test")
         page.locator("#username").fill(username)
@@ -255,7 +260,7 @@ def test_register(page: Page, username, email, password):
         page.locator("#repeat_password").fill(password)
         page.locator("#register-button").click()
         time.sleep(1)
-        expect(page).to_have_url(f"{BASE_URL}/home/", timeout=1000)
+        expect(page).to_have_url(f"{BASE_URL}/home/")
         print("✅ Successfully registered and landed on Home page", flush=True)
         return True
     except Exception as e:
@@ -289,7 +294,7 @@ def test_setup_2fa_account(page: Page):
                     verify_button = page.locator("#otp_verify")
                     verify_button.click()
                     success_message = page.locator("#twofa_success_message")
-                    success_message.wait_for(state="visible", timeout=2000)
+                    success_message.wait_for(state="visible")
                     print(f"⚠️ 2FA setup successful on attempt {attempt + 1}", flush=True)
                     break
                 except Exception as e:

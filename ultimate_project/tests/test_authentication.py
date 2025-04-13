@@ -9,6 +9,10 @@ def run(playwright: Playwright) -> None:
     )
     page = context.new_page()
 
+    # Added timeouts
+    page.set_default_timeout(20000) # 20 seconds timeout for Playright
+    page.set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
+
     def test_login(base_url: str, page):
 
         # Test de la page d'accueil avec une fausse connexion

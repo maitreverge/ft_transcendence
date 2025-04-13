@@ -220,7 +220,7 @@ function enterMatch(match)
 	let player2Name = "";
 	if (match.multy)
 	{
-		player2Id = match.otherId;
+		player2Id = -window.selfId;//match.otherId;
 		player2Name = match.otherName;
 	}
 	fetch(
@@ -273,7 +273,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 		if (matchs.every(el => el.matchId != match.id)) {
 			if (match.id == window.selfMatchId)
 			{
-				if (window.busyElement)
+				if (window.busyElement)// je dois savoir si le match qui dois etre remove est lie a un joueur en remote et retourver ce joueur pour lui enlever la classe (quil l'ait ou non)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
 				if (window.selectedElement)	
@@ -380,12 +380,16 @@ function invitationCancelled(targetName) {
 
 function selectedBusy() {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy", "The player is busy", "", "")
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy", "The player is busy", "", "");
 
 	// alert("selectedBusy");
 	if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
+}
+
+function selfBusy() {
+	messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "");
 }
 
 function invitationRefused(targetName) {
@@ -431,7 +435,7 @@ function sendPlayerClick(socket, event, selected)
 {
 	// if (typeof stopMatch === 'function')
 	// 	stopMatch(window.selfMatchId);
-	window.selectedElement = selected;
+	// window.selectedElement = selected;
 	event.stopPropagation();
 	if (!window.busyElement)
 		window.busyElement = selected;
@@ -519,8 +523,7 @@ function invitation(socket, data) {
 	{
 		case "back":	   		
 			if (data.response === "selfBusy")
-                messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "")
-				// alert("selfBusy");
+				selfBusy();		
 			else if (data.response === "selectedBusy")
 				selectedBusy();	
 			break;

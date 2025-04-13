@@ -2,7 +2,7 @@ services:
   user:
     container_name: ctn_user
     build :
-      context: ../ # ! FUCKING DO NOT TOUCH THIS, I LOST 5 LIFETIME YEARS ON THIS
+      context: ../
       dockerfile: _docker/Dockerfile
     environment:
       env: prod
