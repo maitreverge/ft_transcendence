@@ -10,31 +10,164 @@
       </div>
     </div>
   </div>
+
   <div class="row mt-4">
-    <!-- Games Won / Lost Pie Chart -->
-    <div class="col-md-6 mb-4 d-flex justify-content-center">
-      <div class="pie-chart-container">
-        <canvas id="gamesPie"></canvas>
-        <div class="chart-center-label">{{ main_stats.win_rate }}%</div>
+    <!-- Games Won / Lost Pie Chart Card -->
+    <div class="col-md-6 mb-4">
+      <div class="poly-card text-center">
+        <p class="label-text mb-1">Games Performance</p>
+        <div class="pie-chart-container">
+          <canvas id="gamesPie"></canvas>
+          <div class="chart-center-label">
+            {{ main_stats.win_rate }}%
+            <div class="inside-doughnut-text">Win Rate</div>
+          </div>
+        </div>
+        <hr />
+        <div class="game-stats-container">
+          <p>
+            <span data-translate="Games won: ">Games won: </span>
+            <span class="text-primary">{{ main_stats.games_won }}</span>
+          </p>
+          <p>
+            <span data-translate="Games lost: ">Games lost: </span>
+            <span class="text-danger">{{ main_stats.games_lost }}</span>
+          </p>
+        </div>
       </div>
     </div>
-  
-    <!-- Points Scored / Conceded Pie Chart -->
-    <div class="col-md-6 mb-4 d-flex justify-content-center">
-      <div class="pie-chart-container">
-        <canvas id="pointsPie"></canvas>
-        <div class="chart-center-label">{{ main_stats.average_score }}</div>
+
+    <!-- Points Scored / Conceded Pie Chart Card -->
+    <div class="col-md-6 mb-4">
+      <div class="poly-card text-center">
+        <p class="label-text mb-1">Points Performance</p>
+        <div class="pie-chart-container">
+          <canvas id="pointsPie"></canvas>
+          <div class="chart-center-label">
+            {{ main_stats.average_score }}
+            <div class="inside-doughnut-text">Average Score</div>
+          </div>
+        </div>
+        <hr />
+        <div class="game-stats-container">
+          <p>
+            <span data-translate="Points Scored: ">Scored: </span>
+            <span class="text-primary">{{ main_stats.points_scored }}</span>
+          </p>
+          <p>
+            <span data-translate="Points Conceded: ">Conceded: </span>
+            <span class="text-danger">{{ main_stats.points_conceded }}</span>
+          </p>
+        </div>
       </div>
     </div>
+
+    <!-- end chart 2-->
   </div>
-  
 </div>
 
+<!-- Use json_script to safely pass main_stats to JavaScript -->
+{{ main_stats|json_script:"mainStats" }}
+<script src="{% static 'static_files/vendor/chart.js/Chart.min.js' %}"></script>
 
-<script src="{% static 'stats/overview.js' %}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const gamesPie = document.getElementById("gamesPie")?.getContext("2d");
+    const pointsPie = document.getElementById("pointsPie")?.getContext("2d");
+
+    // Get the data from the JSON script
+    const mainStats = JSON.parse(
+      document.getElementById("mainStats").textContent
+    );
+
+    if (gamesPie && pointsPie) {
+      const gamesPlayed = mainStats.games_played;
+      const gamesWon = mainStats.games_won;
+      const gamesLost = mainStats.games_lost;
+      const winRate = mainStats.win_rate;
+      const averageScore = mainStats.average_score;
+      const pointsScored = mainStats.points_scored;
+      const pointsConceded = mainStats.points_conceded;
+
+      // Create the Games Won/Lost Pie Chart
+      new Chart(gamesPie, {
+        type: "doughnut",
+        data: {
+          labels: ["Games Won", "Games Lost"],
+          datasets: [
+            {
+              data: [gamesWon, gamesLost],
+              backgroundColor: ["#007bff", "#ff4d4d"], // Blue for wins, red for losses
+              hoverBackgroundColor: ["#0056b3", "#cc0000"], // Hover colors for interactivity
+              hoverBorderColor: "rgba(234, 236, 244, 1)",
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: "#dddfeb",
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+          },
+          legend: {
+            display: false, // This will remove the legend completely
+          },
+          cutoutPercentage: 80,
+          animation: {
+            animateScale: true,
+            animateRotate: true,
+          },
+        },
+      });
+
+      // Create the Points Scored/Conceded Pie Chart
+      new Chart(pointsPie, {
+        type: "doughnut",
+        data: {
+          labels: ["Points Scored", "Points Conceded"],
+          datasets: [
+            {
+              data: [pointsScored, pointsConceded],
+              backgroundColor: ["#007bff", "#ff4d4d"], // Blue for scored, red for conceded
+              hoverBackgroundColor: ["#0056b3", "#cc0000"], // Hover colors for interactivity
+              hoverBorderColor: "rgba(234, 236, 244, 1)",
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: "#dddfeb",
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+          },
+          legend: {
+            display: false, // This will remove the legend completely
+          },
+          cutoutPercentage: 80,
+          animation: {
+            animateScale: true,
+            animateRotate: true,
+          },
+        },
+      });
+    }
+  });
+</script>
 
 <style>
-  #overview-content .poly-card {
+  .poly-card {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(24px) saturate(160%);
     -webkit-backdrop-filter: blur(24px) saturate(160%);
@@ -53,8 +186,15 @@
     letter-spacing: 1px;
   }
 
+  .inside-doughnut-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 0.5rem;
+  }
+
   .games-number {
-    font-size: 3.5rem;
+    font-size: 3rem;
     font-weight: 800;
     color: #111827;
   }
@@ -66,7 +206,60 @@
     border-radius: 2px;
   }
 
+  .text-primary {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #007bff;
+  }
+
+  .text-danger {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ff4d4d;
+  }
+
+  .pie-chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+  }
+
+  .chart-center-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #858796;
+  }
+
   body {
     background: linear-gradient(145deg, #e2e8f0, #f1f5f9);
+  }
+
+  /* New styles for spacing and layout */
+  .game-stats-container {
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .game-stats-container p {
+    margin: 0.5rem 0;
+  }
+
+  /* Optional: Center the text in the paragraph */
+  .game-stats-container p span {
+    display: inline-block;
+    text-align: center;
+  }
+
+  .game-stats-container span {
+    color: #111827; /* Black text for labels */
   }
 </style>

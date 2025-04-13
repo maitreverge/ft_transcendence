@@ -9,3 +9,4 @@ pillow
 requests
 django-otp
 django-cors-headers
+whitenoise
