@@ -50,8 +50,11 @@ background-color: var(--navbars-color);
 {
   background-color: var(--background-color);
 }
-
-.navbars_color, .card, .card-header
+.navbars_color i {
+  /* background-color: var(--navbars-color) !important; */
+  color: var(--navbars-color) !important;
+}
+.card, .card-header
 {
   background-color: var(--navbars-color) !important;
   color: var(--title-color) !important;

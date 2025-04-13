@@ -3,7 +3,7 @@
 <div style="display:none;">
 
     <head>
-        <link rel="stylesheet" href="{% static 'tournament/styles.css' %}">
+        <!-- <link rel="stylesheet" href="{% static 'tournament/styles.css' %}"> -->
         <script>
             window.rasp = "{{ rasp }}";
             window.pidom = "{{ pidom }}";
@@ -17,28 +17,28 @@
 <div class="container-fluid m-0">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block bg-light p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
+        <nav class="sidebar col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
             <div class="sidebar-sticky text-center">
                 <!-- Account Settings Title -->
-                <h1 class="mb-3 text-gray-800 pt-2"><strong>Tournament</strong></h1>
+                <h1 class="mb-3 pt-2"><strong>Match</strong></h1>
                 <ul class="nav flex-column pt-5">
                     <!-- Profile Section -->
                     <li class="nav-item mb-3">
-                        <a id="side-nav-home" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/home/" hx-target="#main_div" hx-swap="innerHTML"
+                        <a id="side-nav-home" class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/home/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
                             <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Home</h5>
                         </a>
                     </li>
                     <li class="nav-item mb-3">
-                        <a id="side-nav-tournament" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
+                        <a id="side-nav-tournament" class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
                             hx-push-url="true">
-                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Tournament</h5>
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Simple Match</h5>
                         </a>
                     </li>
                     <li  id="side-nav-info" class="nav-item mb-3">
                         <div id="overlayButton" onclick="replayTuto()"
-                            class="nav-link btn btn-outline-primary rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                            <i class="mr-2 fas fa-info-circle"></i><h5>Info</h5>
+                            class="nav-link rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                            <i class="mr-2 fas fa-info-circle"></i><a><h5>Info</h5></a>
                     </div>
                     </li>
                 </ul>
@@ -62,17 +62,17 @@
                         <div class="col-lg-4">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 text-center font-weight-bold text-primary">Player pool</h6>
+                                    <h6 class="m-0 text-center font-weight-bold ">Player pool</h6>
                                 </div>
                                 <div class="card-header py-3">
                                     <div class="d-flex flex-column gap-2">
-                                        <input class="form-control border-0 w-100" id="player-name" type="text"
+                                        <input class="background_color form-control border-0 w-100" id="player-name" type="text"
                                             maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
                                             oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
                                         <button onclick="newPlayer(window.tournamentSocket); prefillName();"
-                                            class="btn btn-primary d-flex align-items-center justify-content-between w-100">
+                                            class="background_color btn d-flex align-items-center justify-content-between w-100">
                                             <span class="text">Add Player</span>
-                                            <span class="icon text-white-50">
+                                            <span class="navbars_color icon text-white-50">
                                                 <i class="fas fa-arrow-right"></i>
                                             </span>
                                         </button>
@@ -83,7 +83,7 @@
                         <div class="col-lg-4 d-flex flex-column">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 text-center font-weight-bold text-primary">Tournament</h6>
+                                    <h6 class="m-0 text-center font-weight-bold ">Tournament</h6>
                                 </div>
                             </div>
                             <div class="d-sm-none card shadow">
@@ -108,10 +108,10 @@
                             <div class="card shadow">
                                 <div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
                                     <button onclick="newTournament(window.tournamentSocket)"
-                                        class="w-100 btn btn-primary d-flex align-items-center justify-content-between">
+                                        class="w-100 background_color btn d-flex align-items-center justify-content-between">
                                         <span class="text">Create Tournament</span>
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-arrow-right"></i>
+                                        <span class="navbars_color icon">
+                                            <i class="navbars_color fas fa-arrow-right"></i>
                                         </span>
                                     </button>
 
