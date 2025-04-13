@@ -86,13 +86,29 @@ async def vert_bounce(self, cmp, limit):
 # 		self.is_pad_intersecting(op.ge, limit=self.x_rght_pad, pad_y_idx=1) or \
 # 		self.is_pad_intersecting(op.le, limit=self.x_left_pad, pad_y_idx=0)
 
-# def is_sidepad_intersecting(self, cmp, limit, pad_y_idx):
+# def calculate_pads_segments(self):
+	
+# 	lu = [[left_limit, self.yp1 - self.pad_height / 2], [left_limit - self.pads_width, self.yp1 - self.pad_height / 2]]
+# 	ld = [[left_limit, self.yp1 + self.pad_height / 2], [left_limit - self.pads_width, self.yp1 + self.pad_height / 2]]
+# 	ru = [[rght_limit, self.yp2 - self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 - self.pad_height / 2]]
+# 	rd = [[rght_limit, self.yp2 + self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 + self.pad_height / 2]]
+
+# def is_upsidepad_intersecting(self, cmp, limit, pad_y_idx):
+
+# 	if (self.vect[1] > 0) #hor case ==
+# 	return self.segments_intersect(
+# 		(self.ball[0], self.ball[1]),
+# 		(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
+# 		(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
+# 		(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
+
+# def is_downsidepad_intersecting(self, cmp, limit, pad_y_idx):
 
 # 	return self.segments_intersect(
-# 			(self.ball[0], self.ball[1]),
-# 			(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
-# 			(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
-# 			(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
+# 		(self.ball[0], self.ball[1]),
+# 		(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
+# 		(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
+# 		(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
 
 def is_pad_intersecting(self, cmp, limit, pad_y_idx): #opti cmp!!!!!
 
