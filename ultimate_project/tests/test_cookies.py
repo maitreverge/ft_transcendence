@@ -22,6 +22,13 @@ URLS = [
     f"{BASE_URL}/tournament/tournament/",
 ]
 
+WRONG_SUB_URL = "lalalala"
+
+AUTH_PATH = [
+    "/login/",
+    "/register/",
+    "/two-factor-auth/",
+]
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -143,8 +150,20 @@ def run(playwright: Playwright) -> None:
     check_cookie(
         page.url, 1
     )
+    
+    expect(page).to_have_url(f"{BASE_URL}/register/")
 
-    context.clear_cookies(name="access_token")
+
+
+    # Test 5 : Check is there is a 404 in both login / register
+    
+    for paths in AUTH_PATH:
+        page.goto(f"{BASE_URL}{paths}{WRONG_SUB_URL}")
+        error = page.locator(".error mx-auto").inner_text()
+        assert error == "404"
+
+    
+
 
     print(f"✅ COOKIES CREATION / DELETION TESTS PASSED ✅")
 
