@@ -92,7 +92,9 @@ class Pong:
 			self.myEventLoop.run_until_complete(
 				asyncio.gather(*self.tasks, return_exceptions=True))
 		finally:
-			self.myEventLoop.close()
+			self.myEventLoop.close()				
+			from match_app.views import del_pong
+			del_pong(self.id)
 			print(f"Event loop fermé proprement pour match {self.id}", flush=True)
 
 	async def launch_game(self):
@@ -269,9 +271,9 @@ class Pong:
 		print(f"BEFORE SEND MATCH RESULT", flush=True)
 		await self.send_match_result(w_and_l[0], w_and_l[1])
 		print(f"AFTER SEND MATCH RESULT", flush=True)
-		await asyncio.gather(*self.tasks, return_exceptions=True)
-		from match_app.views import del_pong
-		del_pong(self.id)
+		# await asyncio.gather(*self.tasks, return_exceptions=True)
+		# from match_app.views import del_pong
+		# del_pong(self.id)
 
 	def get_winner_and_looser(self):
 

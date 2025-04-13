@@ -216,8 +216,8 @@ class Tournament():
 	async def end_remove(self):
 
 		print(f"END REMOVE", flush=True)
-		# await asyncio.sleep(20)
-		# await self.del_tournament()
+		await asyncio.sleep(30)
+		await self.del_tournament()
 
 	def get_next_players(self):
 
