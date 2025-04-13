@@ -60,7 +60,8 @@ EXCLUDED_PATH = [
     r"^/favicon.ico/?$",
     r"^/translations/[a-z]{2}.json/?$",
     r"^/match/stop-match/undefined/undefined/?$",
-    
+    r"^/match/stop-match/\d+/undefined/?$"
+
     # SwaggerUI related routes
     r"^/docs/?$",
     r"^/openapi.json/?$",
