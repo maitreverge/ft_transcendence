@@ -4,7 +4,6 @@
 ⚠️
 
 # BUG REPORT
-🟧 404 Quand on clique sur les update formulaires de Thomas
 🟧 ACCOUNT THOMAS => Quand on resize la page, les views droppent en bas
 
 
@@ -36,6 +35,7 @@
 
 ======================================= DONE =====================================
 
+✅ Delete healthchecks sur `tournament` et `match` containers
 
 ✅ Avoir les pages d'erreurs 404/500 sur `login/` et `regsiter/`
 

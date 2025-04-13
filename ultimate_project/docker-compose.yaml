@@ -1,6 +1,5 @@
 services:
-
-  # ===================================== NGINX ========================================
+  # ===================================== NGINX ==================================
   nginx:
     depends_on:
       user:
@@ -28,14 +27,14 @@ services:
       - "8000:80"
     volumes:
       - staticvol:/usr/share/nginx/static
-      # :ro => Read Only
+      # !   :ro => Read Only
       - ./nginx/envv/local.crt:/etc/nginx/ssl/local.crt:ro
       - ./nginx/envv/local.key:/etc/nginx/ssl/local.key:ro
     networks:
       - transcendence_network
     restart: on-failure
   
-# ===================================== DATABASE =====================================
+# ===================================== DATABASE =================================
   database:
     image: postgres:latest
     container_name: ctn_database
@@ -70,26 +69,26 @@ services:
       file: ./databaseapi/_docker/db_api_compose.yaml
       service: databaseapi
 
-# =================================== TOURNAMENTS ====================================
+# =================================== TOURNAMENTS ================================
   tournament:
     extends:
       file: ./tournament/_docker/tournament_compose.yaml
       service: tournament
 
-# ===================================== MATCHES ======================================
+# ===================================== MATCHES ==================================
   match:
     extends:
       file: ./match/_docker/match_compose.yaml
       service: match
 
-# ====================================== USERS =======================================
+# ====================================== USERS ===================================
   user:
     extends:
       file: ./user/_docker/user_compose.yaml
       service: user
 
 
-# ================================= STATIC_FILES =====================================
+# ================================= STATIC_FILES =================================
   static_files:
     container_name: ctn_static_files
     build :
@@ -115,7 +114,7 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
-# ================================= API GATEWAY ======================================
+# ================================= API GATEWAY ==================================
   api_gateway:
     container_name: ctn_api_gateway
     build :
@@ -133,7 +132,7 @@ services:
       - staticvol:/app/staticfiles
     restart: always
 
-# ================================= COMPOSE VOLUMES ==================================
+# ================================= COMPOSE VOLUMES ==============================
 volumes:
   # Seb Static files volumes
   staticvol:
@@ -147,7 +146,7 @@ volumes:
       device: '~/volumes_transcendence/postgres'
       o: bind
 
-# ================================= COMPOSE NETWORK ==================================
+# ================================= COMPOSE NETWORK ==============================
 networks:
   transcendence_network:
     name: transcendence_network
