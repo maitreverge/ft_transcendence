@@ -275,8 +275,8 @@ def is_pad_intersecting(self, cmp, limit, pad_y_idx): #opti cmp!!!!!
 		self.segments_intersect(
 			(self.ball[0], self.ball[1]),
 			(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
-			(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
-			(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
+			(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2) - self.ball_ray),
+			(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2) + self.ball_ray))
 	
 def segments_intersect(self, A, B, C, D, eps=1e-9):
 	# print(f"segment", flush=True)
