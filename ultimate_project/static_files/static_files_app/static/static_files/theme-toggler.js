@@ -1,23 +1,27 @@
-const themeToggle = document.querySelector('.switch .input');
-const htmlEl = document.documentElement;
+if (typeof themeToggle === 'undefined') {
+    let themeToggle = document.querySelector('.switch .input');
 
-themeToggle.addEventListener('change', () => {
-  if (themeToggle.checked) {
-    htmlEl.setAttribute('data-theme', 'dark');
-  } else {
-    htmlEl.setAttribute('data-theme', 'light');
-  }
-});
-// Au chargement
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-  htmlEl.setAttribute('data-theme', savedTheme);
-  themeToggle.checked = savedTheme === 'dark';
+    if (themeToggle) {
+        const htmlEl = document.documentElement;
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                htmlEl.setAttribute('data-theme', 'dark');
+            } else {
+                htmlEl.setAttribute('data-theme', 'light');
+            }
+        });
+        // Au chargement
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            htmlEl.setAttribute('data-theme', savedTheme);
+            themeToggle.checked = savedTheme === 'dark';
+        }
+
+        // Lors du switch
+        themeToggle.addEventListener('change', () => {
+            const newTheme = themeToggle.checked ? 'dark' : 'light';
+            htmlEl.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    }
 }
-
-// Lors du switch
-themeToggle.addEventListener('change', () => {
-  const newTheme = themeToggle.checked ? 'dark' : 'light';
-  htmlEl.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-});
