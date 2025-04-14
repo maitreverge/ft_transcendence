@@ -36,7 +36,7 @@ class Pong:
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 2
+		self.max_score = 5
 		self.point_delay = 1
 		self.start_delay = 4
 		self.max_wait_delay = 2000
@@ -57,12 +57,13 @@ class Pong:
 		self.ball = self.ball_rst.copy()
 		self.ball_speed = 0.2
 		self.vect = self.get_random_vector() 
+		# self.vect = [0.3, -0.5]
 		self.pad_speed = 2
 		self.max_ball_speed = 2 # //! 10
 		self.ball_acceleration = 1.3
-		self.bounce_delay = 0.005
-		self.send_delay = 0.005
-		self.gear_delay = 0.005
+		self.bounce_delay = 0.01
+		self.send_delay = 0.01
+		self.gear_delay = 0.01
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
@@ -78,7 +79,9 @@ class Pong:
 		# self.y_top = 40 + self.ball_ray
 		self.y_bot = 100 - self.ball_ray
 		# self.y_bot = 60 - self.ball_ray
-	
+		self.x_left_pad_back = self.pads_offset - self.ball_ray
+		self.x_rght_pad_back = 100 - self.x_left_pad_back
+
 	def launchTask(self):
 
 		self.myEventLoop = asyncio.new_event_loop()
@@ -90,7 +93,9 @@ class Pong:
 		]
 		try:
 			self.myEventLoop.run_until_complete(
-				asyncio.gather(*self.tasks, return_exceptions=True))
+				asyncio.gather(*self.tasks))
+		except Exception as e:
+			print(f"\033[31mException raised: {e}\033[0m", flush=True)
 		finally:
 			self.myEventLoop.close()				
 			from match_app.views import del_pong
@@ -328,6 +333,19 @@ Pong.vert_bounce = physics.vert_bounce
 Pong.horz_bounce = physics.horz_bounce
 # Pong.are_pads_intersecting = physics.are_pads_intersecting
 Pong.is_pad_intersecting = physics.is_pad_intersecting
+
+Pong.left_upside_pad_bounce = physics.left_upside_pad_bounce
+Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
+Pong.left_downside_pad_bounce = physics.left_downside_pad_bounce
+Pong.is_downleft_pads_intersect = physics.is_downleft_pads_intersect
+
+Pong.right_upside_pad_bounce = physics.right_upside_pad_bounce
+Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
+Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
+Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
+Pong.is_left_pad_hurt_ball = physics.is_left_pad_hurt_ball
+Pong.is_right_pad_hurt_ball = physics.is_right_pad_hurt_ball
+
 Pong.segments_intersect = physics.segments_intersect
 Pong.scale_vector = physics.scale_vector
 Pong.get_magnitude = physics.get_magnitude
