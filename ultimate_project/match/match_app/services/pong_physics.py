@@ -15,13 +15,24 @@ def pad_command(self, player, pad_idx):
 			self.pads_y[pad_idx] = max(
 				self.pads_y[pad_idx] - self.pad_speed,
 				(self.pad_height / 2)
-			)							
+			)
+			self.is_left_pad_hurt_ball('up')							
 		elif player["dir"] == 'down':					
 			self.pads_y[pad_idx] = min(
 				self.pads_y[pad_idx] + self.pad_speed,
 				100 - (self.pad_height / 2)
-			)					
+			)
+			self.is_left_pad_hurt_ball('dn')					
 		player["dir"] = None
+
+def is_left_pad_hurt_ball(self, sense):
+	
+	if self.x_left_pad_back < self.ball[0] < self.x_left_pad and \
+		self.pads_y[0] - self.pad_height < self.ball[1] < self.pads_y[0] + self.pad_height:
+		if sense == "up":
+			self.ball[1] = self.pads_y[0] - self.pad_height
+		elif sense == "dn":
+			self.ball[1] = self.pads_y[0] + self.pad_height
 
 async def bounces(self):
 
