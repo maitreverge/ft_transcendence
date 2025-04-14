@@ -5,43 +5,24 @@ import datetime
 import requests
 
 SECRET_JWT_KEY = os.getenv("JWT_KEY")
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
-
-# ! ALL DEPENDENCIES ARE IN THE AUTHENTICATION.PY FILE
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 
 # Function to verify JWT token
 def verify_jwt(token):
-    """
-    Verify a JWT token and return the payload if valid.
-
-    Args:
-        token (str): The JWT token to verify
-
-    Returns:
-        dict: The decoded token payload if valid, None otherwise
-    """
     try:
         # Verify the token with our secret key
         payload = jwt.decode(token, SECRET_JWT_KEY, algorithms=["HS256"])
         return payload
     except jwt.ExpiredSignatureError:
-        return None  # Token expired
+        return None
     except jwt.InvalidTokenError:
-        return None  # Invalid token
+        return None
 
 
 # Function to generate a new access token using a valid refresh token
 def refresh_access_token(refresh_payload):
-    """
-    Generate a new access token from a valid refresh token payload.
-
-    Args:
-        refresh_payload (dict): The decoded refresh token payload
-
-    Returns:
-        str: The newly generated access token
-    """
+    
     # Create a new access token with the same user info
     user_id = refresh_payload.get("user_id")
     username = refresh_payload.get("username")  # Extract username from refresh token
@@ -58,9 +39,7 @@ def refresh_access_token(refresh_payload):
         uuid_value = None
 
     # Set expiration for new access token
-    expire_access = datetime.datetime.utcnow() + datetime.timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    expire_access = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     # Create payload for new access token
     access_payload = {
@@ -72,59 +51,28 @@ def refresh_access_token(refresh_payload):
 
     # Generate and return the new access token
     new_access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
-    # print(f"🔄 Generated new access token: {new_access_token[:20]}...", flush=True)
 
     return new_access_token
 
 
 # Function to check if a user is authenticated based on cookies
 def is_authenticated(request: Request):
-    """
-    Check if the request contains valid authentication cookies.
-
-    Args:
-        request (Request): The FastAPI request object
-
-    Returns:
-        tuple: (is_authenticated, user_info)
-    """
 
     # Get the access token from cookies
     access_token = request.cookies.get("access_token")
     refresh_token = request.cookies.get("refresh_token")
     
-    # REGULAR PATH
+    # 
     if access_token:
         # Verify the token
         payload = verify_jwt(access_token)
-        if not payload and not refresh_token:
+        if not payload and not refresh_token: # * EDGE CASE : access_token might be invalid and missing `refresh_token`
             return False, None
-            # If access token is invalid, check refresh token
-            # refresh_token = request.cookies.get("refresh_token")
-            # if not refresh_token:
-            #     return False, None
-
-            # refresh_payload = verify_jwt(refresh_token)
-            # if not refresh_payload:
-            #     return False, None
-
-            # # Implement token refresh
-            # new_access_token = refresh_access_token(refresh_payload)
-
-            # # Set new access token in the response
-            # # Since this is middleware and not a full response handler,
-            # # we'll need to return a signal to set a new cookie
-            # return True, {
-            #     "user_id": refresh_payload.get("user_id"),
-            #     "username": refresh_payload.get("username"),
-            #     "refresh_needed": True,
-            #     "new_access_token": new_access_token,
-            # }
     elif refresh_token:
         refresh_payload = verify_jwt(refresh_token)
         if not refresh_payload:
             return False, None
-        else: # NEED REFRESH TOKEN
+        else: # ! NEED REFRESH TOKEN
             new_access_token = refresh_access_token(refresh_payload)
             
             return True, {
