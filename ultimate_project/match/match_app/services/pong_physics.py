@@ -73,18 +73,28 @@ def is_right_pad_hurt_ball(self, sense):
 
 async def bounces(self):
 
-	await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
-	await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
+	if self.vect[0] < 0:
+		await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
+	if self.vect[0] > 0:
+		await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
 	# print(f"yeee", flush=True)
 	
-	await self.left_upside_pad_bounce()
-	await self.left_downside_pad_bounce()
-	await self.right_upside_pad_bounce()
-	await self.right_downside_pad_bounce()
+	if self.vect[1] < 0:
+		if self.vect[0] < 0:
+			await self.left_downside_pad_bounce()
+		if self.vect[0] > 0:
+			await self.right_downside_pad_bounce()
+	if self.vect[1] > 0:
+		if self.vect[0] < 0:
+			await self.left_upside_pad_bounce()
+		if self.vect[0] > 0:	
+			await self.right_upside_pad_bounce()
 	# print(f"yoooooo", flush=True)
 	# await self.vert_bounce
-	await self.vert_bounce(op.le, limit=self.y_top)
-	await self.vert_bounce(op.ge, limit=self.y_bot)
+	if self.vect[1] > 0:
+		await self.vert_bounce(op.ge, limit=self.y_bot)
+	if self.vect[1] < 0:
+		await self.vert_bounce(op.le, limit=self.y_top)
 		
 async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
