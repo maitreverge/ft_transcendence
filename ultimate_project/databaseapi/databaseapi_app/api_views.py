@@ -122,7 +122,6 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
             today_str = now.date().isoformat()
             # Build daily stat history
             if today_str in player_stats.stats_history:
-                print("\nALREDY HAVE AN HISTORY\n", flush=True)
                 existing_record = player_stats.stats_history[today_str]
                 existing_record["games_played"] += 1
                 existing_record["games_won"] += data["is_won"]
@@ -134,7 +133,6 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
                 ps = existing_record["points_scored"]
                 existing_record["win_rate"] = round((gw / gp) * 100, 2) if gp > 0 else 0.0
                 existing_record["average_score"] = round(ps / gp, 2) if gp > 0 else 0.0
-                # will have the best win streak in history
                 existing_record["worst_lose_streak"] = player_stats.worst_lose_streak
                 existing_record["best_win_streak"] = player_stats.best_win_streak
                 existing_record["nb_tournaments_played"] += data["nb_tournaments_played"]
@@ -176,7 +174,7 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
                 "error": "Player statistics not found"
             }, status=status.HTTP_404_NOT_FOUND)
     
-    #detail false because do not depend on primary key will be 
+    # detail false because do not depend on primary key will be 
     # /api/playerstats/get-top-players/
     @action(detail=False, methods=['GET'], url_path='get-top-players')
     def get_top_players(self, request):
