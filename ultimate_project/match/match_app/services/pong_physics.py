@@ -25,26 +25,11 @@ def pad_command(self, player, pad_idx):
 
 async def bounces(self):
 
-	await self.horz_bounce(op.le, limit=16, pad_y_idx=0, dir=+1)
-	await self.horz_bounce(op.ge, limit=84, pad_y_idx=1, dir=-1)
-	await self.vert_bounce(op.le, limit=1)
-	await self.vert_bounce(op.ge, limit=99)
-	
-async def vert_bounce(self, cmp, limit):
-	
-	if self.are_pads_intersecting():
-		return
-	if cmp(self.ball[1] + self.vect[1], limit) :
-		bounce_vect = [0, 0]
-		bounce_vect[1] = limit - self.ball[1]
-		bounce_vect[0] = self.scale_vector(
-			bounce_vect[1], self.vect[0], self.vect[1])		
-		self.ball[0] += bounce_vect[0]				
-		self.ball[1] += bounce_vect[1]
-		self.has_wall = True
-		await asyncio.sleep(self.bounce_delay)	
-		self.vect[1] = -self.vect[1]		
-		self.wall_flag = False
+	await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
+	await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
+	# await self.vert_bounce
+	await self.vert_bounce(op.le, limit=self.y_top)
+	await self.vert_bounce(op.ge, limit=self.y_bot)
 		
 async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
@@ -56,12 +41,12 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		self.ball[0] += new_vect[0]				
 		self.ball[1] += new_vect[1]
 		self.has_wall = True
-		await asyncio.sleep(self.bounce_delay)				
-
+		# await asyncio.sleep(self.bounce_delay)				
+		await self.bounce_send_state()
 		mag = self.get_magnitude(self.vect) 				
 		y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
 		y = y * mag
-		y = max(min(y, 0.9), -0.9)
+		# y = max(min(y, 0.9), -0.9)
 		x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
 		x = math.sqrt(abs(x))	
 
@@ -72,14 +57,44 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		self.vect[0] = scl * x * dir
 		self.vect[1] = scl * y 				
 		self.wall_flag = False
+
+# def updown_side_pad_bounce(self):
+# 	if self.is_updown_side_pad_intersecting()
+
 	
-def are_pads_intersecting(self):
 
-	return \
-		self.is_pad_intersecting(op.ge, limit=84, pad_y_idx=1) or \
-		self.is_pad_intersecting(op.le, limit=16, pad_y_idx=0)
+async def vert_bounce(self, cmp, limit):
+	
+	# if self.are_pads_intersecting():
+	# 	return
+	if cmp(self.ball[1] + self.vect[1], limit) and self.wall_flag:
+		bounce_vect = [0, 0]
+		bounce_vect[1] = limit - self.ball[1]
+		bounce_vect[0] = self.scale_vector(
+			bounce_vect[1], self.vect[0], self.vect[1])		
+		self.ball[0] += bounce_vect[0]				
+		self.ball[1] += bounce_vect[1]
+		self.has_wall = True
+		# await asyncio.sleep(self.bounce_delay)	
+		await self.bounce_send_state()
+		self.vect[1] = -self.vect[1]		
+		self.wall_flag = False
 
-def is_pad_intersecting(self, cmp, limit, pad_y_idx):
+# def are_pads_intersecting(self):
+
+# 	return \
+# 		self.is_pad_intersecting(op.ge, limit=self.x_rght_pad, pad_y_idx=1) or \
+# 		self.is_pad_intersecting(op.le, limit=self.x_left_pad, pad_y_idx=0)
+
+# def is_sidepad_intersecting(self, cmp, limit, pad_y_idx):
+
+# 	return self.segments_intersect(
+# 			(self.ball[0], self.ball[1]),
+# 			(self.ball[0] + self.vect[0], self.ball[1] + self.vect[1]),
+# 			(limit, self.pads_y[pad_y_idx] - (self.pad_height / 2)),
+# 			(limit, self.pads_y[pad_y_idx] + (self.pad_height / 2)))
+
+def is_pad_intersecting(self, cmp, limit, pad_y_idx): #opti cmp!!!!!
 
 	return cmp(self.ball[0] + self.vect[0], limit) and \
 		self.segments_intersect(

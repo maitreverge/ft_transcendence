@@ -10,16 +10,18 @@
             <div class="text-center">
               <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
             </div>
-            <!-- Formulaire de création de compte HTMX -->
+
+			
+			<!-- ! REGISTER MAIN FORM -->
             <form
-              class="user"
+              class=""
               hx-post="/auth/register/"
               hx-target="#register-form"
               hx-swap="outerHTML"
               hx-indicator="#loading-spinner"
             >
 
-              <!-- First Name et Last Name -->
+              <!-- First Name & Last Name -->
               <div class="form-group row">
                 <div class="col-sm-6 mb-3 mb-sm-0">
                   <input
@@ -45,7 +47,7 @@
                 </div>
               </div>
 
-              <!-- Username et Email -->
+              <!-- Username & Email -->
               <div class="form-group row">
                 <div class="col-sm-6 mb-3 mb-sm-0">
                   <input
@@ -72,7 +74,7 @@
                 </div>
               </div>
 
-              <!-- Password et Repeat Password -->
+              <!-- Password & Repeat-Password -->
               <div class="form-group row">
                 <div class="col-sm-6 mb-3 mb-sm-0">
                   <input
@@ -141,7 +143,7 @@
 			<!-- ! END FORM  -->
 			</form>
 
-			<!-- ! Feedback error from the backend -->
+			<!-- ! Feedback error div for the backend -->
 			<div
 				id="register-form"
 				class="text-center text-danger mt-2"
@@ -154,7 +156,6 @@
 				</div>
 			</div>
 
-			<!-- ! Horizontal Line Separator -->
 			<hr />
 			
 			<!-- ! Link towards login  -->
@@ -178,7 +179,7 @@
 
 
 <style>
-  /* Custom validation styles */
+  /* Custom validation styles for invalid email field */
   .is-invalid {
     border-color: #dc3545 !important;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
@@ -212,7 +213,6 @@
 </style>
 
 <script>
-	// document.addEventListener("DOMContentLoaded", function () {
 	initScript();
 	function initScript() {
 		const firstNameInput = document.getElementById("first_name");
@@ -230,8 +230,8 @@
 
 	  // Email validation function
 	function validateEmail(email) {
-		const re =
-		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		// Regex for email validation
+		const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		return re.test(String(email).toLowerCase());
 	}
 	
@@ -364,7 +364,7 @@
 		validateForm();
 	});
 
-	
+	// Add event listenner for login in after successfull registering
 	document.addEventListener("htmx:beforeSwap", function (evt) {
 		console.log("REGISTER FORM LISTENNING");
 		console.log(evt.detail.target.id);
@@ -396,6 +396,5 @@
 		}
 	}
 });
-}; // End Checking Script
-
+};
 </script>

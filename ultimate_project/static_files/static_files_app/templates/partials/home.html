@@ -1,59 +1,45 @@
+{% load static %}
 <div class="container-fluid">
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 id="home-page" data-translate="Accueil" class="h3 mb-0 text-gray-800">ACCUEIL</h1>
-  </div>
-  <div class="row justify-content-center">
-    <a
-      id="field-match"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/tournament/simple-match/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-primary text-white shadow py-5">
-        <div id="big-match-simple" class="card-body" data-translate="Match simple">Match simple</div>
-      </div>
-    </a>
-    <a
-      id="field-tournoi"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/tournament/tournament/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-warning text-white shadow py-5">
-        <div id="big-tournament" class="card-body" data-translate="Tournoi">Tournament</div>
-      </div>
-    </a>
-    <a
-      id="field-profile"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/account/profile/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-success text-white shadow py-5">
-        <div id="big-profile" class="card-body" data-translate="Profil"> Profile </div>
-      </div>
-    </a>
-    <a
-      id="field-stats"
-      class="col-lg-5 mb-4"
-      hx-trigger="click"
-      hx-push-url="true"
-      hx-get="/account/game-stats/overview/"
-      hx-target="#main_div"
-      hx-on="htmx:beforeRequest: toggleSidebar(true);"
-    >
-      <div class="card bg-info text-white shadow py-5">
-        <div id="big-stats" class="card-body" data-translate="Statistiques"> Stats</div>
-      </div>
-    </a>
-  </div>
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="sidebar col-12 col-sm-4 col-md-3 col-lg-2 d-sm-block p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
+            <div class="sidebar-sticky text-center">
+                <!-- Account Settings Title -->
+                <h1 class="h3 mb-3 pt-2"><strong>Home</strong></h1>
+                <ul class="nav flex-column">
+                    <!-- Profile Section -->
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/beau-cameleon-dans-nature_23-2151731209.jpg?t=st=1744443745~exp=1744447345~hmac=40163ff597e5479c7a0c9f4e7c7ff2cc8b0aae1e38a8ed65848a545f9ee2eaac&w=1060">
+                        <a id="side-nav-match" class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Match</h5>
+                        </a>
+                    </li>
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/vue-du-cameleon-couleurs-neons-vives_23-2151682848.jpg?t=st=1744443789~exp=1744447389~hmac=896b1f25653acadc53b7056bdba64e040877cdcbc42274a2e5ea0d20ff4d7358&w=1060">
+                        <a id="side-nav-tournament" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Tournament</h5>
+                        </a>
+                    </li>
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/vue-du-cameleon-couleurs-neons-vives_23-2151682728.jpg?t=st=1744443812~exp=1744447412~hmac=cb8e19bf64e5e049fdae618b39a8755604029a28b789c02267b60d7ee3a24c59&w=1060">
+                        <a id="side-nav-profile" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/account/profile/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Profile</h5>
+                        </a>
+                    </li>
+                    <li class="side-nav nav-item mb-3" data-bg="https://img.freepik.com/photos-gratuite/vue-du-cameleon-couleurs-neons-vives_23-2151682742.jpg?t=st=1744443826~exp=1744447426~hmac=35456dbabec73546fe8e75b6c9898260a71d876752b371fcfddb5f26c4ad02bc&w=1060">
+                        <a id="side-nav-stats" class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"                            hx-get="/account/game-stats/overview/" hx-target="#main_div" hx-swap="innerHTML"
+                            hx-push-url="true">
+                            <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i><h5>Statistics</h5>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Main Content -->
+        <main id="main_content" role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-10 px-4">
+            
+        </main>
+    </div>
 </div>
+<script src="{% static 'static_files/background_image.js' %}"></script>
+

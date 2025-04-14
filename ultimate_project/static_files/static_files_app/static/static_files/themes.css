@@ -1,0 +1,214 @@
+[data-theme="dark"] {
+    --background-color: #0d1b2a;
+    --navbars-color: #415a77;
+    --main-color: #1b263b;
+    --text-color: #e0e1dd;
+    --title-color: #778da9;
+  }
+
+/* Thème sombre */
+[data-theme="light"] {
+    --background-color: #eaf4f4;
+    --navbars-color: #a4c3b2;
+    --main-color: #cce3de;
+    --text-color: #6b9080;
+    --title-color: #f6fff8;
+  }
+
+/* Cibler les éléments spécifiques du site */
+
+/* Logo */
+
+body {
+    background-color: var(--background-color);
+}
+
+#homelogo:hover  {
+
+color: var(--text-color);
+
+}
+
+span
+{
+  color: var(--text-color);
+}
+
+span:hover
+{
+  color: var(--background-color);
+}
+#homelogo  {
+  font-size: 30px;
+  margin-left: 0;
+  background-color: var(--title-color);
+  color: var(--main-color);
+  font-weight: bold;
+  }
+
+/* Navbar */
+.navbar {
+background-color: var(--navbars-color);
+}
+
+.background_color
+{
+  background-color: var(--background-color);
+}
+.navbars_color i {
+  /* background-color: var(--navbars-color) !important; */
+  color: var(--navbars-color) !important;
+}
+.card, .card-header
+{
+  background-color: var(--navbars-color) !important;
+  color: var(--title-color) !important;
+
+}
+.navbar a {
+color: var(--text-color);
+text-decoration: none;
+}
+
+.navbar a:hover {
+color: var(--title-color);
+text-decoration: none;
+}
+
+.title-color
+{
+  background-color: var(--title-color);
+
+}
+
+
+.sidebar {
+background-color: var(--navbars-color);
+}
+    
+.sidebar a {
+color: var(--text-color);
+background-color: var(--background-color);
+
+}
+
+.sidebar a:hover {
+color: var(--title-color);
+}
+
+h1 {
+    color: var(--title-color);
+
+    /* font-family: var(--font-title); */
+  
+  }
+
+h2, h3, h4, h6, .title, .button-title {
+    color: var(--title-color);
+
+  /* font-family: var(--font-title); */
+
+}
+
+footer {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    }
+    
+.container-fluid {
+    background-color: var(--background-color);
+
+}
+footer p {
+    color: var(--text-color);
+    }
+
+.sidebar-sticky {
+    height: 100%; /* Assure que le ul peut prendre toute la hauteur */
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-sticky ul.nav {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-sticky li.nav-item {
+    flex: 1; /* prend 25% car 4 items */
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-btn {
+    height: 75%;
+    width: 100%;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: var(--background-color);
+    background-color: var(--background-color);
+}
+
+.sidebar-btn:hover {
+    background-color: var(--background-color);
+    color: var(--title-color) !important; /* typiquement blanc dans ton thème */
+  }
+
+/* 
+
+
+.main-content {
+background-color: var(--background-color);
+color: var(--text-color);
+padding: 20px;
+margin-left: 270px;
+}
+
+.main-content h1 {
+color: var(--primary-color);
+}
+
+.main-content p {
+font-size: 1.1em;
+}
+
+*/
+
+#language-selector {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 10px 10px 10px 10px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 16px;
+    border: 2px solid var(--text-color);
+    border-radius: 25px;
+    width: 120px;
+    background-image: none;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    transition: all 0.3s ease;
+  }
+
+  #language-selector option {
+    background-color: var(--logo-color);
+    color: var(--background-color);
+    }
+  /* Effet au survol */
+  #language-selector:hover {
+    background-color: var(--logo-color);
+    border-color: var(--main-color);
+    box-shadow: 0 0 15px var(--primary-color);
+    color: var(--background-color);
+
+  }
+
+  #language-selector:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-color);
+  }

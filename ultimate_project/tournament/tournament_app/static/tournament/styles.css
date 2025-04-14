@@ -68,7 +68,7 @@
 #simple-selections {
 
 	width:100%;
-	height:80%;
+	height:100%;
 	background-color: rgb(211, 226, 225);
 }
 
@@ -139,13 +139,7 @@ button {
     background-color: rgb(8, 234, 250);
 }
 
-.tournament-cont {
-	width: 100%;
-	height: 14rem;
-	background-color: rgb(109, 94, 96);	
-	border-radius: 5%;
-	padding: 5px;
-}
+
 
 #match-player-name {
 	display: none;
@@ -181,3 +175,160 @@ button {
     object-fit: contain;
     border-radius: 8px;
 }
+
+/* SWITCH BUTTON 2D / 3D */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+  /* THOMAS TEMPLATE STYLES */
+
+  .sidebar-sticky {
+	height: 100%; /* Assure que le ul peut prendre toute la hauteur */
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar-sticky ul.nav {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar-sticky li.nav-item {
+	flex: 1; /* prend 25% car 4 items */
+	display: flex;
+	align-items: center;
+}
+
+.sidebar-btn {
+	height: 75%;
+	width: 100%;
+	transition: background-color 0.3s, color 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#main_content {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+
+/* OVERLAY PATTERN */
+
+.tournament-cont {
+	width: 100%;
+    min-height: 14rem; /* Hauteur minimale */
+	background-color: rgb(109, 94, 96);	
+	border-radius: 5%;
+	padding: 5px;
+    margin-bottom: 1rem;
+    
+}
+  
+  #pattern {
+	border-radius: 5px;
+
+  }
+  #overlay-pattern {
+	width: 100%;          /* Ou une largeur spécifique si nécessaire */
+	min-width: 300px;     /* Largeur minimale */
+	margin: 0 auto;       /* Centre l'élément horizontalement dans son parent */
+  }
+ 
+  #secline {
+    display: flex;
+    justify-content: space-around; /* ou space-between / center selon l'espacement que tu veux */
+    gap: 1rem; /* optionnel, pour espacer les matchs */
+  }
+
+  .pattern-pl-cont {
+    display: flex;
+    justify-content: space-between; /* ou center / start / end selon le rendu souhaité */
+    gap: 0.5rem; /* optionnel, pour un petit espace entre les joueurs */
+  }
+
+  .pattern-pl {
+    flex: 1;
+    text-align: center; /* pour centrer le texte dans chaque bloc */
+  }
+
+  #m1, #firstline, #m2, #m3, #secline {
+    border-radius: 5%;
+  }
+
+  /* tests */
+
+  /* #simple-selections {
+    background-color: lightgray;
+  }
+
+  @media (min-width: 576px) {
+    #simple-selections {
+      background-color: lightblue;
+    }
+  }
+
+  @media (min-width: 768px) {
+    #simple-selections {
+      background-color: orange;
+    }
+  }
+
+  @media (min-width: 992px) {
+    #simple-selections {
+      background-color: lightgreen;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    #simple-selections {
+      background-color: red;
+    }
+  } */
+

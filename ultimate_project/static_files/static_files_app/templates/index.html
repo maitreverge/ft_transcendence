@@ -1,11 +1,10 @@
 {% load static %}
-<html>
+<html data-theme="light">
 
     {% include "partials/head.html" %}
     <body   id="page-top" 
             hx-boost="true" 
-            @popstate.window="navigate(window.location.pathname, false)
-            bg-gradient-primary">
+            @popstate.window="navigate(window.location.pathname, false)">
     
         <!-- display single pages conditions -->
          
@@ -18,8 +17,6 @@
         {% else %}
 
         <div id="wrapper">  <!-- template suff - DO NOT TOUCH -->
-
-            {% include "partials/sidebar.html" %}
 
             <div id="content-wrapper" class="d-flex flex-column"> <!-- template suff -->
                 
@@ -59,3 +56,65 @@
         </div>
     </body>
 </html>
+
+
+<!-- /* 
+
+h1 {
+    font-size: 5vw;  
+}
+h3 {
+    font-size: 4vw; 
+}
+h4 {
+    font-size: 3vw; 
+}
+h5, h6 {
+    font-size: 2vw;
+} */
+
+/* :root {
+  --font-title: 'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif;
+} */
+.sidebar-btn {
+		font-size: 0.85rem;
+		/* Slightly smaller font */
+		padding: 0.5rem 1rem;
+		/* Smaller padding */
+		border-width: 2px;
+		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+	}
+
+	/* When clicked, fill with color */
+	.sidebar-btn.active,
+	.sidebar-btn:focus {
+		color: white !important;
+	}
+
+	/* Outline with Blue Border */
+	.btn-outline-primary {
+		border-color: #007bff;
+		color: #007bff;
+	}
+
+	/* When active, the button background changes to blue */
+	.btn-outline-primary.active,
+	.btn-outline-primary:focus {
+		background-color: #007bff !important;
+		border-color: #007bff !important;
+	}
+
+	/* When hovering, the button gets a darker blue */
+	.sidebar-btn:hover {
+		background-color: #007bff;
+		color: white;
+		border-color: #0056b3;
+	}
+
+	/* Sidebar Styling: Reduce sidebar width for better content presentation */
+	.sidebar {
+		width: 250px;
+		/* Adjust width */
+	} -->
+

@@ -1,34 +1,34 @@
-from fastapi import FastAPI, Request, HTTPException, Response, Depends, Query
-import httpx
-import logging
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request, HTTPException, Response, Query
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.exceptions import (
     HTTPException as StarletteHTTPException,
-)  # If you need to use it
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, StreamingResponse
-from starlette.middleware.base import BaseHTTPMiddleware
+)
+import httpx
+import logging
 import json
+import re
+
+# Custom Imports
+import authentication as auth
+from auth_validators import is_authenticated
+from csrf_tokens import csrf_validator
+
 
 # from fastapi.middleware.cors import CORSMiddleware
-import authentication, auth_helpers
 
 
-# ======= 🚀 FastAPI Application Setup for API Gateway 🚀 =======
+# =================== 🚀 FastAPI Application Setup for API Gateway 🚀 ============
 
 app = FastAPI(
     title="API Gateway",
     description="This API Gateway routes requests to various microservices. \
         Define endpoints to get any data here :)",
     version="1.0.0",
-    # docs_url=None, # TODO FLO : Uncomment this line to disable access to SwaggerUI
+    # docs_url=None, # ! Comment this line to enable access to SwaggerUI
 )
 
-# ====== 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 ======
+# ======================= 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 =================
 
 services = {
     "tournament": "http://tournament:8001",
@@ -38,93 +38,104 @@ services = {
     "databaseapi": "http://databaseapi:8007",
 }
 
-# ====== 📜 LOGGER CONFIGURATION 📜 ======
+# ============================= 📜 LOGGER CONFIGURATION 📜 =======================
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Exclude Path for the
+# =================== 📜 REGEX PATHS FOR BOUNDER MIDDLEWARE📜 ====================
+
 AUTH_PATH = [
-    "/login",
-    "/register",
-    "/login/",
-    "/register/",
-    "/auth/login/",
-    "/auth/register/",
-    "/two-factor-auth/",
-    "/auth/verify-2fa/",
+    r"^/login/?$",
+    r"^/register/?$",
+    r"^/auth/login/?$",
+    r"^/auth/register/?$",
+    r"^/two-factor-auth/?$",
+    r"^/auth/verify-2fa/?$",
+    r"/api/player/\d+/uuid",
+    r"^/api/check-2fa/?$",
 ]
 
 EXCLUDED_PATH = [
-    "/favicon.ico",
-    "/translations/de.json",
-    "/translations/en.json",
-    "/translations/es.json",
-    "/translations/fr.json",
-    "/translations/tl.json",
-    "/match/stop-match/undefined/undefined/",
+    r"^/favicon.ico/?$",
+    r"^/translations/[a-z]{2}.json/?$",
+    r"^/match/stop-match/undefined/undefined/?$",
+    r"^/match/stop-match/\d+/undefined/?$",
+
+    # SwaggerUI related routes
+    r"^/docs/?$",
+    r"^/openapi.json/?$",
+    r"^/redoc/?$",
 ]
 
-# TODO : To let error pages go through when non authenticated
-# KNOWN_PATHS = [
-#     "/login",
+KNOWN_PATHS = [
+    r"^/login/?$",
+    r"^/register/?$",
+    r"^/home/?$",
+    r"^/two-factor-auth/?$",
+    r"^/tournament/simple-match/.*$",
+    r"^/tournament/tournament/.*$",
+    r"^/account/.*$",
+]
 
-# ]
 
-
-# ! NEED TO MIX THE BOUNCER LOGIC TO NON AUTH AND AUTH USERS
 @app.middleware("http")
 async def bouncer_middleware(request: Request, call_next):
     """
     Main Middleware to filter authenticated users from non-auth users
     """
-    is_auth, user_info = authentication.is_authenticated(request)
+    print(
+        f"======== 👮 URL ENTERING BOUNCER = {request.url.path} ============\n"
+    )
+    print(
+        f"======== 👮 COOKIES ENTERING BOUNCER = {request.cookies} ============\n"
+    )
 
-    print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
-    print(f"=============           {request.url.path} ================\n")
-    print(f"============= URL REQUEST ENTERING BOUNCER ================\n")
-
-    # TODO : To let error pages go through when non authenticated
-    # if request.url.path not in KNOWN_PATHS:
-    #     print(f"👍 Bounder Middleware non trigered for error message on login/register pages 👍")
-    #     response = await call_next(request)
-    #     return response
-
+    is_auth, user_info = is_authenticated(request)
+    is_csrf_valid = csrf_validator(request)
+    
     # Let go through the Middleware everyting included in EXCLUDED_PATH
-    if request.url.path in EXCLUDED_PATH:
-        print(f"👍 Bounder Middleware non trigered 👍")
+    if any(re.match(pattern, request.url.path) for pattern in EXCLUDED_PATH):
+        print(f"\n👍 Bounder Middleware non trigered 👍\n")
         response = await call_next(request)
         return response
+    
+    # Check if path starts with an AUTH_PATH pattern but doesn't exactly match any known pattern
+    if not is_auth and not any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
+        # First check if this path starts with any AUTH_PATH pattern but doesn't match any KNOWN_PATHS
+        if any(request.url.path.startswith(pattern.replace(r'^', '').replace(r'/?$', '')) for pattern in AUTH_PATH) and \
+           not any(re.match(pattern, request.url.path) for pattern in KNOWN_PATHS):
+            print(f"⛔ Path starts with auth path but is invalid: {request.url.path} ⛔")
+            exc = StarletteHTTPException(status_code=404, detail="Not Found")
+            return await http_exception_handler(request, exc)
+            
 
-    if is_auth and request.url.path in AUTH_PATH:
-        print(f"⬅️ Auth user request auth pages, redirecting to home ⬅️")
-        # Check if this is an HTMX request
+    if (is_auth) and any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
+        print(f"\n⬅️ Authenticated user request auth pages, redirecting to home ⬅️\n")
+        
         if "HX-Request" in request.headers:
             response = Response(status_code=200)
-            response.headers["HX-Location"] = (
-                "/home/"  # Use HX-Location for SPA navigation
-            )
+            response.headers["HX-Location"] = ("/home/")
         else:
             response = RedirectResponse(url="/home/")
         return response
 
-    elif not is_auth and request.url.path not in AUTH_PATH:
-        print(f"⛔ Bounder Middleware Trigerred, non auth request ⛔")
+    elif (not is_auth or not is_csrf_valid) and not any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
+        print(f"\n⛔ Bounder Middleware Trigerred, non auth request ⛔\n")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
-            print(f"🔄 HTMX request detected, using HX-Location", flush=True)
-            # HX-Location makes HTMX do a client-side redirect without a full page reload
             response = Response(status_code=200)
             response.headers["HX-Location"] = "/register/"
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
+            response.delete_cookie(key="csrftoken", path="/")
         else:
-            print(f"🔄 Standard request, using RedirectResponse", flush=True)
             response = RedirectResponse(url="/register/")
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
+            response.delete_cookie(key="csrftoken", path="/")
         return response
 
     print(f"👍 Bounder Middleware non trigered 👍")
@@ -133,7 +144,7 @@ async def bouncer_middleware(request: Request, call_next):
     return response
 
 
-# ====== 🌟 FASTAPI MIDDLEWARE 🌟 ======
+# ============================== 🌟 FASTAPI MIDDLEWARE 🌟 ========================
 
 # Current middleware chain
 # 1️⃣ - Client sends an HTTP request.
@@ -176,7 +187,7 @@ async def jwt_refresh_middleware(request: Request, call_next):
     response = await call_next(request)
 
     # Check authentication status after request processing
-    is_auth, user_info = authentication.is_authenticated(request)
+    is_auth, user_info = is_authenticated(request)
 
     # If authenticated and token refresh needed, update the response
     # cookies
@@ -193,50 +204,6 @@ async def jwt_refresh_middleware(request: Request, call_next):
             max_age=60 * 60 * 6,  # 6 hours
         )
     return response
-
-
-# Middleware to set and validate CSRF tokens
-# [Middleware n°3]
-""" CSRF_SECRET = os.getenv("CSRF_SECRET_KEY")
-csrf_serializer = URLSafeTimedSerializer(CSRF_SECRET, salt=secrets.token_urlsafe(16))
-class CSRFMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        # If it's a GET request, we generate a CSRF token and set the cookie
-        # If it's a GET request and no token exists, generate a new one
-        if "csrftoken" not in request.cookies:
-            csrf_token = self.generate_csrf_token()
-            response = await call_next(request)
-            response.set_cookie(
-                key="csrftoken", 
-                value=csrf_token, 
-                httponly=True, 
-                secure=True, 
-                samesite="None", 
-                path="/", 
-                max_age=60 * 60 * 6  # 6 hours
-            )
-            return (response)
-        
-        # For POST requests, validate the CSRF token
-        if request.method == "POST":
-            
-            # INT HE FTUIRE CHECK IF JWT FOR INETRNAL POST/DELTE/PUT
-            # ELSE CHECK  
-            csrf_token_from_header = request.headers.get("X-CSRFToken")
-            csrf_token_from_cookie = request.cookies.get("csrftoken")
-            # Validate the token
-            print(f"\n == CSRF token from header: {csrf_token_from_header} == \n", flush=True)
-            print(f"\n == CSRF token from cookie: {csrf_token_from_cookie} == \n", flush=True)
-            if not csrf_token_from_header or csrf_token_from_header != csrf_token_from_cookie:
-                raise HTTPException(status_code=403, detail="Forbidden (CSRF token mismatch)")
-        return await call_next(request)
-
-    def generate_csrf_token(self):
-        Generate a CSRF token.
-        secret = secrets.token_hex(32)  # 32-byte secret key
-        hashed_token = hashlib.sha256(secret.encode()).hexdigest()
-        return hashed_token
-app.add_middleware(CSRFMiddleware)"""
 
 
 # This middleware is used to debug incoming cookies in FastAPI.
@@ -302,7 +269,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     )
 
 
-# ======= 🛠️ Main Function Handling the Reverse Proxy for the Route 🛠️ =======
+# ========= 🛠️ Main Function Handling the Reverse Proxy for the Route 🛠️ =========
 
 
 async def reverse_proxy_handler(
@@ -387,7 +354,7 @@ async def reverse_proxy_handler(
         )
         print("=" * 50 + "\n", flush=True)
         # Check user authentication and attach user info headers
-        is_authenticated_user, user_info = authentication.is_authenticated(request)
+        is_authenticated_user, user_info = is_authenticated(request)
         if is_authenticated_user and user_info:
             print("🔑 ==== IS AUTHENTICATED ==== \n", flush=True)
             forwarded_headers["X-User-ID"] = str(user_info.get("user_id", ""))
@@ -437,7 +404,7 @@ async def reverse_proxy_handler(
     )
 
 
-# ====== 🏠 REDIRECT TO HOME 🏠 ======
+# ============================ 🏠 REDIRECT TO HOME 🏠 ============================
 
 
 @app.get("/")
@@ -448,7 +415,7 @@ async def redirect_to_home():
     return RedirectResponse(url="/home/")
 
 
-# ====== 🏆 Tournament Route Setup 🏆 ======
+# ========================= 🏆 Tournament Route Setup 🏆 =========================
 
 
 @app.api_route("/tournament/tournament-pattern/{tournament_id:int}/", methods=["GET"])
@@ -474,18 +441,12 @@ async def tournament_proxy(path: str, request: Request):
       - If `path` is "simple-match/", returns specific content.
     """
 
-    # global user_id
-    # user_id += 1
-
-    is_auth, user_info = authentication.is_authenticated(request)
+    is_auth, user_info = is_authenticated(request)
 
     if is_auth:
         user_id = user_info.get("user_id")
     else:
         user_id = 0
-
-        # return RedirectResponse(url="/login/") # to FIX FLO
-        # return RedirectResponse(url="/login/") # to FIX FLO
 
     print(
         "################## NEW USER CREATED #######################",
@@ -511,7 +472,7 @@ async def tournament_proxy(path: str, request: Request):
         return await reverse_proxy_handler("static_files", "error/", request)
 
 
-# ====== ⚽ MATCH ROUTE ⚽ ======
+# =============================== ⚽ MATCH ROUTE ⚽ ==============================
 
 
 @app.api_route("/match/stop-match/{path:path}", methods=["GET"])
@@ -589,7 +550,8 @@ async def match_proxy(
     #     return await proxy_request("static_files", "/home/", request)
 
 
-# ====== 🚀 USER SERVICE ROUTE 🚀 ======
+# =========================== 🚀 USER SERVICE ROUTE 🚀 ===========================
+
 
 # WILL BE SUED INT EH FURTUR FOR THE FRIENDSHIP SYSTEM
 @app.api_route("/user/{path:path}", methods=["GET"])
@@ -626,9 +588,9 @@ async def user_account_route(path: str, request: Request):
         )
 
 
-# ====== 🗂️ API DATABASE PROXY 🗂️ ======
+# =========================== 🗂️ API DATABASE PROXY 🗂️ ===========================
 
-# ! DATABASE API ROUTE
+
 @app.api_route("/api/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def databaseapi_proxy(path: str, request: Request):
     """
@@ -671,6 +633,9 @@ async def databaseapi_proxy(path: str, request: Request):
     return await reverse_proxy_handler("databaseapi", f"api/{path}", request)
 
 
+# ========================== 📜 AUTHENTICATION ROUTE 📜 ==========================
+
+
 @app.api_route("/login/{path:path}", methods=["GET"])
 @app.api_route("/login", methods=["GET"])
 async def login_page_route(request: Request, path: str = ""):
@@ -678,29 +643,7 @@ async def login_page_route(request: Request, path: str = ""):
     Proxy for serving the login page.
     Redirects to home if user is already authenticated.
     """
-    # Check if user is authenticated
-    is_auth, user_info = authentication.is_authenticated(request)
 
-    # if is_auth:
-    #     # If authenticated, redirect to home
-    #     response = RedirectResponse(url="/home")
-
-    # If token refresh is needed, set the new access token cookie
-    # if user_info and user_info.get("refresh_needed"):
-    #     print("🔄 Setting refreshed access token during login redirect", flush=True)
-    #     response.set_cookie(
-    #         key="access_token",
-    #         value=user_info.get("new_access_token"),
-    #         httponly=True,
-    #         secure=True,
-    #         samesite="Lax",
-    #         path="/",
-    #         max_age=60 * 60 * 6,  # 6 hours
-    #     )
-
-    # return response
-
-    # If not authenticated, show login page
     return await reverse_proxy_handler("static_files", "login/", request)
 
 
@@ -717,50 +660,7 @@ async def login_page_route(request: Request):
     # Create a new response object
     response = Response()
 
-    return await authentication.login_fastAPI(request, response, username, password)
-
-
-# ! ROUTE TO DELETE
-@app.get("/auth/status")
-async def auth_status(request: Request):
-    """
-    Returns current authentication status - useful for debugging
-    """
-    is_auth, user_info = authentication.is_authenticated(request)
-
-    # Log the cookies for debugging
-    print(f"🍪 Status check cookies: {request.cookies}", flush=True)
-
-    # Create the response
-    response = JSONResponse(
-        {
-            "authenticated": is_auth,
-            "user": user_info,
-            "cookies": {
-                "has_access_token": "access_token" in request.cookies,
-                "has_refresh_token": "refresh_token" in request.cookies,
-            },
-        },
-        headers={
-            "Content-Type": "application/json; charset=utf-8",
-            "X-Content-Type-Options": "nosniff",
-        },
-    )
-
-    # If token refresh is needed, set the new access token cookie
-    if is_auth and user_info and user_info.get("refresh_needed"):
-        print("🔄 Setting refreshed access token in response", flush=True)
-        response.set_cookie(
-            key="access_token",
-            value=user_info.get("new_access_token"),
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-            path="/",
-            max_age=60 * 60 * 6,  # 6 hours
-        )
-
-    return response
+    return await auth.login_fastAPI(request, response, username, password)
 
 
 # Add logout endpoint
@@ -770,7 +670,7 @@ async def logout_route(request: Request):
     """
     Handles user logout by clearing JWT cookies
     """
-    return await authentication.logout_fastAPI(request)
+    return await auth.logout_fastAPI(request)
 
 
 @app.api_route("/register/{path:path}", methods=["GET"])
@@ -780,29 +680,7 @@ async def register_page_route(request: Request, path: str = ""):
     Proxy for serving the register page.
     Redirects to home if user is already authenticated.
     """
-    # Check if user is authenticated
-    is_auth, user_info = authentication.is_authenticated(request)
 
-    # if is_auth:
-    #     # If authenticated, redirect to home
-    #     response = RedirectResponse(url="/home")
-
-    # If token refresh is needed, set the new access token cookie
-    # if user_info and user_info.get("refresh_needed"):
-    #     print("🔄 Setting refreshed access token during login redirect", flush=True)
-    #     response.set_cookie(
-    #         key="access_token",
-    #         value=user_info.get("new_access_token"),
-    #         httponly=True,
-    #         secure=True,
-    #         samesite="Lax",
-    #         path="/",
-    #         max_age=60 * 60 * 6,  # 6 hours
-    #     )
-
-    # return response
-
-    # If not authenticated, show login page
     return await reverse_proxy_handler("static_files", "register/", request)
 
 
@@ -819,10 +697,11 @@ async def register_page_route(request: Request):
     username = form_data.get("username")
     password = form_data.get("password")
     email = form_data.get("email")
+
     # Create a new response object
     response = Response()
 
-    return await authentication.register_fastAPI(
+    return await auth.register_fastAPI(
         request, response, username, password, email, first_name, last_name
     )
 
@@ -869,13 +748,14 @@ async def verify_2fa_login(request: Request):
     token = form_data.get("token")
     username = form_data.get("username")
 
-    print(f"🔐 Extracted from form - username: {username}, token: {token}", flush=True)
-
     # Create a new response object
     response = Response()
 
     # Process the 2FA verification and generate JWT
-    return await authentication.verify_2fa_and_login(request, response, username, token)
+    return await auth.verify_2fa_and_login(request, response, username, token)
+
+
+
 
 
 @app.api_route("/{path:path}", methods=["GET"])
@@ -888,15 +768,6 @@ async def static_files_proxy(path: str, request: Request):
     - **path**: The path to the resource in the static files service.
     - **request**: The incoming request object.
     """
-    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
-    # is_auth, user_info = is_authenticated(request)
-
-    # if is_auth == False:
-    #     # If not authenticated, redirect to register
-    #     response = RedirectResponse(url="/register/")
-
-    #     return response
-    # ! UNCOMMENT THOSE LINES TO LOCK THE WEBSITE IF NOT AUTHENTICATED
 
     return await reverse_proxy_handler("static_files", path, request)
 
@@ -905,42 +776,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8005)
-
-# @app.websocket("/ws/tournament/")
-# async def tournament_websocket_endpoint(websocket: WebSocket):
-#     await websocket.accept()
-#     try:
-#         while True:
-#             data = await websocket.receive_text()
-#             print("message received: {data}")
-#             await websocket.send_text(f"Message text was: {data}")
-#     except Exception as e:
-#         print(f"Error: {e}")
-#     finally:
-#         await websocket.close()
-
-# @app.websocket("/ws/match/")
-# async def match_websocket_endpoint(websocket: WebSocket):
-#     await websocket.accept()
-#     try:
-#         while True:
-#             data = await websocket.receive_text()
-#             print("message received: {data}")
-#             await websocket.send_text(f"Message text was: {data}")
-#     except Exception as e:
-#         print(f"Error: {e}")
-#     finally:
-#         await websocket.close()
-
-# Probleme a regler:
-# cliquer pour requete a "http://localhost:8000/tournament/simple-match/"
-# ne passe pas par l'api_gateway!!!
-# @app.api_route("/tournament/{path:path}",
-# methods=["GET", "POST", "PUT", "DELETE"])
-# async def tournament_proxy(path: str, request: Request):
-#     return await proxy_request("tournament", "tournament/" + path, request)
-
-# @app.api_route("/match/{path:path}",
-# methods=["GET", "POST", "PUT", "DELETE"])
-# async def match_proxy(path: str, request: Request):
-#     return await proxy_request("match", "match/" + path, request)

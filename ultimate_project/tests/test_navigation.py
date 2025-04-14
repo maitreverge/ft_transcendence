@@ -11,7 +11,10 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context(ignore_https_errors=True)
     page = context.new_page()
     visited_urls = []
-    page.set_default_timeout(6000)  # Timeout of 6 seconds for each click
+
+    # Added timeouts
+    page.set_default_timeout(20000) # 20 seconds timeout for Playright
+    page.set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
 
     # Fonction de navigation avec attente
     def navigate(url: str):

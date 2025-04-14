@@ -115,6 +115,9 @@ def run(playwright: Playwright) -> None:
                 f"window.moveTo({positions[_][0]}, {positions[_][1]}); window.resizeTo({window_sizes[_][0]}, {window_sizes[_][1]});"
             )
 
+            pages[_].set_default_timeout(20000) # 20 seconds timeout for Playright
+            pages[_].set_default_navigation_timeout(20000) # # 20 seconds timeout for browser
+
     def destroy_obj(browsers, contexts):
         for context in contexts:
             context.close()
@@ -135,19 +138,20 @@ def run(playwright: Playwright) -> None:
         # Page 1 login first
         login(page1, LOGIN_REG)
 
+
         # Page 1 Nagiguate the website
-        page1.locator("#big-tournament").click()
+        page1.locator("#nav-tournoi").click()
         expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
 
         # Page 2 login after
         login(page2, LOGIN_REG)
-        page2.locator("#big-tournament").click()
+        page2.locator("#nav-tournoi").click()
         expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
         
         # Page 1 tries to navigate afterwards, and is no longer auth
-        page1.locator("#side-match").click()
+        page1.locator("#nav-match").click()
         expect(page1).to_have_url(f"{BASE_URL}/register/")
         page1.goto(f"{BASE_URL}/home/")
         expect(page1).to_have_url(f"{BASE_URL}/register/")
@@ -171,17 +175,17 @@ def run(playwright: Playwright) -> None:
         login(page1, LOGIN_2FA, "twofa")
 
         # Page 1 Nagiguate the website
-        page1.locator("#big-tournament").click()
+        page1.locator("#nav-tournoi").click()
         expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
         # Page 2 login after
         login(page2, LOGIN_2FA, "twofa")
-        page2.locator("#big-tournament").click()
+        page2.locator("#nav-tournoi").click()
         expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
         
         # Page 1 tries to navigate afterwards, and is no longer auth
-        page1.locator("#side-match").click()
+        page1.locator("#nav-match").click()
         expect(page1).to_have_url(f"{BASE_URL}/register/")
         page1.goto(f"{BASE_URL}/home/")
         expect(page1).to_have_url(f"{BASE_URL}/register/")
