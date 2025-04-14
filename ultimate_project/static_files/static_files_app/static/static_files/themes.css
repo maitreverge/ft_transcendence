@@ -219,3 +219,11 @@ font-size: 1.1em;
   .user:hover, .ghost:hover, .self-player:hover {
     color: var(--title-color);
   }
+
+  .navbar-link {
+    color: var(--background-color);
+  }
+
+  .navbar-link:hover {
+    color: var(--text-color);
+  }
