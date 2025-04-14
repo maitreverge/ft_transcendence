@@ -9,7 +9,7 @@ def generate_cookies(json_response, access_token, refresh_token):
         secure=True,
         samesite="Lax",
         path="/",
-        max_age=60 * 60 * 6,  # 6 hours
+        max_age=60 * 2,  # TEST 2 MN
     )
 # 
     # Refresh token

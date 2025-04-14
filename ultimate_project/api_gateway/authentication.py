@@ -463,6 +463,7 @@ async def register_fastAPI(
         refresh_payload = {
             "user_id": user_id,
             "username": username,
+            # "uuid": my_uuid, #! NOT THE UUID IN THE REFRESH TOKEN
             "exp": expire_refresh,
         }
 
