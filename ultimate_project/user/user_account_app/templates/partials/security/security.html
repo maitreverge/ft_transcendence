@@ -3,8 +3,8 @@
   <!-- Default content for security settings (2FA) -->
   <div class="card mb-3 shadow">
     <div class="card-body text-center">
-      <h5 class="card-title">Two-Factor Authentication (2FA)</h5>
-      <p class="card-text">Enhance your account security by enabling 2FA.</p>
+      <h5 class="card-title primary-text">Two-Factor Authentication (2FA)</h5>
+      <p class="card-text secondary-text">Enhance your account security by enabling 2FA.</p>
 
       <!-- Button to enable/disable 2FA -->
       {% if user.two_fa_enabled %}
@@ -39,6 +39,35 @@
     margin-top: 20px;
   }
 
+  /* Set Primary Text Color */
+  .primary-text {
+    color: #4e73df !important; /* Ensure the color is applied */
+  }
+
+  /* Set Secondary Text Color */
+  .secondary-text {
+    color: #858796 !important; /* Ensure the color is applied */
+  }
+
+  /* Global Card Title (Primary Text) */
+  .card-title {
+    color: #4e73df !important; /* Ensure primary color is applied */
+  }
+
+  /* Global Card Text (Secondary Text) */
+  .card-text {
+    color: #858796 !important; /* Ensure secondary color is applied */
+  }
+
+  /* Optional: Add these for card body text styling */
+  .card-body .card-title {
+    color: #4e73df !important; /* Primary color */
+  }
+
+  .card-body .card-text {
+    color: #858796 !important; /* Secondary color */
+  }
+
   .sidebar-btn {
     font-size: 0.85rem;
     padding: 0.5rem 1rem;
@@ -46,38 +75,39 @@
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   }
 
+  /* Button Styles */
   .btn-outline-success {
-    border-color: #28a745;
-    color: #28a745;
+    border-color: #1cc88a;
+    color: #1cc88a;
   }
 
   .btn-outline-success.active,
   .btn-outline-success:focus {
-    background-color: #28a745 !important;
-    border-color: #28a745 !important;
+    background-color: #1cc88a !important;
+    border-color: #1cc88a !important;
   }
 
   .btn-outline-success:hover {
-    background-color: #218838;
+    background-color: #1cc88a;
     color: white;
-    border-color: #1e7e34;
+    border-color: #1cc88a;
   }
 
   .btn-outline-danger {
-    border-color: #dc3545;
-    color: #dc3545;
+    border-color: #e74a3b;
+    color: #e74a3b;
   }
 
   .btn-outline-danger.active,
   .btn-outline-danger:focus {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
+    background-color: #e74a3b !important;
+    border-color: #e74a3b !important;
   }
 
   .btn-outline-danger:hover {
-    background-color: #c82333;
+    background-color: #e74a3b;
     color: white;
-    border-color: #c82333;
+    border-color: #e74a3b;
   }
 
   #disable_2fa,

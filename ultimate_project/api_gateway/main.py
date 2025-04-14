@@ -878,50 +878,6 @@ async def verify_2fa_login(request: Request):
     return await authentication.verify_2fa_and_login(request, response, username, token)
 
 
-@app.api_route("/user/delete-profile/", methods=["GET", "POST"])
-@app.api_route("/delete-profile/", methods=["GET", "POST"])
-async def delete_profile_proxy(request: Request):
-    """
-    Proxy requests for profile deletion to the user microservice.
-    """
-    print("🗑️ Handling delete-profile request", flush=True)
-    print(f"🗑️ Method: {request.method}", flush=True)
-
-    # Log headers for debugging CSRF issues
-    print(f"🗑️ Headers: {request.headers}", flush=True)
-
-    # For GET requests, make sure we get a fresh CSRF token
-    if request.method == "GET":
-        response = await reverse_proxy_handler("user", "user/delete-profile/", request)
-        # Ensure Set-Cookie headers are preserved
-        return response
-
-    # Forward the request to the user microservice
-    response = await reverse_proxy_handler("user", "user/delete-profile/", request)
-
-    # If it's a POST request and deletion was successful, clear JWT cookies
-    if request.method == "POST" and response.status_code == 200:
-        try:
-            # Parse the response content to check for success
-            content = json.loads(response.body.decode())
-            if content.get("success"):
-                print("🗑️ Profile deletion successful, clearing cookies", flush=True)
-
-                # Clear the cookies
-                response.delete_cookie(key="access_token", path="/")
-                response.delete_cookie(key="refresh_token", path="/")
-
-                # ! REDIRECT RELOAD THE SPA HERE
-                response.headers["HX-Redirect"] = "/register/"
-                # response = RedirectResponse(url="/register/")
-
-                print("🗑️ Cookies cleared and redirect set", flush=True)
-        except Exception as e:
-            print(f"🗑️ Error processing deletion response: {str(e)}", flush=True)
-
-    return response
-
-
 @app.api_route("/{path:path}", methods=["GET"])
 async def static_files_proxy(path: str, request: Request):
     """

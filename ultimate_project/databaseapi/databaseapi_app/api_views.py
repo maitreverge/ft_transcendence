@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .models import Player, Tournament, Match, PlayerStatistics
 from .serializers import PlayerSerializer, TournamentSerializer, MatchSerializer, PlayerStatisticsSerializer
 from datetime import datetime, timedelta
+from django.db.models import Q
 import time
 
 # ====================================== FILTERS =======================================
@@ -22,10 +23,18 @@ class MatchFilter(filters.FilterSet):
     player1 = filters.NumberFilter()
     player2 = filters.NumberFilter()
     tournament = filters.NumberFilter()
-    
+    player_id = filters.NumberFilter(method='filter_by_player')
+
     class Meta:
         model = Match
-        fields = ['player1', 'player2', 'tournament']
+        fields = ['player1', 'player2', 'tournament', 'player_id'] # field for query
+
+    #call custom method for this filter
+    # queryset is like Match.objects.all()
+    # new instance of match filter created for each request 
+    def filter_by_player(self, queryset, name, value):
+        # Filter matches where the player appears as either player1 or player2
+        return queryset.filter(Q(player1=value) | Q(player2=value))
 
 class PlayerStatisticsFilter(filters.FilterSet):
     # use the id of the player model using the '__' to acess the id
@@ -155,7 +164,6 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
             player_stats.save()
             return Response({
                 "message": "Player stats updated successfully",
-                "stats": PlayerStatisticsSerializer(player_stats).data
             }, status=status.HTTP_200_OK)
         except PlayerStatistics.DoesNotExist:
             return Response({

@@ -140,8 +140,7 @@ async def delete_user_w_user_id(user_id):
         print(f"Exception in get_if_user_credentials_valid: {str(e)}", flush=True)
         return None
 
-
-async def get_user_match_stats(username, user_id):
+async def get_user_game_stats(user_id):
     """
     Get sanitize match data for a user_id from the database API
     """
@@ -152,15 +151,11 @@ async def get_user_match_stats(username, user_id):
             print("JSON DATA\n\n:", flush=True)
             pprint(response_data)
             print("--\n", flush=True)
-            
-            payload = response_data[0]
-            main_stats = payload.get('main_stats', {})
-            
-            stats_history = payload.get('stats_history', {})
-    
-            print("JSON DATA\n\n:", flush=True)
-            pprint(response_data)
-            print("--\n", flush=True)
+            if isinstance(response_data, list) and response_data:
+                payload = response_data[0]
+                main_stats = payload.get('main_stats', {})
+                stats_history = payload.get('stats_history', {})
+
             """ print("PAYLOAD:",  flush=True)
             for key, value in payload.items():
                 print(f"{key}: {value}",  flush=True)
@@ -179,6 +174,46 @@ async def get_user_match_stats(username, user_id):
     
             if response.status_code == 200:
                 return main_stats, stats_history
+            return None, None
+    except Exception as e:
+        print(f"Error getting user stats: {str(e)}", flush=True)
+        return None, None
+
+async def get_user_match_history(user_id):
+    """
+    Get sanitize match data for a user_id from the database API
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"http://databaseapi:8007/api/match/?player_id={user_id}")
+            response_data = response.json()
+            
+            print("JSON DATA\n\n:", flush=True)
+            pprint(response_data)
+            print("--\n", flush=True)
+            
+            """ payload = response_data[0]
+            main_stats = payload.get('main_stats', {})
+            stats_history = payload.get('stats_history', {}) """
+
+            """ print("PAYLOAD:",  flush=True)
+            for key, value in payload.items():
+                print(f"{key}: {value}",  flush=True)
+            
+            print("Main Stats:",  flush=True)
+            for key, value in main_stats.items():
+                print(f"{key}: {value}",  flush=True)
+            print("\nStats History:", flush=True)
+            if stats_history:  # Check if stats_history is not empty
+                for date, stats in stats_history.items():
+                    print(f"Date: {date}",  flush=True)
+                    for stat_key, stat_value in stats.items():
+                        print(f"  {stat_key}: {stat_value}",  flush=True)
+            else:
+                print("No stats history available.",  flush=True) """
+    
+            if response.status_code == 200:
+                return response_data
             return None, None
     except Exception as e:
         print(f"Error getting user stats: {str(e)}", flush=True)

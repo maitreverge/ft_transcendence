@@ -3,10 +3,9 @@
   <!-- Delete Profile Section -->
   <div class="card mb-3 shadow">
     <div class="card-body text-center">
-      <h5 class="card-title">Delete Account</h5>
-      <p class="card-text text-muted">
-        Are you sure you want to delete your account? This action is
-        irreversible.
+      <h5 class="card-title primary-text">Delete Account</h5>
+      <p class="card-text secondary-text">
+        Are you sure you want to delete your account? This action is irreversible.
       </p>
       <!-- Delete Account Button -->
       <a
@@ -28,15 +27,31 @@
     margin-top: 20px;
   }
 
+  .primary-text {
+    color: #4e73df !important; 
+  }
+
+  .secondary-text {
+    color: #858796 !important; 
+  }
+
+  .card-title {
+    color: #4e73df !important; 
+  }
+
+  .card-text {
+    color: #858796 !important;
+  }
+
   .btn-danger-custom {
     display: inline-block;
     font-size: 1rem;
     font-weight: bold;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
-    border: 2px solid #dc3545;
+    border: 2px solid #e74a3b;
     background-color: transparent;
-    color: #dc3545;
+    color: #e74a3b;
     text-align: center;
     text-decoration: none;
     outline: none;
@@ -48,13 +63,11 @@
   .btn-danger-custom:hover,
   .btn-danger-custom:focus,
   .btn-danger-custom:active {
-    background-color: #dc3545;
+    background-color: #e74a3b;
     color: white;
-    border-color: #dc3545;
+    border-color: #e74a3b;
     text-decoration: none;
     outline: none;
     box-shadow: none;
   }
 </style>
-
-

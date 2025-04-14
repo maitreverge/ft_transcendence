@@ -18,7 +18,7 @@ urlpatterns = [
     # Game stats page
     path("game-stats/overview/", game_stats_view.game_stats_overview, name="game-stats"),
     
-    #path("game-stats/match-history/", game_stats_view.game_stats_view, name="stats-match-history"),
+    #path("game-stats/match-history/", game_stats_view.game_stats_match_history, name="stats-match-history"),
     
     
     # Security page

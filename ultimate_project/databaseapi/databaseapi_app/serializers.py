@@ -66,7 +66,6 @@ class PlayerNestedSerializer(serializers.ModelSerializer):
 
 
 class PlayerStatisticsSerializer(serializers.ModelSerializer):
-    #stats_history = serializers.JSONField(required=False)
     
     class Meta:
         model = PlayerStatistics

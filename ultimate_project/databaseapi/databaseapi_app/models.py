@@ -69,6 +69,7 @@ class Player(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
 class PlayerStatistics(models.Model):
     # player will always be required for onetoone and foreign key
     # will used player ID as theprimary key
@@ -98,7 +99,7 @@ class PlayerStatistics(models.Model):
     # will use date(str) as key
     stats_history = models.JSONField(default=dict, blank=True)
     
-    #PlayerStatistics.objects.get(...) objects is the default manager but can have
+    # PlayerStatistics.objects.get(...) objects is the default manager but can have
     # a custom one
     objects = PlayerStatisticsManager() # Custom manager
 

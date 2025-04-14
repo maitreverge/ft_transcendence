@@ -5,6 +5,7 @@ from django.views.decorators.http import require_http_methods
 # Custom import
 from utils import manage_user_data
 
+# === ⭐ Main page security view ⭐ ===
 
 @require_http_methods(["GET"])
 async def security_view(request: HttpRequest):
