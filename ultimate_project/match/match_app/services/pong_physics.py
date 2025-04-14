@@ -28,11 +28,16 @@ def pad_command(self, player, pad_idx):
 def is_left_pad_hurt_ball(self, sense):
 	
 	if self.x_left_pad_back < self.ball[0] < self.x_left_pad and \
-		self.pads_y[0] - self.pad_height < self.ball[1] < self.pads_y[0] + self.pad_height:
-		if sense == "up":
-			self.ball[1] = self.pads_y[0] - self.pad_height
-		elif sense == "dn":
-			self.ball[1] = self.pads_y[0] + self.pad_height
+		self.pads_y[0] - self.pad_height / 2 - self.ball_ray < self.ball[1] < self.pads_y[0] + self.pad_height / 2 + self.ball_ray:	
+			if sense == "up":
+				self.ball[1] = self.pads_y[0] - self.pad_height / 2 - self.ball_ray
+				self.vect[1] -= self.vect[1]
+			elif sense == "dn":
+				self.ball[1] = self.pads_y[0] + self.pad_height / 2 + self.ball_ray
+				self.vect[1] -= self.vect[1]
+			if self.ball[1] < self.y_top:
+				self.ball[1] = self.y_top
+				self.pads_y[0] = 0 +  2 * self.ball_ray
 
 async def bounces(self):
 
@@ -267,6 +272,8 @@ def segments_intersect(self, A, B, C, D, eps=1e-9):
 	return False
 
 def scale_vector(self, m1, m2, div):
+	if div == 0:
+		return 0
 	return m1 * m2 / div
 
 def get_magnitude(self, vect):
