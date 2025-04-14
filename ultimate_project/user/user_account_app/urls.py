@@ -16,11 +16,8 @@ urlpatterns = [
     # Profile page
     path("profile/", profile_view.profile_view, name="profile"),
     # Game stats page
-    path("game-stats/overview/", game_stats_view.game_stats_overview, name="game-stats"),
-    
-    #path("game-stats/match-history/", game_stats_view.game_stats_match_history, name="stats-match-history"),
-    
-    
+    path("game-stats/overview/", game_stats_view.game_stats_overview, name="stats-overview"),
+    path("game-stats/match-history/", game_stats_view.game_stats_match_history, name="stats-match-history"),
     # Security page
     path("security/", security_view.security_view, name="security-main-page"),
     path("security/verify-2fa/", twofa_views.verify_2fa_view, name="verify-2fa"),

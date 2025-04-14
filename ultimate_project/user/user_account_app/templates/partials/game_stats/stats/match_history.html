@@ -1,0 +1,35 @@
+{% load static %}
+<div id="overview-content" class="container-fluid px-0 mt-4">
+	{% for match in match_history %}
+    <div class="match-card">
+      <div class="match-players">
+        <div class="player">
+          <strong>{{ match.player1_details.username }}</strong>
+          <span class="score">{{ match.score_p1 }}</span>
+        </div>
+        <span class="vs">vs</span>
+        <div class="player">
+          <strong>{{ match.player2_details.username }}</strong>
+          <span class="score">{{ match.score_p2 }}</span>
+        </div>
+      </div>
+
+      <div class="match-meta">
+        <span class="winner-label">
+          Winner:
+          <strong class="winner">
+            {{ match.winner_details.username }}
+          </strong>
+        </span>
+
+        {% if match.tournament %}
+          <span class="tournament-badge badge-tournament">🏆 Tournament #{{ match.tournament }}</span>
+        {% else %}
+          <span class="tournament-badge badge-regular">🕹️ Regular Match</span>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="no-matches">No match history available.</p>
+  {% endfor %}
+</div>

@@ -77,7 +77,6 @@ async def game_stats_overview(request: HttpRequest):
 
 # === 🔍 Match history stats 🔍 ===
 
-
 async def handle_get_match_history(request, username, context):
     try:
         if not username:
@@ -89,8 +88,7 @@ async def handle_get_match_history(request, username, context):
             return render(request, "partials/game_stats/error_stats.html", context), True
         context["user"] = user
         match_history = await manage_user_data.get_user_match_history(user['id'])
-        
-        
+    
         if (match_history == None):
             context["error"] = "No player statistics found. Please try again later."
             return render(request, "partials/game_stats/error_stats.html", context), True
@@ -103,19 +101,17 @@ async def handle_get_match_history(request, username, context):
 
 @require_http_methods(["GET"])
 async def game_stats_match_history(request: HttpRequest):
-    
     try:
         context = await manage_user_data.build_context(request)
         username = context["username"]
         if request.method == "GET":
             response, is_error_page = await handle_get_match_history(request, username, context)
-        
         if request.headers.get("HX-Request"):
             header = request.headers.get("HX-Target")
             if header == "account-content":
                 if is_error_page:
                     return (response)
-                context["page_stats"] = response # will be rendered html
+                context["page_stats"] = response 
                 return render(request, "partials/game_stats/game_stats.html", context)
             elif header == "stats-content":
                 if is_error_page:

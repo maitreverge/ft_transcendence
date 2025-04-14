@@ -43,32 +43,14 @@
     <div class="poly-card d-flex col-12 mx-auto py-2 thinner-card mb-4">
       <!-- First section: Current Win Streak -->
       <div class="streak-stat text-center">
-        <p class="label-text mb-1">Best win streak</p>
-        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
-          {{ main_stats.best_win_streak }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
-      <div class="small-vertical-accent-bar mx-3"></div>
-      <!-- Second section: Best Win Streak -->
-      <div class="streak-stat text-center">
-        <p class="label-text mb-1">Current win Streak</p>
+        <p class="label-text mb-1">Current win streak</p>
         <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
           {{ main_stats.c_win_streak }}
         </h1>
         <div class="accent-bar mx-auto mt-1"></div>
       </div>
-      <div class="big-vertical-accent-bar mx-3"></div>
-      <!-- Third section: Worst lose Streak -->
-      <div class="streak-stat text-center">
-        <p class="label-text mb-1">Worst lose streak</p>
-        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
-          {{ main_stats.worst_lose_streak }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
       <div class="small-vertical-accent-bar mx-3"></div>
-      <!-- Fourth section: Current Lose Streak -->
+      <!-- Second section: Current lose Streak -->
       <div class="streak-stat text-center">
         <p class="label-text mb-1">Current lose Streak</p>
         <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
@@ -76,9 +58,28 @@
         </h1>
         <div class="accent-bar mx-auto mt-1"></div>
       </div>
+      <div class="big-vertical-accent-bar mx-3"></div>
+      <!-- Third section: Best win Streak -->
+      <div class="streak-stat text-center">
+        <p class="label-text mb-1">Best win streak</p>
+        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
+          {{ main_stats.best_win_streak  }}
+        </h1>
+        <div class="accent-bar mx-auto mt-1"></div>
+      </div>
+      <div class="small-vertical-accent-bar mx-3"></div>
+      <!-- Fourth section: Worst Lose Streak -->
+      <div class="streak-stat text-center">
+        <p class="label-text mb-1">Worst lose Streak</p>
+        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
+          {{ main_stats.worst_lose_streak }}
+        </h1>
+        <div class="accent-bar mx-auto mt-1"></div>
+      </div>
     </div>
+  
   </div>
-
+  <!--Charts-->
   <div class="row mt-4">
     <!-- Games Won / Lost Pie Chart Card -->
     <div class="col-md-6 mb-4">
@@ -131,6 +132,7 @@
     </div>
     <!-- end chart 2-->
   </div>
+
 </div>
 
 <!-- Use json_script to safely pass main_stats to JavaScript -->
@@ -247,7 +249,8 @@
     initializeCharts();
   });
 
-  document.body.addEventListener("htmx:afterSwap", function (event) {
+
+  document.body.addEventListener("htmx:load", function (event) {
     initializeCharts();
   });
 </script>
