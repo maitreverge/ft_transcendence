@@ -56,8 +56,8 @@ class Pong:
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
 		self.ball_speed = 0.8
-		# self.vect = self.get_random_vector() 
-		self.vect = [0.3, -0.5]
+		self.vect = self.get_random_vector() 
+		# self.vect = [0.3, -0.5]
 		self.pad_speed = 2
 		self.max_ball_speed = 2 # //! 10
 		self.ball_acceleration = 1.3
@@ -72,14 +72,16 @@ class Pong:
 		self.pads_y = [50, 50]	
 		self.pads_offset = 5
 		self.pads_width = 5
-		self.ball_ray = 1
-		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_ray
+		# self.ball_ray = 1
+		self.ball_wray = 1
+		self.ball_hray = 1.5
+		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_wray
 		self.x_rght_pad = 100 - self.x_left_pad
-		self.y_top = 0 + self.ball_ray
+		self.y_top = 0 + self.ball_hray
 		# self.y_top = 40 + self.ball_ray
-		self.y_bot = 100 - self.ball_ray
+		self.y_bot = 100 - self.ball_hray
 		# self.y_bot = 60 - self.ball_ray
-		self.x_left_pad_back = self.pads_offset - self.ball_ray
+		self.x_left_pad_back = self.pads_offset - self.ball_wray
 		self.x_rght_pad_back = 100 - self.x_left_pad_back
 
 	def launchTask(self):
