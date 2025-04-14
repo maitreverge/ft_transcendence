@@ -11,7 +11,17 @@
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
 
-🟧 Beautify register / login / 2fa landing pages
+# FRONT WORK
+🟧 Beautify login
+
+🟧 Beautify register
+
+🟧 Beautify 2fa landing pages
+
+🟧 Creer des images pour la page d'accueil 
+
+# BACK WORK
+🟧 user not found when 2FA incorrect in login
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
