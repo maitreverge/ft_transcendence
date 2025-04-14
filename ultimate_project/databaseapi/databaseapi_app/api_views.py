@@ -86,18 +86,17 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
             player_obj = Player.objects.get(id=player_id)
             player_stats = PlayerStatistics.objects.get(player=player_obj)
             data = {
-                "games_played": 1,  
-                "games_won": 1 if request.data.get("winner") == player_id else 0,
-                "games_lost": 1 if request.data.get("winner") != player_id else 0,
+                "is_won": request.data.get('is_won', 0),
+                "is_lost": request.data.get('is_lost', 0),
                 "points_scored": request.data.get('points_scored', 0),
                 "points_conceded": request.data.get('points_conceded', 0),
                 "nb_tournaments_played": request.data.get('nb_tournaments_played', 0),
     			"nb_tournaments_won": request.data.get('nb_tournaments_won', 0),
             }
             # global user stats
-            player_stats.games_played += data["games_played"]
-            player_stats.games_won += data["games_won"]
-            player_stats.games_lost += data["games_lost"]
+            player_stats.games_played += 1
+            player_stats.games_won += data["is_won"]
+            player_stats.games_lost += data["is_lost"]
             player_stats.points_scored += data["points_scored"]
             player_stats.points_conceded += data["points_conceded"]
             player_stats.nb_tournaments_played += data["nb_tournaments_played"]
@@ -108,25 +107,26 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
             ps_total = player_stats.points_scored
             player_stats.win_rate = round((gw_total / gp_total) * 100, 2) if gp_total > 0 else 0.0
             player_stats.average_score = round(ps_total / gp_total, 2) if gp_total > 0 else 0.0
-            if data["games_won"] == 1:
+            if data["is_won"] == 1:
                 player_stats.c_win_streak += 1
                 player_stats.c_lose_streak = 0
                 if player_stats.c_win_streak > player_stats.best_win_streak:
                     player_stats.best_win_streak = player_stats.c_win_streak
-            elif data["games_lost"] == 1:
+            elif data["is_lost"] == 1:
                 player_stats.c_lose_streak += 1
                 player_stats.c_win_streak = 0
                 if player_stats.c_lose_streak > player_stats.worst_lose_streak:
                     player_stats.worst_lose_streak = player_stats.c_lose_streak
-            
+            player_stats.save()
             now = timezone.localtime(timezone.now())
             today_str = now.date().isoformat()
             # Build daily stat history
             if today_str in player_stats.stats_history:
+                print("\nALREDY HAVE AN HISTORY\n", flush=True)
                 existing_record = player_stats.stats_history[today_str]
-                existing_record["games_played"] += data["games_played"]
-                existing_record["games_won"] += data["games_won"]
-                existing_record["games_lost"] += data["games_lost"]
+                existing_record["games_played"] += 1
+                existing_record["games_won"] += data["is_won"]
+                existing_record["games_lost"] += data["is_lost"]
                 existing_record["points_scored"] += data["points_scored"]
                 existing_record["points_conceded"] += data["points_conceded"]
                 gp = existing_record["games_played"]
@@ -141,15 +141,21 @@ class PlayerStatisticsViewSet(viewsets.ModelViewSet):
                 existing_record["nb_tournaments_won"] += data["nb_tournaments_won"]
             else:
                 # if data for the current day doesnt exist already
-                games_played = data["games_played"]
-                games_won = data["games_won"]
+                games_played = 1
+                games_won = data["is_won"]
                 points_scored = data["points_scored"]
                 update_record = {
-                    **data, #original data
+                    "games_played": games_played,
+                    "games_won": data["is_won"],
+                    "games_lost": data["is_lost"],
+                    "points_scored": data["points_scored"],
+                    "points_conceded": data["points_conceded"],
                     "win_rate": round((games_won / games_played) * 100, 2) if games_played > 0 else 0.0,
                     "average_score": round(points_scored / games_played, 2) if games_played > 0 else 0.0,
                     "best_win_streak": player_stats.best_win_streak,
                     "worst_lose_streak": player_stats.worst_lose_streak,
+                    "nb_tournaments_played": data["nb_tournaments_played"],
+                    "nb_tournaments_won" : data["nb_tournaments_won"],
                 }
                 player_stats.stats_history[today_str] = update_record
             # Max 30 days history for game stats per day

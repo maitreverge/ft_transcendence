@@ -278,18 +278,16 @@ class Tournament():
 			await sdb(path, data)
 			# Update Players stats
 			data_p1 = {
-				"games_played": 1,
-				"games_won": 1 if win == p1 else 0,
-				"games_lost": 1 if win != p1 else 0,
+				"is_won": 1 if win == p1 else 0,
+				"is_lost": 1 if win != p1 else 0,
 				"points_scored": score_p1,
 				"points_conceded": score_p2,
 				"nb_tournaments_played": 1 if i == 0 else 0,
 				"nb_tournaments_won": 1 if win == p1 and i == 2 else 0,
 			}
 			data_p2 = {
-				"games_played": 1,  
-				"games_won": 1 if win == p2 else 0,
-				"games_lost": 1 if win != p2 else 0,
+				"is_won": 1 if win == p2 else 0,
+				"is_lost": 1 if win != p2 else 0,
 				"points_scored": score_p2,
 				"points_conceded": score_p1,
 				"nb_tournaments_played": 1 if i == 0 else 0,

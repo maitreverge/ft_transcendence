@@ -148,9 +148,9 @@ async def get_user_game_stats(user_id):
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://databaseapi:8007/api/player_stats/?player_id={user_id}")
             response_data = response.json()
-            """ print("JSON DATA\n\n:", flush=True)
+            print("JSON DATA\n\n:", flush=True)
             pprint(response_data)
-            print("--\n", flush=True) """
+            print("--\n", flush=True)
             if isinstance(response_data, list) and response_data:
                 payload = response_data[0]
                 main_stats = payload.get('main_stats', {})
