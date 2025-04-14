@@ -134,8 +134,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-
-STATIC_URL = f"/static/static_files/" if DEBUG else "/static/"
+STATIC_URL = f"/static/{NAME}/" if DEBUG else "/static/"
 
 
 # to allow static from isndie the cotnainer
