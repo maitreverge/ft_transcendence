@@ -81,6 +81,7 @@ body, h5 {
 	width: 100%;          /* Ou une largeur spécifique si nécessaire */
 	min-width: 300px;     /* Largeur minimale */
 	margin: 0 auto;       /* Centre l'élément horizontalement dans son parent */
+    z-index: 400;
   }
  
   #secline {

@@ -121,6 +121,7 @@
 	width:100vw;
 	height:85vh;
     background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
+    z-index: 500;
 }
 
 .match-sylvain-gif {
