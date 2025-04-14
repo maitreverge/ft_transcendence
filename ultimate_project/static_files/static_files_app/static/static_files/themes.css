@@ -55,6 +55,12 @@ background-color: var(--navbars-color);
 {
   background-color: var(--background-color);
 }
+
+.background_color_text
+{
+  color: var(--background-color);
+}
+
 .navbars_color i {
   /* background-color: var(--navbars-color) !important; */
   color: var(--navbars-color) !important;
@@ -65,6 +71,13 @@ background-color: var(--navbars-color);
   color: var(--title-color) !important;
 
 }
+
+
+.text_color
+{
+  background-color: var(--text-color) !important;
+}
+
 .navbar a {
 color: var(--text-color);
 text-decoration: none;

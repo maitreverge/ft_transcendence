@@ -70,8 +70,8 @@
                                             maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
                                             oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
                                         <button onclick="newPlayer(window.tournamentSocket); prefillName();"
-                                            class="background_color btn d-flex align-items-center justify-content-between w-100">
-                                            <span class="text">Add Player</span>
+                                            class="text_color btn d-flex align-items-center justify-content-between w-100">
+                                            <span class="text background_color_text">Add Player</span>
                                             <span class="navbars_color icon text-white-50">
                                                 <i class="fas fa-arrow-right"></i>
                                             </span>
@@ -108,8 +108,8 @@
                             <div class="card shadow">
                                 <div class="card-header py-2 d-flex justify-content-center align-items-center gap-2">
                                     <button onclick="newTournament(window.tournamentSocket)"
-                                        class="w-100 background_color btn d-flex align-items-center justify-content-between">
-                                        <span class="text">Create Tournament</span>
+                                        class="w-100 text_color btn d-flex align-items-center justify-content-between">
+                                        <span class="text background_color_text">Create Tournament</span>
                                         <span class="navbars_color icon">
                                             <i class="navbars_color fas fa-arrow-right"></i>
                                         </span>
