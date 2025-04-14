@@ -54,20 +54,20 @@ function stopMatch()
     };
   }
   
-  console.log("Attachement de l'event popstate...");
-  window.addEventListener("popstate", () => {
+//   console.log("Attachement de l'event popstate...");
+//   window.addEventListener("popstate", () => {
 
-    if (window.location.pathname.includes("/home")) {
-        console.log("Retour sur la page home, aucune requête HTMX effectuée.");
-        return; // On ne fait rien si c'est la page home
-    }
+//     if (window.location.pathname.includes("/home")) {
+//         console.log("Retour sur la page home, aucune requête HTMX effectuée.");
+//         return; // On ne fait rien si c'est la page home
+//     }
 
-    console.log("popstate event triggered!");
-    htmx.ajax("GET", window.location.pathname, {
-      target: "#main_div",
-      swap: "innerhtml",
-      headers: { "HX-Login-Success": "true" },
-    });
+//     console.log("popstate event triggered!");
+//     htmx.ajax("GET", window.location.pathname, {
+//       target: "#main_div",
+//       swap: "innerhtml",
+//       headers: { "HX-Login-Success": "true" },
+//     });
     // closeWebsockets();
   });
   
