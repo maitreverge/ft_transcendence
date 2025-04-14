@@ -31,9 +31,10 @@ function showTutoOverlayIfFirstTime() {
     const overlay = document.getElementById('tuto-overlay');
     if (!overlay) return;
 
-    const alreadySeen = localStorage.getItem('tutoSimpleMatchSeen');
-    //! if (!alreadySeen) { exchange the two lines to activate tutorial
-    if (alreadySeen) {
+    const matchAlreadySeen = localStorage.getItem('tutoSimpleMatchSeen');
+    const TournamentAlreadySeen = localStorage.getItem('tutoTournamentSeen');
+    // if (alreadySeen) {
+    if (!matchAlreadySeen && window.location.href.includes('simple-match')) {
         overlay.style.display = 'flex';
 
         overlay.addEventListener('click', () => {
@@ -41,6 +42,16 @@ function showTutoOverlayIfFirstTime() {
             localStorage.setItem('tutoSimpleMatchSeen', 'true');
         });
     }
+    if (!TournamentAlreadySeen && window.location.href.includes('tournament/tournament')) {
+        overlay.style.display = 'flex';
+
+        overlay.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            localStorage.setItem('tutoTournamentSeen', 'true');
+        });
+    }
+
+
 }
 
 showTutoOverlayIfFirstTime();
