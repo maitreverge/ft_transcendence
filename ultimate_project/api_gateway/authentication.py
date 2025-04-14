@@ -89,7 +89,7 @@ async def login_fastAPI(
     refresh_payload = {
         "user_id": user_id,
         "username": username,
-        # "uuid": my_uuid,  #!... but not in the refresh token
+        "uuid": my_uuid,  #!... and in the refresh token
         "exp": expire_refresh,
     }
 
@@ -264,6 +264,7 @@ async def verify_2fa_and_login(
         refresh_payload = {
             "user_id": user_id,
             "username": username,
+            "uuid": my_uuid,
             "exp": expire_refresh,
         }
 
@@ -463,7 +464,7 @@ async def register_fastAPI(
         refresh_payload = {
             "user_id": user_id,
             "username": username,
-            # "uuid": my_uuid, #! NOT THE UUID IN THE REFRESH TOKEN
+            "uuid": my_uuid,
             "exp": expire_refresh,
         }
 

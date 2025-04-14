@@ -10,6 +10,7 @@ def generate_cookies(json_response, access_token, refresh_token):
         samesite="Lax",
         path="/",
         max_age=60 * 2,  # TEST 2 MN
+        # ! NEED TO HARMONIZE COOKIES EXPIRE TIMES
     )
 # 
     # Refresh token
