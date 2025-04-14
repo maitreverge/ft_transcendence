@@ -195,8 +195,8 @@ font-size: 1.1em;
   }
 
   #language-selector option {
-    background-color: var(--logo-color);
-    color: var(--background-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
     }
   /* Effet au survol */
   #language-selector:hover {
@@ -211,4 +211,11 @@ font-size: 1.1em;
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 10px var(--primary-color);
+  }
+  .user, .ghost, .self-player {
+    color: var(--text-color);
+  }
+
+  .user:hover, .ghost:hover, .self-player:hover {
+    color: var(--title-color);
   }
