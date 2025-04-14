@@ -57,7 +57,7 @@ class Pong:
 		self.ball = self.ball_rst.copy()
 		self.ball_speed = 0.8
 		# self.vect = self.get_random_vector() 
-		self.vect = [-0.5, -0.4]
+		self.vect = [0.3, -0.5]
 		self.pad_speed = 2
 		self.max_ball_speed = 2 # //! 10
 		self.ball_acceleration = 1.3
@@ -344,6 +344,7 @@ Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
 Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
 Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
 Pong.is_left_pad_hurt_ball = physics.is_left_pad_hurt_ball
+Pong.is_right_pad_hurt_ball = physics.is_right_pad_hurt_ball
 
 Pong.segments_intersect = physics.segments_intersect
 Pong.scale_vector = physics.scale_vector

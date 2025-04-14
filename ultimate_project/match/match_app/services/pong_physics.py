@@ -16,13 +16,15 @@ def pad_command(self, player, pad_idx):
 				self.pads_y[pad_idx] - self.pad_speed,
 				(self.pad_height / 2)
 			)
-			self.is_left_pad_hurt_ball('up')							
+			self.is_left_pad_hurt_ball('up')
+			self.is_right_pad_hurt_ball('up')						
 		elif player["dir"] == 'down':					
 			self.pads_y[pad_idx] = min(
 				self.pads_y[pad_idx] + self.pad_speed,
 				100 - (self.pad_height / 2)
 			)
-			self.is_left_pad_hurt_ball('dn')					
+			self.is_left_pad_hurt_ball('dn')
+			self.is_right_pad_hurt_ball('dn')				
 		player["dir"] = None
 
 def is_left_pad_hurt_ball(self, sense):
@@ -31,13 +33,43 @@ def is_left_pad_hurt_ball(self, sense):
 		self.pads_y[0] - self.pad_height / 2 - self.ball_ray < self.ball[1] < self.pads_y[0] + self.pad_height / 2 + self.ball_ray:	
 			if sense == "up":
 				self.ball[1] = self.pads_y[0] - self.pad_height / 2 - self.ball_ray
-				self.vect[1] -= self.vect[1]
+				self.vect[1] = abs(self.vect[1])
+				if self.ball[1] < self.y_top:
+					self.ball[1] = self.y_top 
+					self.pads_y[0] = self.pad_height / 2 + 2 * self.ball_ray 
+					self.vect[0] = -abs(self.vect[0])
+					self.vect[1] = 0
 			elif sense == "dn":
 				self.ball[1] = self.pads_y[0] + self.pad_height / 2 + self.ball_ray
-				self.vect[1] -= self.vect[1]
-			if self.ball[1] < self.y_top:
-				self.ball[1] = self.y_top
-				self.pads_y[0] = 0 +  2 * self.ball_ray
+				self.vect[1] = -abs(self.vect[1])
+				if self.ball[1] > self.y_bot:
+					self.ball[1] = self.y_bot
+					self.pads_y[0] = 100 - (self.pad_height / 2 + 2 * self.ball_ray) 
+					self.vect[0] = -abs(self.vect[0])
+					self.vect[1] = 0
+
+def is_right_pad_hurt_ball(self, sense):
+	
+	if self.x_rght_pad < self.ball[0] < self.x_rght_pad_back and \
+		self.pads_y[1] - self.pad_height / 2 - self.ball_ray < self.ball[1] < self.pads_y[1] + self.pad_height / 2 + self.ball_ray:	
+			if sense == "up":
+				self.ball[1] = self.pads_y[1] - self.pad_height / 2 - self.ball_ray
+				self.vect[1] = abs(self.vect[1])
+				if self.ball[1] < self.y_top:
+					self.ball[1] = self.y_top
+					self.pads_y[1] = self.pad_height / 2 + 2 * self.ball_ray 
+					self.vect[0] = abs(self.vect[0])
+					self.vect[1] = 0
+					# self.wall_flag = False
+			elif sense == "dn":
+				self.ball[1] = self.pads_y[1] + self.pad_height / 2 + self.ball_ray
+				self.vect[1] = -abs(self.vect[1])
+				if self.ball[1] > self.y_bot:
+					self.ball[1] = self.y_bot
+					self.pads_y[1] = 100 - (self.pad_height / 2 + 2 * self.ball_ray) 
+					self.vect[0] = abs(self.vect[0])
+					self.vect[1] = 0
+					# self.wall_flag = False	
 
 async def bounces(self):
 
@@ -45,10 +77,10 @@ async def bounces(self):
 	await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
 	# print(f"yeee", flush=True)
 	
-	await self.left_upside_pad_bounce(( self.pads_y[0] - self.pad_height / 2))
-	await self.left_downside_pad_bounce(( self.pads_y[0] + self.pad_height / 2))
-	await self.right_upside_pad_bounce(( self.pads_y[1] - self.pad_height / 2))
-	await self.right_downside_pad_bounce(( self.pads_y[1] + self.pad_height / 2))
+	await self.left_upside_pad_bounce()
+	await self.left_downside_pad_bounce()
+	await self.right_upside_pad_bounce()
+	await self.right_downside_pad_bounce()
 	# print(f"yoooooo", flush=True)
 	# await self.vert_bounce
 	await self.vert_bounce(op.le, limit=self.y_top)
@@ -111,8 +143,9 @@ async def vert_bounce(self, cmp, limit):
 
 	# ru = [[rght_limit, self.yp2 - self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 - self.pad_height / 2]]
 	# rd = [[rght_limit, self.yp2 + self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 + self.pad_height / 2]]
-async def left_upside_pad_bounce(self, limit):
+async def left_upside_pad_bounce(self):
 	# print(f"houlaaaa", flush=True)
+	limit = self.pads_y[0] - self.pad_height / 2 - self.ball_ray
 	if self.is_upleft_pads_intersect(self.x_left_pad):# and self.wall_flag:
 		# print(f"houlaaaa 000", flush=True)
 		bounce_vect = [0, 0]
@@ -124,8 +157,9 @@ async def left_upside_pad_bounce(self, limit):
 		await self.bounce_send_state()
 		self.vect[1] = -self.vect[1]
 
-async def right_upside_pad_bounce(self, limit):
+async def right_upside_pad_bounce(self):
 	# print(f"houlaaaa", flush=True)
+	limit = self.pads_y[1] - self.pad_height / 2 - self.ball_ray
 	if self.is_upright_pads_intersect(self.x_rght_pad):# and self.wall_flag:
 		# print(f"houlaaaa 000", flush=True)
 		bounce_vect = [0, 0]
@@ -137,8 +171,9 @@ async def right_upside_pad_bounce(self, limit):
 		await self.bounce_send_state()
 		self.vect[1] = -self.vect[1]
 
-async def left_downside_pad_bounce(self, limit):
+async def left_downside_pad_bounce(self):
 	# print(f"houlaaaa", flush=True)
+	limit = self.pads_y[0] + self.pad_height / 2 + self.ball_ray
 	if self.is_downleft_pads_intersect(self.x_left_pad):# and self.wall_flag:
 		# print(f"houlaaaa 000", flush=True)
 		bounce_vect = [0, 0]
@@ -152,8 +187,9 @@ async def left_downside_pad_bounce(self, limit):
 		# self.wall_flag = False
 	# print(f"houlaaaa 222", flush=True)
 
-async def right_downside_pad_bounce(self, limit):
+async def right_downside_pad_bounce(self):
 	# print(f"houlaaaa", flush=True)
+	limit = self.pads_y[1] + self.pad_height / 2 + self.ball_ray
 	if self.is_downright_pads_intersect(self.x_rght_pad):# and self.wall_flag:
 		# print(f"houlaaaa 000", flush=True)
 		bounce_vect = [0, 0]
@@ -167,8 +203,9 @@ async def right_downside_pad_bounce(self, limit):
 
 def is_upleft_pads_intersect(self, left_limit):
 	# print(f"isupleft", flush=True)
-	lu = ((left_limit, self.pads_y[0] - self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] - self.pad_height / 2))
-	ld = ((left_limit, self.pads_y[0] + self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] + self.pad_height / 2))
+	lu = ((left_limit, self.pads_y[0] - self.pad_height / 2 - self.ball_ray),
+	   (self.x_left_pad_back, self.pads_y[0] - self.pad_height / 2 - self.ball_ray))
+	# ld = ((left_limit, self.pads_y[0] + self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] + self.pad_height / 2))
 	# print(f"isupleft 222", flush=True)
 	return self.segments_intersect(
 		(self.ball[0], self.ball[1]),
@@ -179,8 +216,9 @@ def is_upleft_pads_intersect(self, left_limit):
 
 def is_upright_pads_intersect(self, right_limit):
 	# print(f"isupleft", flush=True)
-	lu = ((right_limit, self.pads_y[1] - self.pad_height / 2), (right_limit + self.pads_width, self.pads_y[1] - self.pad_height / 2))
-	ld = ((right_limit, self.pads_y[1] + self.pad_height / 2), (right_limit + self.pads_width, self.pads_y[1] + self.pad_height / 2))
+	lu = ((right_limit, self.pads_y[1] - self.pad_height / 2 - self.ball_ray),
+	   (self.x_rght_pad_back, self.pads_y[1] - self.pad_height / 2 - self.ball_ray))
+	# ld = ((right_limit, self.pads_y[1] + self.pad_height / 2), (right_limit + self.pads_width, self.pads_y[1] + self.pad_height / 2))
 	# print(f"isupleft 222", flush=True)
 	return self.segments_intersect(
 		(self.ball[0], self.ball[1]),
@@ -191,8 +229,9 @@ def is_upright_pads_intersect(self, right_limit):
 
 def is_downright_pads_intersect(self, right_limit):
 	# print(f"isupleft", flush=True)
-	lu = ((right_limit, self.pads_y[1] - self.pad_height / 2), (right_limit + self.pads_width, self.pads_y[1] - self.pad_height / 2))
-	ld = ((right_limit, self.pads_y[1] + self.pad_height / 2), (right_limit + self.pads_width, self.pads_y[1] + self.pad_height / 2))
+	# lu = ((right_limit, self.pads_y[1] - self.pad_height / 2), (right_limit + self.pads_width, self.pads_y[1] - self.pad_height / 2))
+	ld = ((right_limit, self.pads_y[1] + self.pad_height / 2 + self.ball_ray),
+	    (self.x_rght_pad_back, self.pads_y[1] + self.pad_height / 2 + self.ball_ray))
 	# print(f"isupleft 222", flush=True)
 	return self.segments_intersect(
 		(self.ball[0], self.ball[1]),
@@ -203,8 +242,9 @@ def is_downright_pads_intersect(self, right_limit):
 
 def is_downleft_pads_intersect(self, left_limit):
 	# print(f"isupleft", flush=True)
-	lu = ((left_limit, self.pads_y[0] - self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] - self.pad_height / 2))
-	ld = ((left_limit, self.pads_y[0] + self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] + self.pad_height / 2))
+	# lu = ((left_limit, self.pads_y[0] - self.pad_height / 2), (left_limit - self.pads_width, self.pads_y[0] - self.pad_height / 2))
+	ld = ((left_limit, self.pads_y[0] + self.pad_height / 2 + self.ball_ray),
+	    (self.x_left_pad_back, self.pads_y[0] + self.pad_height / 2 + self.ball_ray))
 	# print(f"isupleft 222", flush=True)
 	return self.segments_intersect(
 		(self.ball[0], self.ball[1]),
@@ -273,7 +313,12 @@ def segments_intersect(self, A, B, C, D, eps=1e-9):
 
 def scale_vector(self, m1, m2, div):
 	if div == 0:
-		return 0
+		return m2
+	# if div == 0:
+	# 	if m2 > 0:
+	# 		return 0.1
+		# elif m2 < 0:
+		# 	return -0.1
 	return m1 * m2 / div
 
 def get_magnitude(self, vect):
