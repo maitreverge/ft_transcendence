@@ -78,6 +78,11 @@ background-color: var(--navbars-color);
   background-color: var(--text-color) !important;
 }
 
+.text_color_text
+{
+  color: var(--text-color) !important;
+}
+
 .navbar a {
 color: var(--text-color);
 text-decoration: none;
