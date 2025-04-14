@@ -63,7 +63,7 @@
 #end-cont {
 	width:100%;
 	height:100%;
-	background-color: rgb(244, 118, 22);
+	background-color: var(--color-navbars);
 }
 
 .end-cont {
