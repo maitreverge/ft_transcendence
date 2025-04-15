@@ -217,21 +217,34 @@ def run(playwright: Playwright) -> None:
         expect(page2.locator("#swal2-html-container")).to_have_text("Not your player!")
         page2.get_by_text("OK", exact=True).click()
 
+        print(f"TRY 1")
 
         # User3 move his ghost...
         source2 = page2.get_by_text(match2_player2, exact=True)
         target2 = page2.locator(".tournament-cont")
         source2.drag_to(target2)
+        print(f"TRY 2")
+
+        # time.sleep(10)
 
         # ... and himself
-        source2 = page2.get_by_text(match3_player1, exact=True)
-        target2 = page2.locator(".tournament-cont")
-        source2.drag_to(target2)
+        # source2 = page2.locator(".user self-player")
+
+        # source3 = page2.get_by_text(match3_player1, exact=True)
+
+        source3 = page2.locator(f"div[draggable='true'].user.self-player:has-text('{match3_player1}')")
+
+        # source3 = page2.locator(".user self-player")
+        # page.locator("[id=\"\\33 \"]").click()
+        target3 = page2.locator(".tournament-cont")
+        source3.drag_to(target3)
+        print(f"TRY 3")
 
         # User 2 moves his ghost
         source1 = page1.get_by_text(match3_player2, exact=True)
         target1 = page1.locator(".tournament-cont")
         source1.drag_to(target1)
+        print(f"TRY 4")
 
     def test_remote_tournament(pages):
 
