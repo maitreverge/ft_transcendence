@@ -6,6 +6,7 @@ import json
 import aiohttp
 from enum import Enum
 import requests
+from datetime import datetime
 
 import match_app.services.pong_physics as physics
 import match_app.services.pong_scores as scores
@@ -33,6 +34,7 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
+		self.start_time = None
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
@@ -77,10 +79,10 @@ class Pong:
 		self.ball_hray = 1
 		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_wray
 		self.x_rght_pad = 100 - self.x_left_pad
-		# self.y_top = 0 + self.ball_hray
-		self.y_top = 40 + self.ball_hray
-		# self.y_bot = 100 - self.ball_hray
-		self.y_bot = 60 - self.ball_hray
+		self.y_top = 0 + self.ball_hray
+		# self.y_top = 40 + self.ball_hray
+		self.y_bot = 100 - self.ball_hray
+		# self.y_bot = 60 - self.ball_hray
 		self.x_left_pad_back = self.pads_offset - self.ball_wray
 		self.x_rght_pad_back = 100 - self.x_left_pad_back
 		self.pads_half_h = self.pad_height / 2 + self.ball_hray
@@ -143,6 +145,7 @@ class Pong:
 	async def run_game(self):
 		
 		if not self.start_flag:
+			self.start_time = self.get_time()
 			await self.send_start(3)
 			self.tasks.append(
 				self.myEventLoop.create_task(self.watch_cat(self.start_delay)))
@@ -156,7 +159,10 @@ class Pong:
 			await self.scores()
 			await self.bounces()										
 			self.move_ball()
-						
+
+	def get_time(self):
+		return datetime.now().astimezone().isoformat(timespec='seconds')
+
 	def set_waiting_state(self, players):
 
 		if self.start_flag:
@@ -325,7 +331,9 @@ class Pong:
 				"looserName": looser[1],
 				"p1Id": self.plyIds[0],
 				"p2Id": self.plyIds[1],
-				"score": self.score
+				"score": self.score,
+				"startTime": self.start_time,
+				"endTime": self.get_time()
 			}) as response:				
 				if response.status not in (200, 201):
 					err = await response.text()
