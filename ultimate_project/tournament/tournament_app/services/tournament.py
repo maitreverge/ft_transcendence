@@ -2,6 +2,7 @@ import json
 import requests
 import asyncio
 import aiohttp
+from django.utils.dateparse import parse_datetime
 
 class Tournament():
 	
@@ -254,7 +255,6 @@ class Tournament():
 		
 		from tournament_app.views import send_db as sdb
 
-		path = "api/match/"
 		
         # Loops 3 times because there is 3 matches within a tournament
 		for i in range(3):
@@ -267,14 +267,20 @@ class Tournament():
 			tournament = tournament_id
 			# Compile each key in a JSON body
 			# HERE FOR MY DATA
+			start_time = parse_datetime(matches[i]["matchResult"]["startTime"])
+			end_time = parse_datetime(matches[i]["matchResult"]["endTime"])
+			
 			data = {
 				"player1": p1,
 				"player2": p2,
 				"winner": win,
 				"score_p1": score_p1,
 				"score_p2": score_p2,
+				"start_time": start_time.isoformat() if start_time else None,
+    			"end_time": end_time.isoformat() if end_time else None,
 				"tournament": tournament,
 			}
+			path = "api/match/"
 			await sdb(path, data)
 			# Update Players stats
 			data_p1 = {

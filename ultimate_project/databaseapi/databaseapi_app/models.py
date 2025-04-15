@@ -241,12 +241,9 @@ class Match(models.Model):
 
     score_p1 = models.IntegerField(default=0)
     score_p2 = models.IntegerField(default=0)
-    
-    #now = timezone.localtime(timezone.now()) 
-    # will be conevrted in the serializer
-    #need to have the time start and end for each match
-    #start_time = models.DateTimeField(null=True, blank=True)
-    #end_time = models.DateTimeField(null=True, blank=True)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+
 
     tournament = models.ForeignKey(
         to=Tournament,

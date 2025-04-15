@@ -3,6 +3,7 @@ import json
 import requests
 import aiohttp
 import html
+from django.utils.dateparse import parse_datetime
 from pprint import pprint
 
 
@@ -313,9 +314,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		win = max(1, match_results["winnerId"] or 0)
 		score_p1 = match_results["score"][0]
 		score_p2 = match_results["score"][1]
-  
-		start_time = match_results["startTime"]
-		start_time = match_results["endTime"]
+		start_time = parse_datetime(match_results["startTime"])
+		end_time = parse_datetime(match_results["endTime"])
 	
 		data = {
             "player1": p1,
@@ -323,8 +323,9 @@ class SimpleConsumer(AsyncWebsocketConsumer):
             "winner": win,
             "score_p1": score_p1,
             "score_p2": score_p2,
+            "start_time": start_time.isoformat() if start_time else None,
+            "end_time": end_time.isoformat() if end_time else None,
         }
-
 		path = "api/match/"
 		await sdb(path, data)
 		print(f"WINNER {win}", flush=True)

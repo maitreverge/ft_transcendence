@@ -131,10 +131,8 @@ class MatchSerializer(serializers.ModelSerializer):
     player2_details = PlayerNestedSerializer(source="player2", read_only=True)
     winner_details = PlayerNestedSerializer(source="winner", read_only=True)
 
-    #"start_time",
-    # "end_time", 
-    # start_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
-    # end_time =  serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    start_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    end_time =  serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     class Meta:
         model = Match
         fields = [
@@ -148,4 +146,6 @@ class MatchSerializer(serializers.ModelSerializer):
             "tournament",
             "score_p1",
             "score_p2",
+            "start_time",
+            "end_time",
         ]
