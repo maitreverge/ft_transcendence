@@ -1,18 +1,19 @@
 <style>
-    .login-picture {
-        background-image: url("https://cdn.mos.cms.futurecdn.net/xQmFxCSLFhkDbYG4m6E5x3-1280-80.png");
-        background-position: center;
-        background-size: 90%; /* Shows 80% of the original image size */
-        background-repeat: no-repeat; 
-        min-height: 100%;
+	.login-picture {
+		background-image: url("https://cdn.mos.cms.futurecdn.net/xQmFxCSLFhkDbYG4m6E5x3-1280-80.png");
+		background-position: center;
+		background-size: 90%;
+		/* Shows 80% of the original image size */
+		background-repeat: no-repeat;
+		min-height: 100%;
 		box-sizing: border-box;
 		margin: 0;
 		padding: 0;
-		
-    }
-    
-    /* Pong Background Animation Styles */
-		.pong-background {
+
+	}
+
+	/* Pong Background Animation Styles */
+	.pong-background {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -34,268 +35,234 @@
 		opacity: 0.6;
 	}
 
-    
-    /* Ensure the login card has a proper z-index to appear above the animation */
-    .card {
-        position: relative;
-        z-index: 10;
-        background-color: rgba(255, 255, 255, 0.95);
+
+	/* Ensure the login card has a proper z-index to appear above the animation */
+	.card {
+		position: relative;
+		z-index: 10;
+		background-color: rgba(255, 255, 255, 0.95);
 		box-sizing: border-box;
 		margin: 0;
 		padding: 0;
-    }
+	}
 </style>
 
 <div class="pong-background" id="pong-background"></div>
 
 <div class="container" data-page-type="login">
-  <!-- Outer Row -->
-  <div class="row justify-content-center">
-    <div class="col-xl-10 col-lg-12 col-md-9">
-      <div class="card o-hidden border-0 shadow-lg my-5">
-        <div class="card-body p-0">
-          <!-- Nested Row within Card Body -->
-          <div class="row">
-            <div class="col-lg-6 d-none d-lg-block login-picture"></div>
-            <div class="col-lg-6">
-              <div class="p-5">
-                <div class="text-center">
-                  <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                </div>
+	<!-- Outer Row -->
+	<div class="row justify-content-center">
+		<div class="col-xl-10 col-lg-12 col-md-9">
+			<div class="card o-hidden border-0 shadow-lg my-5">
+				<div class="card-body p-0">
+					<!-- Nested Row within Card Body -->
+					<div class="row">
+						<div class="col-lg-6 d-none d-lg-block login-picture"></div>
+						<div class="col-lg-6">
+							<div class="p-5">
+								<div class="text-center">
+									<h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+								</div>
 
-                <!-- ! LOGIN MAIN FORM -->
-                <form
-                  class=""
-                  hx-post="/auth/login/"
-                  hx-target="#login-form"
-                  hx-swap="outerHTML"
-                  hx-indicator="#loading-spinner"
-                >
-                  <div class="form-group">
-                    <input
-                      type="text"
-                      class="form-control form-control-user"
-                      id="username"
-                      name="username"
-                      autocomplete="username"
-                      placeholder="Enter Username..."
-                      maxlength="100"
-                      required
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="password"
-                      class="form-control form-control-user"
-                      id="password"
-                      name="password"
-                      autocomplete="password"
-                      placeholder="Password"
-                      maxlength="100"
-                      required
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="submit"
-                      id="loginButton"
-                      hx-push-url="true"
-                      class="btn btn-primary btn-user btn-block"
-                      value="Login"
-                    />
-                  </div>
-                </form>
+								<!-- ! LOGIN MAIN FORM -->
+								<form class="" hx-post="/auth/login/" hx-target="#login-form" hx-swap="outerHTML"
+									hx-indicator="#loading-spinner">
+									<div class="form-group">
+										<input type="text" class="form-control form-control-user" id="username"
+											name="username" autocomplete="username" placeholder="Enter Username..."
+											maxlength="100" required />
+									</div>
+									<div class="form-group">
+										<input type="password" class="form-control form-control-user" id="password"
+											name="password" autocomplete="password" placeholder="Password"
+											maxlength="100" required />
+									</div>
+									<div class="form-group">
+										<input type="submit" id="loginButton" hx-push-url="true"
+											class="btn btn-primary btn-user btn-block" value="Login" />
+									</div>
+								</form>
 
-                <!-- ! Feedback error div for the backend -->
-                <div id="login-form" class="text-center text-danger mt-2"></div>
+								<!-- ! Feedback error div for the backend -->
+								<div id="login-form" class="text-center text-danger mt-2"></div>
 
-                <!-- ! Spinning button  -->
-                <div
-                  id="loading-spinner"
-                  class="htmx-indicator text-center my-2"
-                >
-                  <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>
-                </div>
+								<!-- ! Spinning button  -->
+								<div id="loading-spinner" class="htmx-indicator text-center my-2">
+									<div class="spinner-border text-primary" role="status">
+										<span class="sr-only">Loading...</span>
+									</div>
+								</div>
 
-                <hr />
+								<hr />
 
-                <!-- ! Link towards register  -->
-                <div class="text-center small" style="font-size: larger">
-                  <a
-                    id="register-link"
-                    hx-boost="false"
-                    hx-trigger="click"
-                    hx-push-url="true"
-                    hx-get="/register/"
-                    hx-target="body"
-                    href=""
-                    data-translate="Create an Account!"
-                  >
-                    Create an Account!
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+								<!-- ! Link towards register  -->
+								<div class="text-center small" style="font-size: larger">
+									<a id="register-link" hx-boost="false" hx-trigger="click" hx-push-url="true"
+										hx-get="/register/" hx-target="body" href=""
+										data-translate="Create an Account!">
+										Create an Account!
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
 <script>
-  document.addEventListener("htmx:beforeSwap", function (evt) {
-    console.log("document.addEventListener working");
-    console.log("LOGIN FORM LISTENNING");
-    if (evt.detail.target.id === "login-form") {
-      try {
-        console.log("Réponse brute:", evt.detail.xhr.responseText);
-        const response = JSON.parse(evt.detail.xhr.responseText);
+	document.addEventListener("htmx:beforeSwap", function (evt) {
+		console.log("document.addEventListener working");
+		console.log("LOGIN FORM LISTENNING");
+		if (evt.detail.target.id === "login-form") {
+			try {
+				console.log("Réponse brute:", evt.detail.xhr.responseText);
+				const response = JSON.parse(evt.detail.xhr.responseText);
 
-        if (response.success) {
-          console.log("SUCCESS");
-          evt.detail.shouldSwap = false;
+				if (response.success) {
+					console.log("SUCCESS");
+					evt.detail.shouldSwap = false;
 
-          htmx
-            .ajax("GET", "/home/", {
-              target: "body",
-              swap: "outerHTML",
-              headers: { "HX-Login-Success": "true" },
-            })
-            .then(function () {
-              history.pushState(null, "", "/home/");
-            });
-        } else if (response.message === "2FA is enabled") {
-          // Store username for 2FA page
-          const usernameInput = document.getElementById("username");
-          if (usernameInput) {
-            const usernameValue = usernameInput.value;
-            sessionStorage.setItem("2fa_username", usernameValue);
+					htmx
+						.ajax("GET", "/home/", {
+							target: "body",
+							swap: "outerHTML",
+							headers: { "HX-Login-Success": "true" },
+						})
+						.then(function () {
+							history.pushState(null, "", "/home/");
+						});
+				} else if (response.message === "2FA is enabled") {
+					// Store username for 2FA page
+					const usernameInput = document.getElementById("username");
+					if (usernameInput) {
+						const usernameValue = usernameInput.value;
+						sessionStorage.setItem("2fa_username", usernameValue);
 
-            // Set username as global variable as another backup
-            window.twoFAUsername = usernameValue;
-          } else {
-            console.error("Username input element not found");
-          }
+						// Set username as global variable as another backup
+						window.twoFAUsername = usernameValue;
+					} else {
+						console.error("Username input element not found");
+					}
 
-          // Redirect to 2FA page
-          evt.detail.shouldSwap = false;
-          console.log("Redirecting to 2FA page");
+					// Redirect to 2FA page
+					evt.detail.shouldSwap = false;
+					console.log("Redirecting to 2FA page");
 
-          // Get username for the URL
-          const username = usernameInput ? usernameInput.value : "";
+					// Get username for the URL
+					const username = usernameInput ? usernameInput.value : "";
 
-          // Include username in the URL to help with page transitions
-          htmx
-            .ajax(
-              "GET",
-              `/two-factor-auth/?username=${encodeURIComponent(username)}`,
-              {
-                target: "body",
-                swap: "outerHTML",
-              }
-            )
-            .then(function () {
-              console.log("2FA page loaded, pushing history state");
-              history.pushState(null, "", "/two-factor-auth/");
+					// Include username in the URL to help with page transitions
+					htmx
+						.ajax(
+							"GET",
+							`/two-factor-auth/?username=${encodeURIComponent(username)}`,
+							{
+								target: "body",
+								swap: "outerHTML",
+							}
+						)
+						.then(function () {
+							console.log("2FA page loaded, pushing history state");
+							history.pushState(null, "", "/two-factor-auth/");
 
-              // Extra check to set username after page load
-              setTimeout(function () {
-                const usernameField = document.getElementById("username");
-                if (usernameField && window.twoFAUsername) {
-                  usernameField.value = window.twoFAUsername;
-                  console.log(
-                    "Username set after page load:",
-                    usernameField.value
-                  );
-                }
-              }, 200);
-            });
-        } else {
-          // Sanitize the message using DOMPurify before setting content
-          const messageElement = document.getElementById("login-form");
-          const sanitizedMessage = DOMPurify.sanitize(response.message);
+							// Extra check to set username after page load
+							setTimeout(function () {
+								const usernameField = document.getElementById("username");
+								if (usernameField && window.twoFAUsername) {
+									usernameField.value = window.twoFAUsername;
+									console.log(
+										"Username set after page load:",
+										usernameField.value
+									);
+								}
+							}, 200);
+						});
+				} else {
+					// Sanitize the message using DOMPurify before setting content
+					const messageElement = document.getElementById("login-form");
+					const sanitizedMessage = DOMPurify.sanitize(response.message);
 
-          messageElement.textContent = sanitizedMessage;
-        }
-      } catch (e) {
-        console.error("Error from LOGIN JS Script :", e);
-      }
-    }
-  });
+					messageElement.textContent = sanitizedMessage;
+				}
+			} catch (e) {
+				console.error("Error from LOGIN JS Script :", e);
+			}
+		}
+	});
 
-document.addEventListener('DOMContentLoaded', () => {
-  initPongAnimation();
-});
+	document.addEventListener('DOMContentLoaded', () => {
+		initPongAnimation();
+	});
 
-// Add an HTMX event listener to reinitialize animation after content swaps
-document.addEventListener('htmx:afterSwap', () => {
-  // Only initialize if we're on the login page
-  if (document.querySelector('[data-page-type="login"]')) {
-    initPongAnimation();
-  }
-});
+	// Add an HTMX event listener to reinitialize animation after content swaps
+	document.addEventListener('htmx:afterSwap', () => {
+		// Only initialize if we're on the login page
+		if (document.querySelector('[data-page-type="login"]')) {
+			initPongAnimation();
+		}
+	});
 
-function initPongAnimation() {
-  // Clear any existing animation before reinitializing
-  const container = document.getElementById('pong-background');
-  if (!container) return; // Exit if container doesn't exist
-  
-  // Clear previous icons if any
-  container.innerHTML = '';
-  
-  const cols = 8;
-  const rows = 5;
-  const spacingX = window.innerWidth / cols;
-  const spacingY = window.innerHeight / rows;
-  const speed = 0.5;
+	function initPongAnimation() {
+		// Clear any existing animation before reinitializing
+		const container = document.getElementById('pong-background');
+		if (!container) return; // Exit if container doesn't exist
 
-  const icons = [];
+		// Clear previous icons if any
+		container.innerHTML = '';
 
-  for (let row = -1; row <= rows; row++) {
-    for (let col = -1; col <= cols; col++) {
-      const icon = document.createElement('div');
-      icon.className = 'pong-icon';
-      icon.style.left = `${col * spacingX}px`;
-      icon.style.top = `${row * spacingY}px`;
-      container.appendChild(icon);
+		const cols = 8;
+		const rows = 5;
+		const spacingX = window.innerWidth / cols;
+		const spacingY = window.innerHeight / rows;
+		const speed = 0.5;
 
-      icons.push({
-        el: icon,
-        x: col * spacingX,
-        y: row * spacingY,
-      });
-    }
-  }
+		const icons = [];
 
-  function animate() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+		for (let row = -1; row <= rows; row++) {
+			for (let col = -1; col <= cols; col++) {
+				const icon = document.createElement('div');
+				icon.className = 'pong-icon';
+				icon.style.left = `${col * spacingX}px`;
+				icon.style.top = `${row * spacingY}px`;
+				container.appendChild(icon);
 
-    for (const icon of icons) {
-      icon.x += speed;
-      icon.y += speed;
+				icons.push({
+					el: icon,
+					x: col * spacingX,
+					y: row * spacingY,
+				});
+			}
+		}
 
-      if (icon.x > w) icon.x -= (cols + 2) * spacingX;
-      if (icon.y > h) icon.y -= (rows + 2) * spacingY;
+		function animate() {
+			const w = window.innerWidth;
+			const h = window.innerHeight;
 
-      icon.el.style.left = `${icon.x}px`;
-      icon.el.style.top = `${icon.y}px`;
-    }
+			for (const icon of icons) {
+				icon.x += speed;
+				icon.y += speed;
 
-    // Store animation ID so we can cancel it if needed
-    window.pongAnimationId = requestAnimationFrame(animate);
-  }
+				if (icon.x > w) icon.x -= (cols + 2) * spacingX;
+				if (icon.y > h) icon.y -= (rows + 2) * spacingY;
 
-  // Cancel any existing animation before starting a new one
-  if (window.pongAnimationId) {
-    cancelAnimationFrame(window.pongAnimationId);
-  }
-  
-  animate();
-}
+				icon.el.style.left = `${icon.x}px`;
+				icon.el.style.top = `${icon.y}px`;
+			}
+
+			// Store animation ID so we can cancel it if needed
+			window.pongAnimationId = requestAnimationFrame(animate);
+		}
+
+		// Cancel any existing animation before starting a new one
+		if (window.pongAnimationId) {
+			cancelAnimationFrame(window.pongAnimationId);
+		}
+
+		animate();
+	}
 
 </script>
