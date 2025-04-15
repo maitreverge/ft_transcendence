@@ -1,6 +1,7 @@
 
 function stopMatch(matchId)
 {	
+	window.gameInProgress = false;
 	const input = document.getElementById("match-player-name");
 	if (input)
 	{

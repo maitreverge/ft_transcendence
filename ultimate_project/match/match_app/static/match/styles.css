@@ -66,10 +66,10 @@
 	height:100%;
 	background-color: var(--color-navbars);
     z-index: 1000;
+    /* display:block !important; */
 }
 
 .end-cont {
-	display:block !important;
 }
 
 #end {

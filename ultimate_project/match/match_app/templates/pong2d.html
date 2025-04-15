@@ -32,6 +32,7 @@
     </div>
     <div id="end-cont" style="display:none">
     <div id="end"></div>
+
     </div>
 </div>
 <div id="rules-overlay">
@@ -47,6 +48,14 @@
     window.gameStartTimestamp = undefined;">EXIT</button>
 </div>
 <script>
+    window.gameInProgress = true;
+    
+    document.addEventListener('keydown', function(e) {
+        if (window.gameInProgress && ['ArrowUp', 'ArrowDown'].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+
     window.addEventListener("DOMContentLoaded", () => {
     let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
 
