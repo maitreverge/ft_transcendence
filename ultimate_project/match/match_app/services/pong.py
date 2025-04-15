@@ -83,6 +83,9 @@ class Pong:
 		# self.y_bot = 60 - self.ball_ray
 		self.x_left_pad_back = self.pads_offset - self.ball_wray
 		self.x_rght_pad_back = 100 - self.x_left_pad_back
+		self.pads_half_h = self.pad_height / 2 + self.ball_hray
+		self.up_pads_stuck = self.pads_half_h + self.ball_hray
+		self.dn_pads_stuck = 100 - self.up_pads_stuck
 
 	def launchTask(self):
 
@@ -341,12 +344,15 @@ Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
 Pong.left_downside_pad_bounce = physics.left_downside_pad_bounce
 Pong.is_downleft_pads_intersect = physics.is_downleft_pads_intersect
 
+Pong.are_pads_hurt_ball = physics.are_pads_hurt_ball
+Pong.is_pad_hurt_ball = physics.is_pad_hurt_ball
+
 Pong.right_upside_pad_bounce = physics.right_upside_pad_bounce
 Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
 Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
 Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
-Pong.is_left_pad_hurt_ball = physics.is_left_pad_hurt_ball
-Pong.is_right_pad_hurt_ball = physics.is_right_pad_hurt_ball
+# Pong.is_left_pad_hurt_ball = physics.is_left_pad_hurt_ball
+# Pong.is_right_pad_hurt_ball = physics.is_right_pad_hurt_ball
 
 Pong.segments_intersect = physics.segments_intersect
 Pong.scale_vector = physics.scale_vector

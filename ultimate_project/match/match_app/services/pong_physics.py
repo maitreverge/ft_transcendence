@@ -16,69 +16,95 @@ def pad_command(self, player, pad_idx):
 				self.pads_y[pad_idx] - self.pad_speed,
 				(self.pad_height / 2)
 			)
-			self.is_left_pad_hurt_ball('up')
-			self.is_right_pad_hurt_ball('up')						
+			self.are_pads_hurt_ball('up')								
 		elif player["dir"] == 'down':					
 			self.pads_y[pad_idx] = min(
 				self.pads_y[pad_idx] + self.pad_speed,
 				100 - (self.pad_height / 2)
 			)
-			self.is_left_pad_hurt_ball('dn')
-			self.is_right_pad_hurt_ball('dn')				
+			self.are_pads_hurt_ball('dn')				
 		player["dir"] = None
 
-def is_left_pad_hurt_ball(self, sense):
-	
-	if self.x_left_pad_back < self.ball[0] < self.x_left_pad and \
-		self.pads_y[0] - self.pad_height / 2 - self.ball_hray < self.ball[1] < self.pads_y[0] + self.pad_height / 2 + self.ball_hray:	
-			if sense == "up":
-				self.ball[1] = self.pads_y[0] - self.pad_height / 2 - self.ball_hray
-				self.vect[1] = abs(self.vect[1])
-				if self.ball[1] < self.y_top:
-					self.ball[1] = self.y_top 
-					self.pads_y[0] = self.pad_height / 2 + 2 * self.ball_hray 
-					self.vect[0] = -abs(self.vect[0])
-					self.vect[1] = 0
-			elif sense == "dn":
-				self.ball[1] = self.pads_y[0] + self.pad_height / 2 + self.ball_hray
-				self.vect[1] = -abs(self.vect[1])
-				if self.ball[1] > self.y_bot:
-					self.ball[1] = self.y_bot
-					self.pads_y[0] = 100 - (self.pad_height / 2 + 2 * self.ball_hray) 
-					self.vect[0] = -abs(self.vect[0])
-					self.vect[1] = 0
+def are_pads_hurt_ball(self, sense):
 
-def is_right_pad_hurt_ball(self, sense):
+	self.is_pad_hurt_ball(sense, (self.x_left_pad_back, self.x_left_pad),
+		side=-1, pad_idx=0)
+	self.is_pad_hurt_ball(sense, (self.x_rght_pad, self.x_rght_pad_back),
+		side=+1, pad_idx=1)	
+
+def is_pad_hurt_ball(self, sense, x_limits, side, pad_idx):
+
+	if x_limits[0] < self.ball[0] < x_limits[1] and \
+		self.pads_y[pad_idx] - self.pads_half_h < \
+		self.ball[1] < \
+		self.pads_y[pad_idx] + self.pads_half_h:
+		if sense == "up":
+			self.ball[1] = self.pads_y[pad_idx] - self.pads_half_h
+			self.vect[1] = abs(self.vect[1])
+			if self.ball[1] < self.y_top:
+				self.ball[1] = self.y_top 
+				self.pads_y[pad_idx] = self.up_pads_stuck 
+				self.vect[0] = abs(self.vect[0]) * side
+				self.vect[1] = 0
+		elif sense == "dn":
+			self.ball[1] = self.pads_y[pad_idx] + self.pads_half_h
+			self.vect[1] = -abs(self.vect[1])
+			if self.ball[1] > self.y_bot:
+				self.ball[1] = self.y_bot
+				self.pads_y[pad_idx] = self.dn_pads_stuck
+				self.vect[0] = abs(self.vect[0]) * side
+				self.vect[1] = 0
+
+# def is_left_pad_hurt_ball(self, sense):
 	
-	if self.x_rght_pad < self.ball[0] < self.x_rght_pad_back and \
-		self.pads_y[1] - self.pad_height / 2 - self.ball_hray < self.ball[1] < self.pads_y[1] + self.pad_height / 2 + self.ball_hray:	
-			if sense == "up":
-				self.ball[1] = self.pads_y[1] - self.pad_height / 2 - self.ball_hray
-				self.vect[1] = abs(self.vect[1])
-				if self.ball[1] < self.y_top:
-					self.ball[1] = self.y_top
-					self.pads_y[1] = self.pad_height / 2 + 2 * self.ball_hray 
-					self.vect[0] = abs(self.vect[0])
-					self.vect[1] = 0
-					# self.wall_flag = False
-			elif sense == "dn":
-				self.ball[1] = self.pads_y[1] + self.pad_height / 2 + self.ball_hray
-				self.vect[1] = -abs(self.vect[1])
-				if self.ball[1] > self.y_bot:
-					self.ball[1] = self.y_bot
-					self.pads_y[1] = 100 - (self.pad_height / 2 + 2 * self.ball_hray) 
-					self.vect[0] = abs(self.vect[0])
-					self.vect[1] = 0
-					# self.wall_flag = False	
+# 	if self.x_left_pad_back < self.ball[0] < self.x_left_pad and \
+# 		self.pads_y[0] - self.pad_height / 2 - self.ball_hray < self.ball[1] < self.pads_y[0] + self.pad_height / 2 + self.ball_hray:	
+# 			if sense == "up":
+# 				self.ball[1] = self.pads_y[0] - self.pad_height / 2 - self.ball_hray
+# 				self.vect[1] = abs(self.vect[1])
+# 				if self.ball[1] < self.y_top:
+# 					self.ball[1] = self.y_top 
+# 					self.pads_y[0] = self.pad_height / 2 + 2 * self.ball_hray 
+# 					self.vect[0] = -abs(self.vect[0])
+# 					self.vect[1] = 0
+# 			elif sense == "dn":
+# 				self.ball[1] = self.pads_y[0] + self.pad_height / 2 + self.ball_hray
+# 				self.vect[1] = -abs(self.vect[1])
+# 				if self.ball[1] > self.y_bot:
+# 					self.ball[1] = self.y_bot
+# 					self.pads_y[0] = 100 - (self.pad_height / 2 + 2 * self.ball_hray) 
+# 					self.vect[0] = -abs(self.vect[0])
+# 					self.vect[1] = 0
+
+# def is_right_pad_hurt_ball(self, sense):
+	
+# 	if self.x_rght_pad < self.ball[0] < self.x_rght_pad_back and \
+# 		self.pads_y[1] - self.pad_height / 2 - self.ball_hray < self.ball[1] < self.pads_y[1] + self.pad_height / 2 + self.ball_hray:	
+# 			if sense == "up":
+# 				self.ball[1] = self.pads_y[1] - self.pad_height / 2 - self.ball_hray
+# 				self.vect[1] = abs(self.vect[1])
+# 				if self.ball[1] < self.y_top:
+# 					self.ball[1] = self.y_top
+# 					self.pads_y[1] = self.pad_height / 2 + 2 * self.ball_hray 
+# 					self.vect[0] = abs(self.vect[0])
+# 					self.vect[1] = 0
+# 					# self.wall_flag = False
+# 			elif sense == "dn":
+# 				self.ball[1] = self.pads_y[1] + self.pad_height / 2 + self.ball_hray
+# 				self.vect[1] = -abs(self.vect[1])
+# 				if self.ball[1] > self.y_bot:
+# 					self.ball[1] = self.y_bot
+# 					self.pads_y[1] = 100 - (self.pad_height / 2 + 2 * self.ball_hray) 
+# 					self.vect[0] = abs(self.vect[0])
+# 					self.vect[1] = 0
+# 					# self.wall_flag = False	
 
 async def bounces(self):
 
 	if self.vect[0] < 0:
 		await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
 	if self.vect[0] > 0:
-		await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)
-	# print(f"yeee", flush=True)
-	
+		await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)	
 	if self.vect[1] < 0:
 		if self.vect[0] < 0:
 			await self.left_downside_pad_bounce()
@@ -89,8 +115,6 @@ async def bounces(self):
 			await self.left_upside_pad_bounce()
 		if self.vect[0] > 0:	
 			await self.right_upside_pad_bounce()
-	# print(f"yoooooo", flush=True)
-	# await self.vert_bounce
 	if self.vect[1] > 0:
 		await self.vert_bounce(op.ge, limit=self.y_bot)
 	if self.vect[1] < 0:
@@ -154,10 +178,10 @@ async def vert_bounce(self, cmp, limit):
 	# ru = [[rght_limit, self.yp2 - self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 - self.pad_height / 2]]
 	# rd = [[rght_limit, self.yp2 + self.pad_height / 2], [rght_limit + self.pads_width, self.yp2 + self.pad_height / 2]]
 async def left_upside_pad_bounce(self):
-	# print(f"houlaaaa", flush=True)
+
 	limit = self.pads_y[0] - self.pad_height / 2 - self.ball_hray
 	if self.is_upleft_pads_intersect(self.x_left_pad):# and self.wall_flag:
-		# print(f"houlaaaa 000", flush=True)
+
 		bounce_vect = [0, 0]
 		bounce_vect[1] = limit - self.ball[1]
 		bounce_vect[0] = self.scale_vector(
