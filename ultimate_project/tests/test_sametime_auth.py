@@ -140,18 +140,18 @@ def run(playwright: Playwright) -> None:
 
 
         # Page 1 Nagiguate the website
-        page1.locator("#nav-tournoi").click()
+        page1.locator("#side-nav-tournament").click()
         expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
 
         # Page 2 login after
         login(page2, LOGIN_REG)
-        page2.locator("#nav-tournoi").click()
+        page2.locator("#side-nav-tournament").click()
         expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
         
         # Page 1 tries to navigate afterwards, and is no longer auth
-        page1.locator("#nav-match").click()
+        page1.locator("#side-nav-home").click()
         expect(page1).to_have_url(f"{BASE_URL}/register/")
         page1.goto(f"{BASE_URL}/home/")
         expect(page1).to_have_url(f"{BASE_URL}/register/")
@@ -175,17 +175,17 @@ def run(playwright: Playwright) -> None:
         login(page1, LOGIN_2FA, "twofa")
 
         # Page 1 Nagiguate the website
-        page1.locator("#nav-tournoi").click()
+        page1.locator("#side-nav-tournament").click()
         expect(page1).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
         # Page 2 login after
         login(page2, LOGIN_2FA, "twofa")
-        page2.locator("#nav-tournoi").click()
+        page2.locator("#side-nav-tournament").click()
         expect(page2).to_have_url(f"{BASE_URL}/tournament/tournament/")
 
         
         # Page 1 tries to navigate afterwards, and is no longer auth
-        page1.locator("#nav-match").click()
+        page1.locator("#side-nav-home").click()
         expect(page1).to_have_url(f"{BASE_URL}/register/")
         page1.goto(f"{BASE_URL}/home/")
         expect(page1).to_have_url(f"{BASE_URL}/register/")
