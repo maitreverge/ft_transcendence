@@ -282,3 +282,23 @@ body.match-active::before {
   .no-waiting {
     display: none !important;
 }
+
+#waiting {
+    height: 100px;
+    width:100px;
+    overflow: hidden;
+    background-image: url('https://dansylvain.github.io/pictures/noPanic.jpg');
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+    z-index: 1000;
+    color: transparent;
+    animation: blink 1s infinite;
+
+}
+
+/* Animation clignotante */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
