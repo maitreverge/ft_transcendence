@@ -148,8 +148,8 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		bounce_vect[0] = limit - self.ball[0]
 		bounce_vect[1] = self.scale_vector(
 			bounce_vect[0], self.vect[1], self.vect[0])
-		# if self.is_overflow(bounce_vect):
-		# 	return			
+		if self.is_overflow(bounce_vect):
+			return			
 		self.ball[0] += bounce_vect[0]				
 		self.ball[1] += bounce_vect[1]
 		self.has_wall = True
@@ -176,17 +176,42 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
 def is_overflow(self, new_vect):	
 
-	if not self.x_left_pad <= self.ball[0] + new_vect[0] <= self.x_rght_pad or \
-		not self.y_top <= self.ball[1] + new_vect[1] <= self.y_bot:
+	if self.x_left_pad_back < self.ball[0] + new_vect[0] < self.x_left_pad and \
+		self.pads_y[0] - self.pads_half_h < \
+		self.ball[1] + new_vect[1] < \
+		self.pads_y[0] + self.pads_half_h:
+		return True
+	if self.x_rght_pad < self.ball[0] + new_vect[0] < self.x_rght_pad_back and \
+		self.pads_y[1] - self.pads_half_h < \
+		self.ball[1] + new_vect[1] < \
+		self.pads_y[1] + self.pads_half_h:
+		return True	
+	if not self.y_top  <= self.ball[1] + new_vect[1] <= self.y_bot:
 		return True
 	return False
 
 def speed_test(self, place, color):	
 
-	if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad:
-		print(f"\033[35m horz \033[{color}m from {place} {self.ball} \033[0m", flush=True)
+	if self.x_left_pad_back < self.ball[0] < self.x_left_pad and \
+		self.pads_y[0] - self.pads_half_h < \
+		self.ball[1] < \
+		self.pads_y[0] + self.pads_half_h:
+		print(
+			f"\033[35m left horz \033[{color}m from {place} {self.ball}\033[0m"
+			, flush=True
+		)
+	if self.x_rght_pad < self.ball[0] < self.x_rght_pad_back and \
+		self.pads_y[1] - self.pads_half_h < \
+		self.ball[1] < \
+		self.pads_y[1] + self.pads_half_h:
+		print(
+			f"\033[35m rght horz \033[{color}m from {place} {self.ball}\033[0m"
+			, flush=True
+		)	
 	if not self.y_top  <= self.ball[1] <= self.y_bot:
-		print(f"\033[36m vert \033[{color}m from {place} {self.ball} \033[0m", flush=True)
+		print(
+			f"\033[36m vert \033[{color}m from {place} {self.ball}\033[0m"
+			, flush=True)
 
 async def vert_bounce(self, cmp, limit):
 	
@@ -262,8 +287,8 @@ async def bounce(self, limit):
 	bounce_vect[1] = limit - self.ball[1]
 	bounce_vect[0] = self.scale_vector(
 		bounce_vect[1], self.vect[0], self.vect[1])		
-	# if self.is_overflow(bounce_vect):
-	# 	return
+	if self.is_overflow(bounce_vect):
+		return
 	self.ball[0] += bounce_vect[0]				
 	self.ball[1] += bounce_vect[1]
 	self.has_wall = True
