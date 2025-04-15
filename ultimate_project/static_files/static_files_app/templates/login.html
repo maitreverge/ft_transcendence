@@ -238,52 +238,67 @@
   document.addEventListener('DOMContentLoaded', function() {
   const container = document.getElementById('pong-background');
   
-  // Grid configuration
-  const columns = 8;
-  const rows = 4;
-  
   // Clear any existing icons
   container.innerHTML = '';
   
-  // Exact spacing - perfectly even distribution
-  const horizontalSpacing = 100 / columns;
-  const verticalSpacing = 100 / rows;
+  // Grid configuration - Create a larger primary grid
+  const columns = 9;
+  const rows = 6;
   
-  // Fixed movement speed (no variation)
-  const speedX = 0.08;
-  const speedY = 0.08;
+  // Create a tighter pattern with consistent spacing
+  const horizontalSpacing = 100 / (columns - 1);
+  const verticalSpacing = 100 / (rows - 1);
   
-  // Fixed icon size (no variation)
-  const iconSize = 75; // pixels
+  // Fixed icon size (slightly smaller for better distribution)
+  const iconSize = 50; // pixels
   
-  // Create grid of pong icons
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      const icon = document.createElement('div');
-      icon.classList.add('pong-icon');
-      
-      // Calculate exact position based on grid
-      const posX = col * horizontalSpacing + (horizontalSpacing / 2 - (iconSize / window.innerWidth * 50));
-      const posY = row * verticalSpacing + (verticalSpacing / 2 - (iconSize / window.innerHeight * 50));
-      
-      // Set fixed properties - all icons identical
-      icon.style.left = posX + 'vw';
-      icon.style.top = posY + 'vh';
-      icon.style.width = iconSize + 'px';
-      icon.style.height = iconSize + 'px';
-      
-      // All icons move at exact same speed
-      icon.dataset.speedX = speedX;
-      icon.dataset.speedY = speedY;
-      
-      // No rotation variation - all icons face the same way
-      icon.style.transform = 'rotate(0deg)';
-      
-      container.appendChild(icon);
+  // Fixed movement speed
+  const speedX = 0.07;
+  const speedY = 0.07;
+  
+  // Create primary grid
+  createGrid(0, 0);
+  
+  // Create additional grid sections to ensure seamless transitions
+  // These grids will be positioned just outside the viewport
+  createGrid(-100, 0);  // Grid to the left
+  createGrid(0, -100);  // Grid above
+  createGrid(-100, -100); // Grid to the top-left
+  
+  // Function to create a grid at specified offset position
+  function createGrid(offsetX, offsetY) {
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < columns; col++) {
+        const icon = document.createElement('div');
+        icon.classList.add('pong-icon');
+        
+        // Calculate position based on grid with consistent spacing
+        const posX = offsetX + (col * horizontalSpacing);
+        const posY = offsetY + (row * verticalSpacing);
+        
+        // Set properties
+        icon.style.left = posX + 'vw';
+        icon.style.top = posY + 'vh';
+        icon.style.width = iconSize + 'px';
+        icon.style.height = iconSize + 'px';
+        icon.style.transform = 'rotate(0deg)';
+        
+        // Set speed
+        icon.dataset.speedX = speedX;
+        icon.dataset.speedY = speedY;
+        
+        // Store grid position for wrapping logic
+        icon.dataset.gridX = offsetX;
+        icon.dataset.gridY = offsetY;
+        icon.dataset.col = col;
+        icon.dataset.row = row;
+        
+        container.appendChild(icon);
+      }
     }
   }
   
-  // Animation loop
+  // Animation loop with improved wrapping logic
   function animateIcons() {
     const icons = document.querySelectorAll('.pong-icon');
     
@@ -292,20 +307,35 @@
       let x = parseFloat(icon.style.left);
       let y = parseFloat(icon.style.top);
       
-      // Remove 'vw' and 'vh' from the strings
+      // Handle NaN values
       x = isNaN(x) ? 0 : x;
       y = isNaN(y) ? 0 : y;
       
-      // Update position - all icons move at exact same speed
-      x += speedX;
-      y += speedY;
+      // Update position
+      x += parseFloat(icon.dataset.speedX);
+      y += parseFloat(icon.dataset.speedY);
       
-      // Wrap around the screen instead of bouncing
-      // Since all icons move at same speed, they'll maintain formation while wrapping
-      if (x > 105) x = -5;
-      if (x < -5) x = 105;
-      if (y > 105) y = -5;
-      if (y < -5) y = 105;
+      // Improved wrapping logic for seamless transitions
+      // When an entire grid moves off screen, reposition it
+      
+      // Track which grid section this icon belongs to
+      const gridX = parseFloat(icon.dataset.gridX);
+      const gridY = parseFloat(icon.dataset.gridY);
+      const col = parseInt(icon.dataset.col);
+      const row = parseInt(icon.dataset.row);
+      
+      // Check if we need to wrap this grid section
+      if (x > 100 && col === columns - 1) {
+        // Last column went off screen, move entire grid section back
+        x = gridX - 100 + (col * horizontalSpacing);
+        icon.dataset.gridX = gridX - 100;
+      }
+      
+      if (y > 100 && row === rows - 1) {
+        // Last row went off screen, move entire grid section back
+        y = gridY - 100 + (row * verticalSpacing);
+        icon.dataset.gridY = gridY - 100;
+      }
       
       // Apply new position
       icon.style.left = x + 'vw';
