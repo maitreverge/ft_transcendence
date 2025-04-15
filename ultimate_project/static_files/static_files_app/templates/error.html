@@ -37,14 +37,14 @@
     });
 
     // this function helps reloading the scripts after browser navigation
-    window.addEventListener("popstate", function(event) {
-        let lastVisitedPage = sessionStorage.getItem("lastVisitedPage");
+    // window.addEventListener("popstate", function(event) {
+    //     let lastVisitedPage = sessionStorage.getItem("lastVisitedPage");
 
-        if (lastVisitedPage) {
-            console.log("Retour à la dernière page visitée : ", lastVisitedPage);
-        } else {
-            console.log("Aucune URL précédente trouvée, l'utilisateur reste sur la page d'erreur.");
-        }
-    });
+    //     if (lastVisitedPage) {
+    //         console.log("Retour à la dernière page visitée : ", lastVisitedPage);
+    //     } else {
+    //         console.log("Aucune URL précédente trouvée, l'utilisateur reste sur la page d'erreur.");
+    //     }
+    // });
 </script>
 </html>

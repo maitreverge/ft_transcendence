@@ -12,8 +12,8 @@ USERS = {
 PASSWORD = "password"
 BASE_URL = "https://localhost:8443"
 
-TEST_COOKIE_DELETE_USER = "coockie-delete"
-TEST_COOKIE_DELETE_PASSWORD = "password"
+# TEST_COOKIE_DELETE_USER = "coockie-delete"
+# TEST_COOKIE_DELETE_PASSWORD = "password"
 
 URLS = [
     f"{BASE_URL}/home/",
@@ -55,7 +55,7 @@ def run(playwright: Playwright) -> None:
         modalLogoutButton.click()
         expect(page).to_have_url(f"{BASE_URL}/login/")
 
-    def check_cookie(cur_url, logout=None):
+    def check_cookie(cur_url, expected_cookies=None):
 
         page.goto(cur_url)
         cookies = context.cookies(page.url)
@@ -64,12 +64,16 @@ def run(playwright: Playwright) -> None:
         counts = Counter(cookie_names)
 
 
-        # Expected cookies
-        if not logout:
+        # Expected cookies == NONE => All cokies must be present
+        if not expected_cookies:
             expected_cookies = {"access_token", "refresh_token", "csrftoken"}
+        elif expected_cookies == 2: #! Deleted access_token to trigger `jwt_refresh_middleware`
+            expected_cookies = {"refresh_token", "csrftoken"}
         else:
             # After logout, we have none of the three cookies
             expected_cookies = {}
+        
+        print(f"Coockies present = {cookie_names}")
 
         # Assertions to check if the cookies are correct
         assert all(
@@ -102,8 +106,7 @@ def run(playwright: Playwright) -> None:
 
         page.goto(f"{BASE_URL}/account/profile/")
 
-        check_cookie(page.url, 1
-        )
+        check_cookie(page.url, 1)
 
         expect(page).to_have_url(f"{BASE_URL}/register/")
 
@@ -113,34 +116,42 @@ def run(playwright: Playwright) -> None:
         page.goto(f"{BASE_URL}/account/profile/")
 
         # Delete access token from context
+        # ! NOTE : Deleting the access token triggers the `jwt_refresh_middleware`, so a new `access_token` is delivered 
         context.clear_cookies(name="access_token")
 
         page.goto(f"{BASE_URL}/account/profile/")
 
-        check_cookie(
-            page.url, 1
-        )
+        check_cookie(page.url, 2)
 
-        expect(page).to_have_url(f"{BASE_URL}/register/")
+        expect(page).to_have_url(f"{BASE_URL}/account/profile/")
+
+        logout()
     
 
 
-    # Test 4 : Create an user and delete it
-    login(TEST_COOKIE_DELETE_USER, TEST_COOKIE_DELETE_PASSWORD)
+    page.goto(f"{BASE_URL}/register/")
+    # ! Test 4 : Create an user and delete it
+    page.locator("#first_name").fill("haha")
+    page.locator("#last_name").fill("hehe")
+    page.locator("#username").fill("coockie-delete")
+    page.locator("#email").fill("coockies@gamil.com")
+    page.locator("#password").fill("password")
+    page.locator("#repeat_password").fill("password")
+    page.locator("#register-button").click()
+
+    expect(page).to_have_url(f"{BASE_URL}/home/")
 
     page.goto(f"{BASE_URL}/account/confidentiality/delete-account/")
 
     page.locator("#delete-acc-btn").click()
 
-    page.locator("#password").fill(TEST_COOKIE_DELETE_PASSWORD)
+    page.locator("#password").fill("password")
 
     page.locator("#delete-acc-btn").click()
 
     time.sleep(4)
 
-    check_cookie(
-        page.url, 1
-    )
+    check_cookie(page.url, 1)
     
     expect(page).to_have_url(f"{BASE_URL}/register/")
 

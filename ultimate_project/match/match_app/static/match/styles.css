@@ -5,9 +5,10 @@
     top:-10%;
 	height: 20%;
 	width: 5%;
-    background-color: blue;
+    /* background-color: blue; */
 	/* height: 100%; */
 	/* transform: translate(-50%, -50%); */
+    z-index: 300;
 }
 
 #p1 {
@@ -63,7 +64,8 @@
 #end-cont {
 	width:100%;
 	height:100%;
-	background-color: rgb(244, 118, 22);
+	background-color: var(--color-navbars);
+    z-index: 1000;
 }
 
 .end-cont {
@@ -87,6 +89,8 @@
 	height:2vw; */
 	border-radius: 50%;
 	background-color: rgb(22, 244, 40);
+    z-index: 400;
+
 }
 
 #ball2 {
@@ -99,6 +103,7 @@
 	height:2vw; */
 	border-radius: 50%;
 	background-color: rgb(244, 22, 22);
+    z-index: 400;
 }
 
 #quit-match-button {
@@ -118,6 +123,7 @@
 	width:100vw;
 	height:85vh;
     background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
+    z-index: 200;
 }
 
 .match-sylvain-gif {
@@ -142,6 +148,7 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
+    z-index: 500;
 }
 
 #inst-left {
@@ -168,7 +175,7 @@
     padding: 20px;
     border: 3px solid gold;
     border-radius: 10px;
-    background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+    background: gold;
     box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.8),
                 0px 0px 30px rgba(255, 165, 0, 0.5);
     text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
@@ -201,9 +208,10 @@
 
 #spec {
     position: fixed;
-    top: 0;
+    top: 0; /* ou autre valeur si tu veux le descendre un peu */
     left: 50%;
-    z-index: 9999;
+    transform: translateX(-50%);
+    z-index: 300;
 }
 /* From Uiverse.io by mrhyddenn */
 .loader {
@@ -219,7 +227,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
+    z-index: 500;
   }
 
   .circle {
