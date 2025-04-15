@@ -38,7 +38,7 @@ def is_pad_hurt_ball(self, sense, x_limits, side, pad_idx):
 		self.pads_y[pad_idx] - self.pads_half_h < \
 		self.ball[1] < \
 		self.pads_y[pad_idx] + self.pads_half_h:
-		print(f"je ne dois pas apparaitre sur ce test", flush=True)
+		# print(f"je ne dois pas apparaitre sur ce test", flush=True)
 		if sense == "up":
 			self.ball[1] = self.pads_y[pad_idx] - self.pads_half_h
 			self.vect[1] = abs(self.vect[1])
@@ -270,7 +270,7 @@ async def side_pad_bounce(self, cmp, y_side, x_side, x_side_back):
 
 	if self.is_pad_vert_intersect(cmp, x_side,
 		((x_side, y_side), (x_side_back, y_side))):
-		print(f"je ne dois pas apparaitre sur ce test", flush=True)
+		# print(f"je ne dois pas apparaitre sur ce test", flush=True)
 		await self.bounce(y_side)
 		# bounce_vect = [0, 0]
 		# bounce_vect[1] = y_side - self.ball[1]
