@@ -1,67 +1,71 @@
 {% load static %}
-<div class="container-fluid">
+<div class="container-fluid m-0">
   <div class="row">
-    <!-- Sidebar -->
-    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 shadow-sm">
+    <nav class="sidebar col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
       <div class="sidebar-sticky text-center">
         <!-- Account Settings Title -->
-        <h1 class="h3 mb-3 text-gray-800">Account Settings</h1>
-        <ul class="nav flex-column">
-          <!-- Profile Button -->
+        <h1 class="mb-3 pt-2"><strong>Account Settings</strong></h1>
+        <ul class="nav flex-column pt-5">
+          <!-- Profile -->
           <li class="nav-item mb-3">
             <a
               id="acc-profile"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
+              class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               hx-get="/account/profile/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-user-circle me-2"></i> Profile
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Profile</h5>
             </a>
           </li>
-          <!-- Confidentiality Button -->
-          <li class="nav-item mb-3">
+          <!--Statistics-->
+          <li
+            class="side-nav nav-item mb-3"
+          >
             <a
               id="acc-stats"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
+              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               hx-get="/account/game-stats/overview/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-trophy me-2"></i> Game Stats
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Statistics</h5>
             </a>
           </li>
-          <!-- Security Button -->
-          <li class="nav-item mb-3">
+          <!-- Security-->
+          <li class="side-nav nav-item mb-3">
             <a
               id="acc-security"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
+              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               hx-get="/account/security/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-shield-alt me-2"></i> Security
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Security</h5>
             </a>
           </li>
-          <!-- Confidentiality Button -->
-          <li class="nav-item mb-3">
+          <!-- Confidentiality-->
+          <li class="side-nav nav-item mb-3">
             <a
               id="acc-conf"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
+              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               hx-get="/account/confidentiality/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-user-shield me-2"></i>
-              Confidentiality
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Confidentiality</h5>
             </a>
           </li>
         </ul>
@@ -69,8 +73,7 @@
     </nav>
 
     <!-- Main Content -->
-
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 py-2">
+    <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0">
       <!-- Content dynamically loaded here -->
       <div id="account-content">
         <!-- prettier-ignore -->
@@ -84,39 +87,4 @@
       </div>
     </main>
   </div>
-
-  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </div>
-
-<style>
-  .sidebar-btn {
-    font-size: 0.85rem;
-    padding: 0.5rem 1rem;
-    border-width: 2px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-  }
-  .sidebar-btn.active,
-  .sidebar-btn:focus {
-    color: white !important;
-  }
-  .btn-outline-primary {
-    border-color: #007bff;
-    color: #007bff;
-  }
-  .btn-outline-primary.active,
-  .btn-outline-primary:focus {
-    background-color: #007bff !important;
-    border-color: #007bff !important;
-  }
-  .sidebar-btn:hover {
-    background-color: #007bff;
-    color: white;
-    border-color: #0056b3;
-  }
-  .sidebar {
-    width: 250px;
-  }
-  main {
-    margin-left: 260px;
-  }
-</style>

@@ -1,68 +1,44 @@
 {% load static %}
-<div class="container-fluid" id="security-content">
-  <!-- Default content for security settings (2FA) -->
-  <div class="card mb-3 shadow">
-    <div class="card-body text-center">
-      <h5 class="card-title primary-text">Two-Factor Authentication (2FA)</h5>
-      <p class="card-text secondary-text">Enhance your account security by enabling 2FA.</p>
+<div class="container-fluid px-0" id="security-content">
+  <div class="row justify-content-center pt-5">
+    <div class="col-lg-10 col-md-10 col-sm-12">
+      <div class="card mb-3 shadow">
+        <div class="card-body text-center">
+          <h5 class="card-title primary-text">Two-Factor Authentication (2FA)</h5>
+          <p class="card-text secondary-text">Enhance your account security by enabling 2FA.</p>
 
-      <!-- Button to enable/disable 2FA -->
-      {% if user.two_fa_enabled %}
-      <a
-        href="#"
-        class="btn btn-outline-danger"
-        hx-get="/account/security/disable-2fa/"
-        hx-target="#account-content"
-        hx-push-url="true"
-        id="disable_2fa"
-      >
-        Disable 2FA
-      </a>
-      {% else %}
-      <a
-        href="#"
-        class="btn btn-outline-success"
-        hx-get="/account/security/setup-2fa/"
-        hx-target="#account-content"
-        hx-push-url="true"
-        id="setup_2fa"
-      >
-        Set Up 2FA
-      </a>
-      {% endif %}
+          <!-- Button to enable/disable 2FA -->
+          {% if user.two_fa_enabled %}
+          <a
+            href="#"
+            class="btn btn-outline-danger"
+            hx-get="/account/security/disable-2fa/"
+            hx-target="#account-content"
+            hx-push-url="true"
+            id="disable_2fa"
+          >
+            Disable 2FA
+          </a>
+          {% else %}
+          <a
+            href="#"
+            class="btn btn-outline-success"
+            hx-get="/account/security/setup-2fa/"
+            hx-target="#account-content"
+            hx-push-url="true"
+            id="setup_2fa"
+          >
+            Set Up 2FA
+          </a>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+
 <style>
-  #security-content {
-    margin-top: 20px;
-  }
-
-  .primary-text {
-    color: #4e73df !important;
-  }
-
-  .secondary-text {
-    color: #858796 !important;
-  }
-
-
-  .card-title {
-    color: #4e73df !important;
-  }
-
-  .card-text {
-    color: #858796 !important; 
-  }
-
-  .card-body .card-title {
-    color: #4e73df !important; 
-  }
-
-  .card-body .card-text {
-    color: #858796 !important; 
-  }
 
   .sidebar-btn {
     font-size: 0.85rem;

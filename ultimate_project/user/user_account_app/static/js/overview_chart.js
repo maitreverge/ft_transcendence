@@ -1,3 +1,15 @@
+document.addEventListener("DOMContentLoaded", function () {
+	initializeCharts();
+});
+
+document.body.addEventListener("htmx:afterSwap", function () {
+  initializeCharts();
+});
+
+document.body.addEventListener("htmx:load", function () {
+  initializeCharts();
+});
+
 // Helper function to initialize charts
 function initializeCharts() {
     const gamesPie = document.getElementById("gamesPie")?.getContext("2d");
@@ -102,7 +114,3 @@ function initializeCharts() {
       });
     }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-	initializeCharts();
-});
