@@ -486,49 +486,49 @@ function animate(pads) {
 	// 	// beforeBounce = true;				
 	// }
 
-	if (!bounce)
-	{
-		if (hasNewTarget())
-		{		
-			setSense();
-			// setSpeed();			
-			// if (hasWall)
-			// {
-			// 	// console.log("haswall");
-			// 	calculateOffset(1);
-			// 	reInitTarget();
-			// 	reInitExSense();
-			// 	// offsets = offsets.map(o => o * 200);
-			// 	// beforeBounce = true;				
-			// }
-			// if (hasSenseSwitched())
-			if (hasWall)
-			{
-				bounce = true;
-				calculateOffset(speed);
-				reInitTarget();
-				reInitExSense();
-			}
-			else
-			{
+	// if (!bounce)
+	// {
+	// 	if (hasNewTarget())
+	// 	{		
+	// 		setSense();
+	// 		// setSpeed();			
+	// 		// if (hasWall)
+	// 		// {
+	// 		// 	// console.log("haswall");
+	// 		// 	calculateOffset(1);
+	// 		// 	reInitTarget();
+	// 		// 	reInitExSense();
+	// 		// 	// offsets = offsets.map(o => o * 200);
+	// 		// 	// beforeBounce = true;				
+	// 		// }
+	// 		// if (hasSenseSwitched())
+	// 		if (hasWall)
+	// 		{
+	// 			bounce = true;
+	// 			calculateOffset(speed);
+	// 			reInitTarget();
+	// 			reInitExSense();
+	// 		}
+	// 		else
+	// 		{
 			
-				calculateOffset(speed);
-				reInitTarget();
-				reInitExSense();
-			}
-		}		
-	}	
-	addOffsetToCurrent();
-	stopOverMove(exSenseX, exSenseY);
+	// 			calculateOffset(speed);
+	// 			reInitTarget();
+	// 			reInitExSense();
+	// 		}
+	// 	}		
+	// }	
+	// addOffsetToCurrent();
+	// stopOverMove(exSenseX, exSenseY);
 
-	if (isTargetStrike())
-	{
-		// console.log("bounce false");
-		bounce = false;
-		reInitExSense();
-		// currentX += (newTargetX - currentX) * 0.5;
-		// currentY += (newTargetY - currentY) * 0.5;	
-	}
+	// if (isTargetStrike())
+	// {
+	// 	// console.log("bounce false");
+	// 	bounce = false;
+	// 	reInitExSense();
+	// 	// currentX += (newTargetX - currentX) * 0.5;
+	// 	// currentY += (newTargetY - currentY) * 0.5;	
+	// }
 
 	applyMove(pads);
 }
@@ -726,7 +726,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	pads[2].style.width = (matchRect.width / 100) * 2;
 	pads[2].style.height = (matchRect.width / 100) * 2;
 	pads[4].style.width = (matchRect.width / 100) * 2;
-	pads[4].style.height = (matchRect.height / 100) * 2;
+	pads[4].style.height = (matchRect.height / 100) * 6;
 	// pads[0].style.width = (matchRect.width / 100) * 10;
 	// pads[0].style.height = (matchRect.height / 100) * 40;
 	// pads[1].style.width = (matchRect.width / 100) * 10;
