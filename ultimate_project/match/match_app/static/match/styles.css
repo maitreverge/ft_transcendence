@@ -81,15 +81,15 @@
 
 #ball {
 
-	position: absolute;
+	/* position: absolute; */
 	/* top:-1%; */
-	left:-1%;
+	/* left:-1%; */
 	/* transform: translate(-50%, -50%); */
 	/* width:2vw;
 	height:2vw; */
-	border-radius: 50%;
-	background-color: rgb(22, 244, 40);
-    z-index: 400;
+	/* border-radius: 50%; */
+	/* background-color: rgb(22, 244, 40); */
+    /* z-index: 400; */
 
 }
 
@@ -107,8 +107,8 @@
 }
 
 #quit-match-button {
-    position: relative; /* Toujours visible même en scrollant */
-    z-index: 1000; /* Assure qu'il est au-dessus de tout */
+    position: relative;
+    z-index: 1000;
     background-color: red;
     color: white;
     border: none;
@@ -116,16 +116,28 @@
     cursor: pointer;
 }
 
+#match-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(30, 30, 30, 0.5);
+    z-index: 150;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 #match {
     aspect-ratio: 4 / 3;
 	position: fixed;
-    top: calc((70vh - (70vh / 4 * 3)) / 2); /* centrage vertical dans 70vh */
+    top: calc((70vh - (70vh / 4 * 3)) / 2);
     left: 50%;
     transform: translateX(-50%);
     width: min(90vw, calc(70vh * 4 / 3));
     min-width: min(500px, 90vw);
-    background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
+    background-color: rgba(30, 30, 30, 1);
     z-index: 200;
 }
 
@@ -134,16 +146,27 @@
     bottom: 0;
     left: 0;
     width: 100vw;
-    height: 15vh;  /* Prend 20% de la hauteur */
-    background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
+    height: 15vh;
+    background-color: rgba(30, 30, 30, 1);
     color: white;
-    z-index: 999; /* Juste en dessous du match */
+    z-index: 999;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 10px;
     z-index: 500;
+}
+
+body.match-active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(30, 30, 30, 0.3); /* Couleur de fond autour du match */
+    z-index: 100; /* en dessous de #match */
 }
 
 .match-sylvain-gif {
