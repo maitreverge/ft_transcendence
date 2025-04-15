@@ -51,10 +51,23 @@ span:hover
 background-color: var(--navbars-color);
 }
 
+
 .background_color
 {
   background-color: var(--background-color);
 }
+
+.title_color
+{
+  background-color: var(--title-color);
+}
+
+.main_color
+{
+  background-color: var(--main-color);
+}
+
+
 
 .background_color_text
 {

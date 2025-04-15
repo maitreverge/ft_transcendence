@@ -14,134 +14,156 @@
 </div>
 
 <div class="container-fluid m-0">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav class="sidebar col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block p-3 shadow-sm"
-            style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
-            <div class="sidebar-sticky text-center">
-                <!-- Account Settings Title -->
-                <h1 class="mb-3 pt-2"><strong>Match</strong></h1>
-                <ul class="nav flex-column pt-5">
-                    <!-- Profile Section -->
-                    <li class="nav-item mb-3">
-                        <a id="side-nav-home"
-                            class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-                            hx-get="/home/" hx-target="#main_div" hx-swap="innerHTML" hx-push-url="true">
-                            <i class="mr-2 fa-solid fa-house"></i>
-                            <h5>Home</h5>
-                        </a>
-                    </li>
-                    <li class="nav-item mb-3">
-                        <a id="side-nav-tournament"
-                            class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-                            hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
-                            hx-push-url="true">
-                            <i class="mr-2 fa-solid fa-trophy"></i>
-                            <h5>Tournament</h5>
-                        </a>
-                    </li>
-                    <li id="side-nav-info" class="nav-item mb-3">
-                        <div id="overlayButton" onclick="replayTuto()"
-                            class="nav-link rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                            <i class="mr-2 fas fa-info-circle"></i><a>
-                                <h5>Info</h5>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <a class="tuto-overlay" id="tuto-overlay">
-            <div class="tuto-box">
-                <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp" alt="Tutoriel" />
-                <button onclick="document.getElementById('tuto-overlay').style.display='none'"
-                    class="btn btn-danger mt-3">Fermer</button>
-                <p>Clique ici pour démarrer un match !</p>
-            </div>
-        </a>
-        <!-- Main Content -->
-        <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0">
-            <!-- Content dynamically loaded here -->
-            <div id="account-content">
-                <div id="simple-selections" class="container-fluid m-0 p-0">
-                    <div class="pt-5 row d-flex">
-                        <div class="col-lg-2 d-flex flex-column"></div>
-                        <div class="col-lg-4">
-                            <div class="card shadow mb-4">
+    <div class="m-0 p-0">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="sidebar col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block shadow-sm m-0 p-0"
+                style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
+                <div class="sidebar-sticky text-center">
+                    <!-- Account Settings Title -->
+                    <div class="h-50">
+                        <h1 class="pt-2"><strong>Match</strong></h1>
+                        <ul class="nav flex-column">
+                            <!-- Profile Section -->
+                            <li class="nav-item">
+                                <a id="side-nav-home"
+                                    class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+                                    hx-get="/home/" hx-target="#main_div" hx-swap="innerHTML" hx-push-url="true">
+                                    <i class="mr-2 fa-solid fa-house"></i>
+                                    <h5>Home</h5>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="side-nav-tournament"
+                                    class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+                                    hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
+                                    hx-push-url="true">
+                                    <i class="mr-2 fa-solid fa-trophy"></i>
+                                    <h5>Tournament</h5>
+                                </a>
+                            </li>
+                            <li id="side-nav-info" class="nav-item">
+                                <div id="overlayButton" onclick="replayTuto()"
+                                    class="nav-link rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                                    <i class="mr-2 fas fa-info-circle"></i><a>
+                                        <h5>Info</h5>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="h-100 m-0 p-0 mt-5" style="position: relative; overflow: hidden;">
+                        <img src="https://dansylvain.github.io/pictures/peopleH.jpg" style="
+                               position: absolute;
+                               top: 0;
+                               left: 0;
+                               width: 100%;
+                               height: 100%;
+                               object-fit: cover;
+                               object-position: center;
+                               -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1));
+                               mask-image: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1));
+                               -webkit-mask-size: 100% 100%;
+                               mask-size: 100% 100%;
+                               mask-repeat: no-repeat;
+                               -webkit-mask-repeat: no-repeat;
+                             ">
+                    </div>
+                </div>
+            </nav>
+            <a class="tuto-overlay" id="tuto-overlay">
+                <div class="tuto-box">
+                    <img src="https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp" alt="Tutoriel" />
+                    <button onclick="document.getElementById('tuto-overlay').style.display='none'"
+                        class="btn btn-danger mt-3">Fermer</button>
+                    <p>Clique ici pour démarrer un match !</p>
+                </div>
+            </a>
+            <!-- Main Content -->
+            <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0">
+                <!-- Content dynamically loaded here -->
+                <div id="account-content">
+                    <div id="simple-selections" class="container-fluid m-0 p-0">
+                        <div class="pt-5 row d-flex">
+                            <div class="col-lg-2 d-flex flex-column"></div>
+                            <div class="col-lg-4">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="mb-0 text-center font-weight-bold">Player pool</h6>
+                                    </div>
+                                </div>
                                 <div class="card-header py-3">
-                                    <h6 class="mb-0 text-center font-weight-bold">Player pool</h6>
+                                    <div class="d-flex flex-column gap-2">
+                                        <input class="background_color form-control border-0 w-100" id="player-name"
+                                            type="text" maxlength="20" pattern=".{1,50}" required
+                                            placeholder="enter a name"
+                                            oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
+                                        <button onclick="newPlayer(window.tournamentSocket); prefillName();"
+                                            class="text_color btn d-flex align-items-center justify-content-between w-100">
+                                            <span class="text background_color_text">Add Player</span>
+                                            <span class="navbars_color icon text-white-50">
+                                                <i class="fas fa-arrow-right"></i>
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="card-header py-3">
-                                <div class="d-flex flex-column gap-2">
-                                    <input class="background_color form-control border-0 w-100" id="player-name"
-                                        type="text" maxlength="20" pattern=".{1,50}" required
+                            <div class="col-lg-4">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <h6 class="m-0 text-center font-weight-bold ">Match</h6>
+                                    </div>
+                                </div>
+                                <div class="d-sm-none card shadow">
+                                    <div class="card-header py-3">
+                                        <div id="overlayButton" onclick="replayTuto()"
+                                            class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                                            <i class="fas fa-info-circle"></i>INFO
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="p-2 card shadow">
+                                    <a id="switch2d3d"
+                                        class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
+                                        <span class="mr-2">2D</span>
+                                        <label for="dim" class="switch">
+                                            <input type="checkbox" id="dim" hidden>
+                                            <span class="slider"></span>
+                                        </label>
+                                        <span class="ml-2">3D</span>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row d-flex align-items-stretch pt-5">
+                            <div class="col-lg-2 d-flex flex-column"></div>
+                            <div class="col-lg-4 mb-4">
+                                <div class="card shadow h-100">
+                                    <div id="players" class="card-body p-2">
+                                    </div>
+                                    <input class="m-2 w-auto background_color form-control border-0"
+                                        id="match-player-name" type="text" maxlength="20" pattern=".{1,50}" required
                                         placeholder="enter a name"
                                         oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-                                    <button onclick="newPlayer(window.tournamentSocket); prefillName();"
-                                        class="text_color btn d-flex align-items-center justify-content-between w-100">
-                                        <span class="text background_color_text">Add Player</span>
-                                        <span class="navbars_color icon text-white-50">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </span>
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 text-center font-weight-bold ">Match</h6>
-                                </div>
-                            </div>
-                            <div class="d-sm-none card shadow">
-                                <div class="card-header py-3">
-                                    <div id="overlayButton" onclick="replayTuto()"
-                                        class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                                        <i class="fas fa-info-circle"></i>INFO
+                            <div class="col-lg-4 mb-4">
+                                <div class="card shadow mb-4 h-100">
+                                    <div class="card-body">
+                                        <div id="matchs">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="p-2 card shadow">
-                                <a id="switch2d3d"
-                                    class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                                    <span class="mr-2">2D</span>
-                                    <label for="dim" class="switch">
-                                        <input type="checkbox" id="dim" hidden>
-                                        <span class="slider"></span>
-                                    </label>
-                                    <span class="ml-2">3D</span>
-                                </a>
-                            </div>
-                        
+                            <div class="col-lg-2 d-flex flex-column"></div>
                         </div>
+                        <div id="overlay-match"></div>
                     </div>
-                    <div class="row d-flex align-items-stretch pt-5">
-                        <div class="col-lg-2 d-flex flex-column"></div>
-                        <div class="col-lg-4 mb-4">
-                            <div class="card shadow h-100">
-                                <div id="players" class="card-body p-2">
-                                </div>
-                                <input class="m-2 w-auto background_color form-control border-0" id="match-player-name"
-                                    type="text" maxlength="20" pattern=".{1,50}" required placeholder="enter a name"
-                                    oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-                            </div>
-                        </div>
-                        <div class="col-lg-4 mb-4">
-                            <div class="card shadow mb-4 h-100">
-                                <div class="card-body">
-                                    <div id="matchs">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 d-flex flex-column"></div>
-                    </div>
-                    <div id="overlay-match"></div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 </div>
 <script>

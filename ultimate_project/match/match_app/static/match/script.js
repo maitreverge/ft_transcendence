@@ -1,6 +1,9 @@
 
 function stopMatch(matchId)
 {	
+	window.gameInProgress = false;
+	document.body.classList.remove("match-active");
+
 	const input = document.getElementById("match-player-name");
 	if (input)
 	{
@@ -486,57 +489,57 @@ function animate(pads) {
 	// 	// beforeBounce = true;				
 	// }
 
-	if (!bounce)
-	{
-		if (hasNewTarget())
-		{		
-			setSense();
-			// setSpeed();			
-			// if (hasWall)
-			// {
-			// 	// console.log("haswall");
-			// 	calculateOffset(1);
-			// 	reInitTarget();
-			// 	reInitExSense();
-			// 	// offsets = offsets.map(o => o * 200);
-			// 	// beforeBounce = true;				
-			// }
-			// if (hasSenseSwitched())
-			if (hasWall)
-			{
-				bounce = true;
-				calculateOffset(speed);
-				reInitTarget();
-				reInitExSense();
-			}
-			else
-			{
+	// if (!bounce)
+	// {
+	// 	if (hasNewTarget())
+	// 	{		
+	// 		setSense();
+	// 		// setSpeed();			
+	// 		// if (hasWall)
+	// 		// {
+	// 		// 	// console.log("haswall");
+	// 		// 	calculateOffset(1);
+	// 		// 	reInitTarget();
+	// 		// 	reInitExSense();
+	// 		// 	// offsets = offsets.map(o => o * 200);
+	// 		// 	// beforeBounce = true;				
+	// 		// }
+	// 		// if (hasSenseSwitched())
+	// 		if (hasWall)
+	// 		{
+	// 			bounce = true;
+	// 			calculateOffset(speed);
+	// 			reInitTarget();
+	// 			reInitExSense();
+	// 		}
+	// 		else
+	// 		{
 			
-				calculateOffset(speed);
-				reInitTarget();
-				reInitExSense();
-			}
-		}		
-	}	
-	addOffsetToCurrent();
-	stopOverMove(exSenseX, exSenseY);
+	// 			calculateOffset(speed);
+	// 			reInitTarget();
+	// 			reInitExSense();
+	// 		}
+	// 	}		
+	// }	
+	// addOffsetToCurrent();
+	// stopOverMove(exSenseX, exSenseY);
 
-	if (isTargetStrike())
-	{
-		// console.log("bounce false");
-		bounce = false;
-		reInitExSense();
-		// currentX += (newTargetX - currentX) * 0.5;
-		// currentY += (newTargetY - currentY) * 0.5;	
-	}
+	// if (isTargetStrike())
+	// {
+	// 	// console.log("bounce false");
+	// 	bounce = false;
+	// 	reInitExSense();
+	// 	// currentX += (newTargetX - currentX) * 0.5;
+	// 	// currentY += (newTargetY - currentY) * 0.5;	
+	// }
 
 	applyMove(pads);
 }
 
 function applyMove(pads) {
 
-	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
-	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
+	// actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
+	// actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
 	// pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
 	pads[4].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
 	// pads[0].style.transform = `translateY(${actualPads[0]}px)`;

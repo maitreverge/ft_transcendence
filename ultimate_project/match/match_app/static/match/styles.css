@@ -54,7 +54,7 @@
 	display:block;
 	width:fit-content;
 	height:fit-content;
-	background-color: rgb(244, 37, 22);
+	/* background-color: rgb(244, 37, 22); */
 }
 
 .no-waiting {
@@ -65,11 +65,11 @@
 	width:100%;
 	height:100%;
 	background-color: var(--color-navbars);
-    z-index: 1000;
+    z-index: 3000;
+    /* display:block !important; */
 }
 
 .end-cont {
-	display:block !important;
 }
 
 #end {
@@ -81,15 +81,15 @@
 
 #ball {
 
-	position: absolute;
+	/* position: absolute; */
 	/* top:-1%; */
-	left:-1%;
+	/* left:-1%; */
 	/* transform: translate(-50%, -50%); */
 	/* width:2vw;
 	height:2vw; */
-	border-radius: 50%;
-	background-color: rgb(22, 244, 40);
-    z-index: 400;
+	/* border-radius: 50%; */
+	/* background-color: rgb(22, 244, 40); */
+    /* z-index: 400; */
 
 }
 
@@ -107,8 +107,8 @@
 }
 
 #quit-match-button {
-    position: relative; /* Toujours visible même en scrollant */
-    z-index: 1000; /* Assure qu'il est au-dessus de tout */
+    position: relative;
+    z-index: 1000;
     background-color: red;
     color: white;
     border: none;
@@ -116,14 +116,48 @@
     cursor: pointer;
 }
 
+
 #match {
+    aspect-ratio: 4 / 3;
 	position: fixed;
-	top:0;
-	left:0;
-	width:100vw;
-	height:85vh;
-    background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
+    top: calc((70vh - (70vh / 4 * 3)) / 2);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90vw, calc(70vh * 4 / 3));
+    min-width: min(500px, 90vw);
+    /* background-color: rgba(30, 30, 30, 1); */
     z-index: 200;
+    background-image: url('https://dansylvain.github.io/pictures/noPanicRusted.jpg');
+    background-size: cover;
+
+}
+
+#rules-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 15vh;
+    background-color: rgba(30, 30, 30, 1);
+    color: white;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    z-index: 500;
+}
+
+body.match-active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: lightcoral; /* Couleur de fond autour du match */
+    z-index: 100; /* en dessous de #match */
 }
 
 .match-sylvain-gif {
@@ -132,23 +166,6 @@
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
-}
-
-#rules-overlay {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    height: 15vh;  /* Prend 20% de la hauteur */
-    background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
-    color: white;
-    z-index: 999; /* Juste en dessous du match */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    z-index: 500;
 }
 
 #inst-left {
@@ -213,6 +230,12 @@
     transform: translateX(-50%);
     z-index: 300;
 }
+#spec img
+{
+    border-radius: 0 0 15px 15px;
+    border: solid; 
+    border-width: 0.5px;
+}
 /* From Uiverse.io by mrhyddenn */
 .loader {
     opacity: 0;
@@ -267,4 +290,24 @@
 
   .no-waiting {
     display: none !important;
+}
+
+#waiting {
+    height: 100px;
+    width:100px;
+    overflow: hidden;
+    background-image: url('https://dansylvain.github.io/pictures/noPanicbg.png');
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+    z-index: 1000;
+    color: transparent;
+    animation: blink 1s infinite;
+
+}
+
+/* Animation clignotante */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }

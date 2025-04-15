@@ -56,17 +56,17 @@ class Pong:
 		# self.pad_height = 100	
 		# self.pads_y = [self.pad_height / 2 + 50, self.pad_height / 2 + 50]		
 		# self.pads_y = [50, 50]		
+		self.pad_speed = 2
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
-		self.ball_speed = 0.8
+		self.ball_speed = 0.1
+		self.max_ball_speed = 10
+		self.ball_acceleration = 1.1
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
-		self.pad_speed = 2
-		self.max_ball_speed = 100
-		self.ball_acceleration = 1.8
-		self.bounce_delay = 0.01
-		self.send_delay = 0.01
-		self.gear_delay = 0.01
+		self.bounce_delay = 0.005
+		self.send_delay = 0.005
+		self.gear_delay = 0.005
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
@@ -80,10 +80,10 @@ class Pong:
 		self.ball_hray = 1
 		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_wray
 		self.x_rght_pad = 100 - self.x_left_pad
-		# self.y_top = 0 + self.ball_hray
-		self.y_top = 40 + self.ball_hray
-		# self.y_bot = 100 - self.ball_hray
-		self.y_bot = 60 - self.ball_hray
+		self.y_top = 0 + self.ball_hray
+		# self.y_top = 40 + self.ball_hray
+		self.y_bot = 100 - self.ball_hray
+		# self.y_bot = 60 - self.ball_hray
 		self.x_left_pad_back = self.pads_offset - self.ball_wray
 		self.x_rght_pad_back = 100 - self.x_left_pad_back
 		self.pads_half_h = self.pad_height / 2 + self.ball_hray
@@ -378,5 +378,7 @@ Pong.get_random_vector = physics.get_random_vector
 Pong.scores = scores.scores
 Pong.score_point = scores.score_point
 Pong.max_score_rise = scores.max_score_rise
+
+Pong.is_overflow = physics.is_overflow
 
 Pong.speed_test = physics.speed_test
