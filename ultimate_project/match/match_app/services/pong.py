@@ -61,8 +61,8 @@ class Pong:
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
 		self.pad_speed = 2
-		self.max_ball_speed = 10
-		self.ball_acceleration = 1.3
+		self.max_ball_speed = 100
+		self.ball_acceleration = 1.8
 		self.bounce_delay = 0.01
 		self.send_delay = 0.01
 		self.gear_delay = 0.01

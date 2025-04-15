@@ -38,6 +38,7 @@ def is_pad_hurt_ball(self, sense, x_limits, side, pad_idx):
 		self.pads_y[pad_idx] - self.pads_half_h < \
 		self.ball[1] < \
 		self.pads_y[pad_idx] + self.pads_half_h:
+		print(f"je ne dois pas apparaitre sur ce test", flush=True)
 		if sense == "up":
 			self.ball[1] = self.pads_y[pad_idx] - self.pads_half_h
 			self.vect[1] = abs(self.vect[1])
@@ -142,7 +143,7 @@ async def side_pads_bounces(self):
 			
 async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
-	if self.wall_flag and self.is_pad_horz_intersect(cmp, limit, pad_y_idx):			
+	if self.is_pad_horz_intersect(cmp, limit, pad_y_idx):			
 		new_vect = [0, 0]
 		new_vect[0] = limit - self.ball[0]
 		new_vect[1] = self.scale_vector(
@@ -151,9 +152,7 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		self.ball[1] += new_vect[1]
 		self.has_wall = True
 		# await asyncio.sleep(self.bounce_delay)	
-		if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
-			not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
-			print(f"\033[33m ds HORZ bounce {self.ball} \033[0m", flush=True)			
+		self.speed_test("horz bounce", 31)			
 		await self.bounce_send_state()
 		mag = self.get_magnitude(self.vect) 				
 		y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
@@ -173,7 +172,12 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 # def updown_side_pad_bounce(self):
 # 	if self.is_updown_side_pad_intersecting()
 
-	
+def speed_test(self, place, color):	
+
+	if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad:
+		print(f"\033[35m horz \033[{color}m from {place} {self.ball} \033[0m", flush=True)
+	if not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
+		print(f"\033[36m vert \033[{color}m from {place} {self.ball} \033[0m", flush=True)
 
 async def vert_bounce(self, cmp, limit):
 	
@@ -253,9 +257,10 @@ async def bounce(self, limit):
 	self.ball[1] += bounce_vect[1]
 	self.has_wall = True
 	# await asyncio.sleep(self.bounce_delay)
-	if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
-		not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
-		print(f"\033[32m ds VERT bounce {self.ball} \033[0m", flush=True)
+	# if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
+	# 	not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
+	# 	print(f"\033[32m ds VERT bounce {self.ball} \033[0m", flush=True)
+	self.speed_test("vert bounce", 32)
 	await self.bounce_send_state()
 	self.vect[1] = -self.vect[1]		
 	self.wall_flag = False
@@ -434,9 +439,7 @@ def move_ball(self):
 	if (self.wall_flag):	
 		self.ball[0] += self.vect[0]				
 		self.ball[1] += self.vect[1]
-		if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
-			not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
-			print(f"\033[35m ds MOVE BALL {self.ball} \033[0m", flush=True)
+		self.speed_test("move ball", 33)
 
 def get_random_vector(self):
 
