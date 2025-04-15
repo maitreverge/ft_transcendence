@@ -9,9 +9,9 @@ def generate_cookies(json_response, access_token, refresh_token):
         secure=True,
         samesite="Lax",
         path="/",
-        max_age=60 * 60 * 6,  # 6 hours
+        max_age=60 * 60 * 2,  # 2 HOURS
     )
-# 
+    
     # Refresh token
     json_response.set_cookie(
         key="refresh_token",
@@ -20,9 +20,9 @@ def generate_cookies(json_response, access_token, refresh_token):
         secure=True,
         samesite="Lax",
         path="/",
-        max_age=60 * 60 * 24 * 7,  # 7 days
+        max_age=60 * 60 * 24 * 5,  # 5 DAYS
     )
-# 
+    
     # Generate and set CSRF token
     json_response.set_cookie(
         key="csrftoken",
@@ -31,6 +31,5 @@ def generate_cookies(json_response, access_token, refresh_token):
         secure=True,
         samesite="Lax",
         path="/",
-        # max_age=60 * 60 * 24 * 21,  # 21 days => gets logged out after 21 days
-        # max_age=60,  # 1 minute
+        max_age=60 * 60 * 24 * 10,  # 10 DAYS
     )

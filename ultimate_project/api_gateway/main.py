@@ -201,7 +201,7 @@ async def jwt_refresh_middleware(request: Request, call_next):
             secure=True,
             samesite="Lax",
             path="/",
-            max_age=60 * 60 * 6,  # 6 hours
+            max_age=60 * 60 * 6,  # ! NEED TO HARMONIZE COOKIES TIME
         )
     return response
 

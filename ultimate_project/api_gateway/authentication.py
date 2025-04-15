@@ -16,8 +16,8 @@ router = APIRouter()
 
 SECRET_JWT_KEY = os.getenv("JWT_KEY")
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
-REFRESH_TOKEN_EXPIRE_DAYS = 7
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
+REFRESH_TOKEN_EXPIRE_DAYS = 5
 
 # API urls for checking users IDs
 DATABASE_API_URL = "http://databaseapi:8007/api/verify-credentials/"
@@ -67,12 +67,8 @@ async def login_fastAPI(
         )
 
     # Generates expiration dates for JWT
-    expire_access = datetime.datetime.utcnow() + datetime.timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-    )
-    expire_refresh = datetime.datetime.utcnow() + datetime.timedelta(
-        days=REFRESH_TOKEN_EXPIRE_DAYS
-    )
+    expire_access = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire_refresh = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
 
     my_uuid = str(uuid.uuid4())
     user_id = auth_data.get("user_id", 0)
@@ -89,7 +85,7 @@ async def login_fastAPI(
     refresh_payload = {
         "user_id": user_id,
         "username": username,
-        # "uuid": my_uuid,  #!... but not in the refresh token
+        "uuid": my_uuid,  #!... and in the refresh token
         "exp": expire_refresh,
     }
 
@@ -243,12 +239,8 @@ async def verify_2fa_and_login(
         user_id = user.get("id")
 
         # Generate JWT tokens
-        expire_access = datetime.datetime.utcnow() + datetime.timedelta(
-            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-        )
-        expire_refresh = datetime.datetime.utcnow() + datetime.timedelta(
-            days=REFRESH_TOKEN_EXPIRE_DAYS
-        )
+        expire_access = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire_refresh = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
 
         # Generate a unique session ID
         my_uuid = str(uuid.uuid4())
@@ -264,6 +256,7 @@ async def verify_2fa_and_login(
         refresh_payload = {
             "user_id": user_id,
             "username": username,
+            "uuid": my_uuid,
             "exp": expire_refresh,
         }
 
@@ -441,12 +434,8 @@ async def register_fastAPI(
         user_data = create_response.json()
 
         # Generate JWT tokens like in login
-        expire_access = datetime.datetime.utcnow() + datetime.timedelta(
-            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-        )
-        expire_refresh = datetime.datetime.utcnow() + datetime.timedelta(
-            days=REFRESH_TOKEN_EXPIRE_DAYS
-        )
+        expire_access = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire_refresh = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
 
         # Generate and update the user's UUID
         my_uuid = str(uuid.uuid4())
@@ -463,6 +452,7 @@ async def register_fastAPI(
         refresh_payload = {
             "user_id": user_id,
             "username": username,
+            "uuid": my_uuid,
             "exp": expire_refresh,
         }
 

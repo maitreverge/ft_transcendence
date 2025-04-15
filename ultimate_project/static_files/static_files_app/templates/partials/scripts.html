@@ -14,7 +14,7 @@
 <script src="{% static 'static_files/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 <script src="{% static 'static_files/purify.min.js' %}"></script>
 <script src="{% static 'static_files/three.js' %}"></script>
-
+<script src="{% static 'static_files/name-generator.js' %}"></script>
 <script>
   // this function is part of the history logic
   window.addEventListener("beforeunload", () => {
@@ -54,22 +54,22 @@ function stopMatch()
     };
   }
   
-  console.log("Attachement de l'event popstate...");
-  window.addEventListener("popstate", () => {
+//   console.log("Attachement de l'event popstate...");
+//   window.addEventListener("popstate", () => {
 
-    if (window.location.pathname.includes("/home")) {
-        console.log("Retour sur la page home, aucune requête HTMX effectuée.");
-        return; // On ne fait rien si c'est la page home
-    }
+//     if (window.location.pathname.includes("/home")) {
+//         console.log("Retour sur la page home, aucune requête HTMX effectuée.");
+//         return; // On ne fait rien si c'est la page home
+//     }
 
-    console.log("popstate event triggered!");
-    htmx.ajax("GET", window.location.pathname, {
-      target: "#main_div",
-      swap: "innerhtml",
-      headers: { "HX-Login-Success": "true" },
-    });
+//     console.log("popstate event triggered!");
+//     htmx.ajax("GET", window.location.pathname, {
+//       target: "#main_div",
+//       swap: "innerhtml",
+//       headers: { "HX-Login-Success": "true" },
+//     });
     // closeWebsockets();
-  });
+//   });
   
   interceptUrlChanges();
 
