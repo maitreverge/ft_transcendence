@@ -214,7 +214,7 @@
 
 <script>
 	initScript();
-	function initScript() {
+function initScript() {
 		const firstNameInput = document.getElementById("first_name");
 		const lastNameInput = document.getElementById("last_name");
 		const usernameInput = document.getElementById("username");
@@ -370,31 +370,31 @@
 		console.log(evt.detail.target.id);
 
 		if (evt.detail.target.id === "register-form") {
-		try {
-			console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
-			const response = JSON.parse(evt.detail.xhr.responseText);
-			
-			if (response.success) {
-				evt.detail.shouldSwap = false;
+			try {
+				console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+				const response = JSON.parse(evt.detail.xhr.responseText);
+				
+				if (response.success) {
+					evt.detail.shouldSwap = false;
 
-				htmx
-				.ajax("GET", "/home/", {
-					target: "body",
-					swap: "outerHTML",
-					headers: { "HX-Login-Success": "true" },
-				})
-				.then(function () {
-					history.pushState(null, "", "/home/");
-				});
-			} else {
-				const messageElement = document.getElementById("register-form");
-				const sanitizedMessage = DOMPurify.sanitize(response.message);
-				messageElement.textContent = sanitizedMessage;
+					htmx
+					.ajax("GET", "/home/", {
+						target: "body",
+						swap: "outerHTML",
+						headers: { "HX-Login-Success": "true" },
+					})
+					.then(function () {
+						history.pushState(null, "", "/home/");
+					});
+				} else {
+					const messageElement = document.getElementById("register-form");
+					const sanitizedMessage = DOMPurify.sanitize(response.message);
+					messageElement.textContent = sanitizedMessage;
+				}
+			} catch (e) {
+				console.error("Erreur de traitement de la réponse:", e);
 			}
-		} catch (e) {
-			console.error("Erreur de traitement de la réponse:", e);
 		}
-	}
-});
+	});
 };
 </script>
