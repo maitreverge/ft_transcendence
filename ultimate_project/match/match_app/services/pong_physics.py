@@ -144,15 +144,17 @@ async def side_pads_bounces(self):
 async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
 	if self.is_pad_horz_intersect(cmp, limit, pad_y_idx):			
-		new_vect = [0, 0]
-		new_vect[0] = limit - self.ball[0]
-		new_vect[1] = self.scale_vector(
-			new_vect[0], self.vect[1], self.vect[0])
-		self.ball[0] += new_vect[0]				
-		self.ball[1] += new_vect[1]
+		bounce_vect = [0, 0]
+		bounce_vect[0] = limit - self.ball[0]
+		bounce_vect[1] = self.scale_vector(
+			bounce_vect[0], self.vect[1], self.vect[0])
+		if self.is_overflow(bounce_vect):
+			return			
+		self.ball[0] += bounce_vect[0]				
+		self.ball[1] += bounce_vect[1]
 		self.has_wall = True
-		# await asyncio.sleep(self.bounce_delay)	
-		self.speed_test("horz bounce", 31)			
+		# await asyncio.sleep(self.bounce_delay)
+		self.speed_test("horz bounce", 31)	
 		await self.bounce_send_state()
 		mag = self.get_magnitude(self.vect) 				
 		y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
@@ -171,6 +173,13 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
 # def updown_side_pad_bounce(self):
 # 	if self.is_updown_side_pad_intersecting()
+
+def is_overflow(self, new_vect):	
+
+	if not self.x_left_pad <= self.ball[0] + new_vect[0] <= self.x_rght_pad or \
+		not self.y_top <= self.ball[1] + new_vect[1] <= self.y_bot:
+		return True
+	return False
 
 def speed_test(self, place, color):	
 
@@ -253,6 +262,8 @@ async def bounce(self, limit):
 	bounce_vect[1] = limit - self.ball[1]
 	bounce_vect[0] = self.scale_vector(
 		bounce_vect[1], self.vect[0], self.vect[1])		
+	if self.is_overflow(bounce_vect):
+		return
 	self.ball[0] += bounce_vect[0]				
 	self.ball[1] += bounce_vect[1]
 	self.has_wall = True
@@ -260,7 +271,7 @@ async def bounce(self, limit):
 	# if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
 	# 	not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
 	# 	print(f"\033[32m ds VERT bounce {self.ball} \033[0m", flush=True)
-	self.speed_test("vert bounce", 32)
+	self.speed_test("vert bounce", 32)	
 	await self.bounce_send_state()
 	self.vect[1] = -self.vect[1]		
 	self.wall_flag = False
@@ -436,7 +447,7 @@ def get_magnitude(self, vect):
 
 def move_ball(self):
 
-	if (self.wall_flag):	
+	if (self.wall_flag):			
 		self.ball[0] += self.vect[0]				
 		self.ball[1] += self.vect[1]
 		self.speed_test("move ball", 33)
