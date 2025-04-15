@@ -61,7 +61,7 @@ class Pong:
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
 		self.pad_speed = 2
-		self.max_ball_speed = 2# //! 10
+		self.max_ball_speed = 10
 		self.ball_acceleration = 1.3
 		self.bounce_delay = 0.01
 		self.send_delay = 0.01
@@ -79,10 +79,10 @@ class Pong:
 		self.ball_hray = 1
 		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_wray
 		self.x_rght_pad = 100 - self.x_left_pad
-		self.y_top = 0 + self.ball_hray
-		# self.y_top = 40 + self.ball_hray
-		self.y_bot = 100 - self.ball_hray
-		# self.y_bot = 60 - self.ball_hray
+		# self.y_top = 0 + self.ball_hray
+		self.y_top = 40 + self.ball_hray
+		# self.y_bot = 100 - self.ball_hray
+		self.y_bot = 60 - self.ball_hray
 		self.x_left_pad_back = self.pads_offset - self.ball_wray
 		self.x_rght_pad_back = 100 - self.x_left_pad_back
 		self.pads_half_h = self.pad_height / 2 + self.ball_hray

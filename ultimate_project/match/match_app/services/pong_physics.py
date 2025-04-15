@@ -150,7 +150,10 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		self.ball[0] += new_vect[0]				
 		self.ball[1] += new_vect[1]
 		self.has_wall = True
-		# await asyncio.sleep(self.bounce_delay)				
+		# await asyncio.sleep(self.bounce_delay)	
+		if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
+			not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
+			print(f"\033[33m ds HORZ bounce {self.ball} \033[0m", flush=True)			
 		await self.bounce_send_state()
 		mag = self.get_magnitude(self.vect) 				
 		y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
@@ -229,6 +232,7 @@ async def side_pad_bounce(self, cmp, y_side, x_side, x_side_back):
 
 	if self.is_pad_vert_intersect(cmp, x_side,
 		((x_side, y_side), (x_side_back, y_side))):
+		print(f"je ne dois pas apparaitre sur ce test", flush=True)
 		await self.bounce(y_side)
 		# bounce_vect = [0, 0]
 		# bounce_vect[1] = y_side - self.ball[1]
@@ -248,7 +252,10 @@ async def bounce(self, limit):
 	self.ball[0] += bounce_vect[0]				
 	self.ball[1] += bounce_vect[1]
 	self.has_wall = True
-	# await asyncio.sleep(self.bounce_delay)	
+	# await asyncio.sleep(self.bounce_delay)
+	if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
+		not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
+		print(f"\033[32m ds VERT bounce {self.ball} \033[0m", flush=True)
 	await self.bounce_send_state()
 	self.vect[1] = -self.vect[1]		
 	self.wall_flag = False
@@ -427,6 +434,9 @@ def move_ball(self):
 	if (self.wall_flag):	
 		self.ball[0] += self.vect[0]				
 		self.ball[1] += self.vect[1]
+		if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
+			not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
+			print(f"\033[35m ds MOVE BALL {self.ball} \033[0m", flush=True)
 
 def get_random_vector(self):
 
