@@ -348,12 +348,13 @@ Pong.are_pads_hurt_ball = physics.are_pads_hurt_ball
 Pong.is_pad_hurt_ball = physics.is_pad_hurt_ball
 
 Pong.side_pad_bounce = physics.side_pad_bounce
-Pong.is_pad_intersect = physics.is_pad_intersect
+Pong.is_pad_horz_intersect = physics.is_pad_horz_intersect
+Pong.is_pad_vert_intersect = physics.is_pad_vert_intersect
 #to del:
-Pong.right_upside_pad_bounce = physics.right_upside_pad_bounce
-Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
-Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
-Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
+# Pong.right_upside_pad_bounce = physics.right_upside_pad_bounce
+# Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
+# Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
+# Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
 # Pong.is_left_pad_hurt_ball = physics.is_left_pad_hurt_ball
 # Pong.is_right_pad_hurt_ball = physics.is_right_pad_hurt_ball
 
