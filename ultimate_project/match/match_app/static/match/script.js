@@ -729,7 +729,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	pads[2].style.width = (matchRect.width / 100) * 2;
 	pads[2].style.height = (matchRect.width / 100) * 2;
 	pads[4].style.width = (matchRect.width / 100) * 2;
-	pads[4].style.height = (matchRect.height / 100) * 2;
+	pads[4].style.height = (matchRect.height / 100) * 6;
 	// pads[0].style.width = (matchRect.width / 100) * 10;
 	// pads[0].style.height = (matchRect.height / 100) * 40;
 	// pads[1].style.width = (matchRect.width / 100) * 10;
