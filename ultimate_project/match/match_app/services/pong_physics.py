@@ -102,28 +102,44 @@ def is_pad_hurt_ball(self, sense, x_limits, side, pad_idx):
 async def bounces(self):
 
 	if self.vect[0] < 0:
-		await self.horz_bounce(op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1)
+		await self.horz_bounce(
+			op.le, limit=self.x_left_pad, pad_y_idx=0, dir=+1
+		)
 	if self.vect[0] > 0:
-		await self.horz_bounce(op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1)	
-	if self.vect[1] < 0:
-		if self.vect[0] < 0:
-			await self.side_pad_bounce(op.le, self.pads_y[0] + self.pads_half_h, self.x_left_pad, self.x_left_pad_back)
-			# await self.left_downside_pad_bounce()
-		if self.vect[0] > 0:
-			await self.side_pad_bounce(op.ge, self.pads_y[1] + self.pads_half_h, self.x_rght_pad, self.x_rght_pad_back)
-			# await self.right_downside_pad_bounce()
-	if self.vect[1] > 0:
-		if self.vect[0] < 0:
-			await self.side_pad_bounce(op.le, self.pads_y[0] - self.pads_half_h, self.x_left_pad, self.x_left_pad_back)
-			# await self.left_upside_pad_bounce()
-		if self.vect[0] > 0:
-			await self.side_pad_bounce(op.ge, self.pads_y[1] - self.pads_half_h, self.x_rght_pad, self.x_rght_pad_back)	
-			# await self.right_upside_pad_bounce()
+		await self.horz_bounce(
+			op.ge, limit=self.x_rght_pad, pad_y_idx=1, dir=-1
+		)	
+	await self.side_pads_bounces()	
 	if self.vect[1] > 0:
 		await self.vert_bounce(op.ge, limit=self.y_bot)
 	if self.vect[1] < 0:
 		await self.vert_bounce(op.le, limit=self.y_top)
+
+async def side_pads_bounces(self):
 		
+	if self.vect[1] < 0:
+		if self.vect[0] < 0:
+			await self.side_pad_bounce(
+				op.le, self.pads_y[0] + self.pads_half_h,
+				self.x_left_pad, self.x_left_pad_back
+			)
+		if self.vect[0] > 0:
+			await self.side_pad_bounce(
+				op.ge, self.pads_y[1] + self.pads_half_h,
+				self.x_rght_pad, self.x_rght_pad_back
+			)
+	if self.vect[1] > 0:
+		if self.vect[0] < 0:
+			await self.side_pad_bounce(
+				op.le, self.pads_y[0] - self.pads_half_h,
+				self.x_left_pad, self.x_left_pad_back
+			)
+		if self.vect[0] > 0:
+			await self.side_pad_bounce(
+				op.ge, self.pads_y[1] - self.pads_half_h,
+				self.x_rght_pad, self.x_rght_pad_back
+			)
+			
 async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
 	if self.is_pad_horz_intersect(cmp, limit, pad_y_idx):			

@@ -334,15 +334,16 @@ class Pong:
 Pong.pad_commands = physics.pad_commands
 Pong.pad_command = physics.pad_command
 Pong.bounces = physics.bounces
+Pong.bounce = physics.bounce
 Pong.vert_bounce = physics.vert_bounce
 Pong.horz_bounce = physics.horz_bounce
 # Pong.are_pads_intersecting = physics.are_pads_intersecting
-Pong.is_pad_intersecting = physics.is_pad_intersecting
+# Pong.is_pad_intersecting = physics.is_pad_intersecting
 
-Pong.left_upside_pad_bounce = physics.left_upside_pad_bounce
-Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
-Pong.left_downside_pad_bounce = physics.left_downside_pad_bounce
-Pong.is_downleft_pads_intersect = physics.is_downleft_pads_intersect
+# Pong.left_upside_pad_bounce = physics.left_upside_pad_bounce
+# Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
+# Pong.left_downside_pad_bounce = physics.left_downside_pad_bounce
+# Pong.is_downleft_pads_intersect = physics.is_downleft_pads_intersect
 
 Pong.are_pads_hurt_ball = physics.are_pads_hurt_ball
 Pong.is_pad_hurt_ball = physics.is_pad_hurt_ball
