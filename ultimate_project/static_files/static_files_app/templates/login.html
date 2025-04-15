@@ -11,35 +11,28 @@
     }
     
     /* Pong Background Animation Styles */
-    .pong-background {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        background-color: #f8f9fc;
-        overflow: hidden;
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-		
-    }
-    
-    .pong-icon {
-        position: absolute;
-        width: 48px;
-        height: 48px;
-        background-image: url('https://cdn-icons-png.flaticon.com/512/4611/4611024.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-        opacity: 0.2;
-        pointer-events: none;
-        filter: grayscale(30%);
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-    }
+		.pong-background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		overflow: hidden;
+		background-color: #f8f9fc;
+	}
+
+	.pong-icon {
+		position: absolute;
+		width: 36px;
+		height: 36px;
+		background-image: url('https://cdn-icons-png.flaticon.com/512/4611/4611024.png');
+		background-size: contain;
+		background-repeat: no-repeat;
+		pointer-events: none;
+		opacity: 0.6;
+	}
+
     
     /* Ensure the login card has a proper z-index to appear above the animation */
     .card {
@@ -233,119 +226,51 @@
     }
   });
 
-
-
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('pong-background');
-  
-  // Clear any existing icons
-  container.innerHTML = '';
-  
-  // Grid configuration - Create a larger primary grid
-  const columns = 9;
-  const rows = 6;
-  
-  // Create a tighter pattern with consistent spacing
-  const horizontalSpacing = 100 / (columns - 1);
-  const verticalSpacing = 100 / (rows - 1);
-  
-  // Fixed icon size (slightly smaller for better distribution)
-  const iconSize = 50; // pixels
-  
-  // Fixed movement speed
-  const speedX = 0.07;
-  const speedY = 0.07;
-  
-  // Create primary grid
-  createGrid(0, 0);
-  
-  // Create additional grid sections to ensure seamless transitions
-  // These grids will be positioned just outside the viewport
-  createGrid(-100, 0);  // Grid to the left
-  createGrid(0, -100);  // Grid above
-  createGrid(-100, -100); // Grid to the top-left
-  
-  // Function to create a grid at specified offset position
-  function createGrid(offsetX, offsetY) {
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-        const icon = document.createElement('div');
-        icon.classList.add('pong-icon');
-        
-        // Calculate position based on grid with consistent spacing
-        const posX = offsetX + (col * horizontalSpacing);
-        const posY = offsetY + (row * verticalSpacing);
-        
-        // Set properties
-        icon.style.left = posX + 'vw';
-        icon.style.top = posY + 'vh';
-        icon.style.width = iconSize + 'px';
-        icon.style.height = iconSize + 'px';
-        icon.style.transform = 'rotate(0deg)';
-        
-        // Set speed
-        icon.dataset.speedX = speedX;
-        icon.dataset.speedY = speedY;
-        
-        // Store grid position for wrapping logic
-        icon.dataset.gridX = offsetX;
-        icon.dataset.gridY = offsetY;
-        icon.dataset.col = col;
-        icon.dataset.row = row;
-        
-        container.appendChild(icon);
-      }
+  const cols = 8;
+  const rows = 5;
+  const spacingX = window.innerWidth / cols;
+  const spacingY = window.innerHeight / rows;
+  const speed = 0.5;
+
+  const icons = [];
+
+  for (let row = -1; row <= rows; row++) {
+    for (let col = -1; col <= cols; col++) {
+      const icon = document.createElement('div');
+      icon.className = 'pong-icon';
+      icon.style.left = `${col * spacingX}px`;
+      icon.style.top = `${row * spacingY}px`;
+      container.appendChild(icon);
+
+      icons.push({
+        el: icon,
+        x: col * spacingX,
+        y: row * spacingY,
+      });
     }
   }
-  
-  // Animation loop with improved wrapping logic
-  function animateIcons() {
-    const icons = document.querySelectorAll('.pong-icon');
-    
-    icons.forEach(icon => {
-      // Get current position
-      let x = parseFloat(icon.style.left);
-      let y = parseFloat(icon.style.top);
-      
-      // Handle NaN values
-      x = isNaN(x) ? 0 : x;
-      y = isNaN(y) ? 0 : y;
-      
-      // Update position
-      x += parseFloat(icon.dataset.speedX);
-      y += parseFloat(icon.dataset.speedY);
-      
-      // Improved wrapping logic for seamless transitions
-      // When an entire grid moves off screen, reposition it
-      
-      // Track which grid section this icon belongs to
-      const gridX = parseFloat(icon.dataset.gridX);
-      const gridY = parseFloat(icon.dataset.gridY);
-      const col = parseInt(icon.dataset.col);
-      const row = parseInt(icon.dataset.row);
-      
-      // Check if we need to wrap this grid section
-      if (x > 100 && col === columns - 1) {
-        // Last column went off screen, move entire grid section back
-        x = gridX - 100 + (col * horizontalSpacing);
-        icon.dataset.gridX = gridX - 100;
-      }
-      
-      if (y > 100 && row === rows - 1) {
-        // Last row went off screen, move entire grid section back
-        y = gridY - 100 + (row * verticalSpacing);
-        icon.dataset.gridY = gridY - 100;
-      }
-      
-      // Apply new position
-      icon.style.left = x + 'vw';
-      icon.style.top = y + 'vh';
-    });
-    
-    requestAnimationFrame(animateIcons);
+
+  function animate() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    for (const icon of icons) {
+      icon.x += speed;
+      icon.y += speed;
+
+      if (icon.x > w) icon.x -= (cols + 2) * spacingX;
+      if (icon.y > h) icon.y -= (rows + 2) * spacingY;
+
+      icon.el.style.left = `${icon.x}px`;
+      icon.el.style.top = `${icon.y}px`;
+    }
+
+    requestAnimationFrame(animate);
   }
-  
-  // Start animation
-  animateIcons();
+
+  animate();
 });
+
 </script>
