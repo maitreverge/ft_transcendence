@@ -377,3 +377,5 @@ Pong.get_random_vector = physics.get_random_vector
 Pong.scores = scores.scores
 Pong.score_point = scores.score_point
 Pong.max_score_rise = scores.max_score_rise
+
+Pong.speed_test = physics.speed_test

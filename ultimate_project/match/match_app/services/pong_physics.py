@@ -176,7 +176,7 @@ def speed_test(self, place, color):
 
 	if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad:
 		print(f"\033[35m horz \033[{color}m from {place} {self.ball} \033[0m", flush=True)
-	if not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
+	if not self.y_top  <= self.ball[1] <= self.y_bot:
 		print(f"\033[36m vert \033[{color}m from {place} {self.ball} \033[0m", flush=True)
 
 async def vert_bounce(self, cmp, limit):
