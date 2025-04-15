@@ -142,7 +142,7 @@ async def side_pads_bounces(self):
 			
 async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 
-	if self.is_pad_horz_intersect(cmp, limit, pad_y_idx):			
+	if self.wall_flag and self.is_pad_horz_intersect(cmp, limit, pad_y_idx):			
 		new_vect = [0, 0]
 		new_vect[0] = limit - self.ball[0]
 		new_vect[1] = self.scale_vector(
@@ -176,7 +176,7 @@ async def vert_bounce(self, cmp, limit):
 	
 	# if self.are_pads_intersecting():
 	# 	return
-	if cmp(self.ball[1] + self.vect[1], limit) and self.wall_flag:
+	if self.wall_flag and cmp(self.ball[1] + self.vect[1], limit):
 		await self.bounce(limit)
 		# bounce_vect = [0, 0]
 		# bounce_vect[1] = limit - self.ball[1]
