@@ -204,13 +204,11 @@ def is_upleft_pads_intersect(self, left_limit):
 		lu[1]
 	)
 
-async def side_pad_bounce(self, limit, side, side_back):
+async def side_pad_bounce(self, y_side, x_side, x_side_back):
 
-	limit = self.pads_y[1] - self.pads_half_h
-
-	if self.is_pad(((self.x_rght_pad, limit), (self.x_rght_pad_back, limit))):
+	if self.is_pad(((x_side, y_side), (x_side_back, y_side))):
 		bounce_vect = [0, 0]
-		bounce_vect[1] = limit - self.ball[1]
+		bounce_vect[1] = y_side - self.ball[1]
 		bounce_vect[0] = self.scale_vector(
 			bounce_vect[1], self.vect[0], self.vect[1])	
 		self.ball[0] += bounce_vect[0]				
