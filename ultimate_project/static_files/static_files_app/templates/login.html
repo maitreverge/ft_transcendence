@@ -26,8 +26,8 @@
 
 	.pong-icon {
 		position: absolute;
-		width: 36px;
-		height: 36px;
+		width: 50px;
+		height: 50px;
 		background-image: url('https://cdn-icons-png.flaticon.com/512/4611/4611024.png');
 		background-size: contain;
 		background-repeat: no-repeat;
@@ -51,7 +51,7 @@
 
 <div class="container" data-page-type="login">
 	<!-- Outer Row -->
-	<div class="row justify-content-center">
+	<div class="row justify-content-center align-items-center min-vh-100">
 		<div class="col-xl-10 col-lg-12 col-md-9">
 			<div class="card o-hidden border-0 shadow-lg my-5">
 				<div class="card-body p-0">
@@ -96,7 +96,7 @@
 								<hr />
 
 								<!-- ! Link towards register  -->
-								<div class="text-center small" style="font-size: larger">
+								<div class="text-center small" style="font-size:large">
 									<a id="register-link" hx-trigger="click" hx-push-url="true"
 										hx-get="/register/" hx-target="body" href=""
 										data-translate="Create an Account!">
@@ -204,8 +204,8 @@
 		// Clear previous icons if any
 		container.innerHTML = '';
 
-		const cols = 8;
-		const rows = 5;
+		const cols = 12;
+		const rows = 7;
 		const spacingX = window.innerWidth / cols;
 		const spacingY = window.innerHeight / rows;
 		const speed = 0.5;
