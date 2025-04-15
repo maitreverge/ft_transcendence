@@ -68,6 +68,19 @@ def is_authenticated(request: Request):
         payload = verify_jwt(access_token)
         if not payload and not refresh_token: # * EDGE CASE : access_token might be invalid and missing `refresh_token`
             return False, None
+        elif not payload and refresh_token: # * EDGE CASE 2 : access token invalid raises a 500 error
+            refresh_payload = verify_jwt(refresh_token)
+            if not refresh_payload:
+                return False, None
+            else: # ! NEED REFRESH TOKEN
+                new_access_token = refresh_access_token(refresh_payload)
+                
+                return True, {
+                    "user_id": refresh_payload.get("user_id"),
+                    "username": refresh_payload.get("username"),
+                    "refresh_needed": True,
+                    "new_access_token": new_access_token,
+                }
     elif refresh_token:
         refresh_payload = verify_jwt(refresh_token)
         if not refresh_payload:
