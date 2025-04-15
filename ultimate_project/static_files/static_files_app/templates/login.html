@@ -1,3 +1,46 @@
+<style>
+    .login-picture {
+        background-image: url("https://cdn.mos.cms.futurecdn.net/xQmFxCSLFhkDbYG4m6E5x3-1280-80.png");
+        background-position: center;
+        background-size: 110%; /* Shows 80% of the original image size */
+        background-repeat: no-repeat; 
+        min-height: 100%;
+    }
+    
+    /* Pong Background Animation Styles */
+    .pong-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-color: #f8f9fc;
+        overflow: hidden;
+    }
+    
+    .pong-icon {
+        position: absolute;
+        width: 48px;
+        height: 48px;
+        background-image: url('https://cdn-icons-png.flaticon.com/512/4611/4611024.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        opacity: 0.2;
+        pointer-events: none;
+        filter: grayscale(30%);
+    }
+    
+    /* Ensure the login card has a proper z-index to appear above the animation */
+    .card {
+        position: relative;
+        z-index: 10;
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+</style>
+
+<div class="pong-background" id="pong-background"></div>
+
 <div class="container" data-page-type="login">
   <!-- Outer Row -->
   <div class="row justify-content-center">
@@ -6,7 +49,7 @@
         <div class="card-body p-0">
           <!-- Nested Row within Card Body -->
           <div class="row">
-            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+            <div class="col-lg-6 d-none d-lg-block login-picture"></div>
             <div class="col-lg-6">
               <div class="p-5">
                 <div class="text-center">
@@ -95,6 +138,7 @@
   </div>
 </div>
 
+
 <script>
   document.addEventListener("htmx:beforeSwap", function (evt) {
     console.log("document.addEventListener working");
@@ -175,4 +219,95 @@
       }
     }
   });
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+  const container = document.getElementById('pong-background');
+  
+  // Grid configuration
+  const columns = 8;
+  const rows = 6;
+  const iconCount = columns * rows;
+  
+  // Clear any existing icons
+  container.innerHTML = '';
+  
+  // Consistent spacing
+  const horizontalSpacing = 100 / columns;
+  const verticalSpacing = 100 / rows;
+  
+  // Consistent movement direction and speed
+  const baseSpeedX = 0.08;
+  const baseSpeedY = 0.05;
+  
+  // Create grid of pong icons
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      const icon = document.createElement('div');
+      icon.classList.add('pong-icon');
+      
+      // Calculate position based on grid
+      const posX = col * horizontalSpacing + (horizontalSpacing / 2);
+      const posY = row * verticalSpacing + (verticalSpacing / 2);
+      
+      // Consistent size with slight variation
+      const size = 36 + (Math.random() * 12 - 6);
+      
+      // All icons move in same direction but with slight variation
+      // Adding variation factor to avoid icons moving in exact lockstep
+      const variationFactor = 0.8 + (Math.random() * 0.4);
+      const speedX = baseSpeedX * variationFactor;
+      const speedY = baseSpeedY * variationFactor;
+      
+      // Set initial properties
+      icon.style.left = posX + 'vw';
+      icon.style.top = posY + 'vh';
+      icon.style.width = size + 'px';
+      icon.style.height = size + 'px';
+      icon.dataset.speedX = speedX;
+      icon.dataset.speedY = speedY;
+      
+      // Add slight rotation variation
+      const rotation = (Math.random() * 30) - 15; // -15 to +15 degrees
+      icon.style.transform = `rotate(${rotation}deg)`;
+      
+      container.appendChild(icon);
+    }
+  }
+  
+  // Animation loop
+  function animateIcons() {
+    const icons = document.querySelectorAll('.pong-icon');
+    
+    icons.forEach(icon => {
+      // Get current position from style (more reliable than getBoundingClientRect)
+      let x = parseFloat(icon.style.left);
+      let y = parseFloat(icon.style.top);
+      
+      // Remove 'vw' and 'vh' from the strings
+      x = isNaN(x) ? 0 : x;
+      y = isNaN(y) ? 0 : y;
+      
+      // Update position based on speed
+      x += parseFloat(icon.dataset.speedX);
+      y += parseFloat(icon.dataset.speedY);
+      
+      // Wrap around the screen instead of bouncing
+      if (x > 105) x = -5;
+      if (x < -5) x = 105;
+      if (y > 105) y = -5;
+      if (y < -5) y = 105;
+      
+      // Apply new position
+      icon.style.left = x + 'vw';
+      icon.style.top = y + 'vh';
+    });
+    
+    requestAnimationFrame(animateIcons);
+  }
+  
+  // Start animation
+  animateIcons();
+});
 </script>
