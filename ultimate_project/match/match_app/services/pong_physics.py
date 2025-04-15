@@ -148,8 +148,8 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		bounce_vect[0] = limit - self.ball[0]
 		bounce_vect[1] = self.scale_vector(
 			bounce_vect[0], self.vect[1], self.vect[0])
-		if self.is_overflow(bounce_vect):
-			return			
+		# if self.is_overflow(bounce_vect):
+		# 	return			
 		self.ball[0] += bounce_vect[0]				
 		self.ball[1] += bounce_vect[1]
 		self.has_wall = True
@@ -262,8 +262,8 @@ async def bounce(self, limit):
 	bounce_vect[1] = limit - self.ball[1]
 	bounce_vect[0] = self.scale_vector(
 		bounce_vect[1], self.vect[0], self.vect[1])		
-	if self.is_overflow(bounce_vect):
-		return
+	# if self.is_overflow(bounce_vect):
+	# 	return
 	self.ball[0] += bounce_vect[0]				
 	self.ball[1] += bounce_vect[1]
 	self.has_wall = True

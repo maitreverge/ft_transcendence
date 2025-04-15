@@ -57,7 +57,7 @@ class Pong:
 		# self.pads_y = [50, 50]		
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
-		self.ball_speed = 0.1
+		self.ball_speed = 0.2
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
 		self.pad_speed = 2
