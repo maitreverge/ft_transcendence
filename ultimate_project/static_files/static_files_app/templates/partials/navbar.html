@@ -1,16 +1,23 @@
 {% load static %}
 <!-- Topbar -->
 
+<div class="pl-4 title_color">
 <nav id="navbar" class="p-0 navbar navbar-expand 
   topbar static-top shadow custom-navbar-height">
+  <div class="col-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 d-none d-block pl-0">
   <a id="homelogo" class="h-100 sidebar-brand  
-    align-items-center justify-content-center nav-link" style="width: 230px;" hx-trigger="click" hx-push-url="true"
+    align-items-center justify-content-center nav-link" hx-trigger="click" hx-push-url="true"
     hx-get="/home/" hx-target="#main_div" role="button">
     <div class="h-100 d-flex align-items-center  mr-2 justify-content-center">
       <i class="mr-2 fa-solid fa-table-tennis-paddle-ball  rotate-n-15"></i>
-      <strong class="ml-2">Pong <sup>42</sup></strong>
+      <strong class="d-inline-flex align-items-start">
+        Pong<sup style="font-size: 0.6em; margin-left: 12px; transform: translateY(12px);">42</sup>
+      </strong>
     </div>
   </a>
+</div>
+
+<div class="col-8 col-md-9 col-sm-8 ml-sm-auto col-lg-10 col-xl-10 p-0 m-0" style="display: flex;">
   <!-- Sidebar Toggle (Topbar) -->
   <li class="d-flex align-items-center nav-item dropdown no-arrow mx-1 d-lg-none">
     <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
@@ -54,6 +61,8 @@
       </a>
     </div>
   </li>
+  <div class="d-flex align-items-center">
+  <div class="d-block">
   <select id="language-selector" class="ml-2 " onchange="changeLanguage(event)">
     <option value="en">🇬🇧 English</option>
     <option value="fr">🇫🇷 Français</option>
@@ -61,6 +70,7 @@
     <option value="es">🇪🇸 Español</option>
     <option value="tl">🇦🇱 TlhIngan</option>
   </select>
+</div>
   <a class="nav-link d-none d-lg-inline" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/"
     hx-target="#main_div" id="userDropdown" role="button">
     <span id="nav-match" class="mr-2 d-none d-md-inline">
@@ -89,7 +99,7 @@
       <span class=" navbar-link" data-translate="Statistiques">Stats</span>
     </span>
   </a>
-
+</div>
 <!-- From Uiverse.io by andrew-demchenk0 --> 
 
 <ul class="navbar-nav ml-auto">
@@ -141,7 +151,11 @@
       </div>
     </li>
     </ul>
-    </nav>
+  </div>
+</nav>
+</div>
+
+
 <style>
  
 
