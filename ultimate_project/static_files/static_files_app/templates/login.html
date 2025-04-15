@@ -226,8 +226,28 @@
     }
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
+// ...existing code...
+
+document.addEventListener('DOMContentLoaded', () => {
+  initPongAnimation();
+});
+
+// Add an HTMX event listener to reinitialize animation after content swaps
+document.addEventListener('htmx:afterSwap', () => {
+  // Only initialize if we're on the login page
+  if (document.querySelector('[data-page-type="login"]')) {
+    initPongAnimation();
+  }
+});
+
+function initPongAnimation() {
+  // Clear any existing animation before reinitializing
   const container = document.getElementById('pong-background');
+  if (!container) return; // Exit if container doesn't exist
+  
+  // Clear previous icons if any
+  container.innerHTML = '';
+  
   const cols = 8;
   const rows = 5;
   const spacingX = window.innerWidth / cols;
@@ -267,10 +287,16 @@
       icon.el.style.top = `${icon.y}px`;
     }
 
-    requestAnimationFrame(animate);
+    // Store animation ID so we can cancel it if needed
+    window.pongAnimationId = requestAnimationFrame(animate);
   }
 
+  // Cancel any existing animation before starting a new one
+  if (window.pongAnimationId) {
+    cancelAnimationFrame(window.pongAnimationId);
+  }
+  
   animate();
-});
+}
 
 </script>
