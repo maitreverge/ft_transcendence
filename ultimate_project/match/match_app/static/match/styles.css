@@ -116,22 +116,17 @@
     cursor: pointer;
 }
 
+
 #match {
+    aspect-ratio: 4 / 3;
 	position: fixed;
-	top:0;
-	left:0;
-	width:100vw;
-	height:85vh;
+    top: calc((70vh - (70vh / 4 * 3)) / 2); /* centrage vertical dans 70vh */
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90vw, calc(70vh * 4 / 3));
+    min-width: min(500px, 90vw);
     background-color: rgba(30, 30, 30, 1); /* Complètement transparent */
     z-index: 200;
-}
-
-.match-sylvain-gif {
-	overflow: hidden;
-    /* background-image: url('https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp'); */
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
 }
 
 #rules-overlay {
@@ -149,6 +144,14 @@
     align-items: center;
     padding: 10px;
     z-index: 500;
+}
+
+.match-sylvain-gif {
+	overflow: hidden;
+    /* background-image: url('https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp'); */
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 #inst-left {
