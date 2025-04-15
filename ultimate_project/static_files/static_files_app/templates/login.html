@@ -97,7 +97,7 @@
 
 								<!-- ! Link towards register  -->
 								<div class="text-center small" style="font-size: larger">
-									<a id="register-link" hx-boost="false" hx-trigger="click" hx-push-url="true"
+									<a id="register-link" hx-trigger="click" hx-push-url="true"
 										hx-get="/register/" hx-target="body" href=""
 										data-translate="Create an Account!">
 										Create an Account!
@@ -114,6 +114,8 @@
 
 
 <script>
+	initPongAnimation();
+
 	document.addEventListener("htmx:beforeSwap", function (evt) {
 		console.log("document.addEventListener working");
 		console.log("LOGIN FORM LISTENNING");
@@ -191,18 +193,6 @@
 			} catch (e) {
 				console.error("Error from LOGIN JS Script :", e);
 			}
-		}
-	});
-
-	document.addEventListener('DOMContentLoaded', () => {
-		initPongAnimation();
-	});
-
-	// Add an HTMX event listener to reinitialize animation after content swaps
-	document.addEventListener('htmx:afterSwap', () => {
-		// Only initialize if we're on the login page
-		if (document.querySelector('[data-page-type="login"]')) {
-			initPongAnimation();
 		}
 	});
 
