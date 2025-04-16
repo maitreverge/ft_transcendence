@@ -4,6 +4,15 @@ var is_towplayer = false;
 
 function stopMatch(matchId) {
     // unregister the event listeners
+    window.gameInProgress = false;
+	document.body.classList.remove("match-active");
+	cancelAnimationFrame(window.pong3DAnim);
+	const input = document.getElementById("match-player-name");
+	if (input)
+	{
+		input.style.display = "none";
+		input.value = "";
+	}
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
@@ -20,7 +29,7 @@ function stopMatch(matchId) {
 
     if (window.selfMatchId == matchId)
     {
-        fetch(`/match/stop-match/${window.selfId}/${matchId}/`)
+        fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
         .then(response => {
             if (!response.ok)
                 throw new Error(`Error HTTP! Status: ${response.status}`);
@@ -45,7 +54,8 @@ function stopMatch(matchId) {
                 console.log("je vais envoyer 42");
                 window.stopFlag = true
                 window.matchSocket.close(3666);
-                window.matchSocket2.close(3666);
+                if (window.matchSocket2)
+                    window.matchSocket2.close(3666);
             }
             else
             {
@@ -276,7 +286,7 @@ window.addEventListener('resize', function () {
 });
 
 function animate() {
-    requestAnimationFrame(animate);
+    window.pong3DAnim = requestAnimationFrame(animate);
 
     window.tjs_ball.rotation.z += 0.1;
 
@@ -375,6 +385,38 @@ function startCountdown3D(delay)
 	updateCountdown3D();
 }
 
+function displayPlayersInfos3D()
+{
+	if (!data.names)
+		return;
+	pads[3].innerText = data.score[0] + " | " + data.score[1];	
+	const leftName = document.getElementById("inst-left");
+	const rightName = document.getElementById("inst-right");
+	if (window.selfMatchId != window.matchId)
+	{
+		leftName.innerHTML = data.names[0];
+		rightName.innerHTML = data.names[1];		
+	}			
+	else if (window.player2Id != 0)
+	{			
+		leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+		rightName.innerHTML = data.names[1] + "<br> keys: enter / +";	
+	}			
+	else if (data.plyIds)
+	{
+		if (window.playerId == data.plyIds[0])
+		{
+			leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+			rightName.innerHTML = data.names[1];
+		}
+		else
+		{
+			leftName.innerHTML = data.names[0];
+			rightName.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+		} 
+	}	
+}
+
 function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingState) {
     const data = JSON.parse(event.data);
 
@@ -390,19 +432,7 @@ function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingSt
         }
         return;
     }
-
-    if (data.names)
-    {
-        if (is_towplayer)
-        {
-            document.getElementById("inst-left").innerHTML = data.names[0] + "<br> keys: enter / +";
-            document.getElementById("inst-right").innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-        } else {
-            document.getElementById("inst-left").innerHTML = data.names[0];
-            document.getElementById("inst-right").innerHTML = data.names[1];
-        }
-    }
-
+    displayPlayersInfos3D();
     if (data.state == "end")
     {
         let gifUrl;

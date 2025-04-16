@@ -3,7 +3,7 @@ function stopMatch(matchId)
 {	
 	window.gameInProgress = false;
 	document.body.classList.remove("match-active");
-
+	cancelAnimationFrame(window.pongAnim);
 	const input = document.getElementById("match-player-name");
 	if (input)
 	{
@@ -59,85 +59,7 @@ function stopMatch(matchId)
 		const oldScripts = document.querySelectorAll("script.match-script");
 		console.log("olscript len", oldScripts.length);			
 		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-	// }
-	// else
-	// 	console.log("pas spec!!");
-	
 }
-
-// function setCommands(socket, socket2) {
-	
-// 	const keysPressed = {};
-// 	document.addEventListener("keydown", function(event) {
-
-// 		keysPressed[event.key] = true;
-// 		// console.log("event :", event.key);
-// 		if (socket.readyState === WebSocket.OPEN)
-// 		{
-// 			if (keysPressed[event.key] === true) 
-// 			{
-// 				event.preventDefault();
-// 				socket.send(JSON.stringify({
-// 					action: 'move', dir: 'up'}));
-// 			} else if (keysPressed[event.key] === true) 
-// 			{
-// 				event.preventDefault();
-// 				socket.send(JSON.stringify({
-// 					action: 'move', dir: 'down'}));
-// 			}
-// 			if (socket2 && socket2.readyState === WebSocket.OPEN)
-// 			{
-// 				if (keysPressed[event.key] === true) 
-// 				{
-// 					event.preventDefault();
-// 					socket2.send(JSON.stringify({
-// 						action: 'move', dir: 'up'}));
-// 				} else if (keysPressed[event.key] === true) 
-// 				{
-// 					event.preventDefault();
-// 					socket2.send(JSON.stringify({
-// 						action: 'move', dir: 'down'}));
-// 				}
-// 			}
-// 		} 
-// 	});
-// 	document.addEventListener("keyup", event => {
-// 		delete keysPressed[event.key];
-// 	});
-// }
-// function setCommands(socket, socket2) {
-//     const keysPressed = {};
-
-//     document.addEventListener("keydown", function(event) {
-//         keysPressed[event.key] = true; 
-
-//         if (socket.readyState === WebSocket.OPEN) {
-//             if (keysPressed["ArrowUp"]) { 
-//                 event.preventDefault();
-//                 socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
-//             }
-//             if (keysPressed["ArrowDown"]) { 
-//                 event.preventDefault();
-//                 socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
-//             }
-//         }
-
-//         if (socket2 && socket2.readyState === WebSocket.OPEN) {
-//             if (keysPressed["+"]) { 
-//                 event.preventDefault();
-//                 socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
-//             }
-//             if (keysPressed["Enter"]) { 
-//                 event.preventDefault();
-//                 socket2.send(JSON.stringify({ action: 'move', dir: 'down' }));
-//             }
-//         }
-//     });
-
-//     document.addEventListener("keyup", event => {
-//         delete keysPressed[event.key];
-//     });
-// }
 
 function setCommands(socket, socket2) {
     const keysPressed = {}; // Stocker les touches enfoncées
@@ -188,407 +110,29 @@ function setCommands(socket, socket2) {
     });
 }
 
-function setCommands2(socket) {
-
-	document.addEventListener("keydown", function(event) {
-		// console.log("event :", event.key);
-		if (socket.readyState === WebSocket.OPEN)
-		{
-			if (event.key === "+") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'up'}));
-			} else if (event.key === "Enter") 
-			{
-				event.preventDefault();
-				socket.send(JSON.stringify({
-					action: 'move', dir: 'down'}));
-			}
-		} 
-	});
-}
-window.currentX = window.currentX || 0
-window.currentY = window.window.currentY || 0;
-window.targetX = window.targetX || 0
-window.targetY = window.window.targetY || 0;
 window.newTargetX = window.newTargetX || 0
 window.newTargetY = window.window.newTargetY || 0;
-window.actualPads = window.actualPads || [0, 0];
+
 window.targetPads = window.targetPads || [0, 0];
 window.targets = window.targets || [];
-window.speed = window.speed || 1/16; // Ajuste entre 0.05 (lent) et 0.3 (rapide) pour fluidité
-window.offsetX = window.offsetX || 0;
-window.offsetY = window.offsetY || 0;
-window.offsets = window.offsets || [0, 0];
-function animate2(pads) {
-	// console.log("pads");
-	eps = 0.1;
-	// let tar = targets.shift();
-	// console.log(tar);
-	// // if (Math.abs(currentX - targetX) < eps || Math.abs(currentY - targetY) < eps)
-	// // {
-	// 	console.log("animate");
-	// 	console.log(tar);
-	// 	// if (tar) {
 
-	// 		// if (currentX - targetX >= -eps && currentX - targetX <= eps)
-	// 		// {
-	// 			offsetX = (tar[0] - currentX);
-	// 			targetX = tar[0];
-	// 		// }
-	// 		// if (currentY - targetY >= -eps && currentY - targetY <= eps)
-	// 		// {
-	// 			// offsetY = (newTargetY - currentY);
-	// 			offsetY = (tar[1] - currentY);
-	// 			// targetY = newTargetY;
-	// 			targetY = tar[1];			
-	// 		// }
-	// 	// }
-	// 	// else
-		// 	console.log("notar");
-	// }
-
-	// currentX += (newTargetX - currentX) * speed;
-	
-	// currentY += (newTargetY - currentY) * speed;
-		// Si on a atteint la cible précédente
-		if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
-			const tar = targets.shift();
-			if (tar) {
-				targetX = tar[0];
-				targetY = tar[1];
-				// targetX = newTargetX;
-				// targetY = newTargetY;
-			}
-		}
-	
-		// Met à jour les déplacements vers la cible actuelle
-	// 	const offsetX = targetX - currentX;
-	// 	const offsetY = targetY - currentY;
-    // currentX += offsetX * speed;
-	// if (currentX > targetX)
-	// {
-	// 	currentX = targetX;
-	// 	targetX = newTargetX;
-	// }
-	// currentY += offsetY * speed;
-	// if (currentY > targetY)
-	// {
-	// 	currentY = targetY;
-	// 	targetY = newTargetY;
-	// }
-
-	// currentX = newTargetX;
-	// currentY = newTargetY;
-	// const tar = targets.shift();
-	// if (tar)
-	// {
-
-		// currentX = tar[0];
-		// currentY = tar[1];
-		currentX += (tar[0] - currentX) * speed;
-		currentY += (tar[1] - currentY) * speed;
-		actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
-		actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
-		// console.log("ANIMATION");
-		pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
-		pads[0].style.transform = `translateY(${actualPads[0]}px)`;
-		pads[1].style.transform = `translateY(${actualPads[1]}px)`;
-		// pads[2].style.left = currentX + "%";
-	// }
-	// pads[2].style.top = currentY + "%";
-    requestAnimationFrame(()=>animate(pads));
-}
-function animate3(pads) {
-	const eps = 0.4; // tolérance de distance avant de prendre un nouveau point
-
-	// Si on est proche de la cible, on passe au suivant
-	// console.log(Math.abs(currentX - targetX));
-	if (Math.abs(currentX - targetX) < eps && Math.abs(currentY - targetY) < eps) {
-		const tar = targets.shift();
-		if (tar) {
-			console.log("je dois passer ici a chaque refresh serveur");
-			targetX = tar[0];
-			targetY = tar[1];
-		}
-	}
-	// targetX = newTargetX;
-	// targetY = newTargetY;
-	// Interpolation fluide vers la cible actuelle
-	// const tar = targets.shift();
-	// if (tar) {
-		
-	// 	currentX = tar[0];
-	// 	currentY = tar[1];
-	// }
-	currentX += (targetX - currentX) * speed;
-	currentY += (targetY - currentY) * speed;
-	// currentX = newTargetX;
-	// currentY = newTargetY;
-	// Interpolation pour les pads
-	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
-	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
-
-	// Appliquer le style
-	pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
-	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
-	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
-
-	requestAnimationFrame(() => animate(pads));
-}
-window.exCurrentX = window.exCurrentX || 0;
-window.exCurrentY = window.exCurrentY || 0;
-window.senseX = window.senseX || "right";
-window.senseY = window.senseY || "up";
-window.exSenseX = window.exSenseX || "right";
-window.exSenseY = window.exSenseY || "down";
-window.bounce = window.bounce || false;
-
-function setSense()
-{
-	if (targetX < newTargetX)
-		senseX = "right";
-	else if (targetX > newTargetX)
-		senseX = "left";
-	if (targetY > newTargetY)
-		senseY = "up";
-	else if (targetY < newTargetY)
-		senseY = "down";
-	// console.log("sx: ", senseX, " sy: ", senseY)
-}
-
-function reInitExCurrent() {
-
-	exCurrentX = currentX;
-	exCurrentY = currentY;
-}
-
-function reInitTarget() {
-
-	targetX = newTargetX;
-	targetY = newTargetY;
-}
-
-function reInitExSense() {
-
-	exSenseX = senseX;
-	exSenseY = senseY;
-}
-
-function stopOverMove(snsX, snsY) {
-
-	if (snsX === "right")
-	{
-		if (currentX > targetX)
-		{
-			// console.log("egalise 10");
-			// console.log("yop", currentX, " t ", targetX);
-			currentY = targetY;
-			currentX = targetX;
-			// bounce = false;
-		}
-	}
-	else 
-	{
-		if (currentX < targetX)
-		{
-			// console.log("egalise 20");
-			// console.log("yep", currentX, " t ", targetX);
-			currentY = targetY;
-			currentX = targetX;
-			// bounce = false;
-		}
-	}
-	if (snsY === "down")
-	{
-		if (currentY > targetY)
-		{
-			// console.log("egalise 1");
-
-			// console.log("yip", currentY, " t ", targetY);
-			currentY = targetY;
-			currentX = targetX;
-		}
-	}
-	else 
-	{
-		if (currentY < targetY)
-		{
-			// console.log("egalise 2");
-			// console.log("yup", currentY, " t ", targetY);
-			currentY = targetY;
-			currentX = targetX;
-		}
-	}
-}
-
-function hasNewTarget() {
-
-	return targetX !== newTargetX || targetY !== newTargetY;
-}
-
-function addOffsetToCurrent() {
-		
-	currentX += offsets[0];
-	currentY += offsets[1];
-}
-
-function hasSenseSwitched() {
-
-	return exSenseX !== senseX || exSenseY !== senseY;
-}
-
-function isTargetStrike() {
-
-	return currentX === targetX && currentY === targetY;
-}
-
-function calculateOffset(spd)
-{
-	offsets[0] = (newTargetX - currentX) * spd;
-	offsets[1] = (newTargetY - currentY) * spd;
-}
-
-function setSpeed() {
-
-	speed = (1 - (1 / ((Math.abs(targetX - newTargetX) * 4) + 1)));
-	console.log("speed: ", speed);
-}
-
-window.celerity = window.celerity || 0;
-
-function get_magnitude() {
-
-	return Math.sqrt(
-		((targetX - newTargetX) ** 2) +
-		((targetY - newTargetY) ** 2)
-	);
-}
-
-// function hasWall() {
-	
-// 	let wall = false;
-// 	let new_celerity = get_magnitude();
-// 	if (!celerity || new_celerity < celerity)
-// 	{
-// 		console.log("yeeee");
-// 		wall = true;
-// 		celerity = new_celerity;
-// 	}
-// 	return wall;
-// }
-window.hasWall = window.hasWall || false;
 function animate(pads) {
 
-	// if (hasNewTarget() && hasWall())
-	// {
-	// 	console.log("haswall");
-	// 	// calculateOffset(speed);
-	// 	// offsets = offsets.map(o => o * 2);
-	// 	// beforeBounce = true;				
-	// }
-
-	// if (!bounce)
-	// {
-	// 	if (hasNewTarget())
-	// 	{		
-	// 		setSense();
-	// 		// setSpeed();			
-	// 		// if (hasWall)
-	// 		// {
-	// 		// 	// console.log("haswall");
-	// 		// 	calculateOffset(1);
-	// 		// 	reInitTarget();
-	// 		// 	reInitExSense();
-	// 		// 	// offsets = offsets.map(o => o * 200);
-	// 		// 	// beforeBounce = true;				
-	// 		// }
-	// 		// if (hasSenseSwitched())
-	// 		if (hasWall)
-	// 		{
-	// 			bounce = true;
-	// 			calculateOffset(speed);
-	// 			reInitTarget();
-	// 			reInitExSense();
-	// 		}
-	// 		else
-	// 		{
-			
-	// 			calculateOffset(speed);
-	// 			reInitTarget();
-	// 			reInitExSense();
-	// 		}
-	// 	}		
-	// }	
-	// addOffsetToCurrent();
-	// stopOverMove(exSenseX, exSenseY);
-
-	// if (isTargetStrike())
-	// {
-	// 	// console.log("bounce false");
-	// 	bounce = false;
-	// 	reInitExSense();
-	// 	// currentX += (newTargetX - currentX) * 0.5;
-	// 	// currentY += (newTargetY - currentY) * 0.5;	
-	// }
-
-	applyMove(pads);
-}
-
-function applyMove(pads) {
-
-	// actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
-	// actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
-	// pads[2].style.transform = `translate(${currentX}px, ${currentY}px)`;
 	pads[4].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
-	// pads[0].style.transform = `translateY(${actualPads[0]}px)`;
-	// pads[1].style.transform = `translateY(${actualPads[1]}px)`;
 
 	pads[0].style.transform = `translateY(${targetPads[0]}px)`;
 	pads[1].style.transform = `translateY(${targetPads[1]}px)`;
-	requestAnimationFrame(() => animate(pads));
+	window.pongAnim = requestAnimationFrame(() => animate(pads));
 }
-
-function animateZ(pads) {
-
-	actualPads[0] += (targetPads[0] - actualPads[0]) * speed;
-	actualPads[1] += (targetPads[1] - actualPads[1]) * speed;
-	pads[2].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
-	pads[0].style.transform = `translateY(${actualPads[0]}px)`;
-	pads[1].style.transform = `translateY(${actualPads[1]}px)`;
-	requestAnimationFrame(() => animateZ(pads));
-}
-// Appelle animate une seule fois au début
-
-
-// À chaque message WebSocket :
-// function onMatchWsMessage(event, pads, [waiting, end], waitingState) {
-//     const data = JSON.parse(event.data);
-//     const matchRect = document.getElementById("match").getBoundingClientRect();
-
-//     if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined) {
-//         pads[0].style.top = data.yp1 + "%";
-//         pads[1].style.top = data.yp2 + "%";
-        
-//         targetX = data.ball[0] * (matchRect.width / 100);
-//         targetY = data.ball[1] * (matchRect.height / 100);
-
-//         pads[3].innerText = data.score[0] + " | " + data.score[1];
-//     }
-// }
 
 function startCountdown(delay)
 {
-	// console.log("%%%%%%%%%%%%%%% get the shit going , BABY!!!%%%%%%%%%%%%%%");
-
 	loaderElement = document.querySelector(".loader");
 	if (loaderElement)
 		loaderElement.style.opacity = "1";
 
     const countdownEl = document.querySelector('.countdown');
     const countdownEndsAt = window.gameStartTimestamp * 1000 + delay * 1000;
-    // console.log("Le compte à rebours se termine à:", countdownEndsAt / 1000);
 
 	function updateCountdown() {
         const now = Date.now();
@@ -608,84 +152,54 @@ function startCountdown(delay)
 	updateCountdown();
 }
 
+function displayPlayersInfos()
+{
+	if (!data.names)
+		return;
+	pads[3].innerText = data.score[0] + " | " + data.score[1];	
+	const leftName = document.getElementById("inst-left");
+	const rightName = document.getElementById("inst-right");
+	if (window.selfMatchId != window.matchId)
+	{
+		leftName.innerHTML = data.names[0];
+		rightName.innerHTML = data.names[1];		
+	}			
+	else if (window.player2Id != 0)
+	{			
+		leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+		rightName.innerHTML = data.names[1] + "<br> keys: enter / +";	
+	}			
+	else if (data.plyIds)
+	{
+		if (window.playerId == data.plyIds[0])
+		{
+			leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+			rightName.innerHTML = data.names[1];
+		}
+		else
+		{
+			leftName.innerHTML = data.names[0];
+			rightName.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+		} 
+	}	
+}
+
 function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	match = document.getElementById("match");
 
-	// console.log("SERVEUR");
-	// requestAnimationFrame(() => {
 	const data = JSON.parse(event.data);
-	// console.log("DATA: ", data);
-	// pads[3].innerText = data.score[0] + " | " + data.score[1];
 	if (data.timestamp && !data.state) {
 		if (window.gameStartTimestamp === undefined) {
 			window.gameStartTimestamp = data.timestamp;
             delay = data.delay;
-			console.log("✅ Premier timestamp enregistré:", data.timestamp);
-	
-			// Ici tu peux démarrer ton compte à rebours
-			// startCountdownFrom(data.timestamp, '.countdown', '.loader');
-			// console.log("################START THE GAME##############");
-
+			console.log("✅ Premier timestamp enregistré:", data.timestamp);	
             startCountdown(delay);
 		} else {
 			console.log("⏩ Timestamp déjà reçu, ignoré.");
 		}
 		return;
 	}
-	// console.log("match mesage: ", data);
-	
-	//! TO OPTI
-	const leftNameElement = document.getElementById("inst-left");
-	const rightNameElement = document.getElementById("inst-right");
-	if (data.names)
-	{
-		pads[3].innerText = data.score[0] + " | " + data.score[1];
-		// console.log("PLAYER2ID; ", window.player2Id)
-		if (window.selfMatchId != window.matchId)
-		{
-			leftNameElement.innerHTML = data.names[0];
-			rightNameElement.innerHTML = data.names[1];
-		}	
-		else
-		{
-		
-			if (window.player2Id != 0)
-			{
-				// console.log("Pje suis ds le mode MULTY; ", window.player2Id);
-				
-				// if (data.plyIds && window.playerId == data.plyIds[0])
-				// {
-					// console.log(data.plyIds[0]);
-					leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-					rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
-				// }
-				// else
-				// {
-					// leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-					// rightNameElement.innerHTML = data.names[1] + "<br> keys: enter / +";
-				// }
-			}
-			else 
-			{
-				// console.log("Pje suis ds le mode REMOTE; ", window.playerId)
-				// console.log("Pje suis ds le mode REMOTE; joueur 0", data.plyIds[0], " ", data.names[0]);
-				// console.log("Pje suis ds le mode REMOTE; joueur 1", data.plyIds[1], " ", data.names[1]);
-				if (data.plyIds)
-				{
-					if (window.playerId == data.plyIds[0])
-					{
-						leftNameElement.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-						rightNameElement.innerHTML = data.names[1];
-					}
-					else
-					{
-						leftNameElement.innerHTML = data.names[0];
-						rightNameElement.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-					} 
-				}
-			}
-		}
-	}
+	displayPlayersInfos();
 	if (data.state == "end")
 	{	
         let gifUrl;
@@ -730,86 +244,20 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 	pads[2].style.height = (matchRect.width / 100) * 2;
 	pads[4].style.width = (matchRect.width / 100) * 2;
 	pads[4].style.height = (matchRect.height / 100) * 2;
-	// pads[0].style.width = (matchRect.width / 100) * 10;
-	// pads[0].style.height = (matchRect.height / 100) * 40;
-	// pads[1].style.width = (matchRect.width / 100) * 10;
-	// pads[1].style.height = (matchRect.height / 100) * 40;
-	// console.log(" w ", rect.width, " h ", rect.height);
-	// console.log(" ball 0 ", data.ball[0], " ball1 ", data.ball[1]);
-	// console.log("data: ", `${data.ball[0] * (rect.width / 100)}`, `${data.ball[1] * (rect.height / 100)}}`);
-	// if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
-	// {
-	// 	pads[0].style.top = data.yp1 + "%";
-	// 	pads[1].style.top = data.yp2 + "%";
-	// 	// pads[2].style.left = data.ball[0] + "%";
-	// 	// pads[2].style.top = data.ball[1] + "%";
-	// 	// pads[0].style.transform = `translateY(${data.yp1}%)`;
-	// 	// pads[1].style.transform = `translateY(${data.yp2}%)`;
-	// 	pads[2].style.transform = `translate(${data.ball[0] * (rect.width / 100)}px, ${data.ball[1] * (rect.height / 100)}px)`;
-	// 	pads[3].innerText = data.score[0] + " | " + data.score[1];
-	// }
 	
     if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined) {
-        // pads[0].style.top = data.yp1 + "%";
-        // pads[1].style.top = data.yp2 + "%";
+
         
 		targetPads[0] = data.yp1 * (matchRect.height / 100);
 		targetPads[1] = data.yp2 * (matchRect.height / 100);
 
-        // newTargetX = data.ball[0] * (matchRect.width / 100);
-        // newTargetY = data.ball[1] * (matchRect.height / 100);
-		// eps = 1
-		// console.log("targetx ", targetX, " currentx ", currentX, " targety ", targetY, " currentY ", currentY);
-		// if ((targetX - currentX >= -eps && targetX - currentX <= eps)
-		// 	 &&
-		// 	(targetY - currentY >= -eps && targetY - currentY <= eps)
-		// )			
-		// {
-		// console.log("ICI: ", data.hasWall);
+       
 			hasWall = data.hasWall;
 			newTargetX = data.ball[0] * (matchRect.width / 100);
 			newTargetY = data.ball[1] * (matchRect.height / 100);
-			targets.push([newTargetX, newTargetY]);
-			// console.log(targets);
-		// }
-		
-        // pads[3].innerText = data.score[0] + " | " + data.score[1];
+			targets.push([newTargetX, newTargetY]);	
     }
-	// });
-		
 }
-
-// function onMatchWsMessage2(event, pads, [waiting, end], waitingState) {
-		
-// 	const data = JSON.parse(event.data);
-
-// 	if (data.state == "end")
-// 	{	
-// 		end.innerHTML = "the winner is :" + data.winnerId + end.innerHTML;
-// 		end.classList.add("end");
-// 	}
-// 	if (waitingState[0] != data.state) 
-// 	{
-// 		waitingState[0] = data.state;	
-// 		if (waiting) 
-// 		{
-// 			if (data.state == "waiting")			
-// 				waiting.classList.remove("no-waiting");
-// 			else			
-// 				waiting.classList.add("no-waiting");			
-// 		}			
-// 	}
-// 	if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
-// 	{
-// 		pads[0].style.top = data.yp1 + "%";
-// 		pads[1].style.top = data.yp2 + "%";
-// 		pads[2].style.top = data.ball[0] + "%";
-// 		pads[2].style.top = data.ball[1] + "%";
-// 		pads[3].innerText = data.score[0] + " | " + data.score[1];
-// 	}
-// }
-
-
 
 function sequelInitMatchWs(socket) {
 
@@ -861,8 +309,7 @@ function initSecPlayer() {
 	};
 	window.matchSocket2.onclose = (event) => {
 		console.log("Connexion Match disconnected 😈 2nd Player");
-	};
-	// setCommands2(window.matchSocket2);
+	};	
 }
 
 function initMatchWs() {

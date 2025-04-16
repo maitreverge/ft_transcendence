@@ -119,8 +119,7 @@ class Pong:
 			else:
 				self.set_waiting_state(self.players)							
 			await asyncio.sleep(self.gear_delay)
-
-		print(f"in match after WHILE id:{self.id}", flush=True)
+		print(f"\033[41mfin de tache Launch Game\033[0m {self.id}", flush=True)
 
 	def get_users(self):
 
@@ -188,6 +187,7 @@ class Pong:
 				await self.are_alives_players()
 			delay += 1
 			await asyncio.sleep(1.00)
+		print(f"\033[41mfin de tache Watch Dog\033[0m {self.id}", flush=True)
 
 	async def are_alives_players(self):
 
@@ -228,6 +228,7 @@ class Pong:
 				break
 			delay += 1
 			await asyncio.sleep(1.00)
+		print(f"\033[41mfin de tache Watch Cat\033[0m {self.id}", flush=True)
 
 	async def stop(self, playerId):
 
@@ -279,6 +280,7 @@ class Pong:
 					except Exception as e:
 						pass				
 			await asyncio.sleep(self.send_delay)
+		print(f"\033[41mfin de tache Send State\033[0m {self.id}", flush=True)
 
 	async def sendFinalState(self):
 
