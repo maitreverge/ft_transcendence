@@ -11,7 +11,12 @@
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
 
-🟧 Beautify register / login / 2fa landing pages
+# FRONT WORK
+
+🟧 Creer des images pour la page d'accueil 
+
+# BACK WORK
+🟧 user not found when 2FA incorrect in login
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
@@ -34,6 +39,13 @@
 
 
 ======================================= DONE =====================================
+
+
+✅ Beautify login
+
+✅ Beautify register
+
+✅ Beautify 2fa landing pages
 
 ✅ Delete healthchecks sur `tournament` et `match` containers
 

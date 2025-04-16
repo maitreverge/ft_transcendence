@@ -53,7 +53,7 @@ def run(playwright: Playwright) -> None:
         self_player_username = (
             page.locator("#players .self-player").text_content().strip()
         )
-        print(f"✅ Self player username: {self_player_username}")
+        # print(f"✅ Self player username: {self_player_username}")
 
         # Simple assertion to verify username matches
         assert (

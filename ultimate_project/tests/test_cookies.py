@@ -73,7 +73,7 @@ def run(playwright: Playwright) -> None:
             # After logout, we have none of the three cookies
             expected_cookies = {}
         
-        print(f"Coockies present = {cookie_names}")
+        # print(f"Coockies present = {cookie_names}")
 
         # Assertions to check if the cookies are correct
         assert all(
