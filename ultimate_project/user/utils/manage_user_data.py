@@ -188,7 +188,7 @@ async def get_user_match_history(user_id):
             response = await client.get(f"http://databaseapi:8007/api/match/?player_id={user_id}")
             response_data = response.json()
             
-            print("JSON DATA\n\n:", flush=True)
+            print("JSON DATA MATCH HISTORY \n\n:", flush=True)
             pprint(response_data)
             print("--\n", flush=True)
             

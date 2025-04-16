@@ -88,7 +88,6 @@ async def handle_get_match_history(request, username, context):
             return render(request, "partials/game_stats/error_stats.html", context), True
         context["user"] = user
         match_history = await manage_user_data.get_user_match_history(user['id'])
-    
         if (match_history == None):
             context["error"] = "No player statistics found. Please try again later."
             return render(request, "partials/game_stats/error_stats.html", context), True
