@@ -21,22 +21,16 @@ document.querySelectorAll('.side-nav').forEach(item => {
         window.applyBackground(bg);
 
     });
+    item.addEventListener('mouseleave', () => {
+        setFirstBgImage();
+      });
 });
 
 function setFirstBgImage()
 {
-    const firstItem = document.querySelector('.side-nav');
-    // console.log("first item: ", firstItem);
-    
-    if (firstItem) {
-        // console.log("%%%%%%%% first item found %%%%%%%%");
+    window.currentBg = 'https://images.unsplash.com/photo-1501720804996-ae418d1ba820?q=80&w=3864&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+    window.applyBackground(window.currentBg);
 
-        const bg = firstItem.getAttribute('data-bg');
-        window.currentBg = bg;
-        window.currentNav = firstItem.querySelector('a');
-        // console.log("bg 2: ", bg)
-        window.applyBackground(bg);
-    }
 }
 window.addEventListener('DOMContentLoaded', () => {
     // console.log("%%%%%%%% func onload executed %%%%%%%%");
@@ -62,9 +56,5 @@ if (typeof window.currentBg == 'undefined')
     window.applyBackground(window.currentBg);
 }
 
-document.getElementById('main_content').addEventListener('click', () => {
-    
-    console.log(window.currentNav);
-    window.currentNav.click();
-});
+
 
