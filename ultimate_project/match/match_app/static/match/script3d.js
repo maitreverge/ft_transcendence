@@ -74,9 +74,9 @@ window.tjs_container.appendChild(window.tjs_renderer.domElement);
 
 window.tjs_textureLoader = window.tjs_textureLoader || new THREE.TextureLoader();
 
-window.tjs_rgeo = window.tjs_rgeo || new THREE.BoxGeometry(3, 5, 40 * (60 / 100));
+window.tjs_rgeo = window.tjs_rgeo || new THREE.BoxGeometry(5, 5, 20 * (60 / 100));
 window.tjs_sgeo = window.tjs_sgeo || new THREE.SphereGeometry(2, 32, 32);
-window.tjs_tgeo = window.tjs_tgeo || new THREE.BoxGeometry(84.5, 5, 60);
+window.tjs_tgeo = window.tjs_tgeo || new THREE.BoxGeometry(95, 5, 60);
 
 function tjs_loadfull(url) {
     return [
@@ -109,13 +109,13 @@ window.tjs_scene.add(window.tjs_r1);
 window.tjs_scene.add(window.tjs_r2);
 window.tjs_scene.add(window.tjs_table);
 
-window.tjs_r1.position.z = -20;
+window.tjs_r1.position.z = 0;
 window.tjs_r1.position.y = 0;
-window.tjs_r1.position.x = 10.5;
+window.tjs_r1.position.x = 5;
 
-window.tjs_r2.position.z = -20;
+window.tjs_r2.position.z = 0;
 window.tjs_r2.position.y = 0;
-window.tjs_r2.position.x = 87.5;
+window.tjs_r2.position.x = 92.5;
 
 window.tjs_ball.position.x = -1;
 window.tjs_ball.position.z = -1;

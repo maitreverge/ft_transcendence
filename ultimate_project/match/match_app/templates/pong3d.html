@@ -3,34 +3,6 @@
 
 <link rel="stylesheet" href="{% static 'match/styles3d.css' %}">
 
-<style>
-    #scene-container {
-        width: 80vw;
-        height: 80vh;
-        margin: 0 auto;
-        border: 2px solid white;
-    }
-    .config_buttons {
-        background-color: #4CAF50; 
-    }
-    #center_buttons {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    #countdown3d {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 10;
-        text-align: center;
-        color: white;
-        font-size: 3em;
-    }
-</style>
-
 <script class="match-script">
     window.rasp = "{{ rasp }}"; 
     window.pidom = "{{ pidom }}";
@@ -40,7 +12,6 @@
     window.player2Id = "{{ player2Id }}";
     window.player2Name = "{{ player2Name }}";
 </script>
-
 
 <div id="match">
 
@@ -89,13 +60,11 @@
         console.log("Dernière page visitée:", lastVisitedPage);
         console.log("Page actuelle:", window.location.href);
 
-        // Vérifie si une page précédente existe et si l'URL actuelle n'est pas celle de la page d'erreur
+        // check if the last visited page is the same as the current page
         if (lastVisitedPage && window.location.href === lastVisitedPage && !sessionStorage.getItem("redirected")) {
             console.log("Redirection vers la dernière page visitée :", lastVisitedPage);
             
-            // Marque que la redirection a eu lieu pour éviter la boucle infinie
             sessionStorage.setItem("redirected", "true");
-
             sessionStorage.setItem("redirected", "true");
         } else {
             sessionStorage.removeItem("redirected");

@@ -108,6 +108,7 @@
                 0px 0px 30px rgba(255, 165, 0, 0.5);
     text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
     animation: glow 1.5s infinite alternate, colorShift 3s infinite alternate;
+    z-index: 1000;
 }
 
 @keyframes glow {
@@ -128,7 +129,7 @@
         text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
     }
     100% {
-        color: #00aaff; /* Bleu électrique */
+        color: #00aaff;
         border-color: #00aaff;
         text-shadow: 2px 2px 5px rgba(0, 140, 255, 0.7);
     }
@@ -136,14 +137,13 @@
 
 #spec {
     position: fixed;
-    top: 0; /* ou autre valeur si tu veux le descendre un peu */
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
     z-index: 300;
 }
 
-#spec img
-{
+#spec img {
     border-radius: 0 0 15px 15px;
     border: solid; 
     border-width: 0.5px;
@@ -215,11 +215,38 @@
     z-index: 1000;
     color: transparent;
     animation: blink 1s infinite;
-
 }
 
-/* Animation clignotante */
+/* animation clignotante */
 @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
+}
+
+#scene-container {
+    width: 80vw;
+    height: 80vh;
+    margin: 0 auto;
+    border: 2px solid white;
+}
+
+.config_buttons {
+    background-color: #4CAF50; 
+}
+
+#center_buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#countdown3d {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    color: white;
+    font-size: 3em;
 }
