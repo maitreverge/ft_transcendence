@@ -9,6 +9,8 @@ function stopMatch(matchId) {
     if (tjs_keydown)
         document.removeEventListener("keydown", tjs_keydown);
 
+	document.body.classList.remove("match-active");
+
     if (!matchId)
     {
         console.log("matchID EST NULLE");

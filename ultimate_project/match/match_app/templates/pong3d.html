@@ -1,7 +1,7 @@
 {% load static %}
 
 
-<link rel="stylesheet" href="{% static 'match/styles.css' %}">
+<link rel="stylesheet" href="{% static 'match/styles3d.css' %}">
 
 <style>
     #scene-container {
@@ -81,6 +81,8 @@
 </div>
 
 <script>
+    document.body.classList.add("match-active");
+
     window.addEventListener("DOMContentLoaded", () => {
         var lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
 
