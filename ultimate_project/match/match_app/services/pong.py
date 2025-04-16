@@ -7,6 +7,7 @@ import aiohttp
 from enum import Enum
 import requests
 from datetime import datetime
+from django.utils import timezone
 
 import match_app.services.pong_physics as physics
 import match_app.services.pong_scores as scores
@@ -38,7 +39,7 @@ class Pong:
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 5
+		self.max_score = 2
 		self.point_delay = 1
 		self.start_delay = 4
 		self.max_wait_delay = 2000
@@ -165,7 +166,7 @@ class Pong:
 			self.move_ball()
 
 	def get_time(self):
-		return datetime.now().astimezone().isoformat(timespec='seconds')
+		return timezone.localtime(timezone.now()).isoformat(timespec='seconds')
 
 	def set_waiting_state(self, players):
 

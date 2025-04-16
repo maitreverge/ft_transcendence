@@ -66,24 +66,26 @@ def reload_template(request):
     of the FastAPI app. 
     
     """
-    headers = {key: value for key, value in request.headers.items() if key != "HX-Request"}
+    headers = {}
+    for key, value in request.headers.items():
+        if key != "HX-Request":
+            headers[key] = value
     url = headers["X-Url-To-Reload"]
-    
-    print("********************\nRELOAD TEMPLATE CALLED\n********************", flush=True)
-    print(f"\nURL TO RELOAD {url}\n", flush=True)
+    username = request.headers.get("X-Username")
+    context = {"username": username}
     
     response = requests.get(url, headers=headers)
-    page_html = response.text
+    if response.status_code == 200:
+        page_html = response.text
+    else:
+        code = response.status_code
+        username = request.session.get("username")
+        context["status_code"] = code
+        context["page"] = "error.html"
+        return render(request, "index.html", context)
     username = request.headers.get("X-Username") or request.session.get("username")
-
-    return render(request, "index.html",
-        {
-            "username": username,
-            "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("pi_domain", "localhost:8443"),
-            "page": page_html,
-        }
-    )
+    context["page"] = page_html
+    return render(request, "index.html", context)
 
 
 @never_cache

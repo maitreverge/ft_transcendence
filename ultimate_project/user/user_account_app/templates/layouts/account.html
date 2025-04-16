@@ -1,138 +1,90 @@
 {% load static %}
-<div class="container-fluid">
+<div class="container-fluid m-0">
   <div class="row">
-    <!-- Sidebar -->
-    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 shadow-sm">
+    <nav class="sidebar col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
       <div class="sidebar-sticky text-center">
         <!-- Account Settings Title -->
-        <h1 class="h3 mb-3 text-gray-800">Account Settings</h1>
-        <ul class="nav flex-column">
-          <!-- Profile Section -->
+        <h1 class="mb-3 pt-2"><strong>Account Settings</strong></h1>
+        <ul class="nav flex-column pt-5">
+          <!-- Profile -->
           <li class="nav-item mb-3">
             <a
               id="acc-profile"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
+              class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               hx-get="/account/profile/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-user-circle me-2"></i> Profile
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Profile</h5>
             </a>
           </li>
-
-          <li class="nav-item mb-3">
+          <!--Statistics-->
+          <li
+            class="side-nav nav-item mb-3"
+          >
             <a
               id="acc-stats"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
-              hx-get="/account/game-stats/"
+              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
+              hx-get="/account/game-stats/overview/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-trophy me-2"></i> Game Stats
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Statistics</h5>
             </a>
           </li>
-
-          <!-- Security Button (Replaces Password & 2FA) -->
-          <li class="nav-item mb-3">
+          <!-- Security-->
+          <li class="side-nav nav-item mb-3">
             <a
               id="acc-security"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
+              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               hx-get="/account/security/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-shield-alt me-2"></i> Security
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Security</h5>
             </a>
           </li>
-          <!-- Confidentiality Button -->
-          <li class="nav-item mb-3">
+          <!-- Confidentiality-->
+          <li class="side-nav nav-item mb-3">
             <a
               id="acc-conf"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               href="#"
+              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
               hx-get="/account/confidentiality/"
               hx-target="#account-content"
               hx-swap="innerHTML"
               hx-push-url="true"
             >
-              <i class="fas fa-user-shield me-2"></i>
-              Confidentiality
+              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
+              <h5>Confidentiality</h5>
             </a>
           </li>
         </ul>
       </div>
     </nav>
+
     <!-- Main Content -->
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0">
       <!-- Content dynamically loaded here -->
       <div id="account-content">
-        {% if page %} {% include page %} {% else %}
-        <p></p>
+        <!-- prettier-ignore -->
+        {% if page %}
+            {% if "<" in page %}
+                {{ page|safe }}
+            {% else %}
+                {% include page %}
+            {% endif %}
         {% endif %}
       </div>
     </main>
   </div>
 </div>
-
-<!-- Add FontAwesome Icons -->
-<style>
-  /* Sidebar Button Styles */
-  .sidebar-btn {
-    font-size: 0.85rem; /* Slightly smaller font */
-    padding: 0.5rem 1rem; /* Smaller padding */
-    border-width: 2px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-  }
-  /* When clicked, fill with color */
-  .sidebar-btn.active,
-  .sidebar-btn:focus {
-    color: white !important;
-  }
-
-  /* Outline with Blue Border */
-  .btn-outline-primary {
-    border-color: #007bff;
-    color: #007bff;
-  }
-  /* When active, the button background changes to blue */
-  .btn-outline-primary.active,
-  .btn-outline-primary:focus {
-    background-color: #007bff !important;
-    border-color: #007bff !important;
-  }
-  /* When hovering, the button gets a darker blue */
-  .sidebar-btn:hover {
-    background-color: #007bff;
-    color: white;
-    border-color: #0056b3;
-  }
-  /* Sidebar Styling: Reduce sidebar width for better content presentation */
-  .sidebar {
-    width: 250px; /* Adjust width */
-  }
-  /* Main content area should have space beside it */
-  main {
-    margin-left: 260px; /* Add some space for the sidebar */
-  }
-</style>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const buttons = document.querySelectorAll(".sidebar-btn");
-
-    buttons.forEach((button) => {
-      button.addEventListener("click", function () {
-        // Remove active class from all buttons
-        buttons.forEach((btn) => btn.classList.remove("active"));
-
-        // Add active class to the clicked button
-        this.classList.add("active");
-      });
-    });
-  });
-</script>
