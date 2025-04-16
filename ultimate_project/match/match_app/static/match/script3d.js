@@ -504,27 +504,30 @@ function sequelInitMatchWs3D(socket) {
         else
             spec.style.display = "none";
     }
-    initSecPlayer3D();
+    if (window.player2Id != 0)
+	{
+		console.log("INIT SEC !!!!!! ", window.player2Id);
+		initSecPlayer3D();
+	}
     setCommands3D(socket, window.matchSocket2);
 }
 
 function initSecPlayer3D() {
-
+    
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
         window.pidom = "localhost:8443";
-    else
-        window.pidom = window.location.hostname + ":8443";
+	else
+		window.pidom = window.location.hostname + ":8443";
 
     window.matchSocket2 = new WebSocket(
         `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${-window.playerId}`);
-    window.matchSocket2.onopen = () => {
-        console.log("Connexion Match établie 2nd Player😊");
-    };
-    window.matchSocket2.onclose = (event) => {
-        console.log("Connexion Match disconnected 😈 2nd Player");
-    };
-    // setCommands3D2(window.matchSocket2);
+        `?playerId=${window.player2Id}`);
+	window.matchSocket2.onopen = () => {
+		console.log("Connexion Match établie 2nd Player😊");
+	};
+	window.matchSocket2.onclose = (event) => {
+		console.log("Connexion Match disconnected 😈 2nd Player");
+	};	
 }
 
 function initMatchWs3D() {
