@@ -12,7 +12,6 @@
 --------------------------------------------------------------------------------
 
 # FRONT WORK
-🟧 Beautify 2fa page
 
 # BACK WORK
 
@@ -37,6 +36,11 @@
 
 
 ======================================= DONE =====================================
+
+
+✅ Beautify 2fa page
+
+✅ Remove `console.error` from the 2FA workflow
 
 ✅ user not found when 2FA incorrect in login
 
