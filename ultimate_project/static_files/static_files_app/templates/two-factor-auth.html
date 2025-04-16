@@ -17,28 +17,6 @@
 		/* Maximum width for the card */
 	}
 
-	/* Optional: Button styling to match previous styles */
-	.btn-primary {
-		background-color: #007bff;
-		border-color: #007bff;
-	}
-
-	.btn-primary:hover {
-		background-color: #0056b3;
-		border-color: #0056b3;
-	}
-
-	/* Optional: Cancel button custom style */
-	#cancel_button {
-		background-color: #6c757d;
-		border-color: #6c757d;
-	}
-
-	#cancel_button:hover {
-		background-color: #5a6268;
-		border-color: #5a6268;
-	}
-
 	/* Pong Background Animation Styles */
 	.pong-background {
 		position: fixed;
@@ -61,6 +39,12 @@
 		pointer-events: none;
 		opacity: 0.6;
 	}
+
+	.background-color-form {
+	background-color: rgba(248, 133, 56, 0.822);
+	border-radius: 1rem; /* Match this with your login-picture radius */
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.295), 0 15px 20px rgba(0, 0, 0, 0.493);
+	}
 </style>
 
 <!-- ! PONG BACKGROUND  -->
@@ -68,16 +52,16 @@
 
 <div class="container" data-page-type="two_factor_auth" id="two_factor_auth_container">
 	<div class="col-lg-4 mb-4 mx-auto">
-		<div class="card shadow mb-4">
-			<div class="card-header py-3">
-				<h6 class="m-0 font-weight-bold text-primary">Verify your account</h6>
-			</div>
-			<div class="card-body">
+		<div class="card shadow mb-4 background-color-form">
+			<!-- <div class="card-header py-3 background-color-form">
+			</div> -->
+			<div class="card-body background-color-form text-center">
+				<h1 class="h1 text-gray-900 font-weight-bold text-uppercase">Verify your account</h1>
 				<!-- ! FORM TO VERIFY THE CODE -->
 				<form hx-post="/auth/verify-2fa/" id="two_factor_auth_form" hx-target="#login_error" hx-swap="outerHTML"
 					hx-headers='{"HX-Request": "true"}' hx-indicator="#loading-spinner">
 					<div class="form-group">
-						<label>Enter the code given by your authenticator app:</label>
+						<div class="h4 font-bold">Enter the code given by your authenticator app:<div/>
 						<input id="otp_input" type="number" name="token" maxlength="6"
 							class="form-control form-control-user" placeholder="Enter 6-digit code" required />
 						<input type="hidden" id="username" name="username" value="{{ username }}" />
