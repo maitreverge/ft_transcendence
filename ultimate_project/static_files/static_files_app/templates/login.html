@@ -1,3 +1,5 @@
+{% load static %}
+
 <style>
 	.login-picture {
 		background-image: url("https://dansylvain.github.io/pictures/login_pong.png");
@@ -217,63 +219,63 @@
 		}
 	});
 
-	function initPongAnimation() {
-		// Clear any existing animation before reinitializing
-		const container = document.getElementById('pong-background');
-		if (!container) return; // Exit if container doesn't exist
+	// function initPongAnimation() {
+	// 	// Clear any existing animation before reinitializing
+	// 	const container = document.getElementById('pong-background');
+	// 	if (!container) return; // Exit if container doesn't exist
 
-		// Clear previous icons if any
-		container.innerHTML = '';
+	// 	// Clear previous icons if any
+	// 	container.innerHTML = '';
 
-		const cols = 12;
-		const rows = 7;
-		const spacingX = window.innerWidth / cols;
-		const spacingY = window.innerHeight / rows;
-		const speed = 0.5;
+	// 	const cols = 12;
+	// 	const rows = 7;
+	// 	const spacingX = window.innerWidth / cols;
+	// 	const spacingY = window.innerHeight / rows;
+	// 	const speed = 0.5;
 
-		const icons = [];
+	// 	const icons = [];
 
-		for (let row = -1; row <= rows; row++) {
-			for (let col = -1; col <= cols; col++) {
-				const icon = document.createElement('div');
-				icon.className = 'pong-icon';
-				icon.style.left = `${col * spacingX}px`;
-				icon.style.top = `${row * spacingY}px`;
-				container.appendChild(icon);
+	// 	for (let row = -1; row <= rows; row++) {
+	// 		for (let col = -1; col <= cols; col++) {
+	// 			const icon = document.createElement('div');
+	// 			icon.className = 'pong-icon';
+	// 			icon.style.left = `${col * spacingX}px`;
+	// 			icon.style.top = `${row * spacingY}px`;
+	// 			container.appendChild(icon);
 
-				icons.push({
-					el: icon,
-					x: col * spacingX,
-					y: row * spacingY,
-				});
-			}
-		}
+	// 			icons.push({
+	// 				el: icon,
+	// 				x: col * spacingX,
+	// 				y: row * spacingY,
+	// 			});
+	// 		}
+	// 	}
 
-		function animate() {
-			const w = window.innerWidth;
-			const h = window.innerHeight;
+	// 	function animate() {
+	// 		const w = window.innerWidth;
+	// 		const h = window.innerHeight;
 
-			for (const icon of icons) {
-				icon.x += speed;
-				icon.y += speed;
+	// 		for (const icon of icons) {
+	// 			icon.x += speed;
+	// 			icon.y += speed;
 
-				if (icon.x > w) icon.x -= (cols + 2) * spacingX;
-				if (icon.y > h) icon.y -= (rows + 2) * spacingY;
+	// 			if (icon.x > w) icon.x -= (cols + 2) * spacingX;
+	// 			if (icon.y > h) icon.y -= (rows + 2) * spacingY;
 
-				icon.el.style.left = `${icon.x}px`;
-				icon.el.style.top = `${icon.y}px`;
-			}
+	// 			icon.el.style.left = `${icon.x}px`;
+	// 			icon.el.style.top = `${icon.y}px`;
+	// 		}
 
-			// Store animation ID so we can cancel it if needed
-			window.pongAnimationId = requestAnimationFrame(animate);
-		}
+	// 		// Store animation ID so we can cancel it if needed
+	// 		window.pongAnimationId = requestAnimationFrame(animate);
+	// 	}
 
-		// Cancel any existing animation before starting a new one
-		if (window.pongAnimationId) {
-			cancelAnimationFrame(window.pongAnimationId);
-		}
+	// 	// Cancel any existing animation before starting a new one
+	// 	if (window.pongAnimationId) {
+	// 		cancelAnimationFrame(window.pongAnimationId);
+	// 	}
 
-		animate();
-	}
+	// 	animate();
+	// }
 
 </script>
