@@ -244,6 +244,7 @@ function setEnd(data, endCont, end, spec)
 		class="winner-gif">
 		`;		
 		endCont.classList.add("end-cont");
+		endCont.style.display = "block";
 		console.log("🏁 Match terminé, reset du timestamp");
 		window.gameStartTimestamp = undefined;	
 	}
