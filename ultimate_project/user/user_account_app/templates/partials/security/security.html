@@ -1,102 +1,94 @@
 {% load static %}
-<div class="container-fluid" id="security-content">
-  <!-- Default content for security settings (2FA) -->
-  <div class="card mb-3 shadow">
-    <div class="card-body text-center">
-      <h5 class="card-title">Two-Factor Authentication (2FA)</h5>
-      <p class="card-text">Enhance your account security by enabling 2FA.</p>
+<div class="container-fluid px-0" id="security-content">
+  <div class="row justify-content-center pt-5">
+    <div class="col-lg-10 col-md-10 col-sm-12">
+      <div class="card mb-3 shadow">
+        <div class="card-body text-center">
+          <h5 class="card-title primary-text">Two-Factor Authentication (2FA)</h5>
+          <p class="card-text secondary-text">Enhance your account security by enabling 2FA.</p>
 
-      <!-- Button to enable/disable 2FA -->
-      {% if user.two_fa_enabled %}
-      <a
-        href="#"
-        class="btn btn-outline-danger"
-        hx-get="/account/security/disable-2fa/"
-        hx-target="#account-content"
-        hx-push-url="true"
-        id="disable_2fa"
-      >
-        Disable 2FA
-      </a>
-      {% else %}
-      <a
-        href="#"
-        class="btn btn-outline-success"
-        hx-get="/account/security/setup-2fa/"
-        hx-target="#account-content"
-        hx-push-url="true"
-        id="setup_2fa"
-      >
-        Set Up 2FA
-      </a>
-      {% endif %}
+          <!-- Button to enable/disable 2FA -->
+          {% if user.two_fa_enabled %}
+          <a
+            href="#"
+            class="btn btn-outline-danger"
+            hx-get="/account/security/disable-2fa/"
+            hx-target="#account-content"
+            hx-push-url="true"
+            id="disable_2fa"
+          >
+            Disable 2FA
+          </a>
+          {% else %}
+          <a
+            href="#"
+            class="btn btn-outline-success"
+            hx-get="/account/security/setup-2fa/"
+            hx-target="#account-content"
+            hx-push-url="true"
+            id="setup_2fa"
+          >
+            Set Up 2FA
+          </a>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<style>
-  /* Container for the security buttons */
-  #security-content {
-    margin-top: 20px;
-  }
 
-  /* Button Styles for rounded buttons */
+<style>
+
   .sidebar-btn {
-    font-size: 0.85rem; /* Slightly smaller font */
-    padding: 0.5rem 1rem; /* Smaller padding */
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
     border-width: 2px;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   }
 
-  /* Button styling for when it's enabled (green) */
+  
   .btn-outline-success {
-    border-color: #28a745;
-    color: #28a745;
+    border-color: #1cc88a;
+    color: #1cc88a;
   }
 
   .btn-outline-success.active,
   .btn-outline-success:focus {
-    background-color: #28a745 !important;
-    border-color: #28a745 !important;
+    background-color: #1cc88a !important;
+    border-color: #1cc88a !important;
   }
 
-  /* Hover effect for Set Up 2FA button (green) */
   .btn-outline-success:hover {
-    background-color: #218838;  /* Darker green */
+    background-color: #1cc88a;
     color: white;
-    border-color: #1e7e34;  /* Darker green for border */
+    border-color: #1cc88a;
   }
 
-  /* Button styling for when it's disabled (red) */
   .btn-outline-danger {
-    border-color: #dc3545;
-    color: #dc3545;
+    border-color: #e74a3b;
+    color: #e74a3b;
   }
 
   .btn-outline-danger.active,
   .btn-outline-danger:focus {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
+    background-color: #e74a3b !important;
+    border-color: #e74a3b !important;
   }
 
-  /* Hover effect for Disable 2FA button (red) */
   .btn-outline-danger:hover {
-    background-color: #c82333;  /* Darker red */
+    background-color: #e74a3b;
     color: white;
-    border-color: #c82333;  /* Darker red for border */
+    border-color: #e74a3b;
   }
 
-  /* Specific styling for the Disable 2FA and Set Up 2FA buttons */
   #disable_2fa,
   #setup_2fa {
     font-size: 1rem;
     font-weight: bold;
     text-align: center;
-    border-radius: 50px; /* Rounded button */
+    border-radius: 50px;
     padding: 0.75rem 2rem;
     transition: all 0.3s ease-in-out;
   }
-
 </style>
-
-

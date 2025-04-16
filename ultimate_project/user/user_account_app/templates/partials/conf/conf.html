@@ -1,32 +1,41 @@
 {% load static %}
-<div class="container-fluid" id="conf-content">
-  <!-- Delete Profile Section -->
-  <div class="card mb-3 shadow">
-    <div class="card-body text-center">
-      <h5 class="card-title">Delete Account</h5>
-      <p class="card-text text-muted"> <!-- Changed text color to muted instead of red -->
-        Are you sure you want to delete your account? This action is
-        irreversible.
-      </p>
+<div class="container-fluid px-0" id="conf-content">
+  <div class="row justify-content-center pt-5">
+    <div class="col-lg-10 col-md-10 col-sm-12">
+      <div class="card mb-3 shadow">
+        <div class="card-body text-center">
+          <h5 class="card-title primary-text">Delete Account</h5>
+          <p class="card-text secondary-text">
+            Are you sure you want to delete your account? This action is irreversible.
+          </p>
 
-      <!-- Styled Delete Account Button -->
-      <a
-        href="#"
-        class="btn-danger-custom"
-        hx-get="/account/confidentiality/delete-account/"
-        hx-target="#account-content"
-        hx-push-url="true"
-        id="delete-account-page"
-      >
-        Delete Account
-      </a>
+          <!-- Delete Account Button -->
+          <a
+            href="#"
+            class="btn btn-outline-danger"
+            hx-get="/account/confidentiality/delete-account/"
+            hx-target="#account-content"
+            hx-push-url="true"
+            id="delete-account-page"
+          >
+            Delete Account
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+
 <style>
-  #conf-content {
-    margin-top: 20px;
+
+
+  .card-title {
+    color: #4e73df !important; 
+  }
+
+  .card-text {
+    color: #858796 !important;
   }
 
   .btn-danger-custom {
@@ -35,9 +44,9 @@
     font-weight: bold;
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
-    border: 2px solid #dc3545;
+    border: 2px solid #e74a3b;
     background-color: transparent;
-    color: #dc3545; /* Button color */
+    color: #e74a3b;
     text-align: center;
     text-decoration: none;
     outline: none;
@@ -49,13 +58,11 @@
   .btn-danger-custom:hover,
   .btn-danger-custom:focus,
   .btn-danger-custom:active {
-    background-color: #dc3545;
+    background-color: #e74a3b;
     color: white;
-    border-color: #dc3545;
+    border-color: #e74a3b;
     text-decoration: none;
     outline: none;
     box-shadow: none;
   }
 </style>
-
-
