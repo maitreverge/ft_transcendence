@@ -88,7 +88,9 @@
 	/* width:2vw;
 	height:2vw; */
 	border-radius: 50%;
-	background-color: rgb(244, 22, 22);
+	background-image: url('https://dansylvain.github.io/pictures/tennisBall.png');
+	background-size: cover;
+	background-position: center;
     z-index: 400;
 }
 
@@ -113,7 +115,7 @@
     min-width: min(500px, 90vw);
     /* background-color: rgba(30, 30, 30, 1); */
     z-index: 200;
-    background-image: url('https://dansylvain.github.io/pictures/noPanicRusted.jpg');
+    background-image: url('https://dansylvain.github.io/pictures/noPanicRusted.webp');
     background-size: cover;
 
 }
