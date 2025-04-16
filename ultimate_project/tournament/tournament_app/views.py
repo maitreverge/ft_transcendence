@@ -39,7 +39,7 @@ def watch_dog(request : HttpRequest):
     tou_ret = t_cs.TournamentConsumer.watch_dog(request)
     if tou_ret:
         return JsonResponse(tou_ret)
-    return JsonResponse({"error": "No match found"}, status=500)
+    return JsonResponse({"error": "No match found"}, status=504)
 
 @csrf_exempt
 async def match_players_update(request: HttpRequest):

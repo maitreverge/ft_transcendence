@@ -202,11 +202,15 @@ class Pong:
 				f"?matchId={self.id}"
 				f"&p1Id={self.plyIds[0]}&p2Id={self.plyIds[1]}"
 			) as response:				
-				if response.status not in (200, 201):
+				if response.status not in (200, 201, 504):
 					err = await response.text()
-					print(f"Error HTTP {response.status}: {err}", flush=True)
+					print(f"Error HTTP {response.status}: {err} {self.id}",
+						flush=True)
 					return
-				data = await response.json()
+				if response.status == 504:
+					data = {'p1': False, 'p2': False}	
+				else:
+					data = await response.json()
 				print(f"PLAYERS CHECKING ALIVE: {data}", flush=True)
 				await self.alives_players_strategy(data)
 
