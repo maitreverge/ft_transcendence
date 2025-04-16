@@ -171,6 +171,29 @@
 		transform: scaleX(-1); /* Flip the pong png on register */
 	}
 
+	.card {
+    position: relative;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Important to ensure child elements respect border radius */
+    border-radius: 1rem; /* Match this with your login-picture radius */
+}
+
+/* Also make sure the card body doesn't override our settings */
+.card-body {
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+/* And ensure the row doesn't break our radius */
+.card-body > .row {
+    overflow: hidden;
+    border-radius: inherit;
+}
+
 </style>
 
 <script>
