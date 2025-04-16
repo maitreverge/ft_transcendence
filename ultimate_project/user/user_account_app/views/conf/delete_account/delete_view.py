@@ -1,11 +1,8 @@
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 import pyotp
-import httpx
 from django.http import HttpRequest
-from django.http import HttpResponseRedirect
 #Custom import
 from utils import manage_user_data
 

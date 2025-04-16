@@ -1,13 +1,10 @@
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 import pyotp
 import qrcode
 import io
 import base64
-import httpx
-import os
 from utils import manage_user_data
 from user_account_app.forms import custom_form
 from django.http import HttpRequest
