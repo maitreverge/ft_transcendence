@@ -6,6 +6,7 @@ import json
 import aiohttp
 from enum import Enum
 import requests
+from datetime import datetime
 
 import match_app.services.pong_physics as physics
 import match_app.services.pong_scores as scores
@@ -33,6 +34,7 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
+		self.start_time = None
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
@@ -53,17 +55,17 @@ class Pong:
 		# self.pad_height = 100	
 		# self.pads_y = [self.pad_height / 2 + 50, self.pad_height / 2 + 50]		
 		# self.pads_y = [50, 50]		
+		self.pad_speed = 2
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
-		self.ball_speed = 0.2
+		self.ball_speed = 0.1
+		self.max_ball_speed = 10
+		self.ball_acceleration = 1.1
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
-		self.pad_speed = 2
-		self.max_ball_speed = 2 # //! 10
-		self.ball_acceleration = 1.3
-		self.bounce_delay = 0.01
-		self.send_delay = 0.01
-		self.gear_delay = 0.01
+		self.bounce_delay = 0.005
+		self.send_delay = 0.005
+		self.gear_delay = 0.005
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
@@ -72,15 +74,20 @@ class Pong:
 		self.pads_y = [50, 50]	
 		self.pads_offset = 5
 		self.pads_width = 5
-		self.ball_ray = 1
-		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_ray
+		# self.ball_ray = 1
+		self.ball_wray = 1
+		self.ball_hray = 1
+		self.x_left_pad = self.pads_offset + self.pads_width + self.ball_wray
 		self.x_rght_pad = 100 - self.x_left_pad
-		self.y_top = 0 + self.ball_ray
-		# self.y_top = 40 + self.ball_ray
-		self.y_bot = 100 - self.ball_ray
-		# self.y_bot = 60 - self.ball_ray
-		self.x_left_pad_back = self.pads_offset - self.ball_ray
+		self.y_top = 0 + self.ball_hray
+		# self.y_top = 40 + self.ball_hray
+		self.y_bot = 100 - self.ball_hray
+		# self.y_bot = 60 - self.ball_hray
+		self.x_left_pad_back = self.pads_offset - self.ball_wray
 		self.x_rght_pad_back = 100 - self.x_left_pad_back
+		self.pads_half_h = self.pad_height / 2 + self.ball_hray
+		self.up_pads_stuck = self.pads_half_h + self.ball_hray
+		self.dn_pads_stuck = 100 - self.up_pads_stuck
 
 	def launchTask(self):
 
@@ -138,6 +145,7 @@ class Pong:
 	async def run_game(self):
 		
 		if not self.start_flag:
+			self.start_time = self.get_time()
 			await self.send_start(3)
 			self.tasks.append(
 				self.myEventLoop.create_task(self.watch_cat(self.start_delay)))
@@ -151,7 +159,10 @@ class Pong:
 			await self.scores()
 			await self.bounces()										
 			self.move_ball()
-						
+
+	def get_time(self):
+		return datetime.now().astimezone().isoformat(timespec='seconds')
+
 	def set_waiting_state(self, players):
 
 		if self.start_flag:
@@ -320,7 +331,9 @@ class Pong:
 				"looserName": looser[1],
 				"p1Id": self.plyIds[0],
 				"p2Id": self.plyIds[1],
-				"score": self.score
+				"score": self.score,
+				"startTime": self.start_time,
+				"endTime": self.get_time()
 			}) as response:				
 				if response.status not in (200, 201):
 					err = await response.text()
@@ -329,22 +342,31 @@ class Pong:
 Pong.pad_commands = physics.pad_commands
 Pong.pad_command = physics.pad_command
 Pong.bounces = physics.bounces
+Pong.bounce = physics.bounce
 Pong.vert_bounce = physics.vert_bounce
 Pong.horz_bounce = physics.horz_bounce
 # Pong.are_pads_intersecting = physics.are_pads_intersecting
-Pong.is_pad_intersecting = physics.is_pad_intersecting
+# Pong.is_pad_intersecting = physics.is_pad_intersecting
 
-Pong.left_upside_pad_bounce = physics.left_upside_pad_bounce
-Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
-Pong.left_downside_pad_bounce = physics.left_downside_pad_bounce
-Pong.is_downleft_pads_intersect = physics.is_downleft_pads_intersect
+# Pong.left_upside_pad_bounce = physics.left_upside_pad_bounce
+# Pong.is_upleft_pads_intersect = physics.is_upleft_pads_intersect
+# Pong.left_downside_pad_bounce = physics.left_downside_pad_bounce
+# Pong.is_downleft_pads_intersect = physics.is_downleft_pads_intersect
 
-Pong.right_upside_pad_bounce = physics.right_upside_pad_bounce
-Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
-Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
-Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
-Pong.is_left_pad_hurt_ball = physics.is_left_pad_hurt_ball
-Pong.is_right_pad_hurt_ball = physics.is_right_pad_hurt_ball
+Pong.are_pads_hurt_ball = physics.are_pads_hurt_ball
+Pong.is_pad_hurt_ball = physics.is_pad_hurt_ball
+
+Pong.side_pads_bounces = physics.side_pads_bounces
+Pong.side_pad_bounce = physics.side_pad_bounce
+Pong.is_pad_horz_intersect = physics.is_pad_horz_intersect
+Pong.is_pad_vert_intersect = physics.is_pad_vert_intersect
+#to del:
+# Pong.right_upside_pad_bounce = physics.right_upside_pad_bounce
+# Pong.is_upright_pads_intersect = physics.is_upright_pads_intersect
+# Pong.right_downside_pad_bounce = physics.right_downside_pad_bounce
+# Pong.is_downright_pads_intersect = physics.is_downright_pads_intersect
+# Pong.is_left_pad_hurt_ball = physics.is_left_pad_hurt_ball
+# Pong.is_right_pad_hurt_ball = physics.is_right_pad_hurt_ball
 
 Pong.segments_intersect = physics.segments_intersect
 Pong.scale_vector = physics.scale_vector
@@ -355,3 +377,7 @@ Pong.get_random_vector = physics.get_random_vector
 Pong.scores = scores.scores
 Pong.score_point = scores.score_point
 Pong.max_score_rise = scores.max_score_rise
+
+Pong.is_overflow = physics.is_overflow
+
+Pong.speed_test = physics.speed_test
