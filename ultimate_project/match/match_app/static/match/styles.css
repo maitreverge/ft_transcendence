@@ -156,8 +156,9 @@ body.match-active::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: lightcoral; /* Couleur de fond autour du match */
+    background-color: rgba(30, 30, 30, 1); /* Couleur de fond autour du match */
     z-index: 100; /* en dessous de #match */
+    opacity: 0.5;
 }
 
 .match-sylvain-gif {
@@ -292,6 +293,8 @@ body.match-active::before {
     display: none !important;
 }
 
+
+
 #waiting {
     height: 100px;
     width:100px;
@@ -304,6 +307,10 @@ body.match-active::before {
     color: transparent;
     animation: blink 1s infinite;
 
+}
+
+#match:has(#waiting:not(.no-waiting)) {
+	background-image: url('https://dansylvain.github.io/pictures/login_pong.png');
 }
 
 /* Animation clignotante */
