@@ -12,11 +12,9 @@
 --------------------------------------------------------------------------------
 
 # FRONT WORK
-
-🟧 Creer des images pour la page d'accueil 
+🟧 Beautify 2fa page
 
 # BACK WORK
-🟧 user not found when 2FA incorrect in login
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
@@ -40,6 +38,7 @@
 
 ======================================= DONE =====================================
 
+✅ user not found when 2FA incorrect in login
 
 ✅ Beautify login
 

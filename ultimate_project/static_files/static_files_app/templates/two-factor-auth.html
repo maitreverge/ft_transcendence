@@ -1,54 +1,5 @@
 {% load static %}
 
-<!-- ! PONG BACKGROUND  -->
-<div class="pong-background" id="pong-background"></div>
-
-<div class="container" data-page-type="two_factor_auth" id="two_factor_auth_container">
-	<div class="col-lg-4 mb-4 mx-auto">
-		<div class="card shadow mb-4">
-			<div class="card-header py-3">
-				<h6 class="m-0 font-weight-bold text-primary">Verify your account</h6>
-			</div>
-			<div class="card-body">
-				<!-- ! FORM TO VERIFY THE CODE -->
-				<form hx-post="/auth/verify-2fa/" id="two_factor_auth_form" hx-target="#login_error" hx-swap="outerHTML"
-					hx-headers='{"HX-Request": "true"}' hx-indicator="#loading-spinner">
-					<div class="form-group">
-						<label>Enter the code given by your authenticator app:</label>
-						<input id="otp_input" type="number" name="token" maxlength="6"
-							class="form-control form-control-user" placeholder="Enter 6-digit code" required />
-						<input type="hidden" id="username" name="username" value="{{ username }}" />
-					</div>
-					<div class="small text-info mb-3"></div>
-					<div class="form-group mt-4">
-						<button id="otp_verify" type="submit" class="btn btn-primary btn-user btn-block">
-							Verify and Login
-						</button>
-
-						<!-- ! BUTTON TO GO BACK TO LOGIN PAGE -->
-						<a href="/login/" class="btn btn-secondary btn-user btn-block mt-2" id="cancel_button"
-							hx-get="/login/" hx-target="body" hx-swap="outerHTML" hx-push-url="true"
-							hx-headers='{"HX-Request": "true"}'>
-							Cancel
-						</a>
-					</div>
-				</form>
-
-				<!-- Error message container -->
-				<div id="login_error" class="text-center text-danger mt-2"></div>
-
-				<!-- Loading spinner -->
-				<div id="loading-spinner" class="htmx-indicator text-center my-2">
-					<div class="spinner-border text-primary" role="status">
-						<span class="sr-only">Loading...</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- External Style -->
 <style>
 	/* Centering the container vertically and horizontally */
 	#two_factor_auth_container {
@@ -110,8 +61,55 @@
 		pointer-events: none;
 		opacity: 0.6;
 	}
-
 </style>
+
+<!-- ! PONG BACKGROUND  -->
+<div class="pong-background" id="pong-background"></div>
+
+<div class="container" data-page-type="two_factor_auth" id="two_factor_auth_container">
+	<div class="col-lg-4 mb-4 mx-auto">
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Verify your account</h6>
+			</div>
+			<div class="card-body">
+				<!-- ! FORM TO VERIFY THE CODE -->
+				<form hx-post="/auth/verify-2fa/" id="two_factor_auth_form" hx-target="#login_error" hx-swap="outerHTML"
+					hx-headers='{"HX-Request": "true"}' hx-indicator="#loading-spinner">
+					<div class="form-group">
+						<label>Enter the code given by your authenticator app:</label>
+						<input id="otp_input" type="number" name="token" maxlength="6"
+							class="form-control form-control-user" placeholder="Enter 6-digit code" required />
+						<input type="hidden" id="username" name="username" value="{{ username }}" />
+					</div>
+					<div class="small text-info mb-3"></div>
+					<div class="form-group mt-4">
+						<button id="otp_verify" type="submit" class="btn btn-primary btn-user btn-block">
+							Verify and Login
+						</button>
+
+						<!-- ! BUTTON TO GO BACK TO LOGIN PAGE -->
+						<a href="/login/" class="btn btn-secondary btn-user btn-block mt-2" id="cancel_button"
+							hx-get="/login/" hx-target="body" hx-swap="outerHTML" hx-push-url="true"
+							hx-headers='{"HX-Request": "true"}'>
+							Cancel
+						</a>
+					</div>
+				</form>
+
+				<!-- Error message container -->
+				<div id="login_error" class="text-center text-danger mt-2"></div>
+
+				<!-- Loading spinner -->
+				<div id="loading-spinner" class="htmx-indicator text-center my-2">
+					<div class="spinner-border text-primary" role="status">
+						<span class="sr-only">Loading...</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script>
 	initPongAnimation(false);
@@ -211,9 +209,6 @@
 						});
 				} else {
 					// Display error message
-
-					// ! UNSAFE METHOD
-					// evt.detail.target.innerHTML = response.message;
 
 					// Sanitize the message using DOMPurify before setting content
 					const messageElement = document.getElementById("login_error");
