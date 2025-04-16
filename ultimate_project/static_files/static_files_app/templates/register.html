@@ -401,13 +401,13 @@
 			const h = window.innerHeight;
 		
 			for (const icon of icons) {
-				// Change direction: decrease x (move left) while increasing y (move down)
+				
 				icon.x -= speed;
 				icon.y += speed;
 		
-				// Update boundary check: if too far left, wrap to right side
-				if (icon.x < 0) icon.x += (cols + 2) * spacingX;
-				if (icon.y > h) icon.y -= (rows + 2) * spacingY;
+				// Update boundary logic to mirror login.html's approach but for opposite direction
+				if (icon.x < -50) icon.x += (cols + 2) * spacingX; // When too far left, jump to right
+				if (icon.y > h) icon.y -= (rows + 2) * spacingY; // When too far down, jump to top
 		
 				icon.el.style.left = `${icon.x}px`;
 				icon.el.style.top = `${icon.y}px`;
