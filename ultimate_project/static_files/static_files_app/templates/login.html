@@ -140,8 +140,6 @@
 	initPongAnimation(false);
 
 	document.addEventListener("htmx:beforeSwap", function (evt) {
-		console.log("document.addEventListener working");
-		console.log("LOGIN FORM LISTENNING");
 		if (evt.detail.target.id === "login-form") {
 			try {
 				console.log("Réponse brute:", evt.detail.xhr.responseText);

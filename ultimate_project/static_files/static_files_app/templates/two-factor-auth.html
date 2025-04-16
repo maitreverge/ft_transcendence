@@ -130,11 +130,12 @@
 		// Update the display
 		const usernameDisplay = document.getElementById("otp_verify");
 
+		// ! DEBUG
 		if (initialUsername && usernameField) {
-			console.log("Username set in form:", initialUsername);
-			if (usernameDisplay) {
-				usernameDisplay.textContent = `Verifying for account: ${initialUsername}`;
-			}
+			// console.log("Username set in form:", initialUsername);
+			// if (usernameDisplay) {
+			// 	usernameDisplay.textContent = `Verifying for account: ${initialUsername}`;
+			// }
 		} else {
 			console.error("No username found in any source or field not found");
 			if (usernameDisplay) {
@@ -147,7 +148,6 @@
 
 	// Try to set username when DOM content is loaded
 	document.addEventListener("DOMContentLoaded", function () {
-		console.log("DOMContentLoaded event fired");
 		setUsernameInForm();
 	});
 

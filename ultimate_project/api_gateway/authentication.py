@@ -63,7 +63,7 @@ async def login_fastAPI(
     # If 2FA is enabled, return 2FA connection page
     if check_2fa_response.status_code == 200:
         return JSONResponse(
-            content={"success": False, "message": "2FA is enabled"}, status_code=401
+            content={"success": False, "message": "2FA is enabled"}, status_code=200
         )
 
     # Generates expiration dates for JWT
