@@ -385,11 +385,11 @@ function startCountdown3D(delay)
 	updateCountdown3D();
 }
 
-function displayPlayersInfos3D()
+function displayPlayersInfos3D(data)
 {
 	if (!data.names)
 		return;
-	pads[3].innerText = data.score[0] + " | " + data.score[1];	
+	// pads[3].innerText = data.score[0] + " | " + data.score[1];	//!!!!
 	const leftName = document.getElementById("inst-left");
 	const rightName = document.getElementById("inst-right");
 	if (window.selfMatchId != window.matchId)
@@ -432,7 +432,7 @@ function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingSt
         }
         return;
     }
-    displayPlayersInfos3D();
+    displayPlayersInfos3D(data);
     if (data.state == "end")
     {
         let gifUrl;

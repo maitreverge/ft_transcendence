@@ -152,7 +152,7 @@ function startCountdown(delay)
 	updateCountdown();
 }
 
-function displayPlayersInfos()
+function displayPlayersInfos(data, pads)
 {
 	if (!data.names)
 		return;
