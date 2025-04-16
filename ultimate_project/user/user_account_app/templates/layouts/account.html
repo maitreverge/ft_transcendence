@@ -1,90 +1,136 @@
 {% load static %}
 <div class="container-fluid m-0">
-  <div class="row">
-    <nav class="sidebar col-0 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-none d-sm-block p-3 shadow-sm" style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;">
-      <div class="sidebar-sticky text-center">
-        <!-- Account Settings Title -->
-        <h1 class="mb-3 pt-2"><strong>Account Settings</strong></h1>
-        <ul class="nav flex-column pt-5">
-          <!-- Profile -->
-          <li class="nav-item mb-3">
-            <a
-              id="acc-profile"
-              href="#"
-              class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              hx-get="/account/profile/"
-              hx-target="#account-content"
-              hx-swap="innerHTML"
-              hx-push-url="true"
-            >
-              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
-              <h5>Profile</h5>
-            </a>
-          </li>
-          <!--Statistics-->
-          <li
-            class="side-nav nav-item mb-3"
+  <div class="m-0 p-0">
+    <div class="row">
+      <!--Sidebar for account-->
+      <nav
+        class="sidebar col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-sm-block shadow-sm m-0 p-0 d-flex flex-column"
+        style="min-height: 75vh"
+      >
+        <div class="sidebar-sticky text-center">
+          <!-- Account Settings Title -->
+          <div class="w-100 d-flex flex-column">
+            <h1 class="pt-2">
+              <strong data-translate="Account-Settings"
+                >Account Settings</strong
+              >
+            </h1>
+            <ul class="nav flex-column">
+              <!-- Profile Section -->
+              <li class="side-nav nav-item">
+                <a
+                  id="acc-profile"
+                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  style="width: 85%"
+                  hx-get="/account/profile/"
+                  hx-target="#account-content"
+                  hx-swap="innerHTML"
+                  hx-push-url="true"
+                >
+                  <i class="mr-2 fa-solid fa-user fa-xl"></i>
+                  <h5 class="mb-0" data-translate="Profile">Profile</h5>
+                </a>
+              </li>
+              <!-- Statistics -->
+              <li class="side-nav nav-item">
+                <a
+                  id="acc-stats"
+                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  style="width: 85%"
+                  hx-get="/account/game-stats/overview/"
+                  hx-target="#account-content"
+                  hx-swap="innerHTML"
+                  hx-push-url="true"
+                >
+                  <i class="mr-2 fa-solid fa-chart-column fa-xl"></i>
+                  <h5 class="mb-0" data-translate="Statistics">Statistics</h5>
+                </a>
+              </li>
+              <!-- Security -->
+              <li class="side-nav nav-item">
+                <a
+                  id="acc-security"
+                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  style="width: 85%"
+                  hx-get="/account/security/"
+                  hx-target="#account-content"
+                  hx-swap="innerHTML"
+                  hx-push-url="true"
+                >
+                  <i class="mr-2 fa-solid fa-lock fa-xl"></i>
+                  <h5 class="mb-0" data-translate="Security">Security</h5>
+                </a>
+              </li>
+              <!-- Confidentiality -->
+              <li class="side-nav nav-item">
+                <a
+                  id="acc-conf"
+                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  style="width: 85%"
+                  hx-get="/account/confidentiality/"
+                  hx-target="#account-content"
+                  hx-swap="innerHTML"
+                  hx-push-url="true"
+                >
+                  <i class="mr-2 fa-solid fa-shield-halved fa-xl"></i>
+                  <h5 class="mb-0" data-translate="Confidentiality">
+                    Confidentiality
+                  </h5>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div
+            class="h-100 m-0 p-0 mt-5"
+            style="position: relative; overflow: hidden"
           >
-            <a
-              id="acc-stats"
-              href="#"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              hx-get="/account/game-stats/overview/"
-              hx-target="#account-content"
-              hx-swap="innerHTML"
-              hx-push-url="true"
-            >
-              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
-              <h5>Statistics</h5>
-            </a>
-          </li>
-          <!-- Security-->
-          <li class="side-nav nav-item mb-3">
-            <a
-              id="acc-security"
-              href="#"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              hx-get="/account/security/"
-              hx-target="#account-content"
-              hx-swap="innerHTML"
-              hx-push-url="true"
-            >
-              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
-              <h5>Security</h5>
-            </a>
-          </li>
-          <!-- Confidentiality-->
-          <li class="side-nav nav-item mb-3">
-            <a
-              id="acc-conf"
-              href="#"
-              class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-              hx-get="/account/confidentiality/"
-              hx-target="#account-content"
-              hx-swap="innerHTML"
-              hx-push-url="true"
-            >
-              <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
-              <h5>Confidentiality</h5>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+            <img
+              src="https://dansylvain.github.io/pictures/roadH.jpg"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+                -webkit-mask-image: linear-gradient(
+                  to bottom,
+                  rgba(0, 0, 0, 0),
+                  rgba(0, 0, 0, 1)
+                );
+                mask-image: linear-gradient(
+                  to bottom,
+                  rgba(0, 0, 0, 0),
+                  rgba(0, 0, 0, 1)
+                );
+                -webkit-mask-size: 100% 100%;
+                mask-size: 100% 100%;
+                mask-repeat: no-repeat;
+                -webkit-mask-repeat: no-repeat;
+              "
+            />
+          </div>
+        </div>
+      </nav>
 
-    <!-- Main Content -->
-    <main role="main" class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0">
-      <!-- Content dynamically loaded here -->
-      <div id="account-content">
+      <!-- Main Content -->
+      <main
+        role="main"
+        class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0"
+        style="display: flex; flex-direction: column; height: 100%"
+      >
         <!-- prettier-ignore -->
-        {% if page %}
-            {% if "<" in page %}
-                {{ page|safe }}
-            {% else %}
-                {% include page %}
-            {% endif %}
-        {% endif %}
-      </div>
-    </main>
+        <div id="account-content" style="overflow-y: auto; flex-grow: 1;">
+          {% if page %}
+          {% if "<" in page %}
+            {{ page|safe }}
+          {% else %}
+            {% include page %}
+          {% endif %}
+          {% endif %}
+        </div>
+      </main>
+    </div>
   </div>
 </div>
