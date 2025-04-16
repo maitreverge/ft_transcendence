@@ -114,3 +114,5 @@ function initializeCharts() {
       });
     }
 }
+
+window.initializeCharts = initializeCharts;
