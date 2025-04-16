@@ -1,91 +1,89 @@
 {% load static %}
 <script src="/static/static_files/static_files/vendor/chart.js/Chart.min.js"></script>
 {{ main_stats|json_script:"mainStats" }}
-<script src="{% static '/js/overview_chart.js' %}" onload="initializeCharts()"></script>
+<script
+  src="{% static '/js/overview_chart.js' %}"
+  onload="initializeCharts()"
+></script>
 
 <div id="overview-content" class="container-fluid px-0 mt-4">
-  <!-- Top card -->
-  <div class="row">
-    <!--Card number one-->
-    <div class="poly-card d-flex mb-4">
-      <!-- First section: Games Played -->
-      <div class="games-stat text-center">
-        <p class="label-text mb-1">Games Played</p>
-        <h1 class="stats-top-number mb-1 mt-1">
-          {{ main_stats.games_played }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
-      <div class="small-vertical-accent-bar mx-3"></div>
-      <!-- Second section: Games Won -->
-      <div class="games-stat text-center">
-        <p class="label-text mb-1">Games Won</p>
-        <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.games_won }}</h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
-      <div class="big-vertical-accent-bar mx-3"></div>
-      <!-- Third section: Tournaments Played -->
-      <div class="games-stat text-center">
-        <p class="label-text mb-1">Tournaments Played</p>
-        <h1 class="stats-top-number mb-1 mt-1">
-          {{ main_stats.nb_tournaments_played }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
-      <div class="small-vertical-accent-bar mx-3"></div>
-      <!-- Fourth section: Tournaments Won -->
-      <div class="games-stat text-center">
-        <p class="label-text mb-1">Tournaments Won</p>
-        <h1 class="stats-top-number mb-1 mt-1">
-          {{ main_stats.nb_tournaments_won}}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
+  <!-- Single Card with Multiple Stats -->
+  <div class="poly-card d-flex flex-wrap mb-4">
+    <!-- First section: Games Played -->
+    <div class="games-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Games Played</p>
+      <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.games_played }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
     </div>
+    <!-- Vertical Separator -->
+    <div class="small-vertical-accent-bar d-none d-md-block"></div>
 
-    <!-- card number 2-->
-    <div class="poly-card d-flex col-12 mx-auto py-2 thinner-card mb-4">
-      <!-- First section: Current Win Streak -->
-      <div class="streak-stat text-center">
-        <p class="label-text mb-1">Current win streak</p>
-        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
-          {{ main_stats.c_win_streak }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
-      <div class="small-vertical-accent-bar mx-3"></div>
-      <!-- Second section: Current lose Streak -->
-      <div class="streak-stat text-center">
-        <p class="label-text mb-1">Current lose Streak</p>
-        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
-          {{ main_stats.c_lose_streak }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
-      <div class="big-vertical-accent-bar mx-3"></div>
-      <!-- Third section: Best win Streak -->
-      <div class="streak-stat text-center">
-        <p class="label-text mb-1">Best win streak</p>
-        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
-          {{ main_stats.best_win_streak  }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
-      <div class="small-vertical-accent-bar mx-3"></div>
-      <!-- Fourth section: Worst Lose Streak -->
-      <div class="streak-stat text-center">
-        <p class="label-text mb-1">Worst lose Streak</p>
-        <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
-          {{ main_stats.worst_lose_streak }}
-        </h1>
-        <div class="accent-bar mx-auto mt-1"></div>
-      </div>
+    <!-- Second section: Games Won -->
+    <div class="games-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Games Won</p>
+      <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.games_won }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
     </div>
-  
+    <!-- Vertical Separator -->
+    <div class="big-vertical-accent-bar d-none d-md-block"></div>
+
+    <!-- Third section: Tournaments Played -->
+    <div class="games-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Tournaments Played</p>
+      <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.nb_tournaments_played }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
+    </div>
+    <!-- Vertical Separator -->
+    <div class="small-vertical-accent-bar d-none d-md-block"></div>
+
+    <!-- Fourth section: Tournaments Won -->
+    <div class="games-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Tournaments Won</p>
+      <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.nb_tournaments_won }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
+    </div>
   </div>
-  <!--Charts-->
+
+  <!-- Second Card for Win/Loss Streaks -->
+  <div class="poly-card d-flex flex-wrap col-12 mx-auto py-2 thinner-card mb-4">
+    <!-- First section: Current Win Streak -->
+    <div class="streak-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Current Win Streak</p>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.c_win_streak }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
+    </div>
+    <!-- Vertical Separator -->
+    <div class="small-vertical-accent-bar d-none d-md-block"></div>
+
+    <!-- Second section: Current Lose Streak -->
+    <div class="streak-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Current Lose Streak</p>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.c_lose_streak }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
+    </div>
+    <!-- Vertical Separator -->
+    <div class="big-vertical-accent-bar d-none d-md-block"></div>
+
+    <!-- Third section: Best Win Streak -->
+    <div class="streak-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Best Win Streak</p>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.best_win_streak }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
+    </div>
+    <!-- Vertical Separator -->
+    <div class="small-vertical-accent-bar d-none d-md-block"></div>
+
+    <!-- Fourth section: Worst Lose Streak -->
+    <div class="streak-stat text-center col-12 col-md-3 mb-3">
+      <p class="label-text mb-1">Worst Lose Streak</p>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.worst_lose_streak }}</h1>
+      <div class="accent-bar mx-auto mt-1"></div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
   <div class="row mt-4">
-    <!-- Games Won / Lost Pie Chart Card -->
+    <!-- First Chart: Win/Loss Pie Chart -->
     <div class="col-md-6 mb-4">
       <div class="poly-card text-center">
         <p class="label-text mb-1">Win / Loss</p>
@@ -99,18 +97,16 @@
         <hr />
         <div class="chart-stats-container">
           <p>
-            <span data-translate="Games won: ">Games won: </span>
-            <span class="text-primary">{{ main_stats.games_won }}</span>
+            <span>Games won : </span><span class="text-prim">{{ main_stats.games_won }}</span>
           </p>
           <p>
-            <span data-translate="Games lost: ">Games lost: </span>
-            <span class="text-danger">{{ main_stats.games_lost }}</span>
+            <span>Games lost : </span><span class="text-sec">{{ main_stats.games_lost }}</span>
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Points Scored / Conceded Pie Chart Card -->
+    <!-- Second Chart: Points Scored / Conceded Pie Chart -->
     <div class="col-md-6 mb-4">
       <div class="poly-card text-center">
         <p class="label-text mb-1">Scoring</p>
@@ -124,24 +120,16 @@
         <hr />
         <div class="chart-stats-container">
           <p>
-            <span data-translate="Points Scored: ">Scored: </span>
-            <span class="text-primary">{{ main_stats.points_scored }}</span>
+            <span>Scored : </span><span class="text-prim"> {{ main_stats.points_scored }}</span>
           </p>
           <p>
-            <span data-translate="Points Conceded: ">Conceded: </span>
-            <span class="text-danger">{{ main_stats.points_conceded }}</span>
+            <span>Conceded : </span><span class="text-sec"> {{ main_stats.points_conceded }}</span>
           </p>
         </div>
       </div>
     </div>
-    <!-- end chart 2-->
   </div>
-
 </div>
-
-<!-- Use json_script to safely pass main_stats to JavaScript -->
-
-
 
 
 <style>
@@ -245,13 +233,13 @@
     border-radius: 2px;
   }
 
-  .text-primary {
+  .text-prim {
     font-size: 1.2rem;
     font-weight: 700;
     color: #4e73df;
   }
 
-  .text-danger {
+  .text-sec {
     font-size: 1.2rem;
     font-weight: 700;
     color: #e74a3b;
@@ -271,10 +259,6 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: #858796;
-  }
-
-  body {
-    background: linear-gradient(145deg, #e2e8f0, #f1f5f9);
   }
 
 </style>

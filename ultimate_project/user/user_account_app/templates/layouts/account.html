@@ -5,7 +5,7 @@
       <!--Sidebar for account-->
       <nav
         class="sidebar col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-sm-block shadow-sm m-0 p-0 d-flex flex-column"
-        style="min-height: 75vh"
+        style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;"
       >
         <div class="sidebar-sticky text-center">
           <!-- Account Settings Title -->
@@ -118,19 +118,19 @@
       <main
         role="main"
         class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 p-0 m-0"
-        style="display: flex; flex-direction: column; height: 100%"
       >
         <!-- prettier-ignore -->
-        <div id="account-content" style="overflow-y: auto; flex-grow: 1;">
+        <div id="account-content">
           {% if page %}
-          {% if "<" in page %}
-            {{ page|safe }}
-          {% else %}
-            {% include page %}
-          {% endif %}
+            {% if "<" in page %}
+              {{ page|safe }}
+            {% else %}
+              {% include page %}
+            {% endif %}
           {% endif %}
         </div>
       </main>
+      <!-- end main content-->
     </div>
   </div>
 </div>
