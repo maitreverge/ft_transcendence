@@ -134,12 +134,12 @@ def run(playwright: Playwright) -> None:
         if which_winner == "page1":
             # Page 1 click exit first, then he lose first
             page2.get_by_role("button", name="EXIT").click()
-            time.sleep(0.2)
+            time.sleep(1)
             if not tournament_winner:
                 page1.get_by_role("button", name="EXIT").click()
         else:
             page1.get_by_role("button", name="EXIT").click()
-            time.sleep(0.2)
+            time.sleep(1)
             if not tournament_winner:
                 page2.get_by_role("button", name="EXIT").click()
         
@@ -282,7 +282,7 @@ def run(playwright: Playwright) -> None:
         routine_timer(page1, page2, "page1")
 
         print("MATCH 1 DONE")
-        time.sleep(0.5)
+        time.sleep(2)
 
         # Launch Match 2 user3 vs ghost_user2
         page1.locator("#m3").click()
@@ -290,7 +290,7 @@ def run(playwright: Playwright) -> None:
         routine_timer(page1, page2, "page2")
         print("MATCH 2 DONE")
 
-        time.sleep(0.5)
+        time.sleep(2)
         # Launch Final Match user2
         page1.locator("#m1").click()
         page2.locator("#m1").click()
@@ -331,7 +331,7 @@ def run(playwright: Playwright) -> None:
     login(pages[0], USER_2)
     login(pages[1], USER_3)
 
-    # test_remote_simple_match(pages)
+    test_remote_simple_match(pages)
 
     test_remote_tournament(pages)
 
