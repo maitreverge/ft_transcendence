@@ -199,7 +199,7 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 		}
 		return;
 	}
-	displayPlayersInfos();
+	displayPlayersInfos(data, pads);
 	if (data.state == "end")
 	{	
         let gifUrl;
