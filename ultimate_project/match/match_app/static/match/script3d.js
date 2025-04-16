@@ -385,11 +385,11 @@ function startCountdown3D(delay)
 	updateCountdown3D();
 }
 
-function displayPlayersInfos3D(data)
+function displayPlayersInfos3D(data, score_div)
 {
 	if (!data.names)
 		return;
-	// pads[3].innerText = data.score[0] + " | " + data.score[1];	//!!!!
+    score_div.innerText = data.score[0] + " | " + data.score[1];
 	const leftName = document.getElementById("inst-left");
 	const rightName = document.getElementById("inst-right");
 	if (window.selfMatchId != window.matchId)
@@ -417,58 +417,14 @@ function displayPlayersInfos3D(data)
 	}	
 }
 
-function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingState) {
+function onMatchWsMessage3D(
+    event, score_div, [waiting, endCont, end, spec], waitingState) {
     const data = JSON.parse(event.data);
 
-    if (data.timestamp && !data.state) {
-        if (window.gameStartTimestamp === undefined) {
-            window.gameStartTimestamp = data.timestamp;
-            delay = data.delay;
-            console.log("✅ Premier timestamp enregistré:", data.timestamp);
-
-            startCountdown3D(delay);
-        } else {
-            console.log("⏩ Timestamp déjà reçu, ignoré.");
-        }
-        return;
-    }
-    displayPlayersInfos3D(data);
-    if (data.state == "end")
-    {
-        let gifUrl;
-        if (window.selfName == data.winnerName)
-            gifUrl = "https://dansylvain.github.io/pictures/sdurif.webp";
-        else if (spec.style.display != "none")
-        {
-            gifUrl = "https://dansylvain.github.io/pictures/tennis.webp";
-            spec.style.display = "none";
-        }
-        else
-            gifUrl = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
-
-        end.innerHTML = `The winner is: ${data.winnerName} <br>
-        Score: ${data.score[0]} : ${data.score[1]} <br>
-        <img src="${gifUrl}"
-        alt="Winner GIF"
-        class="winner-gif">
-        `;
-
-        endCont.classList.add("end-cont");
-        console.log("🏁 Match terminé, reset du timestamp");
-        window.gameStartTimestamp = undefined;
-    }
-
-    if (waitingState[0] != data.state)
-    {
-        waitingState[0] = data.state;
-        if (waiting)
-        {
-            if (data.state == "waiting")
-                waiting.classList.remove("no-waiting");
-            else
-                waiting.classList.add("no-waiting");
-        }
-    }
+    startDelay3D(data);
+    displayPlayersInfos3D(data, score_div);
+    setEnd3D(data, endCont, end, spec);
+    setWaiting3D(data, waiting, waitingState);
 
     if (data.yp1 !== undefined && data.yp2 !== undefined) {
         window.tjs_r1.position.z = (60 / 100) * (data.yp1);
@@ -477,10 +433,74 @@ function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingSt
         window.tjs_ball.position.x = (100 / 100) * (data.ball[0] - 1);
         window.tjs_ball.position.z = (60 / 100) * (data.ball[1] - 1);
     }
+}
 
-    if (data.score !== undefined) {
-        score_div.innerText = data.score[0] + " | " + data.score[1];
-    }
+function startDelay3D(data)
+{
+	if (data.timestamp && !data.state)
+	{
+		if (window.gameStartTimestamp === undefined)
+		{
+			window.gameStartTimestamp = data.timestamp;           
+			console.log("✅ Premier timestamp enregistré:", data.timestamp);	
+            startCountdown(data.delay);
+		}
+		else 
+			console.log("⏩ Timestamp déjà reçu, ignoré.");		
+		return;
+	}
+}
+
+function setEnd3D(data, endCont, end, spec)
+{
+	if (data.state == "end")
+	{	
+        let url;
+        if (window.selfName == data.winnerName)
+            url = "https://dansylvain.github.io/pictures/sdurif.webp";
+		else if (spec.style.display != "none")
+		{
+			url = "https://dansylvain.github.io/pictures/tennis.webp";
+			spec.style.display = "none";
+		}
+		else 
+			url = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
+		end.innerHTML = `The winner is: ${data.winnerName} <br> 
+		Score: ${data.score[0]} : ${data.score[1]} <br> 
+		<img src="${url}" 
+		alt="Winner GIF" 
+		class="winner-gif">
+		`;		
+		endCont.classList.add("end-cont");
+		console.log("🏁 Match terminé, reset du timestamp");
+		window.gameStartTimestamp = undefined;	
+	}
+}
+
+function setWaiting3D(data, waiting, waitingState)
+{
+	if (waitingState[0] != data.state) 
+	{
+		waitingState[0] = data.state;	
+		if (waiting) 
+		{
+			if (data.state == "waiting")			
+				waiting.classList.remove("no-waiting");
+			else			
+				waiting.classList.add("no-waiting");			
+		}			
+	}
+}
+
+function setSpec3D(spec)
+{
+	if (spec)
+	{
+		if (window.selfMatchId != window.matchId)
+			spec.style.display = "block";
+		else
+			spec.style.display = "none";
+	}
 }
 
 function sequelInitMatchWs3D(socket) {
@@ -490,30 +510,18 @@ function sequelInitMatchWs3D(socket) {
         document.getElementById("end")
     ];
     let waitingState = ["waiting"];
-
     const score_div = document.getElementById("score");
-
-    socket.onmessage = event => onMatchWsMessage3D(
-        event, score_div, [waiting, endCont, end], waitingState);
-
     const spec = document.getElementById("spec")
-    if (spec)
-    {
-        if (window.selfMatchId != window.matchId)
-            spec.style.display = "block";
-        else
-            spec.style.display = "none";
-    }
+    setSpec3D(spec);
+    socket.onmessage = event => onMatchWsMessage3D(
+        event, score_div, [waiting, endCont, end, spec], waitingState);
     if (window.player2Id != 0)
-	{
-		console.log("INIT SEC !!!!!! ", window.player2Id);
-		initSecPlayer3D();
-	}
+		initSecPlayer3D();	
     setCommands3D(socket, window.matchSocket2);
 }
 
 function initSecPlayer3D() {
-    
+
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
         window.pidom = "localhost:8443";
 	else
@@ -542,6 +550,8 @@ function initMatchWs3D() {
     console.log("ANTILOPP: " + window.antiLoop);
     if (window.matchSocket && window.antiLoop)
         return window.matchSocket.close();
+    if (window.matchSocket2 && window.antiLoop)
+		return window.matchSocket2.close();
     // if (window.matchSocket)
     //     window.matchSocket.close();
     window.antiLoop = true;

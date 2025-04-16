@@ -81,20 +81,6 @@
 
 #ball {
 
-	/* position: absolute; */
-	/* top:-1%; */
-	/* left:-1%; */
-	/* transform: translate(-50%, -50%); */
-	/* width:2vw;
-	height:2vw; */
-	/* border-radius: 50%; */
-	/* background-color: rgb(22, 244, 40); */
-    /* z-index: 400; */
-
-}
-
-#ball2 {
-
 	position: absolute;
 	top:-1%;
 	left:-1%;

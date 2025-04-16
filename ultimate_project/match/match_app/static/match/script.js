@@ -110,16 +110,14 @@ function setCommands(socket, socket2) {
     });
 }
 
-window.newTargetX = window.newTargetX || 0
-window.newTargetY = window.window.newTargetY || 0;
+window.window.newTargetX = window.window.newTargetX || 0
+window.window.newTargetY = window.window.window.newTargetY || 0;
 
 window.targetPads = window.targetPads || [0, 0];
-window.targets = window.targets || [];
 
 function animate(pads) {
 
-	pads[4].style.transform = `translate(${newTargetX}px, ${newTargetY}px)`;
-
+	pads[2].style.transform = `translate(${window.newTargetX}px, ${window.newTargetY}px)`;
 	pads[0].style.transform = `translateY(${targetPads[0]}px)`;
 	pads[1].style.transform = `translateY(${targetPads[1]}px)`;
 	window.pongAnim = requestAnimationFrame(() => animate(pads));
@@ -184,46 +182,75 @@ function displayPlayersInfos(data, pads)
 	}	
 }
 
-function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
-	match = document.getElementById("match");
-
+function onMatchWsMessage(
+	event, pads, [waiting, endCont, end, spec], waitingState) 
+{	
 	const data = JSON.parse(event.data);
-	if (data.timestamp && !data.state) {
-		if (window.gameStartTimestamp === undefined) {
-			window.gameStartTimestamp = data.timestamp;
-            delay = data.delay;
+	startDelay(data);
+	displayPlayersInfos(data, pads);	
+	setEnd(data, endCont, end, spec);
+	setWaiting(data, waiting, waitingState);
+	match = document.getElementById("match");
+	const matchRect = match.getBoundingClientRect();
+	const ballRect = pads[2].getBoundingClientRect();
+	pads[2].style.top = -(matchRect.width / 100);
+	pads[2].style.width = (matchRect.width / 100) * 2;
+	pads[2].style.height = (matchRect.height / 100) * 2;
+	
+    if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined) {
+        
+		window.targetPads[0] = data.yp1 * (matchRect.height / 100);
+		window.targetPads[1] = data.yp2 * (matchRect.height / 100);
+
+		window.newTargetX = data.ball[0] * (matchRect.width / 100);
+		window.newTargetY = data.ball[1] * (matchRect.height / 100);	
+    }
+}
+
+function startDelay(data)
+{
+	if (data.timestamp && !data.state)
+	{
+		if (window.gameStartTimestamp === undefined)
+		{
+			window.gameStartTimestamp = data.timestamp;           
 			console.log("✅ Premier timestamp enregistré:", data.timestamp);	
-            startCountdown(delay);
-		} else {
-			console.log("⏩ Timestamp déjà reçu, ignoré.");
+            startCountdown(data.delay);
 		}
+		else 
+			console.log("⏩ Timestamp déjà reçu, ignoré.");		
 		return;
 	}
-	displayPlayersInfos(data, pads);
+}
+
+function setEnd(data, endCont, end, spec)
+{
 	if (data.state == "end")
 	{	
-        let gifUrl;
+        let url;
         if (window.selfName == data.winnerName)
-            gifUrl = "https://dansylvain.github.io/pictures/sdurif.webp";
+            url = "https://dansylvain.github.io/pictures/sdurif.webp";
 		else if (spec.style.display != "none")
 		{
-			gifUrl = "https://dansylvain.github.io/pictures/tennis.webp";
+			url = "https://dansylvain.github.io/pictures/tennis.webp";
 			spec.style.display = "none";
 		}
 		else 
-			gifUrl = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
-
+			url = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
 		end.innerHTML = `The winner is: ${data.winnerName} <br> 
 		Score: ${data.score[0]} : ${data.score[1]} <br> 
-		<img src="${gifUrl}" 
+		<img src="${url}" 
 		alt="Winner GIF" 
 		class="winner-gif">
-		`;
-		
+		`;		
 		endCont.classList.add("end-cont");
 		console.log("🏁 Match terminé, reset du timestamp");
 		window.gameStartTimestamp = undefined;	
 	}
+}
+
+function setWaiting(data, waiting, waitingState)
+{
 	if (waitingState[0] != data.state) 
 	{
 		waitingState[0] = data.state;	
@@ -235,28 +262,17 @@ function onMatchWsMessage(event, pads, [waiting, endCont, end], waitingState) {
 				waiting.classList.add("no-waiting");			
 		}			
 	}
-	match = document.getElementById("match");
-	const matchRect = match.getBoundingClientRect();
-	const ballRect = pads[2].getBoundingClientRect();
-	pads[2].style.top = -(matchRect.width / 100);
-	// pads[2].style.left = (matchRect.width / 100) * 2;
-	pads[2].style.width = (matchRect.width / 100) * 2;
-	pads[2].style.height = (matchRect.width / 100) * 2;
-	pads[4].style.width = (matchRect.width / 100) * 2;
-	pads[4].style.height = (matchRect.height / 100) * 2;
-	
-    if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined) {
+}
 
-        
-		targetPads[0] = data.yp1 * (matchRect.height / 100);
-		targetPads[1] = data.yp2 * (matchRect.height / 100);
-
-       
-			hasWall = data.hasWall;
-			newTargetX = data.ball[0] * (matchRect.width / 100);
-			newTargetY = data.ball[1] * (matchRect.height / 100);
-			targets.push([newTargetX, newTargetY]);	
-    }
+function setSpec(spec)
+{
+	if (spec)
+	{
+		if (window.selfMatchId != window.matchId)
+			spec.style.display = "block";
+		else
+			spec.style.display = "none";
+	}
 }
 
 function sequelInitMatchWs(socket) {
@@ -265,8 +281,7 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("p1"),
 		document.getElementById("p2"),
 		document.getElementById("ball"),
-		document.getElementById("score"),
-		document.getElementById("ball2")
+		document.getElementById("score"),		
 	];
 	const [waiting, endCont, end] = [		
 		document.getElementById("waiting"),
@@ -274,23 +289,12 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("end")];	
 	let waitingState = ["waiting"];
 	requestAnimationFrame(()=>animate(pads));
+	const spec = document.getElementById("spec");
+	setSpec(spec);
 	socket.onmessage = event => onMatchWsMessage(
-		event, pads, [waiting, endCont, end], waitingState);
-	
-	const spec = document.getElementById("spec")
-	if (spec)
-	{
-		if (window.selfMatchId != window.matchId)
-			spec.style.display = "block";
-		else
-			spec.style.display = "none";
-	}
-	console.log("BEFORE INIT SEC !!!!!! ", window.player2Id, typeof(window.player2Id));
+		event, pads, [waiting, endCont, end, spec], waitingState);	
 	if (window.player2Id != 0)
-	{
-		console.log("INIT SEC !!!!!! ", window.player2Id);
-		initSecPlayer();
-	}
+		initSecPlayer();	
 	setCommands(socket, window.matchSocket2);
 }
 
