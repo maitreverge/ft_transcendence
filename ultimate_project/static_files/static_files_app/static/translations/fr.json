@@ -10,5 +10,10 @@
     "Add Player": "Ajouter un joueur",
     "Player Pool": "Liste des joueurs",
     "Close": "Fermer",
-    "Info:": "Infos :"
-  }
+    "Info:": "Infos :",
+  
+    "ReadyToLeaveTitle": "Prêt à partir ?",
+    "ReadyToLeaveText": "Clique sur \"Déconnexion\" ci-dessous si tu souhaites mettre fin à ta session actuelle.",
+    "Cancel": "Annuler"
+      
+}

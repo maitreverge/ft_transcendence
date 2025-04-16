@@ -10,6 +10,10 @@
     "Add Player": "Agregar jugador",
     "Player Pool": "Lista de jugadores",
     "Close": "Cerrar",
-    "Info:": "Info:"
+    "Info:": "Info:",
+
+    "ReadyToLeaveTitle": "¿Listo para salir?",
+    "ReadyToLeaveText": "Selecciona \"Cerrar sesión\" abajo si deseas finalizar tu sesión actual.",
+    "Cancel": "Cancelar"
   }
   

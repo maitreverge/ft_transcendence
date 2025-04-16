@@ -10,7 +10,10 @@
     "Add Player": "Add Player",
     "Player Pool": "Player Pool",
     "Close": "Close",
-    "Info:": "Info:"
+    "Info:": "Info:",
+
+    "ReadyToLeaveTitle": "Ready to Leave?",
+    "ReadyToLeaveText": "Select \"Logout\" below if you are ready to end your current session.",
+    "Cancel": "Cancel"
   }
 
-  
