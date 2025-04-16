@@ -28,7 +28,7 @@ document.querySelectorAll('.side-nav').forEach(item => {
 
 function setFirstBgImage()
 {
-    window.currentBg = 'https://images.unsplash.com/photo-1501720804996-ae418d1ba820?q=80&w=3864&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+    window.currentBg = 'https://dansylvain.github.io/pictures/logo_red.jpg';
     window.applyBackground(window.currentBg);
 
 }
