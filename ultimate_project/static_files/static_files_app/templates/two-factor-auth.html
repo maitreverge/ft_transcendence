@@ -145,6 +145,22 @@
 			}
 		}
 
+		// Update the display
+		const usernameDisplay = document.getElementById("otp_verify");
+
+		if (initialUsername && usernameField) {
+			console.log("Username set in form:", initialUsername);
+			if (usernameDisplay) {
+				usernameDisplay.textContent = `Verifying for account: ${initialUsername}`;
+			}
+		} else {
+			console.error("No username found in any source or field not found");
+			if (usernameDisplay) {
+				usernameDisplay.textContent =
+					"Warning: No username found. Please go back to login.";
+				usernameDisplay.className = "small text-danger mb-3";
+			}
+		}
 	}
 
 	// Try to set username when DOM content is loaded
