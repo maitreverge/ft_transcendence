@@ -113,6 +113,7 @@
     transform: translateX(-50%);
     width: min(90vw, calc(70vh * 4 / 3));
     min-width: min(500px, 90vw);
+    /* max-width: 800px; */
     /* background-color: rgba(30, 30, 30, 1); */
     z-index: 200;
     background-image: url('https://dansylvain.github.io/pictures/noPanicRusted.webp');
@@ -137,6 +138,7 @@
     z-index: 500;
 }
 
+/* commanetaire */
 body.match-active::before {
     content: "";
     position: fixed;
@@ -146,7 +148,7 @@ body.match-active::before {
     height: 100vh;
     background-color: rgba(30, 30, 30, 1); /* Couleur de fond autour du match */
     z-index: 100; /* en dessous de #match */
-    opacity: 0.5;
+    opacity: 1;
 }
 
 .match-sylvain-gif {
