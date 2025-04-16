@@ -435,6 +435,33 @@ function onMatchWsMessage3D(
     }
 }
 
+function startCountdown3D(delay)
+{
+	loaderElement = document.querySelector(".loader");
+	if (loaderElement)
+		loaderElement.style.opacity = "1";
+
+    const countdownEl = document.querySelector('.countdown');
+    const countdownEndsAt = window.gameStartTimestamp * 1000 + delay * 1000;
+
+	function updateCountdown() {
+        const now = Date.now();
+        const remaining = Math.ceil((countdownEndsAt - now) / 1000);
+
+        if (remaining > 0) {
+            countdownEl.textContent = remaining;
+            requestAnimationFrame(updateCountdown);
+        } else if (remaining > -1) {
+            countdownEl.textContent = "GO!";
+            requestAnimationFrame(updateCountdown);
+        } else {
+            loaderElement.style.opacity = "0";
+            window.gameStartTimestamp = undefined;
+        }
+    }
+	updateCountdown();
+}
+
 function startDelay3D(data)
 {
 	if (data.timestamp && !data.state)
@@ -443,7 +470,7 @@ function startDelay3D(data)
 		{
 			window.gameStartTimestamp = data.timestamp;           
 			console.log("✅ Premier timestamp enregistré:", data.timestamp);	
-            startCountdown(data.delay);
+            startCountdown3D(data.delay);
 		}
 		else 
 			console.log("⏩ Timestamp déjà reçu, ignoré.");		
