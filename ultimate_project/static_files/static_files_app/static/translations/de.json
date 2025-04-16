@@ -1,25 +1,20 @@
 {
-    "Accueil": "Startseite",
-    "first name": "Vorname",
-    "last name": "Nachname",
-    "Display Name": "Anzeigename",
-    "Email Address": "E-Mail-Adresse",
-    "Friends": "Freunde",
-    "Update profile": "Profil aktualisieren",
-    "Delete profile": "Profil löschen",
-    "Avatar": "Avatar",
-    "Add your picture here": "Fügen Sie hier Ihr Bild hinzu",
-    "Match simple": "Einzelspiel",
-    "Tournoi": " Turnier",
-    "Profil": " Profil",
-    "Statistiques": " Statistiken",
+    "Menu": "Menü",
     "Logout": "Abmelden",
-    "Number of friends": "Anzahl der Freunde",
-    "Actual number of friends: ": "Aktuelle Anzahl der Freunde: ",
-    "Games played": "Gespielte Spiele: ",
-    "games won: ": "gewonnene Spiele: ",
-    "Games lost: ": "Verlorene Spiele: ",
-    "Ready to Leave?": "Bereit zu gehen?",
-    "Logout-leave": "Klicken Sie unten auf \"Abmelden\", wenn Sie bereit sind, Ihre aktuelle Sitzung zu beenden.",
-    "cancel": "abbrechen"
-}
+    "Match": "Spiel",
+    "Tournament": "Turnier",
+    "Profile": "Profil",
+    "Statistics": "Statistiken",
+    "Home": "Startseite",
+    "Create Tournament": "Turnier erstellen",
+    "Add Player": "Spieler hinzufügen",
+    "Player Pool": "Spielerliste",
+    "Close": "Schließen",
+    "Info:": "Info:",
+    
+    
+    "ReadyToLeaveTitle": "Bereit zu gehen?",
+    "ReadyToLeaveText": "Wähle unten \"Abmelden\", wenn du deine aktuelle Sitzung beenden möchtest.",
+    "Cancel": "Abbrechen"
+  }
+  

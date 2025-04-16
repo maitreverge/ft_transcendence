@@ -81,15 +81,8 @@ KNOWN_PATHS = [
 
 @app.middleware("http")
 async def bouncer_middleware(request: Request, call_next):
-    """
-    Main Middleware to filter authenticated users from non-auth users
-    """
-    print(
-        f"======== 👮 URL ENTERING BOUNCER = {request.url.path} ============\n"
-    )
-    print(
-        f"======== 👮 COOKIES ENTERING BOUNCER = {request.cookies} ============\n"
-    )
+    print( f"======== 👮 URL ENTERING BOUNCER = {request.url.path} ============\n")
+    print(f"======== 👮 COOKIES ENTERING BOUNCER = {request.cookies} ============\n")
 
     is_auth, user_info = is_authenticated(request)
     is_csrf_valid = csrf_validator(request)
@@ -102,6 +95,7 @@ async def bouncer_middleware(request: Request, call_next):
     
     # Check if path starts with an AUTH_PATH pattern but doesn't exactly match any known pattern
     if not is_auth and not any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
+        
         # First check if this path starts with any AUTH_PATH pattern but doesn't match any KNOWN_PATHS
         if any(request.url.path.startswith(pattern.replace(r'^', '').replace(r'/?$', '')) for pattern in AUTH_PATH) and \
            not any(re.match(pattern, request.url.path) for pattern in KNOWN_PATHS):
@@ -109,7 +103,7 @@ async def bouncer_middleware(request: Request, call_next):
             exc = StarletteHTTPException(status_code=404, detail="Not Found")
             return await http_exception_handler(request, exc)
             
-
+    # User request an AUTH_PATH while being authenticated.
     if (is_auth) and any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
         print(f"\n⬅️ Authenticated user request auth pages, redirecting to home ⬅️\n")
         
@@ -120,18 +114,21 @@ async def bouncer_middleware(request: Request, call_next):
             response = RedirectResponse(url="/home/")
         return response
 
+    # User request a regular page while not being authenticated
     elif (not is_auth or not is_csrf_valid) and not any(re.match(pattern, request.url.path) for pattern in AUTH_PATH):
         print(f"\n⛔ Bounder Middleware Trigerred, non auth request ⛔\n")
         # Check if this is an HTMX request
         if "HX-Request" in request.headers:
             response = Response(status_code=200)
             response.headers["HX-Location"] = "/register/"
+            
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
             response.delete_cookie(key="csrftoken", path="/")
         else:
             response = RedirectResponse(url="/register/")
+            
             # Clear JWT cookies
             response.delete_cookie(key="access_token", path="/")
             response.delete_cookie(key="refresh_token", path="/")
@@ -172,27 +169,16 @@ app.add_middleware(
 )
 
 
-# 🔄 Token Refresh Middleware for HTTP Requests
-# 🏗️ Function-Based Middleware
-# [Middleware n°2]
 @app.middleware("http")
 async def jwt_refresh_middleware(request: Request, call_next):
-    """
-    Middleware that checks if the access token needs to be refreshed.
-    If refresh is needed, it adds the new access token to the response.
-    """
-    # First process the request normally
-    # call_next() will call the next middleware / if none call
-    # the actual route
+    
     response = await call_next(request)
-
-    # Check authentication status after request processing
     is_auth, user_info = is_authenticated(request)
 
-    # If authenticated and token refresh needed, update the response
-    # cookies
+    # If authenticated and token `refresh_needed` is here : generate a new `access_token`
     if is_auth and user_info and user_info.get("refresh_needed"):
-        print("🔄 Middleware: Refreshing access token", flush=True)
+        print("🔄 JWT Refresh Middleware Trigerred: Refreshing access token", flush=True)
+        
         # Set the new access token in the response
         response.set_cookie(
             key="access_token",
@@ -201,7 +187,7 @@ async def jwt_refresh_middleware(request: Request, call_next):
             secure=True,
             samesite="Lax",
             path="/",
-            max_age=60 * 60 * 6,  # ! NEED TO HARMONIZE COOKIES TIME
+            max_age=60 * 60 * 2,  # new access_token == 2hours, just like the regular one
         )
     return response
 
@@ -209,26 +195,26 @@ async def jwt_refresh_middleware(request: Request, call_next):
 # This middleware is used to debug incoming cookies in FastAPI.
 # It prints the incoming cookies to the console for debugging purposes.
 # [Middleware n°4]
-@app.middleware("http")
-async def debug_cookies_middleware(request: Request, call_next):
-    print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
-    response = await call_next(request)
-    if "set-cookie" in response.headers:
-        set_cookie_headers = response.headers.getlist("set-cookie")
-        for cookie in set_cookie_headers:
-            print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
-    return response
+# @app.middleware("http")
+# async def debug_cookies_middleware(request: Request, call_next):
+#     print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
+#     response = await call_next(request)
+#     if "set-cookie" in response.headers:
+#         set_cookie_headers = response.headers.getlist("set-cookie")
+#         for cookie in set_cookie_headers:
+#             print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
+#     return response
 
 
-# [Middleware n°5]
+# This middleware suppress nginx warning about different timestamps between fastAPI and ngninx
 @app.middleware("http")
 async def clean_duplicate_headers_middleware(request: Request, call_next):
     response = await call_next(request)
 
-    # Copy headers to a new dictionary to avoid modification during iteration
+    # Copy headers...
     headers_dict = dict(response.headers.items())
 
-    # Remove duplicate headers that cause nginx warnings
+    # ... and remove duplicate headers that cause nginx warnings
     if "server" in headers_dict:
         del response.headers["server"]
     if "date" in headers_dict:
@@ -237,25 +223,7 @@ async def clean_duplicate_headers_middleware(request: Request, call_next):
     return response
 
 
-""" @app.middleware("http")
-async def debug_full_response_middleware(request: Request, call_next):
-    print(f"🔍 Incoming Request: {request.method} {request.url}", flush=True)
-    # Print full response details (headers, status code, and body)
-    print(f"🔍 Outgoing Response Status: {response.status_code}", flush=True)
-    print(f"🔍 Response Headers: {response.headers}", flush=True)
-    try:
-        if response.headers.get("Content-Type") == "application/json":
-            response_body = await response.json()
-            print(f"🔍 Response Body (JSON): {response_body}", flush=True)
-        else:
-            # Print raw content for non-JSON responses (e.g., HTML or plain text)
-            response_body = await response.body()
-            print(f"🔍 Response Body (Raw): {response_body.decode()}", flush=True)
-    except Exception as e:
-        print(f"🚨 Error parsing response body: {e}", flush=True)
-    return response """
 # ===== ⚠️ Exception Handling ⚠️ =====
-
 
 # When an exception of type StarletteHTTPException is raised during
 # the processing of a request, the custom exception handler
@@ -409,9 +377,6 @@ async def reverse_proxy_handler(
 
 @app.get("/")
 async def redirect_to_home():
-    """
-    Redirect requests from '/' to '/home/'.
-    """
     return RedirectResponse(url="/home/")
 
 
@@ -639,20 +604,12 @@ async def databaseapi_proxy(path: str, request: Request):
 @app.api_route("/login/{path:path}", methods=["GET"])
 @app.api_route("/login", methods=["GET"])
 async def login_page_route(request: Request, path: str = ""):
-    """
-    Proxy for serving the login page.
-    Redirects to home if user is already authenticated.
-    """
-
     return await reverse_proxy_handler("static_files", "login/", request)
 
 
 @app.api_route("/auth/login", methods=["POST"])
 @app.api_route("/auth/login/", methods=["POST"])
 async def login_page_route(request: Request):
-    """
-    Extracts form data and passes it to `login_fastAPI`
-    """
     form_data = await request.form()  # Extract form data
     username = form_data.get("username")
     password = form_data.get("password")
@@ -667,29 +624,18 @@ async def login_page_route(request: Request):
 @app.api_route("/auth/logout", methods=["POST"])
 @app.api_route("/auth/logout/", methods=["POST"])
 async def logout_route(request: Request):
-    """
-    Handles user logout by clearing JWT cookies
-    """
     return await auth.logout_fastAPI(request)
 
 
 @app.api_route("/register/{path:path}", methods=["GET"])
 @app.api_route("/register", methods=["GET"])
 async def register_page_route(request: Request, path: str = ""):
-    """
-    Proxy for serving the register page.
-    Redirects to home if user is already authenticated.
-    """
-
     return await reverse_proxy_handler("static_files", "register/", request)
 
 
 @app.api_route("/auth/register", methods=["POST"])
 @app.api_route("/auth/register/", methods=["POST"])
 async def register_page_route(request: Request):
-    """
-    Extracts form data and passes it to `register_fastAPI`
-    """
     form_data = await request.form()  # Extract form data
 
     first_name = form_data.get("first_name")
@@ -708,42 +654,27 @@ async def register_page_route(request: Request):
 
 @app.api_route("/two-factor-auth/", methods=["GET"])
 async def two_factor_auth_proxy(request: Request):
-    """
-    Proxy requests to the two-factor authentication page.
-    """
-    print("🔐 Handling two-factor-auth request", flush=True)
-    print(f"🔐 Headers: {request.headers}", flush=True)
-    print(f"🔐 Cookies: {request.cookies}", flush=True)
-
-    # Check if this is an HTMX request
-    is_htmx = "HX-Request" in request.headers
-    print(f"🔐 Is HTMX request: {is_htmx}", flush=True)
 
     # If we have a username in the query parameters, make sure it's passed to the template
     query_params = request.query_params
     username = query_params.get("username")
     if username:
-        print(f"🔐 Username from query params: {username}", flush=True)
-        # You might want to append it to the URL that's being proxied
+        # append username to the path
         return await reverse_proxy_handler(
-            "static_files", f"two-factor-auth/?username={username}", request
-        )
+            "static_files", f"two-factor-auth/?username={username}", request)
 
-    # Forward the request to the static_files service
+    # Forward the request to the static_files container
     return await reverse_proxy_handler("static_files", "two-factor-auth/", request)
 
 
 # used to verify two fa login
 @app.api_route("/auth/verify-2fa/", methods=["POST"])
 async def verify_2fa_login(request: Request):
-    """
-    Verifies 2FA code during login and generates JWT tokens if valid
-    """
-    print("🔐 Processing 2FA verification during login", flush=True)
+    
+    # print("🔐 Processing 2FA verification during login", flush=True)
 
     # Get the form data
     form_data = await request.form()
-    print(f"🔐 Form data: {form_data}", flush=True)
 
     token = form_data.get("token")
     username = form_data.get("username")
@@ -758,9 +689,6 @@ async def verify_2fa_login(request: Request):
 @app.api_route("/user/delete-profile/", methods=["GET", "POST"])
 @app.api_route("/delete-profile/", methods=["GET", "POST"])
 async def delete_profile_proxy(request: Request):
-    """
-    Proxy requests for profile deletion to the user microservice.
-    """
     print("🗑️ Handling delete-profile request", flush=True)
     print(f"🗑️ Method: {request.method}", flush=True)
 

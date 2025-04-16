@@ -134,12 +134,12 @@ def run(playwright: Playwright) -> None:
         if which_winner == "page1":
             # Page 1 click exit first, then he lose first
             page2.get_by_role("button", name="EXIT").click()
-            time.sleep(0.2)
+            time.sleep(1)
             if not tournament_winner:
                 page1.get_by_role("button", name="EXIT").click()
         else:
             page1.get_by_role("button", name="EXIT").click()
-            time.sleep(0.2)
+            time.sleep(1)
             if not tournament_winner:
                 page2.get_by_role("button", name="EXIT").click()
         
@@ -217,21 +217,34 @@ def run(playwright: Playwright) -> None:
         expect(page2.locator("#swal2-html-container")).to_have_text("Not your player!")
         page2.get_by_text("OK", exact=True).click()
 
+        print(f"TRY 1")
 
         # User3 move his ghost...
         source2 = page2.get_by_text(match2_player2, exact=True)
         target2 = page2.locator(".tournament-cont")
         source2.drag_to(target2)
+        print(f"TRY 2")
+
+        # time.sleep(10)
 
         # ... and himself
-        source2 = page2.get_by_text(match3_player1, exact=True)
-        target2 = page2.locator(".tournament-cont")
-        source2.drag_to(target2)
+        # source2 = page2.locator(".user self-player")
+
+        # source3 = page2.get_by_text(match3_player1, exact=True)
+
+        source3 = page2.locator(f"div[draggable='true'].user.self-player:has-text('{match3_player1}')")
+
+        # source3 = page2.locator(".user self-player")
+        # page.locator("[id=\"\\33 \"]").click()
+        target3 = page2.locator(".tournament-cont")
+        source3.drag_to(target3)
+        print(f"TRY 3")
 
         # User 2 moves his ghost
         source1 = page1.get_by_text(match3_player2, exact=True)
         target1 = page1.locator(".tournament-cont")
         source1.drag_to(target1)
+        print(f"TRY 4")
 
     def test_remote_tournament(pages):
 
@@ -269,7 +282,7 @@ def run(playwright: Playwright) -> None:
         routine_timer(page1, page2, "page1")
 
         print("MATCH 1 DONE")
-        time.sleep(0.5)
+        time.sleep(2)
 
         # Launch Match 2 user3 vs ghost_user2
         page1.locator("#m3").click()
@@ -277,7 +290,7 @@ def run(playwright: Playwright) -> None:
         routine_timer(page1, page2, "page2")
         print("MATCH 2 DONE")
 
-        time.sleep(0.5)
+        time.sleep(2)
         # Launch Final Match user2
         page1.locator("#m1").click()
         page2.locator("#m1").click()
@@ -318,7 +331,7 @@ def run(playwright: Playwright) -> None:
     login(pages[0], USER_2)
     login(pages[1], USER_3)
 
-    # test_remote_simple_match(pages)
+    test_remote_simple_match(pages)
 
     test_remote_tournament(pages)
 

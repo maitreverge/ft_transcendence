@@ -1,25 +1,20 @@
 {
-    "Accueil": "Pagh",
-    "first name": "pIn'a'",
-    "last name": "Hum",
-    "Display Name": "nIvbogh",
-    "Email Address": "mIghlIj",
-    "Friends": "jup",
-    "Update profile": "profileDaq wIv",
-    "Delete profile": "profileDaq HablI' nIch",
-    "Avatar": "Qup",
-    "Add your picture here": "nuqDaq picture vI'ang",
-    "Match simple": "Qab vItlhutlh",
-    "Tournoi": " rugh DaHjaj",
-    "Profil": " mInDu' luH",
-    "Statistiques": " vItlhutlhmey",
-    "Logout": "tu'lu'",
-    "Number of friends": "jupmey cha'logh",
-    "Actual number of friends: ": "jupmey cha'logh: ",
-    "Games played": "ghommey vIje': ",
-    "games won: ": "ghommey vI'ang: ",
-    "Games lost: ": "ghommey vIlo': ",
-    "Ready to Leave?": "mejnIS'a'?",
-    "Logout-leave": "chay' De' \"De'la'\" vo'logh mu'vaD cha'logh Qoy.",
-    "cancel": "qIl"
-}
+    "Menu": "Segh",
+    "Logout": "mej",
+    "Match": "Qav",
+    "Tournament": "vISQaw'",
+    "Profile": "ghunwI'",
+    "Statistics": "mI' De'",
+    "Home": "juH",
+    "Create Tournament": "vISQaw' chenmoH",
+    "Add Player": "QujwI' chel",
+    "Player Pool": "QujwI' ghom",
+    "Close": "SoQmoH",
+    "Info:": "De':",
+    
+    "ReadyToLeaveTitle": "mejrup'a'?",
+    "ReadyToLeaveText": "DaH \"mej\" yIwuq, vaj bItaHbe' 'e' DaneH.",
+    "Cancel": "qIl"
+
+  }
+  

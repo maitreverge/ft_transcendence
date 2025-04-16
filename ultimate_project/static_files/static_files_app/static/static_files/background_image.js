@@ -21,22 +21,16 @@ document.querySelectorAll('.side-nav').forEach(item => {
         window.applyBackground(bg);
 
     });
+    item.addEventListener('mouseleave', () => {
+        setFirstBgImage();
+      });
 });
 
 function setFirstBgImage()
 {
-    const firstItem = document.querySelector('.side-nav');
-    // console.log("first item: ", firstItem);
-    
-    if (firstItem) {
-        // console.log("%%%%%%%% first item found %%%%%%%%");
+    window.currentBg = 'https://dansylvain.github.io/pictures/noPanicRusted.jpg';
+    window.applyBackground(window.currentBg);
 
-        const bg = firstItem.getAttribute('data-bg');
-        window.currentBg = bg;
-        window.currentNav = firstItem.querySelector('a');
-        // console.log("bg 2: ", bg)
-        window.applyBackground(bg);
-    }
 }
 window.addEventListener('DOMContentLoaded', () => {
     // console.log("%%%%%%%% func onload executed %%%%%%%%");
@@ -62,9 +56,5 @@ if (typeof window.currentBg == 'undefined')
     window.applyBackground(window.currentBg);
 }
 
-document.getElementById('main_content').addEventListener('click', () => {
-    
-    console.log(window.currentNav);
-    window.currentNav.click();
-});
+
 

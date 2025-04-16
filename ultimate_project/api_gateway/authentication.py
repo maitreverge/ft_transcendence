@@ -85,7 +85,7 @@ async def login_fastAPI(
     refresh_payload = {
         "user_id": user_id,
         "username": username,
-        "uuid": my_uuid,  #!... and in the refresh token
+        "uuid": my_uuid,  #!... and in the refresh token for avoid generating a double UUID for double auth process
         "exp": expire_refresh,
     }
 
@@ -99,7 +99,6 @@ async def login_fastAPI(
 
     generate_cookies(json_response, access_token, refresh_token)
 
-    # Debug log for headers
     print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
 
     return json_response
@@ -117,12 +116,12 @@ async def logout_fastAPI(request: Request):
 
     response = JSONResponse(content={"success": True, "message": "Déconnexion réussie"})
 
-    # Clear cookies by setting them with empty values and making them expire immediately
+    # Clear JWT + CSRF cookies
     response.delete_cookie(
         key="access_token",
-        path="/",  # Must match how it was set
-        httponly=True,  # Must match how it was set
-        samesite="Lax",  # Must match how it was set
+        path="/",
+        httponly=True,
+        samesite="Lax",
     )
     response.delete_cookie(
         key="refresh_token",
@@ -138,7 +137,7 @@ async def logout_fastAPI(request: Request):
         samesite="Lax",
     )
 
-    print("🔑 JWT Cookies cleared", flush=True)
+    # print("🔑 JWT Cookies cleared", flush=True)
     return response
 
 
@@ -235,7 +234,7 @@ async def verify_2fa_and_login(
 
         print(f"✅ 2FA code verified successfully", flush=True)
 
-        # 2FA verification succeeded, generate JWT tokens
+        # ! At this point : 2FA verification succeeded ==> generate JWT tokens
         user_id = user.get("id")
 
         # Generate JWT tokens
@@ -263,7 +262,6 @@ async def verify_2fa_and_login(
         access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
         refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
-        # Log for debug
         # print(f"2FA Verified. Access Token: {access_token[:20]}...", flush=True)
         # print(f"2FA Verified. Refresh Token: {refresh_token[:20]}...", flush=True)
 
@@ -274,8 +272,7 @@ async def verify_2fa_and_login(
 
         generate_cookies(json_response, access_token, refresh_token)
 
-        # Debug log for headers
-        print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
+        # print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
 
         return json_response
 
@@ -295,7 +292,6 @@ async def verify_2fa_and_login(
         )
 
 
-# @router.post("/auth/register/")
 async def register_fastAPI(
     request: Request,
     response: Response,

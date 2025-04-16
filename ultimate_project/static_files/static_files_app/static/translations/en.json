@@ -1,26 +1,19 @@
 {
-    "Accueil": "Home",
-    "first name": "First name",
-    "last name": "Last name",
-    "Display Name": "Display name",
-    "Email Address": "Email address",
-    "Friends": "Friends",
-    "Update profile": "Update profile",
-    "Delete profile": "Delete profile",
-    "Avatar": "Avatar",
-    "Add your picture here": "Add your picture here",
-    "Match simple": "Single match",
-    "Tournoi": " Tournament",
-    "Profil": " Profile",
-    "Statistiques": " Statistics",
+    "Menu": "Menu",
     "Logout": "Logout",
-    "Number of friends": "Number of friends",
-    "Actual number of friends: ": "Actual number of friends: ",
-    "Games played": "Games played: ",
-    "games won: ": "games won: ",
-    "Games lost: ": "Games lost: ",
-    "Ready to Leave?": "Ready to Leave?",
-    "Logout-leave": "\"Logout\" below if you are ready to end your current session.",
-    "cancel": "cancel"
-}
-    
+    "Match": "Match",
+    "Tournament": "Tournament",
+    "Profile": "Profile",
+    "Statistics": "Statistics",
+    "Home": "Home",
+    "Create Tournament": "Create Tournament",
+    "Add Player": "Add Player",
+    "Player Pool": "Player Pool",
+    "Close": "Close",
+    "Info:": "Info:",
+
+    "ReadyToLeaveTitle": "Ready to Leave?",
+    "ReadyToLeaveText": "Select \"Logout\" below if you are ready to end your current session.",
+    "Cancel": "Cancel"
+  }
+
