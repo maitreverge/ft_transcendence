@@ -57,7 +57,7 @@
 	top:0;
 	left:0;
 	width:100vw;
-	height:85vh;
+	height:100vh;
     background-color: rgba(30, 30, 30, 1);
     z-index: 200;
 }
@@ -68,7 +68,6 @@
     left: 0;
     width: 100vw;
     height: 15vh;
-    background-color: rgba(30, 30, 30, 1);
     color: white;
     z-index: 999;
     display: flex;
@@ -224,8 +223,8 @@
 }
 
 #scene-container {
-    width: 80vw;
-    height: 80vh;
+    width: 80%;
+    height: 80%;
     margin: 0 auto;
     border: 2px solid white;
 }
