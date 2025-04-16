@@ -1,11 +1,8 @@
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 import pyotp
-import httpx
 from django.http import HttpRequest
-from django.http import HttpResponseRedirect
 #Custom import
 from utils import manage_user_data
 
@@ -65,7 +62,6 @@ async def handle_get_delete(request, username, context):
         context["error"] = "Something went wrong when getting the delete page. Please try again later."
         return render(request, "partials/conf/delete_acc/error_del.html", context), "is_error"
     
-# will neeed to modfy this code
 @require_http_methods(["GET", "POST"])
 @ensure_csrf_cookie
 async def delete_account_view(request: HttpRequest):
@@ -77,7 +73,8 @@ async def delete_account_view(request: HttpRequest):
         elif request.method == "GET":
             response, page_name = await handle_get_delete(request, context["username"], context)
         if request.headers.get("HX-Request"):
-            return (response)
+            if request.headers.get("HX-Target") == "account-content":
+                return (response)
         if page_name == "is_error":
             context["page"] = "partials/conf/delete_acc/error_del.html"
         elif page_name == "is_success":
@@ -88,6 +85,7 @@ async def delete_account_view(request: HttpRequest):
     except Exception as e:
         print(f"\n❌ Exception in delete_account_view: {e}\n", flush=True)
         if request.headers.get("HX-Request"):
-            return render(request, "partials/conf/delete_acc/error_del.html", context)
+            if request.headers.get("HX-Target") == "account-content":
+                return render(request, "partials/conf/delete_acc/error_del.html", context)
         context["page"] = "partials/conf/delete_acc/error_del.html"
         return render(request, "layouts/account.html", context)

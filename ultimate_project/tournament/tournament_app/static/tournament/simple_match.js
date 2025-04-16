@@ -367,7 +367,7 @@ function invitationCancelled(targetName) {
 
 	console.log(`invitation with ${targetName} is cancelled`);
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled by ", "invitation cancelled by ", "", targetName)
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled !", "invitation cancelled !", "", "")
 	// alert(`invitation with ${targetName} is cancelled`);
 	if (window.busyElement)	
 		window.busyElement.classList.remove("invitation-waiting");
@@ -394,8 +394,7 @@ function selfBusy() {
 
 function invitationRefused(targetName) {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled by ", "invitation cancelled by ", "", targetName)
-
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled !", "invitation cancelled !", "", "")
     if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;

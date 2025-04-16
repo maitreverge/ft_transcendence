@@ -27,7 +27,7 @@
 #pattern {
 	position:relative;
 	margin:10px;
-	background-color: rgb(8, 189, 250);	
+	background-color: var(--title-color);	
 }
 
 /* #m1 {

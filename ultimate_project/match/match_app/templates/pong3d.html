@@ -3,7 +3,7 @@
 
 <link rel="stylesheet" href="{% static 'match/styles3d.css' %}">
 
-<script class="match-script">
+<!-- <script class="match-script">
     window.rasp = "{{ rasp }}"; 
     window.pidom = "{{ pidom }}";
     window.matchId = "{{ matchId }}";
@@ -11,7 +11,21 @@
     window.selfName = "{{ playerName }}";
     window.player2Id = "{{ player2Id }}";
     window.player2Name = "{{ player2Name }}";
-</script>
+</script> -->
+<div style="display:none">
+	<head>
+		<link rel="stylesheet" href="{% static 'match/styles.css' %}">
+		<script class="match-script">
+			window.rasp = "{{ rasp }}"; 
+			window.pidom = "{{ pidom }}";
+			window.matchId = "{{ matchId }}";
+			window.playerId = "{{ playerId }}";
+			window.selfName = "{{ playerName }}";
+			window.player2Id = "{{ player2Id }}";
+			window.player2Name = "{{ player2Name }}";
+		</script>	
+	</head>
+</div>
 
 <div id="match">
 

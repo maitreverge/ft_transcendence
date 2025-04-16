@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import tournament_app.services.tournament_consumer as t_cs
 import requests
 import aiohttp
+import asyncio
 
 def simple_match(request: HttpRequest, user_id):
     
@@ -39,7 +40,7 @@ def watch_dog(request : HttpRequest):
     tou_ret = t_cs.TournamentConsumer.watch_dog(request)
     if tou_ret:
         return JsonResponse(tou_ret)
-    return JsonResponse({"error": "No match found"}, status=500)
+    return JsonResponse({"error": "No match found"}, status=504)
 
 @csrf_exempt
 async def match_players_update(request: HttpRequest):
@@ -92,12 +93,21 @@ def tournament_pattern(request: HttpRequest, tournament_id):
     )
 
 async def send_db(path, result):
+    print(f"SEND DB {result}", flush=True)
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                f"http://databaseapi:8007/{path}", json=result, timeout=aiohttp.ClientTimeout(total=10)
+            ) as response:
+                if response.status in (200, 201):
+                    print(f"Success: {response.status}", flush=True)
+                else:
+                    err = await response.text()
+                    print(f"[HTTP ERROR] Status {response.status}: {err}", flush=True)
+    except aiohttp.ClientError as e:
+        print(f"[REQUEST FAILED] Client error: {str(e)}", flush=True)
+    except asyncio.TimeoutError:
+        print("[REQUEST FAILED] Timeout error", flush=True)
+    except Exception as e:
+        print(f"[REQUEST FAILED] Unexpected error: {str(e)}", flush=True)
 
-	print(f"SEND DB {result}", flush=True)
-	# return	
-	async with aiohttp.ClientSession() as session:
-		async with session.post(
-			f"http://databaseapi:8007/{path}", json=result) as response:				
-			if response.status not in (200, 201):
-				err = await response.text()
-				print(f"Error HTTP {response.status}: {err}", flush=True)

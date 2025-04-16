@@ -18,7 +18,7 @@ BASE_URL = "https://localhost:8443"
 URLS = [
     f"{BASE_URL}/home/",
     f"{BASE_URL}/account/profile/",
-    f"{BASE_URL}/account/game-stats/",
+    f"{BASE_URL}/account/game-stats/overview/",
     f"{BASE_URL}/tournament/simple-match/",
     f"{BASE_URL}/tournament/tournament/",
 ]
@@ -73,7 +73,7 @@ def run(playwright: Playwright) -> None:
             # After logout, we have none of the three cookies
             expected_cookies = {}
         
-        print(f"Coockies present = {cookie_names}")
+        # print(f"Coockies present = {cookie_names}")
 
         # Assertions to check if the cookies are correct
         assert all(

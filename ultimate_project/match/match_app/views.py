@@ -54,17 +54,26 @@ def enter_match2d(request: HttpRequest):
 
 def enter_match3d(request: HttpRequest):
 
-    return render(
-        request,
-        "pong3d.html",
-        {
-            "rasp": os.getenv("rasp", "false"),
-            "pidom": os.getenv("HOST_IP", "localhost:8443"),
-            "matchId": safe_int(request.GET.get("matchId", "0")),
-            "playerId": safe_int(request.GET.get("playerId", "0")),
-            "playerName": request.GET.get("playerName", "0"),
-        },
-    )
+	client_host = request.get_host().split(":")[0]
+
+	if client_host in ["127.0.0.1", "localhost"]:
+		pidom = "localhost:8443"
+	else:
+		pidom = os.getenv("HOST_IP", "localhost:8443")
+
+	return render(
+		request,
+		"pong3d.html",
+		{
+			"rasp": os.getenv("rasp", "false"),
+			"pidom": os.getenv("HOST_IP", "localhost:8443"),
+			"matchId": safe_int(request.GET.get("matchId", "0")),
+			"playerId": safe_int(request.GET.get("playerId", "0")),
+			"playerName": request.GET.get("playerName", "0"),
+			"player2Id": safe_int(request.GET.get("player2Id", "0")),
+			"player2Name": request.GET.get("player2Name", "0"),
+		},
+	)
 
 async def stop_match(request: HttpRequest, playerId, matchId):
 

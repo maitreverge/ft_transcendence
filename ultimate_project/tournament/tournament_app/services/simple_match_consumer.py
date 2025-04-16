@@ -3,6 +3,9 @@ import json
 import requests
 import aiohttp
 import html
+from django.utils.dateparse import parse_datetime
+from pprint import pprint
+
 
 players = []
 selfPlayers = []
@@ -311,14 +314,42 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		win = max(1, match_results["winnerId"] or 0)
 		score_p1 = match_results["score"][0]
 		score_p2 = match_results["score"][1]
-		
+		start_time = parse_datetime(match_results["startTime"])
+		end_time = parse_datetime(match_results["endTime"])
+	
 		data = {
             "player1": p1,
             "player2": p2,
             "winner": win,
             "score_p1": score_p1,
             "score_p2": score_p2,
+            "start_time": start_time.isoformat() if start_time else None,
+            "end_time": end_time.isoformat() if end_time else None,
         }
-
 		path = "api/match/"
 		await sdb(path, data)
+		print(f"WINNER {win}", flush=True)
+		# Update Player 1 stats
+		data_p1 = {
+			"is_won": 1 if win == p1 else 0,
+			"is_lost": 1 if win != p1 else 0,
+			"points_scored": score_p1,
+			"points_conceded": score_p2,
+		}
+		# Update Player 2 stats
+		data_p2 = {
+			"is_won": 1 if win == p2 else 0,
+			"is_lost": 1 if win != p2 else 0,
+			"points_scored": score_p2,
+			"points_conceded": score_p1,
+		}
+		# Send updates to player statistics
+		# custom url for the post update , maybe send noting if bots ??
+		path_p1 = f"api/player/{p1}/stats/update-stats/"
+		await sdb(path_p1, data_p1)
+		path_p2 = f"api/player/{p2}/stats/update-stats/"
+		await sdb(path_p2, data_p2)
+
+  
+  
+

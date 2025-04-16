@@ -25,6 +25,10 @@ class PlayerManager(BaseUserManager):
         extra_fields.setdefault("is_staff", True)
         return self.create_user(username, email, password, **extra_fields)
 
+class PlayerStatisticsManager(models.Manager):
+    def top_by_win_rate(self):
+        # Query the players, filter out those with 0 games played, and order by win_rate
+        return self.get_queryset().filter(games_played__gt=0).order_by('-win_rate')
 
 #  ================= MODELS MANAGED BY THIS MICROSERVICE (user) =================
 class Player(AbstractBaseUser, PermissionsMixin):
@@ -64,6 +68,46 @@ class Player(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
+class PlayerStatistics(models.Model):
+    # player will always be required for onetoone and foreign key
+    # will used player ID as theprimary key
+    player = models.OneToOneField(Player, primary_key=True, on_delete=models.CASCADE, related_name="statistics")
+
+    games_played = models.IntegerField(default=0)
+    games_won = models.IntegerField(default=0)
+    games_lost = models.IntegerField(default=0)
+    points_scored = models.IntegerField(default=0)
+    points_conceded = models.IntegerField(default=0)
+    
+    win_rate = models.FloatField(default=0.00)  # Stores win rate as a percentage
+    average_score = models.FloatField(default=0.00)  # Stores average score per game
+    
+    best_win_streak = models.IntegerField(default=0)
+    worst_lose_streak = models.IntegerField(default=0)
+    
+    c_win_streak = models.IntegerField(default=0) #current win streak
+    c_lose_streak = models.IntegerField(default=0) #current lose streak
+    
+    nb_tournaments_played = models.IntegerField(default=0) #current lose streak
+    nb_tournaments_won = models.IntegerField(default=0) #current lose streak
+
+    # auto set when usign .save()
+    last_updated = models.DateTimeField(auto_now=True)
+
+    # will use date(str) as key
+    stats_history = models.JSONField(default=dict, blank=True)
+    
+    # PlayerStatistics.objects.get(...) objects is the default manager but can have
+    # a custom one
+    objects = PlayerStatisticsManager() # Custom manager
+
+    class Meta:
+        db_table = "player_statistics"
+
+    def __str__(self):
+        return f"Stats for {self.player.username}"
 
 
 class FriendList(models.Model):
@@ -173,7 +217,6 @@ class Tournament(models.Model):
         return f"Tournament {self.id}"
 
 
-
 class Match(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -181,20 +224,26 @@ class Match(models.Model):
         to=Player,  # Explicit reference to Player model
         on_delete=models.CASCADE,  # If a player is deleted, the match is also deleted
         related_name="player1",
+        to_field="id", # to be more explicit but by default use id
     )
     player2 = models.ForeignKey(
         to=Player,
         on_delete=models.CASCADE,
         related_name="player2",
+        to_field="id", # to be more explicit but by default use id
     )
     winner = models.ForeignKey(  # Renamed from winner_match to winner
         to=Player,
         on_delete=models.CASCADE,
         related_name="winner_match",  # Keep the original related_name to avoid migration issues
+        to_field="id", # to be more explicit but by default use id
     )
 
     score_p1 = models.IntegerField(default=0)
     score_p2 = models.IntegerField(default=0)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+
 
     tournament = models.ForeignKey(
         to=Tournament,

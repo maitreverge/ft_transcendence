@@ -1,0 +1,119 @@
+{% load static %}
+<div id="match-history-content" class="container-fluid mt-3 px-0">
+  {% for match in match_history reversed %}
+  <div
+    class="match-card mb-4 w-100 px-3 py-3 rounded
+      {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}
+    "
+  >
+    <!-- Main Card Content: Flexbox for horizontal alignment -->
+    <div class="d-flex justify-content-between align-items-center">
+      <!-- Left Section: Match Type & Match ID -->
+      <div class="match-type-section text-center d-flex flex-column justify-content-center align-items-baseline ">
+        {% if match.tournament %}
+          <span class="badge bg-tournament text-white mb-2">Tournament ID: #{{ match.tournament }}</span>
+        {% endif %}
+          <span class="badge bg-match text-white">Match ID: #{{ match.id }}</span>
+      </div>
+
+
+      <!-- Middle Section: Player vs Player and Scores -->
+      <div class="match-info text-center d-flex flex-column justify-content-center align-items-center mx-3">
+        <div class="fs-5 fw-semibold">
+          <span class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}">
+            {{ match.player1_details.username }}
+          </span>
+          <span class="mx-2 text-muted">vs</span>
+          <span class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}">
+            {{ match.player2_details.username }}
+          </span>
+        </div>
+
+        <div class="fs-6 mt-1">
+          <span class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}">
+            {{ match.score_p1 }}
+          </span>
+          <span class="mx-3">:</span>
+          <span class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}">
+            {{ match.score_p2 }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Right Section: Winner -->
+      <div class="winner-section d-flex justify-content-center align-items-center">
+        <span class="badge bg-success text-white">🏅 Winner: {{ match.winner_details.username }}</span>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-center text-muted">No match history available.</p>
+  {% endfor %}
+</div>
+
+
+
+<style>
+  /*Border for winner or looser */
+  .border-lost {
+    border-color: #dc3545 !important;
+    border-width: 3px !important;
+    border-style: solid !important;
+    box-shadow: 0 0 10px 4px rgba(220, 53, 69, 0.75)!important ;
+  }
+
+  .border-won {
+    border-color: #28a745 !important;
+    border-width: 3px !important;
+    border-style: solid !important;
+    box-shadow: 0 0 10px 4px rgba(40, 167, 69, 0.75)!important;
+  }
+
+  .bg-tournament {
+    background-color: #800080;
+  }
+
+  .bg-match {
+    background-color: #007bff;
+  }
+
+
+  .match-card {
+    background-color: #fdfdfd;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border-width: 2px; /* Default border */
+    border-style: solid; /* Default border style */
+    padding-top: 2rem; /* Space for the top section */
+    position: relative; /* Keeps the content inside the card */
+  }
+
+  /* Custom Border Colors for regular matches and tournaments */
+  .border-match {
+    border-color: #007bff; /* Blue border for regular matches */
+  }
+
+  .border-tournament {
+    border-color: #800080; /* Purple border for tournament matches */
+  }
+
+  .blue {
+    color: #007bff;
+    font-weight: 500;
+  }
+
+  .red {
+    color: #dc3545;
+    font-weight: 500;
+  }
+
+  .winner {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.4em 0.6em;
+  }
+</style>

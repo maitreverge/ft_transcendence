@@ -4,6 +4,15 @@ var is_towplayer = false;
 
 function stopMatch(matchId) {
     // unregister the event listeners
+    window.gameInProgress = false;
+	document.body.classList.remove("match-active");
+	cancelAnimationFrame(window.pong3DAnim);
+	const input = document.getElementById("match-player-name");
+	if (input)
+	{
+		input.style.display = "none";
+		input.value = "";
+	}
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
@@ -22,7 +31,7 @@ function stopMatch(matchId) {
 
     if (window.selfMatchId == matchId)
     {
-        fetch(`/match/stop-match/${window.selfId}/${matchId}/`)
+        fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
         .then(response => {
             if (!response.ok)
                 throw new Error(`Error HTTP! Status: ${response.status}`);
@@ -47,7 +56,8 @@ function stopMatch(matchId) {
                 console.log("je vais envoyer 42");
                 window.stopFlag = true
                 window.matchSocket.close(3666);
-                window.matchSocket2.close(3666);
+                if (window.matchSocket2)
+                    window.matchSocket2.close(3666);
             }
             else
             {
@@ -278,7 +288,7 @@ window.addEventListener('resize', function () {
 });
 
 function animate() {
-    requestAnimationFrame(animate);
+    window.pong3DAnim = requestAnimationFrame(animate);
 
     window.tjs_ball.rotation.z += 0.1;
 
@@ -377,70 +387,46 @@ function startCountdown3D(delay)
 	updateCountdown3D();
 }
 
-function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingState) {
+function displayPlayersInfos3D(data, score_div)
+{
+	if (!data.names)
+		return;
+    score_div.innerText = data.score[0] + " | " + data.score[1];
+	const leftName = document.getElementById("inst-left");
+	const rightName = document.getElementById("inst-right");
+	if (window.selfMatchId != window.matchId)
+	{
+		leftName.innerHTML = data.names[0];
+		rightName.innerHTML = data.names[1];		
+	}			
+	else if (window.player2Id != 0)
+	{			
+		leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+		rightName.innerHTML = data.names[1] + "<br> keys: enter / +";	
+	}			
+	else if (data.plyIds)
+	{
+		if (window.playerId == data.plyIds[0])
+		{
+			leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+			rightName.innerHTML = data.names[1];
+		}
+		else
+		{
+			leftName.innerHTML = data.names[0];
+			rightName.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+		} 
+	}	
+}
+
+function onMatchWsMessage3D(
+    event, score_div, [waiting, endCont, end, spec], waitingState) {
     const data = JSON.parse(event.data);
 
-    if (data.timestamp && !data.state) {
-        if (window.gameStartTimestamp === undefined) {
-            window.gameStartTimestamp = data.timestamp;
-            delay = data.delay;
-            console.log("✅ Premier timestamp enregistré:", data.timestamp);
-
-            startCountdown3D(delay);
-        } else {
-            console.log("⏩ Timestamp déjà reçu, ignoré.");
-        }
-        return;
-    }
-
-    if (data.names)
-    {
-        if (is_towplayer)
-        {
-            document.getElementById("inst-left").innerHTML = data.names[0] + "<br> keys: enter / +";
-            document.getElementById("inst-right").innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-        } else {
-            document.getElementById("inst-left").innerHTML = data.names[0];
-            document.getElementById("inst-right").innerHTML = data.names[1];
-        }
-    }
-
-    if (data.state == "end")
-    {
-        let gifUrl;
-        if (window.selfName == data.winnerName)
-            gifUrl = "https://dansylvain.github.io/pictures/sdurif.webp";
-        else if (spec.style.display != "none")
-        {
-            gifUrl = "https://dansylvain.github.io/pictures/tennis.webp";
-            spec.style.display = "none";
-        }
-        else
-            gifUrl = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
-
-        end.innerHTML = `The winner is: ${data.winnerName} <br>
-        Score: ${data.score[0]} : ${data.score[1]} <br>
-        <img src="${gifUrl}"
-        alt="Winner GIF"
-        class="winner-gif">
-        `;
-
-        endCont.classList.add("end-cont");
-        console.log("🏁 Match terminé, reset du timestamp");
-        window.gameStartTimestamp = undefined;
-    }
-
-    if (waitingState[0] != data.state)
-    {
-        waitingState[0] = data.state;
-        if (waiting)
-        {
-            if (data.state == "waiting")
-                waiting.classList.remove("no-waiting");
-            else
-                waiting.classList.add("no-waiting");
-        }
-    }
+    startDelay3D(data);
+    displayPlayersInfos3D(data, score_div);
+    setEnd3D(data, endCont, end, spec);
+    setWaiting3D(data, waiting, waitingState);
 
     if (data.yp1 !== undefined && data.yp2 !== undefined) {
         window.tjs_r1.position.z = (60 / 100) * (data.yp1);
@@ -449,10 +435,101 @@ function onMatchWsMessage3D(event, score_div, [waiting, endCont, end], waitingSt
         window.tjs_ball.position.x = (100 / 100) * (data.ball[0] - 1);
         window.tjs_ball.position.z = (60 / 100) * (data.ball[1] - 1);
     }
+}
 
-    if (data.score !== undefined) {
-        score_div.innerText = data.score[0] + " | " + data.score[1];
+function startCountdown3D(delay)
+{
+	loaderElement = document.querySelector(".loader");
+	if (loaderElement)
+		loaderElement.style.opacity = "1";
+
+    const countdownEl = document.querySelector('.countdown');
+    const countdownEndsAt = window.gameStartTimestamp * 1000 + delay * 1000;
+
+	function updateCountdown() {
+        const now = Date.now();
+        const remaining = Math.ceil((countdownEndsAt - now) / 1000);
+
+        if (remaining > 0) {
+            countdownEl.textContent = remaining;
+            requestAnimationFrame(updateCountdown);
+        } else if (remaining > -1) {
+            countdownEl.textContent = "GO!";
+            requestAnimationFrame(updateCountdown);
+        } else {
+            loaderElement.style.opacity = "0";
+            window.gameStartTimestamp = undefined;
+        }
     }
+	updateCountdown();
+}
+
+function startDelay3D(data)
+{
+	if (data.timestamp && !data.state)
+	{
+		if (window.gameStartTimestamp === undefined)
+		{
+			window.gameStartTimestamp = data.timestamp;           
+			console.log("✅ Premier timestamp enregistré:", data.timestamp);	
+            startCountdown3D(data.delay);
+		}
+		else 
+			console.log("⏩ Timestamp déjà reçu, ignoré.");		
+		return;
+	}
+}
+
+function setEnd3D(data, endCont, end, spec)
+{
+	if (data.state == "end")
+	{	
+        let url;
+        if (window.selfName == data.winnerName)
+            url = "https://dansylvain.github.io/pictures/sdurif.webp";
+		else if (spec.style.display != "none")
+		{
+			url = "https://dansylvain.github.io/pictures/tennis.webp";
+			spec.style.display = "none";
+		}
+		else 
+			url = "https://dansylvain.github.io/pictures/MacronExplosion.webp";
+		end.innerHTML = `The winner is: ${data.winnerName} <br> 
+		Score: ${data.score[0]} : ${data.score[1]} <br> 
+		<img src="${url}" 
+		alt="Winner GIF" 
+		class="winner-gif">
+		`;		
+		endCont.classList.add("end-cont");
+		console.log("🏁 Match terminé, reset du timestamp");
+		window.gameStartTimestamp = undefined;	
+	}
+}
+
+function setWaiting3D(data, waiting, waitingState)
+{
+	if (waitingState[0] != data.state) 
+	{
+		waitingState[0] = data.state;	
+		if (waiting) 
+		{
+			if (data.state == "waiting")			
+				waiting.classList.remove("no-waiting");
+			else			
+				waiting.classList.add("no-waiting");			
+		}			
+	}
+}
+
+function setSpec3D(spec)
+{
+	if (spec)
+	{
+		if (window.selfMatchId != window.matchId)
+			spec.style.display = "block";
+		else
+			spec.style.display = "none";
+	}
 }
 
 function sequelInitMatchWs3D(socket) {
@@ -462,21 +539,13 @@ function sequelInitMatchWs3D(socket) {
         document.getElementById("end")
     ];
     let waitingState = ["waiting"];
-
     const score_div = document.getElementById("score");
-
-    socket.onmessage = event => onMatchWsMessage3D(
-        event, score_div, [waiting, endCont, end], waitingState);
-
     const spec = document.getElementById("spec")
-    if (spec)
-    {
-        if (window.selfMatchId != window.matchId)
-            spec.style.display = "block";
-        else
-            spec.style.display = "none";
-    }
-    initSecPlayer3D();
+    setSpec3D(spec);
+    socket.onmessage = event => onMatchWsMessage3D(
+        event, score_div, [waiting, endCont, end, spec], waitingState);
+    if (window.player2Id != 0)
+		initSecPlayer3D();	
     setCommands3D(socket, window.matchSocket2);
 }
 
@@ -484,19 +553,18 @@ function initSecPlayer3D() {
 
     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
         window.pidom = "localhost:8443";
-    else
-        window.pidom = window.location.hostname + ":8443";
+	else
+		window.pidom = window.location.hostname + ":8443";
 
     window.matchSocket2 = new WebSocket(
         `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${-window.playerId}`);
-    window.matchSocket2.onopen = () => {
-        console.log("Connexion Match établie 2nd Player😊");
-    };
-    window.matchSocket2.onclose = (event) => {
-        console.log("Connexion Match disconnected 😈 2nd Player");
-    };
-    // setCommands3D2(window.matchSocket2);
+        `?playerId=${window.player2Id}`);
+	window.matchSocket2.onopen = () => {
+		console.log("Connexion Match établie 2nd Player😊");
+	};
+	window.matchSocket2.onclose = (event) => {
+		console.log("Connexion Match disconnected 😈 2nd Player");
+	};	
 }
 
 function initMatchWs3D() {
@@ -511,6 +579,8 @@ function initMatchWs3D() {
     console.log("ANTILOPP: " + window.antiLoop);
     if (window.matchSocket && window.antiLoop)
         return window.matchSocket.close();
+    if (window.matchSocket2 && window.antiLoop)
+		return window.matchSocket2.close();
     // if (window.matchSocket)
     //     window.matchSocket.close();
     window.antiLoop = true;

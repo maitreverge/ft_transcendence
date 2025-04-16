@@ -38,35 +38,35 @@
     <!-- Dropdown - Alerts -->
     <div class="background_color dropdown-list dropdown-menu dropdown-menu-left shadow animated--grow-in"
       aria-labelledby="alertsDropdown">
-      <h6 class="dropdown-header navbars_color ">
+      <h6 data-translate="Menu" class="dropdown-header navbars_color ">
         Menu
       </h6>
       <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/" hx-target="#main_div"
         id="userDropdown" role="button">
         <span id="popup-nav-match" class="mr-2">
           <i class="mr-2 fa-solid fa-table-tennis-paddle-ball"></i>
-          <span data-translate="Match simple">Match simple</span>
+          <span data-translate="Match">Match</span>
         </span>
       </a>
       <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/tournament/" hx-target="#main_div"
         id="userDropdown" role="button">
         <span id="popup-nav-tournoi" class="mr-2">
           <i class="mr-2 fas fa-trophy"></i>
-          <span data-translate="Tournoi">Tournoi</span>
+          <span data-translate="Tournament">Tournament</span>
         </span>
       </a>
       <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/account/profile/" hx-target="#main_div"
         id="userDropdown" role="button">
         <span id="popup-nav-profile" class="mr-2">
           <i class="mr-2 fa-solid fa-user"></i>
-          <span data-translate="Profil">Profile</span>
+          <span data-translate="Profile">Profile</span>
         </span>
       </a>
-      <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/account/game-stats/" hx-target="#main_div"
+      <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/account/game-stats/overview/" hx-target="#main_div"
         id="userDropdown" role="button">
         <span id="popup-nav-stats" class="mr-2">
           <i class="mr-2 fa-solid fa-chart-simple"></i>
-          <span data-translate="Statistiques">Stats</span>
+          <span data-translate="Statistics">Statistics</span>
         </span>
       </a>
     </div>
@@ -85,28 +85,28 @@
     hx-target="#main_div" id="userDropdown" role="button">
     <span id="nav-match" class="mr-2 d-none d-md-inline">
       <i class="d-none d-lg-inline fa-solid fa-table-tennis-paddle-ball"></i>
-      <span class=" navbar-link" data-translate="Match simple">Match simple</span>
+      <span class=" navbar-link" data-translate="Match">Match</span>
     </span>
   </a>
   <a class="nav-link d-none d-lg-inline" hx-trigger="click" hx-push-url="true" hx-get="/tournament/tournament/"
     hx-target="#main_div" id="userDropdown" role="button">
     <span id="nav-tournoi" class="mr-2 d-none d-md-inline">
       <i class="d-none d-lg-inline fas fa-trophy"></i>
-      <span class=" navbar-link" data-translate="Tournoi">Tournoi</span>
+      <span class=" navbar-link" data-translate="Tournament">Tournament</span>
     </span>
   </a>
   <a class="nav-link d-none d-lg-inline" hx-trigger="click" hx-push-url="true" hx-get="/account/profile/"
     hx-target="#main_div" id="userDropdown" role="button">
     <span id="nav-profile" class="mr-2 d-none d-md-inline text-dark-gray">
       <i class="d-none d-lg-inline fa-solid fa-user"></i>
-      <span class=" navbar-link" data-translate="Profil">Profile</span>
+      <span class=" navbar-link" data-translate="Profile">Profile</span>
     </span>
   </a>
-  <a class="nav-link d-none d-lg-inline" hx-trigger="click" hx-push-url="true" hx-get="/account/game-stats/"
+  <a class="nav-link d-none d-lg-inline" hx-trigger="click" hx-push-url="true" hx-get="/account/game-stats/overview/"
     hx-target="#main_div" id="userDropdown" role="button">
     <span id="nav-stats" class="mr-2 d-none d-md-inline text-dark-gray">
       <i class="d-none d-lg-inline fa-solid fa-chart-simple"></i>
-      <span class=" navbar-link" data-translate="Statistiques">Stats</span>
+      <span class=" navbar-link" data-translate="Statistics">Statistics</span>
     </span>
   </a>
 </div>
@@ -151,12 +151,12 @@
         <a id="pre-modal-profile" class="dropdown-item" hx-trigger="click" hx-push-url="true" hx-get="/account/profile/"
           hx-target="#main_div">
           <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-          <span data-translate="Profil"> Profile </span>
+          <span data-translate="Profile">Profile</span>
         </a>
         <div class="dropdown-divider"></div>
         <a id="pre-modal-logout" class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
           <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-          <span id="logoutButton" data-translate="Logout"> Logout </span>
+          <span id="logoutButton" data-translate="Logout">Logout</span>
         </a>
       </div>
     </li>

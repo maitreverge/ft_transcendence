@@ -66,12 +66,7 @@
 	background: rgb(251, 255, 0);
 } */
 
-#simple-selections {
 
-	width:100%;
-	height:100%;
-	background-color: rgb(211, 226, 225);
-}
 
 .invitation-waiting {
 	background-color: rgb(151, 175, 16);
@@ -140,7 +135,10 @@ button {
     background-color: rgb(8, 234, 250);
 }
 
-
+#matchs-cont
+{
+    background-color: red;
+}
 
 #match-player-name {
 	display: none;
@@ -154,7 +152,7 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* fond semi-transparent */
+    background: rgba(0, 0, 0, 0.75); /* fond semi-transparent */
     display: none;
     align-items: center;
     justify-content: center;
@@ -274,6 +272,7 @@ button {
   
   #pattern {
 	border-radius: 5px;
+  background-color: red;
 
   }
   #overlay-pattern {
@@ -302,34 +301,3 @@ button {
   #m1, #firstline, #m2, #m3, #secline {
     border-radius: 5%;
   }
-
-  /* tests */
-
-  /* #simple-selections {
-    background-color: lightgray;
-  }
-
-  @media (min-width: 576px) {
-    #simple-selections {
-      background-color: lightblue;
-    }
-  }
-
-  @media (min-width: 768px) {
-    #simple-selections {
-      background-color: orange;
-    }
-  }
-
-  @media (min-width: 992px) {
-    #simple-selections {
-      background-color: lightgreen;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    #simple-selections {
-      background-color: red;
-    }
-  } */
-

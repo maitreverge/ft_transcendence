@@ -3,6 +3,22 @@ from django.http import HttpRequest
 import os
 from typing import Tuple, Dict
 from django.http import JsonResponse
+from pprint import pprint
+from pprint import PrettyPrinter
+
+
+async def build_context(request: HttpRequest) -> Dict:
+    """Build the base context with username from Request if found"""
+    username = request.headers.get("X-Username")
+    context = {
+        "rasp": os.getenv("rasp", "false"),
+        "pidom": os.getenv("pi_domain", "localhost:8443"),
+    }
+    if username:
+        context["username"] = username
+    else:
+        context["username"] = None
+    return context
 
 async def get_user_info_w_username(username):
     """
@@ -14,10 +30,6 @@ async def get_user_info_w_username(username):
             response = await client.get(
                 f"http://databaseapi:8007/api/player/?username={username}"
             )
-
-            response_text = response.text  # For plain text responses
-            print("\n get_user_info_w_username response: ", response_text, "\n", flush=True) #rm
-
             if response.status_code == 200:
                 data = response.json()
                 if isinstance(data, list) and len(data) > 0:
@@ -128,28 +140,82 @@ async def delete_user_w_user_id(user_id):
         print(f"Exception in get_if_user_credentials_valid: {str(e)}", flush=True)
         return None
 
-async def delete_user_cookies_from_fast_api(request):
-    if request.method == "POST":
-        fastapi_url = "http://ctn_api_gateway:8005/auth/logout/"
-        headers = {key: value for key, value in request.headers.items()}
-        cookies = request.COOKIES
+async def get_user_game_stats(user_id):
+    """
+    Get sanitize match data for a user_id from the database API
+    """
+    try:
         async with httpx.AsyncClient() as client:
-            response = await client.post(fastapi_url, headers=headers, cookies=cookies, content=None)
-        if response.status_code == 200:
-            return JsonResponse({"message": "Successfully logged out."})
-        else:
-            return JsonResponse({"error": "Failed to log out."}, status=response.status_code)
-    return JsonResponse({"error": "Only POST method is allowed."}, status=405)
+            response = await client.get(f"http://databaseapi:8007/api/player_stats/?player_id={user_id}")
+            response_data = response.json()
+            print("JSON DATA\n\n:", flush=True)
+            pprint(response_data)
+            print("--\n", flush=True)
+            if isinstance(response_data, list) and response_data:
+                payload = response_data[0]
+                main_stats = payload.get('main_stats', {})
+                stats_history = payload.get('stats_history', {})
 
-async def build_context(request: HttpRequest) -> Dict:
-    """Build the base context with username from Request if found"""
-    username = request.headers.get("X-Username")
-    context = {
-        "rasp": os.getenv("rasp", "false"),
-        "pidom": os.getenv("pi_domain", "localhost:8443"),
-    }
-    if username:
-        context["username"] = username
-    else:
-        context["username"] = None
-    return context
+            """ print("PAYLOAD:",  flush=True)
+            for key, value in payload.items():
+                print(f"{key}: {value}",  flush=True)
+            
+            print("Main Stats:",  flush=True)
+            for key, value in main_stats.items():
+                print(f"{key}: {value}",  flush=True)
+            print("\nStats History:", flush=True)
+            if stats_history:  # Check if stats_history is not empty
+                for date, stats in stats_history.items():
+                    print(f"Date: {date}",  flush=True)
+                    for stat_key, stat_value in stats.items():
+                        print(f"  {stat_key}: {stat_value}",  flush=True)
+            else:
+                print("No stats history available.",  flush=True) """
+    
+            if response.status_code == 200:
+                return main_stats, stats_history
+            return None, None
+    except Exception as e:
+        print(f"Error getting user stats: {str(e)}", flush=True)
+        return None, None
+
+async def get_user_match_history(user_id):
+    """
+    Get sanitize match data for a user_id from the database API
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"http://databaseapi:8007/api/match/?player_id={user_id}")
+            response_data = response.json()
+            
+            print("JSON DATA MATCH HISTORY \n\n:", flush=True)
+            pprint(response_data)
+            print("--\n", flush=True)
+            
+            """ payload = response_data[0]
+            main_stats = payload.get('main_stats', {})
+            stats_history = payload.get('stats_history', {}) """
+
+            """ print("PAYLOAD:",  flush=True)
+            for key, value in payload.items():
+                print(f"{key}: {value}",  flush=True)
+            
+            print("Main Stats:",  flush=True)
+            for key, value in main_stats.items():
+                print(f"{key}: {value}",  flush=True)
+            print("\nStats History:", flush=True)
+            if stats_history:  # Check if stats_history is not empty
+                for date, stats in stats_history.items():
+                    print(f"Date: {date}",  flush=True)
+                    for stat_key, stat_value in stats.items():
+                        print(f"  {stat_key}: {stat_value}",  flush=True)
+            else:
+                print("No stats history available.",  flush=True) """
+    
+            if response.status_code == 200:
+                return response_data
+            return None, None
+    except Exception as e:
+        print(f"Error getting user stats: {str(e)}", flush=True)
+        return None, None
+

@@ -2,6 +2,7 @@ import json
 import requests
 import asyncio
 import aiohttp
+from django.utils.dateparse import parse_datetime
 
 class Tournament():
 	
@@ -252,30 +253,59 @@ class Tournament():
 
 	async def save_tournament_matches(self, matches, tournament_id):
 		
-		from tournament_app.views import send_db as update_match
+		from tournament_app.views import send_db as sdb
 
-		path = "api/match/"
 		
         # Loops 3 times because there is 3 matches within a tournament
-		for _ in range(3):
-            # `or 0` Handles `None` users
-			p1 = max(1, matches[_]["matchResult"]["p1Id"] or 0)
-			p2 = max(1, matches[_]["matchResult"]["p2Id"] or 0)
-			win = max(1, matches[_]["matchResult"]["winnerId"] or 0)
-			score_p1 = matches[_]["matchResult"]["score"][0]
-			score_p2 = matches[_]["matchResult"]["score"][1]
+		for i in range(3):
+			# `or 0` Handles `None` users
+			p1 = max(1, matches[i]["matchResult"]["p1Id"] or 0)
+			p2 = max(1, matches[i]["matchResult"]["p2Id"] or 0)
+			win = max(1, matches[i]["matchResult"]["winnerId"] or 0)
+			score_p1 = matches[i]["matchResult"]["score"][0]
+			score_p2 = matches[i]["matchResult"]["score"][1]
 			tournament = tournament_id
-			
 			# Compile each key in a JSON body
+			# HERE FOR MY DATA
+			start_time = parse_datetime(matches[i]["matchResult"]["startTime"])
+			end_time = parse_datetime(matches[i]["matchResult"]["endTime"])
+			
 			data = {
 				"player1": p1,
 				"player2": p2,
 				"winner": win,
 				"score_p1": score_p1,
 				"score_p2": score_p2,
+				"start_time": start_time.isoformat() if start_time else None,
+    			"end_time": end_time.isoformat() if end_time else None,
 				"tournament": tournament,
 			}
-			await update_match(path, data)
+			path = "api/match/"
+			await sdb(path, data)
+			# Update Players stats
+			data_p1 = {
+				"is_won": 1 if win == p1 else 0,
+				"is_lost": 1 if win != p1 else 0,
+				"points_scored": score_p1,
+				"points_conceded": score_p2,
+				"nb_tournaments_played": 1 if i == 0 else 0,
+				"nb_tournaments_won": 1 if win == p1 and i == 2 else 0,
+			}
+			data_p2 = {
+				"is_won": 1 if win == p2 else 0,
+				"is_lost": 1 if win != p2 else 0,
+				"points_scored": score_p2,
+				"points_conceded": score_p1,
+				"nb_tournaments_played": 1 if i == 0 else 0,
+				"nb_tournaments_won": 1 if win == p2 and i == 2 else 0,
+			}
+			# Send updates to player statistics
+			path_p1 = f"api/player/{p1}/stats/update-stats/"
+			await sdb(path_p1, data_p1)
+			path_p2 = f"api/player/{p2}/stats/update-stats/"
+			await sdb(path_p2, data_p2)
+
+   
 
 	async def extract_last_tournament_id(self):
 		async with aiohttp.ClientSession() as session:

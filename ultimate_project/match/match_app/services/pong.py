@@ -7,6 +7,7 @@ import aiohttp
 from enum import Enum
 import requests
 from datetime import datetime
+from django.utils import timezone
 
 import match_app.services.pong_physics as physics
 import match_app.services.pong_scores as scores
@@ -47,6 +48,7 @@ class Pong:
 		self.winner = None
 		self.myEventLoop = None
 		self.tasks = None
+		self.watch_cat_task = None
 		self.init_physics()
 
 	def init_physics(self):
@@ -103,11 +105,13 @@ class Pong:
 				asyncio.gather(*self.tasks))
 		except Exception as e:
 			print(f"\033[31mException raised: {e}\033[0m", flush=True)
-		finally:
+		finally:			
+			print(f"ALL TASKS: {self.tasks}")
+			print(f"WATCH CAT TASK: {self.watch_cat_task}")
 			self.myEventLoop.close()				
 			from match_app.views import del_pong
 			del_pong(self.id)
-			print(f"Event loop fermé proprement pour match {self.id}", flush=True)
+			print(f"\033[42mEnd Event loop\033[0m {self.id}", flush=True)
 
 	async def launch_game(self):
 			
@@ -119,8 +123,9 @@ class Pong:
 			else:
 				self.set_waiting_state(self.players)							
 			await asyncio.sleep(self.gear_delay)
-
-		print(f"in match after WHILE id:{self.id}", flush=True)
+		if self.watch_cat_task:
+			await self.watch_cat_task	
+		print(f"\033[41mEnd Task Launch Game\033[0m {self.id}", flush=True)
 
 	def get_users(self):
 
@@ -147,8 +152,8 @@ class Pong:
 		if not self.start_flag:
 			self.start_time = self.get_time()
 			await self.send_start(3)
-			self.tasks.append(
-				self.myEventLoop.create_task(self.watch_cat(self.start_delay)))
+			self.watch_cat_task = self.myEventLoop.create_task(
+				self.watch_cat(self.start_delay))
 		self.state = State.running
 		self.winner = None
 		self.start_flag = True
@@ -161,7 +166,7 @@ class Pong:
 			self.move_ball()
 
 	def get_time(self):
-		return datetime.now().astimezone().isoformat(timespec='seconds')
+		return timezone.localtime(timezone.now()).isoformat(timespec='seconds')
 
 	def set_waiting_state(self, players):
 
@@ -188,6 +193,7 @@ class Pong:
 				await self.are_alives_players()
 			delay += 1
 			await asyncio.sleep(1.00)
+		print(f"\033[41mEnd Task Watch Dog\033[0m {self.id}", flush=True)
 
 	async def are_alives_players(self):
 
@@ -197,11 +203,15 @@ class Pong:
 				f"?matchId={self.id}"
 				f"&p1Id={self.plyIds[0]}&p2Id={self.plyIds[1]}"
 			) as response:				
-				if response.status not in (200, 201):
+				if response.status not in (200, 201, 504):
 					err = await response.text()
-					print(f"Error HTTP {response.status}: {err}", flush=True)
+					print(f"Error HTTP {response.status}: {err} {self.id}",
+						flush=True)
 					return
-				data = await response.json()
+				if response.status == 504:
+					data = {'p1': False, 'p2': False}	
+				else:
+					data = await response.json()
 				print(f"PLAYERS CHECKING ALIVE: {data}", flush=True)
 				await self.alives_players_strategy(data)
 
@@ -220,6 +230,7 @@ class Pong:
 
 	async def watch_cat(self, pause_delay):
 
+		print(f"\033[44mStart Task Watch Cat\033[0m {self.id}", flush=True)
 		self.pause = True
 		delay = 0
 		while self.state != State.end:
@@ -228,6 +239,7 @@ class Pong:
 				break
 			delay += 1
 			await asyncio.sleep(1.00)
+		print(f"\033[41mEnd Task Watch Cat\033[0m {self.id}", flush=True)
 
 	async def stop(self, playerId):
 
@@ -279,6 +291,7 @@ class Pong:
 					except Exception as e:
 						pass				
 			await asyncio.sleep(self.send_delay)
+		print(f"\033[41mEnd Task Send State\033[0m {self.id}", flush=True)
 
 	async def sendFinalState(self):
 
