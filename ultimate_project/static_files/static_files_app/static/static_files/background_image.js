@@ -28,7 +28,7 @@ document.querySelectorAll('.side-nav').forEach(item => {
 
 function setFirstBgImage()
 {
-    window.currentBg = 'https://dansylvain.github.io/pictures/logo_red.jpg';
+    window.currentBg = 'https://dansylvain.github.io/pictures/noPanicRusted.jpg';
     window.applyBackground(window.currentBg);
 
 }
