@@ -1,10 +1,7 @@
 {% load static %}
 <script src="/static/static_files/static_files/vendor/chart.js/Chart.min.js"></script>
 {{ main_stats|json_script:"mainStats" }}
-<script
-  src="{% static '/js/overview_chart.js' %}"
-  onload="initializeCharts()"
-></script>
+<script src="{% static '/js/overview_chart.js' %}"></script>
 
 <div id="overview-content" class="container-fluid px-0 mt-4">
   <!-- Single Card with Multiple Stats -->
@@ -17,7 +14,6 @@
     </div>
     <!-- Vertical Separator -->
     <div class="small-vertical-accent-bar d-none d-md-block"></div>
-
     <!-- Second section: Games Won -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Games Won</p>
@@ -26,30 +22,33 @@
     </div>
     <!-- Vertical Separator -->
     <div class="big-vertical-accent-bar d-none d-md-block"></div>
-
     <!-- Third section: Tournaments Played -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Tournaments Played</p>
-      <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.nb_tournaments_played }}</h1>
+      <h1 class="stats-top-number mb-1 mt-1">
+        {{ main_stats.nb_tournaments_played }}
+      </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
     <!-- Vertical Separator -->
     <div class="small-vertical-accent-bar d-none d-md-block"></div>
-
     <!-- Fourth section: Tournaments Won -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Tournaments Won</p>
-      <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.nb_tournaments_won }}</h1>
+      <h1 class="stats-top-number mb-1 mt-1">
+        {{ main_stats.nb_tournaments_won }}
+      </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
   </div>
-
   <!-- Second Card for Win/Loss Streaks -->
   <div class="poly-card d-flex flex-wrap col-12 mx-auto py-2 thinner-card mb-4">
     <!-- First section: Current Win Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Current Win Streak</p>
-      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.c_win_streak }}</h1>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
+        {{ main_stats.c_win_streak }}
+      </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
     <!-- Vertical Separator -->
@@ -58,7 +57,9 @@
     <!-- Second section: Current Lose Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Current Lose Streak</p>
-      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.c_lose_streak }}</h1>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
+        {{ main_stats.c_lose_streak }}
+      </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
     <!-- Vertical Separator -->
@@ -67,7 +68,9 @@
     <!-- Third section: Best Win Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Best Win Streak</p>
-      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.best_win_streak }}</h1>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
+        {{ main_stats.best_win_streak }}
+      </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
     <!-- Vertical Separator -->
@@ -76,11 +79,12 @@
     <!-- Fourth section: Worst Lose Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Worst Lose Streak</p>
-      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">{{ main_stats.worst_lose_streak }}</h1>
+      <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
+        {{ main_stats.worst_lose_streak }}
+      </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
   </div>
-
   <!-- Charts Section -->
   <div class="row mt-4">
     <!-- First Chart: Win/Loss Pie Chart -->
@@ -95,12 +99,14 @@
           </div>
         </div>
         <hr />
-        <div class="chart-stats-container">
+        <div class="under-chart-container">
           <p>
-            <span>Games won : </span><span class="text-prim">{{ main_stats.games_won }}</span>
+            <span>Games won : </span
+            ><span class="text-blue">{{ main_stats.games_won }}</span>
           </p>
           <p>
-            <span>Games lost : </span><span class="text-sec">{{ main_stats.games_lost }}</span>
+            <span>Games lost : </span
+            ><span class="text-red">{{ main_stats.games_lost }}</span>
           </p>
         </div>
       </div>
@@ -118,12 +124,14 @@
           </div>
         </div>
         <hr />
-        <div class="chart-stats-container">
+        <div class="under-chart-container">
           <p>
-            <span>Scored : </span><span class="text-prim"> {{ main_stats.points_scored }}</span>
+            <span>Scored : </span
+            ><span class="text-blue"> {{ main_stats.points_scored }}</span>
           </p>
           <p>
-            <span>Conceded : </span><span class="text-sec"> {{ main_stats.points_conceded }}</span>
+            <span>Conceded : </span
+            ><span class="text-red"> {{ main_stats.points_conceded }}</span>
           </p>
         </div>
       </div>
@@ -131,10 +139,25 @@
   </div>
 </div>
 
-
 <style>
   /*Chart stat cotnainer */
-  .chart-stats-container {
+  .pie-chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+  }
+
+  .chart-center-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #858796;
+  }
+
+  .under-chart-container {
     font-size: 1.2rem;
     font-weight: 700;
     display: flex;
@@ -144,16 +167,16 @@
     margin-top: 1rem;
   }
 
-  .chart-stats-container p {
+  .under-chart-container p {
     margin: 0.5rem 0;
   }
 
-  .chart-stats-container p span {
+  .under-chart-container p span {
     display: inline-block;
     text-align: center;
   }
 
-  .chart-stats-container span {
+  .under-chart-container span {
     color: #858796;
   }
 </style>
@@ -233,32 +256,16 @@
     border-radius: 2px;
   }
 
-  .text-prim {
+  .text-blue {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #4e73df;
+    color: #4e73df !important;
   }
 
-  .text-sec {
+  .text-red {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #e74a3b;
-  }
-
-  .pie-chart-container {
-    position: relative;
-    width: 100%;
-    height: 300px;
-  }
-
-  .chart-center-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #858796;
+    color: #e74a3b !important;
   }
 
 </style>
