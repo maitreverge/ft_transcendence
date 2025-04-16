@@ -12,11 +12,6 @@
 --------------------------------------------------------------------------------
 
 # FRONT WORK
-🟧 Beautify login
-
-🟧 Beautify register
-
-🟧 Beautify 2fa landing pages
 
 🟧 Creer des images pour la page d'accueil 
 
@@ -44,6 +39,13 @@
 
 
 ======================================= DONE =====================================
+
+
+✅ Beautify login
+
+✅ Beautify register
+
+✅ Beautify 2fa landing pages
 
 ✅ Delete healthchecks sur `tournament` et `match` containers
 

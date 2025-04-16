@@ -8,15 +8,15 @@ SECRET_JWT_KEY = os.getenv("JWT_KEY")
 ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 
-# Function to verify JWT token
 def verify_jwt(token):
     try:
-        # Verify the token with our secret key
         payload = jwt.decode(token, SECRET_JWT_KEY, algorithms=["HS256"])
         return payload
     except jwt.ExpiredSignatureError:
+        # print(f"Expired JWT key", flush=True)
         return None
     except jwt.InvalidTokenError:
+        # print(f" !!!!!!!!! INVALID JWT key", flush=True)
         return None
 
 
@@ -68,7 +68,7 @@ def is_authenticated(request: Request):
         payload = verify_jwt(access_token)
         if not payload and not refresh_token: # * EDGE CASE : access_token might be invalid and missing `refresh_token`
             return False, None
-        elif not payload and refresh_token: # * EDGE CASE 2 : access token invalid raises a 500 error
+        elif not payload and refresh_token: # * EDGE CASE 2 : Invalid `access_token` invalid raises a 500 error
             refresh_payload = verify_jwt(refresh_token)
             if not refresh_payload:
                 return False, None
@@ -97,10 +97,6 @@ def is_authenticated(request: Request):
     else: # ! NONE OF THE TOKENS ARE PRESENT
         return False, None
 
-    # FALLBACK
-
-
-    # Get the user ID and UUID from the token
     user_id = payload.get("user_id")
     token_uuid = payload.get("uuid")
 
@@ -123,9 +119,8 @@ def is_authenticated(request: Request):
                     )
                     return False, None
         except Exception as e:
+            # ! NOTE : Continue with authentication if we can't check the UUID
             print(f"⚠️ Error checking UUID: {str(e)}", flush=True)
-            # Continue with authentication if we can't check the UUID
-            # This is a failsafe to prevent lockouts if the database API is down
 
     # Return authentication status and user info from the valid access token
     return True, {
