@@ -25,11 +25,11 @@
   } */
 
   [data-theme="light"] {
-    --background-color: #c4321f;
-    --navbars-color: #fd6017;
-    --main-color: #ffffff;
-    --text-color: #ffa618; /* main color in the */
-    --title-color: #f2d882;
+    --background-color: #e9551b;
+    --navbars-color: #fc8230;
+    --main-color: #64ecca;
+    --text-color: #f8b34b; /* main color in the */
+    --title-color: #136d13d5;
   }
 
 /* Cibler les éléments spécifiques du site */
