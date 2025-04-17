@@ -66,11 +66,12 @@ body, h5 {
 .tournament-cont {
 	width: 100%;
     min-height: 14rem; /* Hauteur minimale */
+    min-width: fit-content;
 	background-color: rgb(109, 94, 96);	
 	border-radius: 5%;
 	padding: 5px;
     margin-bottom: 1rem;
-    
+    padding: 1rem;
 }
   
   #pattern {

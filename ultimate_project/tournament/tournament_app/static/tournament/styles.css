@@ -262,7 +262,9 @@ button {
 
 .tournament-cont {
 	width: 100%;
-    min-height: 14rem; /* Hauteur minimale */
+    min-height: 14rem;
+    min-width: fit-content;
+
 	background-color: rgb(109, 94, 96);	
 	border-radius: 5%;
 	padding: 5px;
@@ -300,4 +302,8 @@ button {
 
   #m1, #firstline, #m2, #m3, #secline {
     border-radius: 5%;
+  }
+
+  #tournaments {
+    min-width:fit-content;
   }
