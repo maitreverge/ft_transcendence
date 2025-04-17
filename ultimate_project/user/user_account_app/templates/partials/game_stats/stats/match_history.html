@@ -2,56 +2,83 @@
 <div id="match-history-content" class="container-fluid px-0 mt-4">
   {% for match in match_history reversed %}
   <div
-    class="match-card mb-4 w-100 px-3 py-3 rounded
-      {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}
-    "
+    class="poly-card d-flex flex-wrap px-3 py-3 mb-4 w-100 {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}"
   >
-    <!-- Main Card Content: Flexbox for horizontal alignment -->
-    <div class="d-flex justify-content-between align-items-center">
-      <!-- Left Section: Match Type & Match ID -->
-      <div class="match-type-section text-center d-flex flex-column justify-content-center align-items-baseline ">
-        {% if match.tournament %}
-          <span class="badge bg-tournament text-white mb-2">Tournament ID: #{{ match.tournament }}</span>
-        {% endif %}
-          <span class="badge bg-match text-white">Match ID: #{{ match.id }}</span>
+    <!-- Match Type & ID -->
+    <div
+      class="col-12 col-md-3 d-flex flex-column justify-content-center align-items-start mb-2 mb-md-0"
+    >
+      {% if match.tournament %}
+      <span class="badge bg-tournament text-white mb-2"
+        >Tournament ID: #{{ match.tournament }}</span
+      >
+      {% endif %}
+      <span class="badge bg-match text-white">Match ID: #{{ match.id }}</span>
+    </div>
+
+    <!-- Player Info and Score -->
+    <div
+      class="col-12 col-md-6 text-center d-flex flex-column justify-content-center align-items-center mb-2 mb-md-0"
+    >
+      <div class="fs-5 fw-semibold">
+        <span
+          class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}"
+        >
+          {{ match.player1_details.username }}
+        </span>
+        <span class="mx-2 text-muted">vs</span>
+        <span
+          class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}"
+        >
+          {{ match.player2_details.username }}
+        </span>
       </div>
 
-
-      <!-- Middle Section: Player vs Player and Scores -->
-      <div class="match-info text-center d-flex flex-column justify-content-center align-items-center mx-3">
-        <div class="fs-5 fw-semibold">
-          <span class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}">
-            {{ match.player1_details.username }}
-          </span>
-          <span class="mx-2 text-muted">vs</span>
-          <span class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}">
-            {{ match.player2_details.username }}
-          </span>
-        </div>
-
-        <div class="fs-6 mt-1">
-          <span class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}">
-            {{ match.score_p1 }}
-          </span>
-          <span class="mx-3">:</span>
-          <span class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}">
-            {{ match.score_p2 }}
-          </span>
-        </div>
+      <div class="fs-6 mt-1">
+        <span
+          class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}"
+        >
+          {{ match.score_p1 }}
+        </span>
+        <span class="mx-3">:</span>
+        <span
+          class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}"
+        >
+          {{ match.score_p2 }}
+        </span>
       </div>
-
-      <!-- Right Section: Winner -->
-      <div class="winner-section d-flex justify-content-center align-items-center">
-        <span class="badge bg-success text-white">🏅 Winner: {{ match.winner_details.username }}</span>
-      </div>
+    </div>
+    <!-- Winner Section -->
+    <div
+      class="col-12 col-md-3 d-flex justify-content-center align-items-center"
+    >
+      <span class="badge bg-success text-white"
+        >Winner: {{ match.winner_details.username }}</span
+      >
     </div>
   </div>
   {% empty %}
-  <p class="text-center text-muted">No match history available.</p>
+  <div class="card mb-4 shadow">
+    <div class="card-body text-center">
+      <h5 class="card-title primary-text">No Match History</h5>
+      <p class="card-text secondary-text">
+        You haven’t played any matches yet. Your match history will appear here
+        once you start playing!
+      </p>
+      <a
+        class="btn btn-outline-primary"
+        hx-get="/tournament/simple-match/"
+        hx-target="#main_div"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+      >
+        Start Playing
+      </a>
+    </div>
+  </div>
   {% endfor %}
+  <!--  -->
 </div>
-
-
 
 <style>
   /*Border for winner or looser */
@@ -59,14 +86,14 @@
     border-color: #dc3545 !important;
     border-width: 3px !important;
     border-style: solid !important;
-    box-shadow: 0 0 10px 4px rgba(220, 53, 69, 0.75)!important ;
+    box-shadow: 0 0 10px 4px rgba(220, 53, 69, 0.75) !important ;
   }
 
   .border-won {
     border-color: #28a745 !important;
     border-width: 3px !important;
     border-style: solid !important;
-    box-shadow: 0 0 10px 4px rgba(40, 167, 69, 0.75)!important;
+    box-shadow: 0 0 10px 4px rgba(40, 167, 69, 0.75) !important;
   }
 
   .bg-tournament {
@@ -76,7 +103,6 @@
   .bg-match {
     background-color: #007bff;
   }
-
 
   .match-card {
     background-color: #fdfdfd;

@@ -1,41 +1,37 @@
 {% load static %}
 <div class="container-fluid m-0 p-0" id="game-stats-content">
   <!-- Button Row -->
-  <nav
-    class="navbar navbar-light bg-light shadow-sm m-0 p-0 d-flex justify-content-center mt-3"
-    style="position: sticky; top: 0; z-index: 9999; width: 100%"
-  >
-    <div class="container-fluid d-flex flex-column align-items-center">
-      <div class="d-flex justify-content-center mb-0">
-        <!-- Overview Link -->
-        <a
-          class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-3"
-          id="overview-link"
-          href="/account/game-stats/overview/"
-          hx-target="#stats-content"
-          hx-swap="innerHTML"
-          hx-push-url="true"
-          style="width: auto"
-        >
-          <i class="mr-2 fa-solid fa-chart-bar fa-xl"></i>
-          <h5 class="mb-0">Overview</h5>
-        </a>
-        <!-- Match History Link -->
-        <a
-          class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-3"
-          id="match-history-link"
-          href="/account/game-stats/match-history/"
-          hx-target="#stats-content"
-          hx-swap="innerHTML"
-          hx-push-url="true"
-          style="width: auto"
-        >
-          <i class="mr-2 fa-solid fa-history fa-xl"></i>
-          <h5 class="mb-0">Match History</h5>
-        </a>
-      </div>
+  <div class="container-fluid mt-3">
+    <div
+      class="d-flex flex-wrap justify-content-center py-2 px-2 shadow-sm bg-light rounded"
+      style="gap: 1.5rem"
+    >
+      <!-- Overview Button -->
+      <a
+        class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center px-4"
+        href="/account/game-stats/overview/"
+        hx-target="#stats-content"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+      >
+        <i class="mr-2 fa-solid fa-chart-bar fa-xl"></i>
+        <h5 class="mb-0 ms-2">Overview</h5>
+      </a>
+  
+      <!-- Match History Button -->
+      <a
+        class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center px-4"
+        href="/account/game-stats/match-history/"
+        hx-target="#stats-content"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+      >
+        <i class="mr-2 fa-solid fa-history fa-xl"></i>
+        <h5 class="mb-0 ms-2">Match History</h5>
+      </a>
     </div>
-  </nav>
+  </div>
+  
 
   <!-- Content Section -->
   <div id="stats-content" class="mt-4">
