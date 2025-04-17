@@ -13,10 +13,7 @@
 
 # FRONT WORK
 
-🟧 Creer des images pour la page d'accueil 
-
 # BACK WORK
-🟧 user not found when 2FA incorrect in login
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
@@ -40,6 +37,12 @@
 
 ======================================= DONE =====================================
 
+
+✅ Beautify 2fa page
+
+✅ Remove `console.error` from the 2FA workflow
+
+✅ user not found when 2FA incorrect in login
 
 ✅ Beautify login
 
