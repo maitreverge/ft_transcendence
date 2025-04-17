@@ -29,7 +29,7 @@
     --navbars-color: #fc8230;
     --main-color: #64ecca;
     --text-color: #f8b34b; /* main color in the */
-    --title-color: #136d13d5;
+    --title-color: #136d13;
   }
 
 /* Cibler les éléments spécifiques du site */
@@ -117,7 +117,7 @@ background-color: var(--navbars-color);
   background-color: var(--text-color) !important;
 }
 
-.text_color_text
+.
 {
   color: var(--text-color) !important;
 }
