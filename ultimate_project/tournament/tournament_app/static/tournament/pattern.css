@@ -10,44 +10,42 @@
 
 @keyframes spin-gradient {
   0% {
-    transform: rotate(0deg);
+    background-position: 0% 0%;
   }
   100% {
-    transform: rotate(360deg);
+    background-position: 100% 0%;
   }
 }
 
 .next-match {
-  background-color: transparent;
-  border: 4px solid transparent;
-  border-radius: 8px;
   position: relative;
-  z-index: 1;
   padding: 10px;
+  border-radius: 8px;
+  background-color: hwb(36 1% 2%);
+  z-index: 0;
+  isolation: isolate;
+  box-shadow: 0 0 0 4px transparent;
 }
 
+/* Gradient spinning container */
 .next-match::before {
   content: "";
   position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  background: conic-gradient(#ff9500, #ff5e3a, #ff2d55, #af52de, #5856d6, #007aff, #4cd964, #ffcc00, #ff9500);
-  border-radius: 8px;
-  z-index: -2;
-  animation: spin-gradient 4s linear infinite;
+  inset: -4px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #ff9500, #ff5e3a, #ff2d55, #af52de, #5856d6, #007aff, #4cd964, #ffcc00, #ff9500);
+  background-size: 200% 100%;
+  z-index: -1;
+  animation: spin-gradient 2s linear infinite;
 }
 
+/* Inner background */
 .next-match::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: hwb(36 1% 2%);
-  border-radius: 4px;
+  border-radius: 6px;
   z-index: -1;
 }
 
