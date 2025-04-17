@@ -135,22 +135,33 @@ text-decoration: none;
 .title-color
 {
   background-color: var(--title-color);
-
+  
 }
 
 
 .sidebar {
-background-color: var(--navbars-color);
+	background-color: var(--navbars-color);
 }
-    
-.sidebar a {
-color: var(--text-color);
-background-color: var(--background-color);
 
+.sidebar a {
+	color: var(--text-color);
+	background-color: var(--background-color);
+	
 }
 
 .sidebar a:hover {
-color: var(--title-color);
+	color: var(--title-color);
+}
+
+.flo_class {
+    color: var(--text-color);
+    background-color: var(--background-color);
+    
+}
+
+.flo_class:hover {
+    color: var(--title-color);
+
 }
 
 h1 {
