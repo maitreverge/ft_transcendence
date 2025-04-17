@@ -9,13 +9,23 @@
     <div
       class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
     >
+      <!-- prettier-ignore-->
       <div class="d-flex flex-column align-items-center mb-2">
         {% if match.tournament %}
-        <span
-          class="badge bg-tournament text-white mb-2"
-          style="font-size: 0.8rem"
-          >Tournament ID: #{{ match.tournament }}</span
-        >
+          {% if match.winner_tournament and match.winner_tournament.winner_tournament == user.id and match.is_last_match == True %}
+              <span class="badge bg-winner text-white mb-2" style="font-size: 0.8rem">
+                👑 Tournament WON
+              </span>
+            {% else %}
+              {% if match.winner_tournament and match.is_last_match == True %}
+                  <span class="badge bg-loser text-white mb-2" style="font-size: 0.8rem">
+                      💔 Tournament Lost
+                  </span>
+              {% endif %}
+          {% endif %}
+        <span class="badge bg-tournament text-white mb-2" style="font-size: 0.8rem">
+            Tournament ID: #{{ match.tournament }}
+        </span>
         {% endif %}
         <span class="badge bg-match text-white" style="font-size: 0.8rem"
           >Match ID: #{{ match.id }}</span
@@ -27,7 +37,9 @@
     <div
       class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
     >
-      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">PLAYERS</p>
+      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">
+        PLAYERS
+      </p>
       <div
         class="fw-bold mb-2 row w-100 justify-content-center align-items-center gx-2 text-nowrap"
         style="font-size: 1.1rem"
@@ -38,22 +50,24 @@
             >{{ match.player1_details.username }}</span
           >
           {% else %}
-          <span class="loser-box blue-text">{{ match.player1_details.username }}</span>
+          <span class="blue-text">{{ match.player1_details.username }}</span>
           {% endif %}
         </div>
-        <div class="loser-box col-auto text-muted" style="font-weight: bold">VS</div>
+        <div class="col-auto text-muted" style="font-weight: bold">VS</div>
         <div class="col-auto">
           {% if match.winner == match.player2 %}
           <span class="winner-box red-box"
             >{{ match.player2_details.username }}</span
           >
           {% else %}
-          <span class="loser-box red-text">{{ match.player2_details.username }}</span>
+          <span class="red-text">{{ match.player2_details.username }}</span>
           {% endif %}
         </div>
       </div>
       <!-- Score Label -->
-      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">SCORE</p>
+      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">
+        SCORE
+      </p>
       <!-- Score Values -->
       <div
         class="fw-medium row w-100 justify-content-center align-items-center gx-2"
@@ -63,7 +77,7 @@
           {% if match.winner == match.player1 %}
           <span class="winner-box blue-box">{{ match.score_p1 }}</span>
           {% else %}
-          <span class="loser-box blue-text">{{ match.score_p1 }}</span>
+          <span class="blue-text">{{ match.score_p1 }}</span>
           {% endif %}
         </div>
         <div class="col-auto text-muted">:</div>
@@ -71,7 +85,7 @@
           {% if match.winner == match.player2 %}
           <span class="winner-box red-box">{{ match.score_p2 }}</span>
           {% else %}
-          <span class="loser-box red-text">{{ match.score_p2 }}</span>
+          <span class="red-text">{{ match.score_p2 }}</span>
           {% endif %}
         </div>
       </div>
@@ -143,6 +157,17 @@
     background-color: var(--navbars-color);
   }
 
+
+  .bg-winner {
+    background-color: #f1c40f;; /* Green - success */
+    color: white;
+  }
+
+  .bg-loser {
+    background-color: #dc3545; /* Red - danger */
+    color: white;
+  }
+
   .match-card {
     background-color: #fdfdfd;
     font-size: 0.95rem;
@@ -153,29 +178,24 @@
     position: relative; /* Keeps the content inside the card */
   }
 
-
-  .loser-box {
-    padding: 2px 10px;
-  }
-
   .winner-box.blue-box {
-    display: inline-flex; 
-    align-items: center;  
-    background-color: #007bff; 
+    display: inline-flex;
+    align-items: center;
+    background-color: #007bff;
     color: white;
     padding: 2px 10px;
     border-radius: 20px;
     font-weight: bold;
     font-size: 1rem;
     text-align: center;
-    box-sizing: content-box;
+    box-sizing: border-box;
     white-space: nowrap;
   }
 
   .winner-box.red-box {
-    display: inline-flex; 
-    align-items: center; 
-    background-color: #dc3545; 
+    display: inline-flex;
+    align-items: center;
+    background-color: #dc3545;
     margin: 0;
     color: white;
     padding: 2px 10px;
@@ -183,13 +203,12 @@
     font-weight: bold;
     font-size: 1rem;
     text-align: center;
-    box-sizing: content-box;
-    white-space: nowrap; 
+    box-sizing: border-box;
+    white-space: nowrap;
   }
 
-
   .blue-text {
-    color: #007bff; 
+    color: #007bff;
     font-weight: bold;
   }
 

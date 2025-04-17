@@ -2,6 +2,8 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
+from pprint import pprint
+
 
 # Custom import
 from utils import manage_user_data
@@ -18,9 +20,6 @@ async def handle_get_game_stats(request, username, context):
             context["error"] = "We couldn't find a user with the provided information. Please check your credentials and try again."
             return render(request, "partials/game_stats/error_stats.html", context), True
         context["user"] = user
-        match_history = await manage_user_data.get_user_match_history(user['id'])
-        
-
         main_stats, stats_history = await manage_user_data.get_user_game_stats(user["id"])        
         if (main_stats == None or stats_history == None):
             context["error"] = "No player statistics found. Please try again later."
@@ -84,12 +83,31 @@ async def handle_get_match_history(request, username, context):
         context["user"] = user
         match_history = await manage_user_data.get_user_match_history(user['id'])
         if (match_history == None):
-            context["error"] = "No player statistics found. Please try again later."
+            context["error"] = "No match history found. Please try again later."
             return render(request, "partials/game_stats/error_stats.html", context), True
+        for i in range(len(match_history)):
+            match = match_history[i]
+            if match.get("tournament") is not None:
+                next_match = match_history[i + 1] if i + 1 < len(match_history) else None
+                if not next_match or next_match.get("tournament") != match.get("tournament"):
+                    match["is_last_match"] = True
+                else:
+                    match["is_last_match"] = False
+            else:
+                match["is_last_match"] = False  # Not in a tournament
+        print("MATCH HISTORY AFTER MIOD \n\n:", flush=True)
+        pprint(match_history)
+        print("--\n", flush=True)
         context['match_history'] = match_history
+        
+        
+        """ tournament_history = await manage_user_data.get_user_tournament_history(user['id'])
+        if (tournament_history == None):
+            context["error"] = "No tournament history found. Please try again later."
+            return render(request, "partials/game_stats/error_stats.html", context), True
+        context['tournament_history'] = tournament_history """
         return render_to_string("partials/game_stats/stats/match_history.html", context,  request=request), False
     except Exception as e:
-        print(f"ERROR CAUGHT: {e}", flush=True) #rm
         context["error"] = "An error occurred while retrieving player statistics. Please try again later."
         return render(request, "partials/game_stats/error_stats.html", context), True
 
