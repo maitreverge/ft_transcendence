@@ -8,11 +8,11 @@
 
 /* Thème sombre */
 [data-theme="light"] {
-    --background-color: #D7884A;
-    --navbars-color: #5B101B;
-    --main-color: #B59A8B;
-    --text-color: #985753;
-    --title-color: #463634;
+    --background-color: #1D1A45;
+    --navbars-color: #4C459F;
+    --main-color: #727364;
+    --text-color: #8A84C8;
+    --title-color: #6F66D1;
   }
 
 /* Cibler les éléments spécifiques du site */

@@ -300,7 +300,7 @@ body.match-active::before {
 }
 
 #match:has(#waiting:not(.no-waiting)) {
-	background-image: url('https://dansylvain.github.io/pictures/login_pong.png');
+	background-image: url('https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp');
 }
 
 /* Animation clignotante */
