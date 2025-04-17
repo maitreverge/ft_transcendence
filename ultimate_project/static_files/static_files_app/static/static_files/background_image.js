@@ -13,22 +13,28 @@ if (typeof window.applyBackground === 'undefined') {
 }
 
 document.querySelectorAll('.side-nav').forEach(item => {
+    const text = document.querySelector('.myText');
+    console.log("FUNC CALLED");
+    console.log(text);
+
     item.addEventListener('mouseenter', () => {
+        if (text) text.style.opacity = '0';
         const bg = item.getAttribute('data-bg');
         // console.log("bg 1: ", bg)
         window.currentBg = bg;
-        window.currentNav = item.querySelector('a'); // on garde une référence au lien entier
+        window.currentNav = item.querySelector('a');
         window.applyBackground(bg);
 
     });
     item.addEventListener('mouseleave', () => {
+        if (text) text.style.opacity = '1';
         setFirstBgImage();
       });
 });
 
 function setFirstBgImage()
 {
-    window.currentBg = 'https://dansylvain.github.io/pictures/noPanicRusted.jpg';
+    window.currentBg = 'https://dansylvain.github.io/pictures/marvin.jpg';
     window.applyBackground(window.currentBg);
 
 }
@@ -39,7 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 document.body.addEventListener('htmx:afterSwap', () => {
-    console.log("%%%%%%%% HTMX content swapped %%%%%%%%");
+    // console.log("%%%%%%%% HTMX content swapped %%%%%%%%");
     if (!window.currentBg)
         setFirstBgImage();
     else {

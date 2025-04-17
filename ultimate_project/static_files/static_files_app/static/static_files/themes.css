@@ -85,6 +85,11 @@ background-color: var(--navbars-color);
 
 }
 
+.navbars_color_text {
+  
+  color: var(--navbars-color) !important;
+}
+
 
 .text_color
 {
