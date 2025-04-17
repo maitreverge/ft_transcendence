@@ -1,62 +1,97 @@
 {% load static %}
 <div id="match-history-content" class="container-fluid px-0 mt-4">
   {% for match in match_history reversed %}
+
   <div
-    class="poly-card d-flex flex-wrap px-3 py-3 mb-4 w-100 {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}"
+    class="poly-card d-flex flex-column flex-md-row justify-content-center px-3 py-3 mb-4 w-100 {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}"
   >
-    <!-- Match Type & ID -->
+    <!-- First Section: Tournament ID - Match ID -->
     <div
-      class="col-12 col-md-3 d-flex flex-column justify-content-center align-items-start mb-2 mb-md-0"
+      class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
     >
-      {% if match.tournament %}
-      <span class="badge bg-tournament text-white mb-2"
-        >Tournament ID: #{{ match.tournament }}</span
-      >
-      {% endif %}
-      <span class="badge bg-match text-white">Match ID: #{{ match.id }}</span>
-    </div>
-
-    <!-- Player Info and Score -->
-    <div
-      class="col-12 col-md-6 text-center d-flex flex-column justify-content-center align-items-center mb-2 mb-md-0"
-    >
-      <div class="fs-5 fw-semibold">
+      <div class="d-flex flex-column align-items-center mb-2">
+        {% if match.tournament %}
         <span
-          class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}"
+          class="badge bg-tournament text-white mb-2"
+          style="font-size: 0.8rem"
+          >Tournament ID: #{{ match.tournament }}</span
         >
-          {{ match.player1_details.username }}
-        </span>
-        <span class="mx-2 text-muted">vs</span>
-        <span
-          class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}"
+        {% endif %}
+        <span class="badge bg-match text-white" style="font-size: 0.8rem"
+          >Match ID: #{{ match.id }}</span
         >
-          {{ match.player2_details.username }}
-        </span>
-      </div>
-
-      <div class="fs-6 mt-1">
-        <span
-          class="{% if match.winner == match.player1 %}winner blue{% else %}blue{% endif %}"
-        >
-          {{ match.score_p1 }}
-        </span>
-        <span class="mx-3">:</span>
-        <span
-          class="{% if match.winner == match.player2 %}winner red{% else %}red{% endif %}"
-        >
-          {{ match.score_p2 }}
-        </span>
       </div>
     </div>
-    <!-- Winner Section -->
+
+    <!-- Second Section: Players - Scores -->
     <div
-      class="col-12 col-md-3 d-flex justify-content-center align-items-center"
+      class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
     >
-      <span class="badge bg-success text-white"
-        >Winner: {{ match.winner_details.username }}</span
+      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">PLAYERS</p>
+      <div
+        class="fw-bold mb-2 row w-100 justify-content-center align-items-center gx-2 text-nowrap"
+        style="font-size: 1.1rem"
       >
+        <div class="col-auto">
+          {% if match.winner == match.player1 %}
+          <span class="winner-box blue-box"
+            >{{ match.player1_details.username }}</span
+          >
+          {% else %}
+          <span class="loser-box blue-text">{{ match.player1_details.username }}</span>
+          {% endif %}
+        </div>
+        <div class="loser-box col-auto text-muted" style="font-weight: bold">VS</div>
+        <div class="col-auto">
+          {% if match.winner == match.player2 %}
+          <span class="winner-box red-box"
+            >{{ match.player2_details.username }}</span
+          >
+          {% else %}
+          <span class="loser-box red-text">{{ match.player2_details.username }}</span>
+          {% endif %}
+        </div>
+      </div>
+      <!-- Score Label -->
+      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">SCORE</p>
+      <!-- Score Values -->
+      <div
+        class="fw-medium row w-100 justify-content-center align-items-center gx-2"
+        style="font-size: 1rem"
+      >
+        <div class="col-auto">
+          {% if match.winner == match.player1 %}
+          <span class="winner-box blue-box">{{ match.score_p1 }}</span>
+          {% else %}
+          <span class="loser-box blue-text">{{ match.score_p1 }}</span>
+          {% endif %}
+        </div>
+        <div class="col-auto text-muted">:</div>
+        <div class="col-auto">
+          {% if match.winner == match.player2 %}
+          <span class="winner-box red-box">{{ match.score_p2 }}</span>
+          {% else %}
+          <span class="loser-box red-text">{{ match.score_p2 }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Third Section: Start-Time & End-Time -->
+    <div
+      class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
+    >
+      <div class="d-flex flex-column align-items-center">
+        <span class="badge bg-time text-white mb-2" style="font-size: 0.8rem"
+          >Start-Time: {{ match.start_time }}</span
+        >
+        <span class="badge bg-time text-white" style="font-size: 0.8rem"
+          >End-Time: {{ match.end_time }}</span
+        >
+      </div>
     </div>
   </div>
+
   {% empty %}
   <div class="card mb-4 shadow">
     <div class="card-body text-center">
@@ -97,11 +132,15 @@
   }
 
   .bg-tournament {
-    background-color: #800080;
+    background-color: var(--navbars-color);
   }
 
   .bg-match {
-    background-color: #007bff;
+    background-color: var(--navbars-color);
+  }
+
+  .bg-time {
+    background-color: var(--navbars-color);
   }
 
   .match-card {
@@ -114,32 +153,52 @@
     position: relative; /* Keeps the content inside the card */
   }
 
-  /* Custom Border Colors for regular matches and tournaments */
-  .border-match {
-    border-color: #007bff; /* Blue border for regular matches */
+
+  .loser-box {
+    padding: 2px 10px;
   }
 
-  .border-tournament {
-    border-color: #800080; /* Purple border for tournament matches */
+  .winner-box.blue-box {
+    display: inline-flex; 
+    align-items: center;  
+    background-color: #007bff; 
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    box-sizing: content-box;
+    white-space: nowrap;
   }
 
-  .blue {
-    color: #007bff;
-    font-weight: 500;
+  .winner-box.red-box {
+    display: inline-flex; 
+    align-items: center; 
+    background-color: #dc3545; 
+    margin: 0;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    box-sizing: content-box;
+    white-space: nowrap; 
   }
 
-  .red {
+
+  .blue-text {
+    color: #007bff; 
+    font-weight: bold;
+  }
+
+  .red-text {
     color: #dc3545;
-    font-weight: 500;
+    font-weight: bold;
   }
 
-  .winner {
-    font-weight: 700;
-    text-decoration: underline;
-  }
-
-  .badge {
-    font-size: 0.75rem;
-    padding: 0.4em 0.6em;
+  .poly-card span:hover {
+    pointer-events: none !important;
   }
 </style>
