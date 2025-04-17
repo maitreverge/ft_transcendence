@@ -943,7 +943,7 @@ function updateMatchPlayers(plys)
 // 		}		
 // 	}
 // 	// else	
-// 	// 	div.onclick = event =>	sendPlayerClick(socket, event, div);	
+// 	// 	div.onclick = event =>	playerClick(socket, event, div);	
 //     container.appendChild(div);
 // 	window.players.push(div);
 // }

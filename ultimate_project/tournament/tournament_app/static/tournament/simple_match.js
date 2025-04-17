@@ -430,40 +430,39 @@ function invitationConfirmed(matchId, targetId) {
 	window.selfMatchId = matchId;
 }
 
-function sendPlayerClick(socket, event, selected)
+function newLocalMatch()
 {
-	// if (typeof stopMatch === 'function')
-	// 	stopMatch(window.selfMatchId);
-	// window.selectedElement = selected;
+	const input = document.getElementById("match-player-name");		
+	const name = input.value;
+	if (name.trim() === "")
+	{
+		messagePopUp(
+			'Oops!', 'https://dansylvain.github.io/pictures/travolta.webp',
+			"enter a name for second player",
+			"enter a name for second player", "", "");		
+		return;
+	}
+	sendPlayerClick(window.simpleMatchSocket, window.selfId, name);		
+}
+
+function playerClick(socket, event, selected)
+{
 	event.stopPropagation();
+	if (selected.id == window.selfId)
+		return;
 	if (!window.busyElement)
 		window.busyElement = selected;
-	window.busyElement.classList.add("invitation-waiting")
-	let name = selected.name;
-	const input = document.getElementById("match-player-name");
-	
-	if (selected.id == window.selfId)
-	{		
-		name = input.value;
-		if (name.trim() === "" && input.style.display === "block")
-		{
-            messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "enter a name for second player", "enter a name for second player", "", "")
+	window.busyElement.classList.add("invitation-waiting");
+	sendPlayerClick(socket, selected.id, selected.name);
+}
 
-			// alert("enter a name for second player");			
-			return;
-		}
-		input.style.display = "block";	
-		
-	}
-	else
-		input.style.display = "none";	
-	if (name.trim() === "")
-		return;	
+function sendPlayerClick(socket, selectedId, selectedName)
+{
 	if (socket.readyState === WebSocket.OPEN) 
 		socket.send(JSON.stringify({
 			type: "playerClick",
-			selectedId: Number(selected.id),
-			selectedName: name
+			selectedId: Number(selectedId),
+			selectedName: selectedName
 		}));
 }
 
@@ -487,7 +486,7 @@ function sendPlayerClick(socket, event, selected)
 // 	// 	}		
 // 	// }
 // 	// else	
-// 	div.onclick = event => sendPlayerClick(socket, event, div);	
+// 	div.onclick = event => playerClick(socket, event, div);	
 //     container.appendChild(div);
 // }
 
@@ -637,7 +636,7 @@ function createSimplePlayerElement(socket, playerId, playerName) {
 	div.name = playerName;	
 	if (playerId == window.selfId)
 		div.classList.add("self-player");
-	div.onclick = event => sendPlayerClick(socket, event, div);	  
+	div.onclick = event => playerClick(socket, event, div);	  
 	return div;
 }
 

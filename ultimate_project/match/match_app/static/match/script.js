@@ -6,10 +6,7 @@ function stopMatch(matchId)
 	cancelAnimationFrame(window.pongAnim);
 	const input = document.getElementById("match-player-name");
 	if (input)
-	{
-		input.style.display = "none";
-		input.value = "";
-	}
+		input.value = "";	
 	if (!matchId)
 	{
 		console.log("matchID EST NULLE");
