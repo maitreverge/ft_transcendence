@@ -35,7 +35,7 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
-		self.start_time = ""
+		self.start_time = "" 
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
@@ -123,7 +123,7 @@ class Pong:
 			if None not in self.players:			
 				await self.run_game()						
 			else:
-				await self.set_waiting_state(self.players)							
+				await self.set_waiting_state(self.players)
 			await asyncio.sleep(self.gear_delay)
 		if self.watch_cat_task:
 			await self.watch_cat_task	
@@ -156,6 +156,7 @@ class Pong:
 			await self.send_start(3)
 			self.watch_cat_task = self.myEventLoop.create_task(
 				self.watch_cat(self.start_delay))
+		self.x_players = self.players.copy()
 		self.state = State.running
 		self.winner = None
 		self.start_flag = True
@@ -171,13 +172,16 @@ class Pong:
 		return timezone.localtime(timezone.now()).isoformat(timespec='seconds')
 
 	async def set_waiting_state(self, players):
-	
+		
+		# print(f"\033[36mZZZZZZZZZZZZZZZZZZZZ {self.x_players} ET {players}\033[0m {self.id}", flush=True)
 		if self.x_players is None or self.x_players != players:
 			self.x_players = players.copy()
-			print(f"XXXX {self.x_players}", flush=True)
-			await asyncio.sleep(3)
+			await asyncio.sleep(0.1)
+			# print(f"\033[36mXXXX {self.x_players}\033[0m {self.id}", flush=True)
+			# await asyncio.sleep(3)
+			# print(f"\033[36mYYYY {self.x_players}\033[0m", flush=True)
 			if self.start_flag:
-				print(f"this is my players: {players}", flush=True)
+				# print(f"this is my players: {players}", flush=True)
 				if players[0]:
 					self.winner = self.plyIds[0]
 				elif players[1]:
