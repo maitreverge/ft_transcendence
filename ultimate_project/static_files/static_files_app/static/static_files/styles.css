@@ -177,7 +177,7 @@ body, h5 {
 }
 
 input:checked + .slider {
-  background-color: var(--navbars-color)
+  background-color: var(--title-color)
 }
 
 input:checked + .slider:before {
@@ -352,7 +352,7 @@ button {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--navbars-color);
+    background-color: var(--title-color);
     transition: .4s;
     border-radius: 30px;
   }
