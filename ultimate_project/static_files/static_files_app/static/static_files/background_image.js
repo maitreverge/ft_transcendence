@@ -34,7 +34,7 @@ document.querySelectorAll('.side-nav').forEach(item => {
 
 function setFirstBgImage()
 {
-    window.currentBg = 'https://dansylvain.github.io/pictures/marvin.jpg';
+    window.currentBg = 'https://dansylvain.github.io/pictures/marvin_warm.png';
     window.applyBackground(window.currentBg);
 
 }

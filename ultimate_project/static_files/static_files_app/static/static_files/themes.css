@@ -7,12 +7,20 @@
   }
 
 /* Thème sombre */
-[data-theme="light"] {
+/* [data-theme="light"] {
     --background-color: #1D1A45;
     --navbars-color: #4C459F;
     --main-color: #727364;
     --text-color: #8A84C8;
     --title-color: #6F66D1;
+  } */
+
+  [data-theme="light"] {
+    --background-color: #D76A01;
+    --navbars-color: #684111;
+    --main-color: #723706;
+    --text-color: #251403; 
+    --title-color: #8B682D;
   }
 
 /* Cibler les éléments spécifiques du site */
