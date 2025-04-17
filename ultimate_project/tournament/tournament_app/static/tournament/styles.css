@@ -66,7 +66,11 @@
 	background: rgb(251, 255, 0);
 } */
 
-
+#garbage {
+  width:100px;
+  height:100px;
+  background-color: rgb(198, 232, 8);
+}
 
 .invitation-waiting {
 	background-color: rgb(151, 175, 16);
