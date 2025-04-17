@@ -188,8 +188,8 @@ class Pong:
 					self.winner = self.plyIds[1]
 				else:
 					self.winner = None
-			if self.id == 1:		
-				print(f"winner is :{self.winner}", flush=True)
+			# if self.id == 1:		
+			# 	print(f"winner is :{self.winner}", flush=True)
 		self.state = State.waiting
 
 	async def watch_dog(self):
@@ -256,13 +256,14 @@ class Pong:
 
 	async def stop(self, playerId):
 
-		print(f"STOP playerId: {playerId}", flush=True)
+		print(f"STOP playerId: {playerId} w: {self.winner}, multy {self.multy}", flush=True)
 
 		if not playerId or playerId in self.plyIds: 	
 			if not any((self.winner, self.multy)) and \
 				all((playerId, self.start_flag)):							
 				self.winner = self.plyIds[0] \
-					if playerId == self.plyIds[1] else self.plyIds[1]				
+					if playerId == self.plyIds[1] else self.plyIds[1]	
+				print(f"STOP 2222 playerId: {playerId} w: {self.winner}, multy {self.multy}", flush=True)				
 			await self.sendFinalState()
 			return True
 		return False
