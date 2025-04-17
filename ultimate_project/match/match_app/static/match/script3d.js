@@ -8,11 +8,8 @@ function stopMatch(matchId) {
 	document.body.classList.remove("match-active");
 	cancelAnimationFrame(window.pong3DAnim);
 	const input = document.getElementById("match-player-name");
-	if (input)
-	{
-		input.style.display = "none";
-		input.value = "";
-	}
+	if (input)	
+		input.value = "";	
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
