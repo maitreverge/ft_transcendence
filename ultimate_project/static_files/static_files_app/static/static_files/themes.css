@@ -1,18 +1,18 @@
 [data-theme="dark"] {
-    --background-color: #0d1b2a;
-    --navbars-color: #415a77;
-    --main-color: #1b263b;
-    --text-color: #e0e1dd;
-    --title-color: #778da9;
+    --background-color: #0F354C;
+    --navbars-color: #2A86AB;
+    --main-color: #776A62;
+    --text-color: #9ce5f9;
+    --title-color: #6FB7D0;
   }
 
 /* Thème sombre */
 [data-theme="light"] {
-    --background-color: #eaf4f4;
-    --navbars-color: #a4c3b2;
-    --main-color: #cce3de;
-    --text-color: #6b9080;
-    --title-color: #f6fff8;
+    --background-color: #1D1A45;
+    --navbars-color: #4C459F;
+    --main-color: #727364;
+    --text-color: #8A84C8;
+    --title-color: #6F66D1;
   }
 
 /* Cibler les éléments spécifiques du site */
@@ -83,6 +83,11 @@ background-color: var(--navbars-color);
   background-color: var(--navbars-color) !important;
   color: var(--title-color) !important;
 
+}
+
+.navbars_color_text {
+  
+  color: var(--navbars-color) !important;
 }
 
 

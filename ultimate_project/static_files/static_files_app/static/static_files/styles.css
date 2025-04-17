@@ -351,10 +351,11 @@ button {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #73C0FC;
+    background-color: var(--navbars-color);
     transition: .4s;
     border-radius: 30px;
   }
+
   
   .slider:before {
     position: absolute;
@@ -365,7 +366,7 @@ button {
     left: 2px;
     bottom: 2px;
     z-index: 2;
-    background-color: #e8e8e8;
+    background-color: var(--text-color);
     transition: .4s;
   }
   
