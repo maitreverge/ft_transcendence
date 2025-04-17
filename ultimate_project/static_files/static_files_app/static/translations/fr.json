@@ -14,6 +14,13 @@
   
     "ReadyToLeaveTitle": "Prêt à partir ?",
     "ReadyToLeaveText": "Clique sur \"Déconnexion\" ci-dessous si tu souhaites mettre fin à ta session actuelle.",
-    "Cancel": "Annuler"
+    "Cancel": "Annuler",
+
+    "WelcomeToPong42": "Bienvenue sur ",
+    "GetReadyToCompete": "Prépare-toi à défier tes amis dans des matchs intenses en remote ou en local et à grimper dans les classements !",
+    "DuelDescription": "Affronte un autre joueur en duel et montre qui est le roi du ping-pong numérique.",
+    "TournamentDescription": "Participe à un tournoi en élimination directe contre 3 autres adversaires.",
+    "ProfileDescription": "Personnalise ton profil et vois ton historique de matchs.",
+    "StatsDescription": "Consulte ton taux de victoire, ton classement, et tes performances passées."      
       
 }
