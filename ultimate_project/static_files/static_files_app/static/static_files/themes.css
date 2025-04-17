@@ -70,6 +70,10 @@ background-color: var(--navbars-color);
   background-color: var(--title-color);
 }
 
+.title_color_text
+{
+  color: var(--title-color);
+}
 .main_color
 {
   background-color: var(--main-color);
