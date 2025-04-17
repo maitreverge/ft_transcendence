@@ -20,6 +20,7 @@
         <div id="spec">
             <img src="https://dansylvain.github.io/pictures/tennis.webp">
         </div>
+        <button id="resize-button" onclick="toggleSize()">🔄<span>Size</span></button>
         <!-- <h1 id="spec" style="display: none">Je suis spectateur</h1>			 -->
         <div id="p1"></div>
         <div id="p2"></div>
@@ -34,6 +35,7 @@
 
         </div>
     </div>
+
 <div id="rules-overlay">
     <div id="score">Score</div>
     <p id="inst-right"> <br> </p>
@@ -76,5 +78,12 @@
         console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
     }
 });
+
+function toggleSize() {
+        const match = document.getElementById('match');
+        
+        // Toggle la classe 'small-size' sur #match
+        match.classList.toggle('small-size');
+    }
 
 </script>

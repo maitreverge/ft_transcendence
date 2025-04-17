@@ -2,7 +2,7 @@
     --background-color: #0B2739;
     --navbars-color: #1F6480;
     --main-color: #594F49;
-    --text-color: #37CAF3;
+    --text-color: #7fd4eb;
     --title-color: #3A95B4;
   }
 
@@ -29,7 +29,7 @@
     --navbars-color: #fc8230;
     --main-color: #64ecca;
     --text-color: #f8b34b; /* main color in the */
-    --title-color: #136d13d5;
+    --title-color: #136d13;
   }
 
 /* Cibler les éléments spécifiques du site */
@@ -95,10 +95,10 @@ background-color: var(--navbars-color);
   color: var(--background-color);
 }
 
-.navbars_color i {
-  /* background-color: var(--navbars-color) !important; */
+/* .navbars_color i {
+  background-color: var(--navbars-color) !important;
   color: var(--navbars-color) !important;
-}
+} */
 .card, .card-header
 {
   background-color: var(--navbars-color) !important;
@@ -111,6 +111,10 @@ background-color: var(--navbars-color);
   color: var(--navbars-color) !important;
 }
 
+.navbars_color {
+  
+  background-color: var(--navbars-color) !important;
+}
 
 .text_color
 {
