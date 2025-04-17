@@ -96,9 +96,9 @@ background-color: var(--navbars-color);
 }
 
 /* .navbars_color i {
-  /* background-color: var(--navbars-color) !important; */
-  /* color: var(--navbars-color) !important; */
-/* } */ */
+  background-color: var(--navbars-color) !important;
+  color: var(--navbars-color) !important;
+} */
 .card, .card-header
 {
   background-color: var(--navbars-color) !important;
