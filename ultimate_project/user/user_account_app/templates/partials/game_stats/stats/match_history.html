@@ -12,20 +12,21 @@
       <!-- prettier-ignore-->
       <div class="d-flex flex-column align-items-center mb-2">
         {% if match.tournament %}
-          {% if match.winner_tournament and match.winner_tournament.winner_tournament == user.id and match.is_last_match == True %}
-              <span class="badge bg-winner text-white mb-2" style="font-size: 0.8rem">
-                👑 Tournament WON
+          {% if match.is_last_match %}
+            {% if match.winner_tournament and match.winner_tournament.winner_tournament == user.id %}
+                <span class="badge bg-winner text-white mb-2" style="font-size: 0.8rem">
+                    👑 Tournament: #{{ match.tournament }} - Won
+                </span>
+            {% elif match.winner_tournament %}
+                <span class="badge bg-loser text-white mb-2" style="font-size: 0.8rem">
+                    💔 Tournament: #{{ match.tournament }} - Lost
+                </span>
+            {% endif %}
+          {% else %}
+              <span class="badge bg-tournament text-white mb-2" style="font-size: 0.8rem">
+                  Tournament ID: #{{ match.tournament }}
               </span>
-            {% else %}
-              {% if match.winner_tournament and match.is_last_match == True %}
-                  <span class="badge bg-loser text-white mb-2" style="font-size: 0.8rem">
-                      💔 Tournament Lost
-                  </span>
-              {% endif %}
           {% endif %}
-        <span class="badge bg-tournament text-white mb-2" style="font-size: 0.8rem">
-            Tournament ID: #{{ match.tournament }}
-        </span>
         {% endif %}
         <span class="badge bg-match text-white" style="font-size: 0.8rem"
           >Match ID: #{{ match.id }}</span
