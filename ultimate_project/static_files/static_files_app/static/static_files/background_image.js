@@ -4,10 +4,11 @@ if (typeof window.applyBackground === 'undefined') {
         const main = document.getElementById('main_content');
         if (main && bg) {
             main.style.backgroundImage = `url(${bg})`;
-            main.style.backgroundSize = 'cover';
-            main.style.backgroundPosition = 'center';
+            main.style.backgroundRepeat = 'no-repeat';
+            main.style.backgroundSize = '100% 100%';
+            main.style.backgroundPosition = 'top center';
             main.style.transition = 'background-image 0.3s ease';
-
+            main.style.maxHeight = '100vh'; // pour que ça remplisse l'écran
         }
     };
 }
