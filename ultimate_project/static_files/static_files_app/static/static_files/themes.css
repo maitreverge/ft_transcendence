@@ -126,6 +126,10 @@ background-color: var(--navbars-color);
   color: var(--text-color) !important;
 }
 
+.text_color_text::placeholder {
+  color: var(--text-color) !important;
+}
+
 .navbar a {
 color: var(--text-color);
 text-decoration: none;
