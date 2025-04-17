@@ -111,13 +111,17 @@ background-color: var(--navbars-color);
   color: var(--navbars-color) !important;
 }
 
+.navbars_color {
+  
+  background-color: var(--navbars-color) !important;
+}
 
 .text_color
 {
   background-color: var(--text-color) !important;
 }
 
-.
+.text_color_text
 {
   color: var(--text-color) !important;
 }
