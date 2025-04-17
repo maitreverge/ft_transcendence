@@ -35,20 +35,22 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
-		self.start_time = None
+		self.start_time = ""
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 2
+		self.max_score = 20
 		self.point_delay = 1
 		self.start_delay = 4
 		self.max_wait_delay = 2000
 		self.users = []
-		self.players = None		
+		self.players = []
+		self.x_players = None		
 		self.winner = None
 		self.myEventLoop = None
 		self.tasks = None
 		self.watch_cat_task = None
+		# self.waiting_state = False
 		self.init_physics()
 
 	def init_physics(self):
@@ -121,7 +123,7 @@ class Pong:
 			if None not in self.players:			
 				await self.run_game()						
 			else:
-				self.set_waiting_state(self.players)							
+				await self.set_waiting_state(self.players)							
 			await asyncio.sleep(self.gear_delay)
 		if self.watch_cat_task:
 			await self.watch_cat_task	
@@ -168,15 +170,22 @@ class Pong:
 	def get_time(self):
 		return timezone.localtime(timezone.now()).isoformat(timespec='seconds')
 
-	def set_waiting_state(self, players):
-
-		if self.start_flag:
-			if players[0]:
-				self.winner = self.plyIds[0]
-			elif players[1]:
-				self.winner = self.plyIds[1]
-			else:
-				self.winner = None
+	async def set_waiting_state(self, players):
+	
+		if self.x_players is None or self.x_players != players:
+			self.x_players = players.copy()
+			print(f"XXXX {self.x_players}", flush=True)
+			await asyncio.sleep(3)
+			if self.start_flag:
+				print(f"this is my players: {players}", flush=True)
+				if players[0]:
+					self.winner = self.plyIds[0]
+				elif players[1]:
+					self.winner = self.plyIds[1]
+				else:
+					self.winner = None
+			if self.id == 1:		
+				print(f"winner is :{self.winner}", flush=True)
 		self.state = State.waiting
 
 	async def watch_dog(self):
@@ -299,6 +308,7 @@ class Pong:
 
 		self.state = State.end
 		w_and_l = self.get_winner_and_looser()
+		print(f"final winner: {w_and_l}", flush=True)
 		for p in self.users:
 			try:					
 				await p["socket"].send(text_data=json.dumps({
