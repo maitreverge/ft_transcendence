@@ -440,4 +440,6 @@ button {
     transform: translateX(30px);
   }
 
-  
+  .cursor-pointer {
+    cursor: pointer;
+  }
