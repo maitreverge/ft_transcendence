@@ -92,13 +92,16 @@
                                         <h6 data-translate="Player Pool" class="mb-0 text-center font-weight-bold">Player Pool</h6>
                                     </div>
                                 </div>
-                                <div class="card-header py-3">
-                                    <div class="d-flex flex-column gap-2">
-                                        <input class="background_color form-control border-0 w-100" id="player-name"
-                                            type="text" maxlength="20" pattern=".{1,50}" required
+                                <div class="card-header p-0">
+                                    <div class="card-header mb-1">
+                                        <h6 data-translate="Local Match" class="mb-0 text-center font-weight-bold">Local Match</h6>
+                                    </div>
+                                    <div class="d-flex flex-column gap-2 m-2">
+                                            <input class="m-2 w-auto background_color form-control border-0"
+                                            id="match-player-name" type="text" maxlength="20" pattern=".{1,50}" required
                                             placeholder="enter a name"
                                             oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-                                        <button onclick="newPlayer(window.tournamentSocket); prefillName();"
+                                        <button onclick="newLocalMatch();"
                                             class="text_color btn d-flex align-items-center justify-content-between w-100">
                                             <span data-translate="Add Player" class="text background_color_text">Add Player</span>
                                             <span class="navbars_color icon text-white-50">
@@ -140,13 +143,12 @@
                         <div class="row d-flex align-items-stretch pt-5">
                             <div class="col-lg-2 d-flex flex-column"></div>
                             <div class="col-lg-4 mb-4">
+                                <div class="card-header  mb-1">
+                                    <h6 data-translate="Remote Match" class="mb-0 text-center font-weight-bold">Remote Match</h6>
+                                </div>
                                 <div class="card shadow h-100">
                                     <div id="players" class="card-body p-2">
                                     </div>
-                                    <input class="m-2 w-auto background_color form-control border-0"
-                                        id="match-player-name" type="text" maxlength="20" pattern=".{1,50}" required
-                                        placeholder="enter a name"
-                                        oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
                                 </div>
                             </div>
                             <div class="col-lg-4 mb-4">

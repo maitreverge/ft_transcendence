@@ -25,3 +25,9 @@ if (typeof themeToggle === 'undefined') {
         });
     }
 }
+
+// console.log ("*********** JE SUIS APPELE ***************");
+
+// console.log = () => {};
+// console.warn = () => {};
+// console.error = () => {};

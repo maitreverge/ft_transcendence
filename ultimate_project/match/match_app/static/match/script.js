@@ -6,10 +6,7 @@ function stopMatch(matchId)
 	cancelAnimationFrame(window.pongAnim);
 	const input = document.getElementById("match-player-name");
 	if (input)
-	{
-		input.style.display = "none";
-		input.value = "";
-	}
+		input.value = "";	
 	if (!matchId)
 	{
 		console.log("matchID EST NULLE");
@@ -244,6 +241,7 @@ function setEnd(data, endCont, end, spec)
 		class="winner-gif">
 		`;		
 		endCont.classList.add("end-cont");
+		endCont.style.display = "block";
 		console.log("🏁 Match terminé, reset du timestamp");
 		window.gameStartTimestamp = undefined;	
 	}

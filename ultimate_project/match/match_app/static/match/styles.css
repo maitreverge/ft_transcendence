@@ -5,7 +5,7 @@
     top:-10%;
 	height: 20%;
 	width: 5%;
-    /* background-color: blue; */
+    background-color: blue;
 	/* height: 100%; */
 	/* transform: translate(-50%, -50%); */
     z-index: 300;
@@ -88,7 +88,10 @@
 	/* width:2vw;
 	height:2vw; */
 	border-radius: 50%;
-	background-color: rgb(244, 22, 22);
+    background-color: blue;
+	background-image: url('https://dansylvain.github.io/pictures/tennisBall.png');
+	background-size: 100% 100%;
+	background-position: center;
     z-index: 400;
 }
 
@@ -111,9 +114,10 @@
     transform: translateX(-50%);
     width: min(90vw, calc(70vh * 4 / 3));
     min-width: min(500px, 90vw);
+    /* max-width: 800px; */
     /* background-color: rgba(30, 30, 30, 1); */
     z-index: 200;
-    background-image: url('https://dansylvain.github.io/pictures/noPanicRusted.jpg');
+    background-image: url('https://dansylvain.github.io/pictures/noPanicRusted.webp');
     background-size: cover;
 
 }
@@ -135,6 +139,7 @@
     z-index: 500;
 }
 
+/* commanetaire */
 body.match-active::before {
     content: "";
     position: fixed;
@@ -144,7 +149,7 @@ body.match-active::before {
     height: 100vh;
     background-color: rgba(30, 30, 30, 1); /* Couleur de fond autour du match */
     z-index: 100; /* en dessous de #match */
-    opacity: 0.5;
+    opacity: 1;
 }
 
 .match-sylvain-gif {
@@ -296,7 +301,7 @@ body.match-active::before {
 }
 
 #match:has(#waiting:not(.no-waiting)) {
-	background-image: url('https://dansylvain.github.io/pictures/login_pong.png');
+	background-image: url('https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp');
 }
 
 /* Animation clignotante */
