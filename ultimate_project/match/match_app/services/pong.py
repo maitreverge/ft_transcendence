@@ -152,14 +152,15 @@ class Pong:
 	async def run_game(self):
 		
 		if not self.start_flag:
+			
 			self.start_time = self.get_time()
 			await self.send_start(3)
 			self.watch_cat_task = self.myEventLoop.create_task(
 				self.watch_cat(self.start_delay))
+		self.start_flag = True
 		self.x_players = self.players.copy()
 		self.state = State.running
 		self.winner = None
-		self.start_flag = True
 		self.wall_flag = True
 
 		self.pad_commands(self.players)	
@@ -176,20 +177,19 @@ class Pong:
 		# print(f"\033[36mZZZZZZZZZZZZZZZZZZZZ {self.x_players} ET {players}\033[0m {self.id}", flush=True)
 		if self.x_players is None or self.x_players != players:
 			self.x_players = players.copy()
-			await asyncio.sleep(0.1)
+			await asyncio.sleep(0.5)
 			# print(f"\033[36mXXXX {self.x_players}\033[0m {self.id}", flush=True)
 			# await asyncio.sleep(3)
 			# print(f"\033[36mYYYY {self.x_players}\033[0m", flush=True)
 			if self.start_flag:
-				# print(f"this is my players: {players}", flush=True)
+				print(f"this is my players: {players}", flush=True)
 				if players[0]:
 					self.winner = self.plyIds[0]
 				elif players[1]:
 					self.winner = self.plyIds[1]
 				else:
-					self.winner = None
-			# if self.id == 1:		
-			# 	print(f"winner is :{self.winner}", flush=True)
+					self.winner = None				
+				print(f"winner is :{self.winner} {self.id}", flush=True)
 		self.state = State.waiting
 
 	async def watch_dog(self):
@@ -256,7 +256,8 @@ class Pong:
 
 	async def stop(self, playerId):
 
-		print(f"STOP playerId: {playerId} w: {self.winner}, multy {self.multy}", flush=True)
+		print(f"STOP playerId: {playerId} plyIds: {self.plyIds} w: {self.winner}, multy {self.multy} startflag: {self.start_flag}", flush=True)
+		print("TYPES", type(self.winner), type(self.multy), type(playerId), type(self.start_flag), flush=True)
 
 		if not playerId or playerId in self.plyIds: 	
 			if not any((self.winner, self.multy)) and \
