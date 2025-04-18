@@ -72,20 +72,36 @@ function stopMatch(matchId)
 			console.log("LE WEBSOCKET ETS NULL.");
 		else 
 		{
-			console.log("je sais pas ce qu eje fou la");
-			if (window.matchSocket.readyState === WebSocket.OPEN)
-			{
-				console.log("je vais envoyer 42");
-				window.stopFlag = true
-				window.matchSocket.close(3666);
-				if (window.matchSocket2)
-					window.matchSocket2.close(3666);
-			} 
-			else 
-			{
-				console.log("La WebSocket était déjà fermée.");
-			}
-			console.log("je nai pas plante");
+			setTimeout(()=> {
+				console.log("je sais pas ce qu eje fou la");
+				if (window.matchSocket.readyState === WebSocket.OPEN)
+				{
+					console.log("je vais envoyer 42");
+					window.stopFlag = true
+					window.matchSocket.close(3666);
+					if (window.matchSocket2)
+						window.matchSocket2.close(3666);
+				} 
+				else 
+				{
+					console.log("La WebSocket était déjà fermée.");
+				}
+				console.log("je nai pas plante");
+			}, 1000);
+			// console.log("je sais pas ce qu eje fou la");
+			// if (window.matchSocket.readyState === WebSocket.OPEN)
+			// {
+			// 	console.log("je vais envoyer 42");
+			// 	window.stopFlag = true
+			// 	window.matchSocket.close(3666);
+			// 	if (window.matchSocket2)
+			// 		window.matchSocket2.close(3666);
+			// } 
+			// else 
+			// {
+			// 	console.log("La WebSocket était déjà fermée.");
+			// }
+			// console.log("je nai pas plante");
 		}
 		console.log("toujours vivant");
 		const oldScripts = document.querySelectorAll("script.match-script");
