@@ -160,7 +160,7 @@ body.match-active::before {
 
 .match-sylvain-gif {
 	overflow: hidden;
-    /* background-image: url('https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp'); */
+    /* background-image: url(''); */
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -307,7 +307,7 @@ body.match-active::before {
 }
 
 #match:has(#waiting:not(.no-waiting)) {
-	background-image: url('https://dansylvain.github.io/pictures/SylvainDurifOmbaya.webp');
+	background-image: url('https://dansylvain.github.io/pictures/tyler.jpg');
 }
 
 /* Animation clignotante */
