@@ -66,11 +66,12 @@ body, h5 {
 .tournament-cont {
 	width: 100%;
     min-height: 14rem; /* Hauteur minimale */
+    min-width: fit-content;
 	background-color: rgb(109, 94, 96);	
 	border-radius: 5%;
 	padding: 5px;
     margin-bottom: 1rem;
-    
+    padding: 1rem;
 }
   
   #pattern {
@@ -176,7 +177,7 @@ body, h5 {
 }
 
 input:checked + .slider {
-  background-color: var(--navbars-color)
+  background-color: var(--title-color)
 }
 
 input:checked + .slider:before {
@@ -327,12 +328,6 @@ button {
     background-color: #bad7f2;
 }
 
-
-
-#match-player-name {
-	display: none;
-}
-
 /* toggler day/night */
 
 /* From Uiverse.io by andrew-demchenk0 */ 
@@ -357,10 +352,11 @@ button {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #73C0FC;
+    background-color: var(--title-color);
     transition: .4s;
     border-radius: 30px;
   }
+
   
   .slider:before {
     position: absolute;
@@ -371,7 +367,7 @@ button {
     left: 2px;
     bottom: 2px;
     z-index: 2;
-    background-color: #e8e8e8;
+    background-color: var(--text-color);
     transition: .4s;
   }
   
@@ -444,4 +440,31 @@ button {
     transform: translateX(30px);
   }
 
-  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  #trash {
+    /* position:fixed; */
+    height: 60px;
+    width: 60px;
+    background-image: url('https://dansylvain.github.io/pictures/trashcan.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1000;
+    position:relative;
+    /* left:50%;
+    transform: translateX(-50%); */
+    filter: blur(2px) saturate(120%) hue-rotate(180deg);
+    opacity: 0.8;
+    filter: saturate(120%) hue-rotate(180deg)
+    drop-shadow(0 0 10px rgba(0, 200, 255, 0.7));
+    animation: flotter 3s ease-in-out infinite;
+    margin:20px;
+  }
+
+  @keyframes flotter {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }

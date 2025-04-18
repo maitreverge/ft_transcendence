@@ -38,8 +38,8 @@
     <!-- Dropdown - Alerts -->
     <div class="background_color dropdown-list dropdown-menu dropdown-menu-left shadow animated--grow-in"
       aria-labelledby="alertsDropdown">
-      <h6 data-translate="Menu" class="dropdown-header navbars_color ">
-        Menu
+      <h6 data-translate="Menu" class="dropdown-header text_color">
+        <span class="navbars_color">Menu</span>
       </h6>
       <a class="nav-link" hx-trigger="click" hx-push-url="true" hx-get="/tournament/simple-match/" hx-target="#main_div"
         id="userDropdown" role="button">
@@ -144,18 +144,18 @@
           {% endif %}>
           {% if username %}{{ username }}{% else %}Guest{% endif %}
         </span>
-        <img class="img-profile rounded-circle" src="{% static 'static_files/img/undraw_profile.svg' %}" />
+        <img class="img-profile rounded-circle" src="{% static 'static_files/img/marvin.svg' %}" />
       </a>
       <!-- Dropdown - User Information -->
-      <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+      <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in navbars_color text_color_text" aria-labelledby="userDropdown">
         <a id="pre-modal-profile" class="dropdown-item" hx-trigger="click" hx-push-url="true" hx-get="/account/profile/"
           hx-target="#main_div">
-          <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+          <i class="fas fa-user fa-sm fa-fw mr-2 text_color_text"></i>
           <span data-translate="Profile">Profile</span>
         </a>
         <div class="dropdown-divider"></div>
         <a id="pre-modal-logout" class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-          <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+          <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text_color_text"></i>
           <span id="logoutButton" data-translate="Logout">Logout</span>
         </a>
       </div>

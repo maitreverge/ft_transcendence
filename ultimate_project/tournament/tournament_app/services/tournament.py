@@ -332,7 +332,7 @@ class Tournament():
 		id_tournament = await self.extract_last_tournament_id()
 		all_matches = tournament_result["matchs"]
 		
-		await self.save_tournament_matches(all_matches, id_tournament)
+		# await self.save_tournament_matches(all_matches, id_tournament)
 		
 	async def match_players_update(self, match_update):
 

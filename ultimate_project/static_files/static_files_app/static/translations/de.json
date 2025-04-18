@@ -15,6 +15,13 @@
     
     "ReadyToLeaveTitle": "Bereit zu gehen?",
     "ReadyToLeaveText": "Wähle unten \"Abmelden\", wenn du deine aktuelle Sitzung beenden möchtest.",
-    "Cancel": "Abbrechen"
+    "Cancel": "Abbrechen",
+
+    "WelcomeToPong42": "🏓 Willkommen bei ",
+    "GetReadyToCompete": "Mach dich bereit, deine Freunde in intensiven Matches, lokal oder remote, herauszufordern und in der Rangliste aufzusteigen!",
+    "DuelDescription": "Fordere einen anderen Spieler im Duell heraus und zeige, wer der König des digitalen Pingpongs ist.",
+    "TournamentDescription": "Nimm an einem K.-o.-Turnier gegen 3 andere Gegner teil.",
+    "ProfileDescription": "Passe dein Profil an und sieh dir deine Match-Historie an.",
+    "StatsDescription": "Sieh dir deine Siegquote, dein Ranking und deine vergangenen Leistungen an."
   }
   

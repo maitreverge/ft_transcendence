@@ -13,10 +13,7 @@
 
 # FRONT WORK
 
-🟧 Creer des images pour la page d'accueil 
-
 # BACK WORK
-🟧 user not found when 2FA incorrect in login
 
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
@@ -25,8 +22,6 @@
 🟧 CLEAN AND SIMPLIFY COMMENTS
 
 🟧 DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT...
-
-🟧 Changer le mot de passe d'admin / Delete l'admin en production (`user_prod.csv`)
 
 🟧 Switch from `user_prod.csv` to `user.csv` in correction 
 
@@ -40,6 +35,15 @@
 
 ======================================= DONE =====================================
 
+
+
+✅ Changer le mot de passe d'admin (`user_prod.csv`)
+
+✅ Beautify 2fa page
+
+✅ Remove `console.error` from the 2FA workflow
+
+✅ user not found when 2FA incorrect in login
 
 ✅ Beautify login
 

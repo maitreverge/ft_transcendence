@@ -1,4 +1,39 @@
 
+function quitMatch()
+{
+	document.body.classList.remove("match-active");
+	cancelAnimationFrame(window.pongAnim);	
+	closeWebSocket(window.matchSocket);
+	closeWebSocket(window.matchSocket2);
+	delMatchScript();
+	delMatch();
+}
+
+function closeWebSocket(socket)
+{
+	if (socket && socket.readyState === WebSocket.OPEN)
+	{		
+		window.stopFlag = true
+		socket.close(3666);		
+	} 
+}
+
+function delMatchScript()
+{
+	const scripts = document.querySelectorAll("script.match-script");		
+	scripts.forEach(oldScript => oldScript.remove());	
+}
+
+function delMatch()
+{
+	const matchDiv = document.getElementById('match');
+    if (matchDiv)
+		matchDiv.remove();
+    const rulesOverlay = document.getElementById('rules-overlay');
+    if (rulesOverlay)
+		rulesOverlay.style.display = 'none';
+}
+
 function stopMatch(matchId)
 {	
 	window.gameInProgress = false;
@@ -6,10 +41,7 @@ function stopMatch(matchId)
 	cancelAnimationFrame(window.pongAnim);
 	const input = document.getElementById("match-player-name");
 	if (input)
-	{
-		input.style.display = "none";
-		input.value = "";
-	}
+		input.value = "";	
 	if (!matchId)
 	{
 		console.log("matchID EST NULLE");
@@ -40,20 +72,36 @@ function stopMatch(matchId)
 			console.log("LE WEBSOCKET ETS NULL.");
 		else 
 		{
-			console.log("je sais pas ce qu eje fou la");
-			if (window.matchSocket.readyState === WebSocket.OPEN)
-			{
-				console.log("je vais envoyer 42");
-				window.stopFlag = true
-				window.matchSocket.close(3666);
-				if (window.matchSocket2)
-					window.matchSocket2.close(3666);
-			} 
-			else 
-			{
-				console.log("La WebSocket était déjà fermée.");
-			}
-			console.log("je nai pas plante");
+			setTimeout(()=> {
+				console.log("je sais pas ce qu eje fou la");
+				if (window.matchSocket.readyState === WebSocket.OPEN)
+				{
+					console.log("je vais envoyer 42");
+					window.stopFlag = true
+					window.matchSocket.close(3666);
+					if (window.matchSocket2)
+						window.matchSocket2.close(3666);
+				} 
+				else 
+				{
+					console.log("La WebSocket était déjà fermée.");
+				}
+				console.log("je nai pas plante");
+			}, 1000);
+			// console.log("je sais pas ce qu eje fou la");
+			// if (window.matchSocket.readyState === WebSocket.OPEN)
+			// {
+			// 	console.log("je vais envoyer 42");
+			// 	window.stopFlag = true
+			// 	window.matchSocket.close(3666);
+			// 	if (window.matchSocket2)
+			// 		window.matchSocket2.close(3666);
+			// } 
+			// else 
+			// {
+			// 	console.log("La WebSocket était déjà fermée.");
+			// }
+			// console.log("je nai pas plante");
 		}
 		console.log("toujours vivant");
 		const oldScripts = document.querySelectorAll("script.match-script");
@@ -244,6 +292,7 @@ function setEnd(data, endCont, end, spec)
 		class="winner-gif">
 		`;		
 		endCont.classList.add("end-cont");
+		endCont.style.display = "block";
 		console.log("🏁 Match terminé, reset du timestamp");
 		window.gameStartTimestamp = undefined;	
 	}

@@ -9,6 +9,7 @@ pongs = []
 def new_match(request: HttpRequest):
     
 	multy = request.GET.get("multy")
+	multy = True if multy == 'True' else False 
 	p1 = (int(request.GET.get("p1Id")), request.GET.get("p1Name"))
 	p2 = (int(request.GET.get("p2Id")), request.GET.get("p2Name"))
 	pong = Pong(multy, p1, p2)

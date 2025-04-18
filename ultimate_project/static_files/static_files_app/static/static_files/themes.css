@@ -1,18 +1,35 @@
 [data-theme="dark"] {
-    --background-color: #0d1b2a;
-    --navbars-color: #415a77;
-    --main-color: #1b263b;
-    --text-color: #e0e1dd;
-    --title-color: #778da9;
+    --background-color: #0B2739;
+    --navbars-color: #1F6480;
+    --main-color: #594F49;
+    --text-color: #7fd4eb;
+    --title-color: #3A95B4;
   }
 
+
+  /* [data-theme="dark"] {
+    --background-color: #0F354C;
+    --navbars-color: #2A86AB;
+    --main-color: #776A62;
+    --text-color: #9ce5f9;
+    --title-color: #6FB7D0;
+  } */
+
 /* Thème sombre */
-[data-theme="light"] {
-    --background-color: #eaf4f4;
-    --navbars-color: #a4c3b2;
-    --main-color: #cce3de;
-    --text-color: #6b9080;
-    --title-color: #f6fff8;
+/* [data-theme="light"] {
+    --background-color: #1D1A45;
+    --navbars-color: #4C459F;
+    --main-color: #727364;
+    --text-color: #8A84C8;
+    --title-color: #6F66D1;
+  } */
+
+  [data-theme="light"] {
+    --background-color: #e9551b;
+    --navbars-color: #fc8230;
+    --main-color: #64ecca;
+    --text-color: #f8b34b; /* main color in the */
+    --title-color: #136d13;
   }
 
 /* Cibler les éléments spécifiques du site */
@@ -62,6 +79,10 @@ background-color: var(--navbars-color);
   background-color: var(--title-color);
 }
 
+.title_color_text
+{
+  color: var(--title-color);
+}
 .main_color
 {
   background-color: var(--main-color);
@@ -74,10 +95,10 @@ background-color: var(--navbars-color);
   color: var(--background-color);
 }
 
-.navbars_color i {
-  /* background-color: var(--navbars-color) !important; */
+/* .navbars_color i {
+  background-color: var(--navbars-color) !important;
   color: var(--navbars-color) !important;
-}
+} */
 .card, .card-header
 {
   background-color: var(--navbars-color) !important;
@@ -85,6 +106,15 @@ background-color: var(--navbars-color);
 
 }
 
+.navbars_color_text {
+  
+  color: var(--navbars-color) !important;
+}
+
+.navbars_color {
+  
+  background-color: var(--navbars-color) !important;
+}
 
 .text_color
 {
@@ -93,6 +123,10 @@ background-color: var(--navbars-color);
 
 .text_color_text
 {
+  color: var(--text-color) !important;
+}
+
+.text_color_text::placeholder {
   color: var(--text-color) !important;
 }
 
@@ -109,22 +143,33 @@ text-decoration: none;
 .title-color
 {
   background-color: var(--title-color);
-
+  
 }
 
 
 .sidebar {
-background-color: var(--navbars-color);
+	background-color: var(--navbars-color);
 }
-    
-.sidebar a {
-color: var(--text-color);
-background-color: var(--background-color);
 
+.sidebar a {
+	color: var(--text-color);
+	background-color: var(--background-color);
+	
 }
 
 .sidebar a:hover {
-color: var(--title-color);
+	color: var(--title-color);
+}
+
+.flo_class {
+    color: var(--text-color);
+    background-color: var(--background-color);
+    
+}
+
+.flo_class:hover {
+    color: var(--title-color);
+
 }
 
 h1 {

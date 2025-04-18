@@ -8,23 +8,171 @@
     <meta name="author" content="">
     <link href="https://ft-trans-static-files.github.io/error-static-files/sb-admin-2.min.css" 
     rel="stylesheet">
-</head>
-<body>
-    <div class="text-center my-5">
-        <div id="error-page" class="error mx-auto" data-text="{{ status_code }}">{{ status_code }}</div>
-        <p class="lead text-gray-800 mb-5">{{ error_message }}</p>
-        <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
+</head>
+<style>
+
+body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Pong Background Animation Styles */
+    .pong-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+        background-color: #3693e9;
+    }
+
+    .pong-icon {
+        position: absolute;
+        width:70px;
+        height:70px;
+        background-image: url('https://media0.giphy.com/media/XEyXIfu7IRQivZl1Mw/giphy.gif?cid=6c09b95221i1y6m1kh3ak5jajhu1rujkl8tjlad8ext31t4r&ep=v1_stickers_search&rid=giphy.gif&ct=e');
+        background-size: contain;
+        background-repeat: no-repeat;
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+	.glitch {
+    font-size: 10rem; /* Increased from 6rem */
+    font-weight: 900; /* Bolder font weight */
+    position: relative;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow */
+    animation: glitch-animation 3s infinite;
+    margin-bottom: 20px; /* Added space below */
+    letter-spacing: -2px; /* Tighter letter spacing for more impact */
+    line-height: 1;
+}
+	
+	.glitch::before,
+	.glitch::after {
+		content: attr(data-text);
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+	
+	.glitch::before {
+		left: 2px;
+		text-shadow: -2px 0 #ff00ff;
+		clip: rect(44px, 450px, 56px, 0);
+		animation: glitch-anim 5s infinite linear alternate-reverse;
+	}
+	
+	.glitch::after {
+		left: -2px;
+		text-shadow: 2px 0 #00ffff;
+		clip: rect(24px, 450px, 100px, 0);
+		animation: glitch-anim2 3s infinite linear alternate-reverse;
+	}
+	
+	@keyframes glitch-animation {
+		0% {
+			transform: skew(0);
+		}
+		20% {
+			transform: skew(0);
+		}
+		21% {
+			transform: skew(3deg);
+		}
+		23% {
+			transform: skew(0);
+		}
+		25% {
+			transform: skew(-3deg);
+		}
+		27% {
+			transform: skew(0);
+		}
+		100% {
+			transform: skew(0);
+		}
+	}
+	
+	@keyframes glitch-anim {
+		0% {
+			clip: rect(5px, 450px, 76px, 0);
+		}
+		20% {
+			clip: rect(29px, 450px, 16px, 0);
+		}
+		40% {
+			clip: rect(50px, 450px, 78px, 0);
+		}
+		60% {
+			clip: rect(74px, 450px, 46px, 0);
+		}
+		80% {
+			clip: rect(33px, 450px, 95px, 0);
+		}
+		100% {
+			clip: rect(67px, 450px, 15px, 0);
+		}
+	}
+	
+	@keyframes glitch-anim2 {
+		0% {
+			clip: rect(65px, 450px, 36px, 0);
+		}
+		20% {
+			clip: rect(87px, 450px, 29px, 0);
+		}
+		40% {
+			clip: rect(32px, 450px, 94px, 0);
+		}
+		60% {
+			clip: rect(90px, 450px, 23px, 0);
+		}
+		80% {
+			clip: rect(56px, 450px, 57px, 0);
+		}
+		100% {
+			clip: rect(12px, 450px, 92px, 0);
+		}
+	}
+
+</style>
+
+<body>
+    <!-- ! BACKGROUND ANIMATION  -->
+    <div class="pong-background" id="pong-background"></div>
+
+    <div class="text-center my-5 transparent-container">
+        <div id="error-page" class="glitch mx-auto" data-text="{{ status_code }}">{{ status_code }}</div>
+        <div class="h1 lead text-gray-800 mb-5">{{ error_message }}</div>
+        		<p class=" mb-0" style="color: white; font-size: 2.5rem; font-weight: 500; text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);">It looks like you found a glitch in the matrix...</p>
+				
+
+
+		<div class="text-center large mt-4" style="font-size:larger">
+			<!-- Back button -->
+			<a id="go-back" onclick="history.back()" class="btn btn-secondary btn-lg" style="cursor: pointer; font-size: 1.5rem; padding: 10px 30px; box-shadow: 0 0 15px rgba(0,0,0,0.3); border-radius: 8px;" title="Go Back">
+				<i class="fas fa-arrow-left mr-2"></i> Go Back
+			</a>
+		</div>
     </div>
-    <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-                <span>Copyright &copy; Pong 42</span>
-            </div>
-        </div>
-    </footer>
 </body>
 <script>
+	// Recycle the login animation for error pages
+	initPongAnimation(false);
+
     // this function is part of the history logic
     window.addEventListener("DOMContentLoaded", () => {
         let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
@@ -36,15 +184,75 @@
         }
     });
 
-    // this function helps reloading the scripts after browser navigation
-    // window.addEventListener("popstate", function(event) {
-    //     let lastVisitedPage = sessionStorage.getItem("lastVisitedPage");
+	function initPongAnimation(register) {
+	// Clear any existing animation before reinitializing
+	const container = document.getElementById('pong-background');
+	if (!container) return; // Exit if container doesn't exist
+	
+	// Clear previous icons if any
+	container.innerHTML = '';
+	
+	const cols = 12;
+	const rows = 7;
+	const spacingX = window.innerWidth / cols;
+	const spacingY = window.innerHeight / rows;
+	const speed = 0.5;
+	
+	const icons = [];
+	
+	for (let row = -1; row <= rows; row++) {
+		for (let col = -1; col <= cols; col++) {
+			const icon = document.createElement('div');
+			icon.className = 'pong-icon';
+			icon.style.left = `${col * spacingX}px`;
+			icon.style.top = `${row * spacingY}px`;
+			container.appendChild(icon);
+			
+			icons.push({
+				el: icon,
+				x: col * spacingX,
+				y: row * spacingY,
+			});
+		}
+	}
+	
+	function animate() {
+		const w = window.innerWidth;
+		const h = window.innerHeight;
+		
+		for (const icon of icons) {
+			if (register == true) {
+				icon.x -= speed; // invert for register.html
+			}
+			else{
+				icon.x += speed;
+			}
+			icon.y += speed;
+			
+			if (register == true) {
+				if (icon.x < -50) icon.x += (cols + 2) * spacingX; // invert for register.html
+			}
+			else{
+				if (icon.x > w) icon.x -= (cols + 2) * spacingX;
+			}
+			if (icon.y > h) icon.y -= (rows + 2) * spacingY;
 
-    //     if (lastVisitedPage) {
-    //         console.log("Retour à la dernière page visitée : ", lastVisitedPage);
-    //     } else {
-    //         console.log("Aucune URL précédente trouvée, l'utilisateur reste sur la page d'erreur.");
-    //     }
-    // });
+			icon.el.style.left = `${icon.x}px`;
+			icon.el.style.top = `${icon.y}px`;
+		}
+
+		// Store animation ID so we can cancel it if needed
+		window.pongAnimationId = requestAnimationFrame(animate);
+	}
+
+	// Cancel any existing animation before starting a new one
+	if (window.pongAnimationId) {
+		cancelAnimationFrame(window.pongAnimationId);
+	}
+
+	animate();
+}
+
+
 </script>
 </html>

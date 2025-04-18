@@ -20,6 +20,7 @@
         <div id="spec">
             <img src="https://dansylvain.github.io/pictures/tennis.webp">
         </div>
+        <button id="resize-button" onclick="toggleSize()">🔄<span>Size</span></button>
         <!-- <h1 id="spec" style="display: none">Je suis spectateur</h1>			 -->
         <div id="p1"></div>
         <div id="p2"></div>
@@ -34,17 +35,23 @@
 
         </div>
     </div>
+
 <div id="rules-overlay">
     <div id="score">Score</div>
     <p id="inst-right"> <br> </p>
     <p id="inst-left"> <br> </p>
     <p>Be the first one to score 5 points.</p><button id="quit-match-button" onclick="
     stopMatch('{{matchId}}');
-    const matchDiv = document.getElementById('match');
-    if (matchDiv) matchDiv.remove();
     const rulesOverlay = document.getElementById('rules-overlay');
     if (rulesOverlay) rulesOverlay.style.display = 'none';
-    window.gameStartTimestamp = undefined;">EXIT</button>
+        window.gameStartTimestamp = undefined;
+    const matchDiv = document.getElementById('match');
+    setTimeout(()=>{
+        if (matchDiv) matchDiv.remove(); 
+    }, 3000);
+    
+   ">EXIT</button>
+    <button onclick="quitMatch()">BACK</button>
 </div>
 <script>
     document.body.classList.add("match-active");
@@ -76,5 +83,12 @@
         console.log("Aucune page précédente trouvée ou déjà sur la page visitée.");
     }
 });
+
+function toggleSize() {
+        const match = document.getElementById('match');
+        
+        // Toggle la classe 'small-size' sur #match
+        match.classList.toggle('small-size');
+    }
 
 </script>

@@ -35,20 +35,22 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
-		self.start_time = None
+		self.start_time = "" 
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
-		self.max_score = 5
+		self.max_score = 20
 		self.point_delay = 1
 		self.start_delay = 4
 		self.max_wait_delay = 2000
 		self.users = []
-		self.players = None		
+		self.players = []
+		self.x_players = None		
 		self.winner = None
 		self.myEventLoop = None
 		self.tasks = None
 		self.watch_cat_task = None
+		# self.waiting_state = False
 		self.init_physics()
 
 	def init_physics(self):
@@ -121,7 +123,7 @@ class Pong:
 			if None not in self.players:			
 				await self.run_game()						
 			else:
-				self.set_waiting_state(self.players)							
+				await self.set_waiting_state(self.players)
 			await asyncio.sleep(self.gear_delay)
 		if self.watch_cat_task:
 			await self.watch_cat_task	
@@ -150,13 +152,14 @@ class Pong:
 	async def run_game(self):
 		
 		if not self.start_flag:
+			self.start_flag = True
 			self.start_time = self.get_time()
 			await self.send_start(3)
 			self.watch_cat_task = self.myEventLoop.create_task(
 				self.watch_cat(self.start_delay))
+		self.x_players = self.players.copy()
 		self.state = State.running
 		self.winner = None
-		self.start_flag = True
 		self.wall_flag = True
 
 		self.pad_commands(self.players)	
@@ -168,15 +171,24 @@ class Pong:
 	def get_time(self):
 		return timezone.localtime(timezone.now()).isoformat(timespec='seconds')
 
-	def set_waiting_state(self, players):
-
-		if self.start_flag:
-			if players[0]:
-				self.winner = self.plyIds[0]
-			elif players[1]:
-				self.winner = self.plyIds[1]
-			else:
-				self.winner = None
+	async def set_waiting_state(self, players):
+		
+		# print(f"\033[36mZZZZZZZZZZZZZZZZZZZZ {self.x_players} ET {players}\033[0m {self.id}", flush=True)
+		if self.x_players is None or self.x_players != players:
+			self.x_players = players.copy()
+			await asyncio.sleep(0.5)
+			# print(f"\033[36mXXXX {self.x_players}\033[0m {self.id}", flush=True)
+			# await asyncio.sleep(3)
+			# print(f"\033[36mYYYY {self.x_players}\033[0m", flush=True)
+			if self.start_flag:
+				print(f"this is my players: {players}", flush=True)
+				if players[0]:
+					self.winner = self.plyIds[0]
+				elif players[1]:
+					self.winner = self.plyIds[1]
+				else:
+					self.winner = None				
+				print(f"winner is :{self.winner} {self.id}", flush=True)
 		self.state = State.waiting
 
 	async def watch_dog(self):
@@ -243,13 +255,15 @@ class Pong:
 
 	async def stop(self, playerId):
 
-		print(f"STOP playerId: {playerId}", flush=True)
+		print(f"STOP playerId: {playerId} plyIds: {self.plyIds} w: {self.winner}, multy {self.multy} startflag: {self.start_flag}", flush=True)
+		print("TYPES", type(self.winner), type(self.multy), type(playerId), type(self.start_flag), flush=True)
 
 		if not playerId or playerId in self.plyIds: 	
 			if not any((self.winner, self.multy)) and \
 				all((playerId, self.start_flag)):							
 				self.winner = self.plyIds[0] \
-					if playerId == self.plyIds[1] else self.plyIds[1]				
+					if playerId == self.plyIds[1] else self.plyIds[1]	
+				print(f"STOP 2222 playerId: {playerId} w: {self.winner}, multy {self.multy}", flush=True)				
 			await self.sendFinalState()
 			return True
 		return False
@@ -299,6 +313,7 @@ class Pong:
 
 		self.state = State.end
 		w_and_l = self.get_winner_and_looser()
+		print(f"final winner: {w_and_l}", flush=True)
 		for p in self.users:
 			try:					
 				await p["socket"].send(text_data=json.dumps({

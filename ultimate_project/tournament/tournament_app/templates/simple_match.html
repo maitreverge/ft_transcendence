@@ -25,29 +25,28 @@
                         <h1 data-translate="Match" class="pt-2"><strong>Match</strong></h1>
                         <ul class="nav flex-column">
                             <!-- Profile Section -->
-                            <li class="nav-item">
+                            <li class="nav-item m-2">
                                 <a id="side-nav-home"
                                     class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
                                     hx-get="/home/" hx-target="#main_div" hx-swap="innerHTML" hx-push-url="true">
                                     <i class="mr-2 fa-solid fa-house"></i>
-                                    <h5 data-translate="Home">Home</h5>
+                                    <h5 class="mb-0" data-translate="Home">Home</h5>
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item m-2">
                                 <a id="side-nav-tournament"
                                     class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
                                     hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
                                     hx-push-url="true">
                                     <i class="mr-2 fa-solid fa-trophy"></i>
-                                    <h5 data-translate="Tournament">Tournament</h5>
+                                    <h5 class="mb-0" data-translate="Tournament">Tournament</h5>
                                 </a>
                             </li>
-                            <li id="side-nav-info" class="nav-item">
+                            <li id="side-nav-info" class="nav-item m-2">
                                 <div id="overlayButton" onclick="replayTuto()"
-                                    class="nav-link rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                                    <i class="mr-2 fas fa-info-circle"></i><a>
-                                        <h5 data-translate="Info">Info</h5>
-                                    </a>
+                                    class="nav-link rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn flo_class">
+                                    <i class="mr-2 fas fa-info-circle"></i>
+                                        <h5 class="mb-0" data-translate="Info">Info</h5>
                                 </div>
                             </li>
                         </ul>
@@ -92,16 +91,19 @@
                                         <h6 data-translate="Player Pool" class="mb-0 text-center font-weight-bold">Player Pool</h6>
                                     </div>
                                 </div>
-                                <div class="card-header py-3">
-                                    <div class="d-flex flex-column gap-2">
-                                        <input class="background_color form-control border-0 w-100" id="player-name"
-                                            type="text" maxlength="20" pattern=".{1,50}" required
+                                <div class="card-header p-0">
+                                    <div class="card-header mb-1">
+                                        <h6 data-translate="Local Match" class="mb-0 text-center font-weight-bold">Local Match</h6>
+                                    </div>
+                                    <div class="d-flex flex-column gap-2 m-2">
+                                            <input class="m-2 w-auto background_color form-control border-0 text_color_text"
+                                            id="match-player-name" type="text" maxlength="20" pattern=".{1,50}" required
                                             placeholder="enter a name"
                                             oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
-                                        <button onclick="newPlayer(window.tournamentSocket); prefillName();"
+                                        <button onclick="newLocalMatch();"
                                             class="text_color btn d-flex align-items-center justify-content-between w-100">
                                             <span data-translate="Add Player" class="text background_color_text">Add Player</span>
-                                            <span class="navbars_color icon text-white-50">
+                                            <span class="navbars_color_text icon text-white-50">
                                                 <i class="fas fa-arrow-right"></i>
                                             </span>
                                         </button>
@@ -118,7 +120,7 @@
                                     <div class="card-header py-3">
                                         <div id="overlayButton" onclick="replayTuto()"
                                             class="nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
-                                            <i data-translate="Info" class="fas fa-info-circle"></i>Info
+                                            <span class="flo_class"><i class="fas fa-info-circle"></i>INFO</span>
                                         </div>
                                     </div>
                                 </div>
@@ -140,13 +142,12 @@
                         <div class="row d-flex align-items-stretch pt-5">
                             <div class="col-lg-2 d-flex flex-column"></div>
                             <div class="col-lg-4 mb-4">
+                                <div class="card-header  mb-1">
+                                    <h6 data-translate="Remote Match" class="mb-0 text-center font-weight-bold">Remote Match</h6>
+                                </div>
                                 <div class="card shadow h-100">
                                     <div id="players" class="card-body p-2">
                                     </div>
-                                    <input class="m-2 w-auto background_color form-control border-0"
-                                        id="match-player-name" type="text" maxlength="20" pattern=".{1,50}" required
-                                        placeholder="enter a name"
-                                        oninput="this.value = this.value.replace(/[^a-zA-Z0-9_]/g, '');" />
                                 </div>
                             </div>
                             <div class="col-lg-4 mb-4">
