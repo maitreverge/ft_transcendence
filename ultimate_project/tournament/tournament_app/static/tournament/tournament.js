@@ -382,7 +382,28 @@ function dragPlayer(div) {
 
 	div.draggable = true;
 	div.addEventListener("dragstart",
-		e => e.dataTransfer.setData("text/plain", e.target.id));
+		e => {
+			e.dataTransfer.setData("text/plain", e.target.id);
+			const clone = div.cloneNode(true);
+			clone.style.borderRadius = "12px";
+			clone.style.boxShadow = "0 0 8px rgba(0,0,0,0.3)";
+			clone.style.position = "absolute";
+			clone.style.top = "0";
+			clone.style.left = "0";
+			clone.style.visibility = "hidden"; // ← au lieu de display:none ou -9999px
+			document.body.appendChild(clone);
+		  
+			// 🧠 Forcer le DOM à calculer sa taille (trigger reflow)
+			const offsetX = clone.offsetWidth / 2;
+			const offsetY = clone.offsetHeight / 2;
+		  
+			e.dataTransfer.setDragImage(clone, offsetX, offsetY);
+		  
+			// Nettoyage
+			setTimeout(() => clone.remove(), 0);
+		} );
+
+	
 }
 
 // function allQuitTournament() 
