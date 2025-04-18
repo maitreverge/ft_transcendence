@@ -434,7 +434,7 @@ function newLocalMatch()
 {
 	const input = document.getElementById("match-player-name");		
 	const name = input.value;
-	if (name.trim() === "")
+	if (name.trim() === "" && !window.busyElement)
 	{
 		messagePopUp(
 			'Oops!', 'https://dansylvain.github.io/pictures/travolta.webp',
@@ -642,6 +642,7 @@ function createSimplePlayerElement(socket, playerId, playerName) {
 
 function initSimpleMatch() {
 	
+	window.busyElement = null;
 	console.log("INIT SIMPLE MATCH");	
 	if (typeof closeTournamentSocket === 'function') 
 		closeTournamentSocket();
