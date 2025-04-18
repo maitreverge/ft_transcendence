@@ -4,8 +4,6 @@
 ⚠️
 
 # BUG REPORT
-🟧 ACCOUNT THOMAS => Quand on resize la page, les views droppent en bas
-
 
 --------------------------------------------------------------------------------
 									LAST DEV WEEK
