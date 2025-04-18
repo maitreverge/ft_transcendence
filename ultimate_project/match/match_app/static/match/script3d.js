@@ -4,18 +4,8 @@ var tjs_keydown = null;
 var is_towplayer = false;
 // ! ====================================================== SEB DIFFERENCE ======================================================
 
-function stopEventListener3D() {
-    if (tjs_keyup)
-        document.removeEventListener("keyup", tjs_keyup);
-    if (tjs_keydown)
-        document.removeEventListener("keydown", tjs_keydown);
-    tjs_keyup = null;
-    tjs_keydown = null;
-}
-
 function quitMatch3D()
 {
-    stopEventListener3D();
 	document.body.classList.remove("match-active");
 	cancelAnimationFrame(window.pongAnim);	
 	closeWebSocket3D(window.matchSocket);
@@ -55,7 +45,7 @@ function stopMatch3D(matchId) {
 	document.body.classList.remove("match-active");
 	cancelAnimationFrame(window.pong3DAnim);
 	const input = document.getElementById("match-player-name");
-	
+
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
