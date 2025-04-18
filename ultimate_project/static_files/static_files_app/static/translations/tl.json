@@ -21,8 +21,18 @@
     "DuelDescription": "wa' SuvwI' HIv! ping pong Qang ghaH'e'.",
     "TournamentDescription": "wej jagh HIvmeH QawHaq Daqel!",
     "ProfileDescription": "ghunlIj choH 'ej QujwI' qun yIlegh.",
-    "StatsDescription": "QapmeH mIw, Qang, Qav Qu' yIlegh."
-    
+    "StatsDescription": "QapmeH mIw, Qang, Qav Qu' yIlegh.",
 
+    "Invitation cancelled!" : "bachwI' SIQHa'lu'!",
+    "The player is busy..." : "QujwI' vangtaH...",
+    "You are busy..." : "bIvangtaH...",
+    "Enter a name for the second player" : "cha'DIch pong yI'ang",
+    "Player name already exists!" : "pongvam tu'lu'pu'!",
+    "Enter a name!" : "pong yI'ang!",
+    "You can't create more than three players!" : "wej QujwI' law' yIDabQo'!",
+    " won the tournament!" : " QawHaq Qap!",
+    "Not your player!" : "bIqujwI' vItu'be'!",
+    "You can't drop yourself!" : "bISoHvaD yImejQo'!",
+    " has sent you an invitation!" : " SoHvaD bachwI' nob!"
   }
   

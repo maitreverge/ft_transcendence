@@ -245,6 +245,20 @@ input:checked + .slider:before {
 	background: rgb(251, 255, 0);
 }
 
+@keyframes shrink {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.disappear {
+  animation: shrink 1s ease forwards;  
+}
 /* .tournament {
 	width:fit-content;
 	height:fit-content;
@@ -352,7 +366,7 @@ button {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--title-color);
+    background-color: var(--main-color);
     transition: .4s;
     border-radius: 30px;
   }

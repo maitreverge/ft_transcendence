@@ -1,38 +1,51 @@
-document.addEventListener("DOMContentLoaded", function () {
-	initializeCharts();
-});
-
-document.body.addEventListener("htmx:afterSwap", function () {
-  initializeCharts();
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("mainStats")) {
+    initializeCharts();
+  }
 });
 
 document.body.addEventListener("htmx:load", function () {
-  initializeCharts();
+  if (document.getElementById("mainStats")) {
+    initializeCharts();
+  }
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+  });
 });
 
-// Helper function to initialize charts
+document.body.addEventListener("htmx:afterSwap", function () {
+  if (document.getElementById("mainStats")) {
+    initializeCharts();
+  }
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+  });
+});
+
+// initialize charts for overview
 function initializeCharts() {
     const gamesPie = document.getElementById("gamesPie")?.getContext("2d");
     const pointsPie = document.getElementById("pointsPie")?.getContext("2d");
+    // Get the data from JSON script
+    const mainStatsScript = document.getElementById("mainStats");
 
-    // Get the data from the JSON script
-    const mainStats = JSON.parse(
-      document.getElementById("mainStats").textContent
-    );
-
+    if (!mainStatsScript || !gamesPie || !pointsPie) return;
+    const mainStats = JSON.parse(mainStatsScript.textContent);
     if (gamesPie && pointsPie) {
-      const gamesPlayed = mainStats.games_played;
       const gamesWon = mainStats.games_won;
       const gamesLost = mainStats.games_lost;
-      const winRate = mainStats.win_rate;
-      const averageScore = mainStats.average_score;
       const pointsScored = mainStats.points_scored;
       const pointsConceded = mainStats.points_conceded;
-
+      // In case I want more data
+      const gamesPlayed = mainStats.games_played;
+      const winRate = mainStats.win_rate;
+      const averageScore = mainStats.average_score;
+  
+      // dummy value for case no stat avaialble
       function addDummyIfZero(data, labels) {
         if (data.every((value) => value === 0)) {
-          data.push(1); // dummy value to ensure doughnut doesn't collapse
-          labels.push("No Data"); // dummy label for the dummy value
+          data.push(1);
+          labels.push("No Data");
         }
       }
 
@@ -46,7 +59,6 @@ function initializeCharts() {
       const pointsLabels = ["Points Scored", "Points Conceded"];
       addDummyIfZero(pointsData, pointsLabels);
 
-      // Options for the charts
       const chartOptions = {
         maintainAspectRatio: false,
         tooltips: {
@@ -77,7 +89,7 @@ function initializeCharts() {
         responsive: true,
       };
 
-      // Create the Games Won/Lost Pie Chart
+      // Games Won/Lost Pie Chart
       new Chart(gamesPie, {
         type: "doughnut",
         data: {
@@ -95,7 +107,7 @@ function initializeCharts() {
         options: chartOptions,
       });
 
-      // Create the Points Scored/Conceded Pie Chart
+      // points Scored/Conceded Pie Chart
       new Chart(pointsPie, {
         type: "doughnut",
         data: {
@@ -114,3 +126,6 @@ function initializeCharts() {
       });
     }
 }
+
+// if want to use the onload in the html
+//window.initializeCharts = initializeCharts;

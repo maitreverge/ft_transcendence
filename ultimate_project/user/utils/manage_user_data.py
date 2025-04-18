@@ -52,10 +52,7 @@ async def update_user_w_user_id(user_id, data):
     try:
         print(f"Updating user {user_id} with data: {data}", flush=True)
         async with httpx.AsyncClient() as client:
-            # Set content-type header to application/json
             headers = {"Content-Type": "application/json"}
-            # Make the PATCH request
-            # NEED MOD THIS GO THROUGH FAST API
             response = await client.patch(
                 f"http://databaseapi:8007/api/player/{user_id}/",
                 json=data,
@@ -63,22 +60,29 @@ async def update_user_w_user_id(user_id, data):
             )
             print(f"Update response status: {response.status_code}", flush=True)
             print(f"Update response content: {response.text}", flush=True)
-
             if response.status_code == 200:
-                # Try to parse JSON response if available
                 try:
                     result = response.json()
                     print(f"User updated successfully: {result}", flush=True)
                     return result
                 except ValueError:
-                    # If response is not JSON, return True to indicate success
                     print("User updated successfully (non-JSON response)", flush=True)
                     return {"success": True}
-            print(
-                f"Error updating user: HTTP {response.status_code} - {response.text}",
-                flush=True,
-            )
-            return None
+            elif response.status_code != 200:
+                try:
+                    error_response = response.json()
+                    error_message = None
+                    for field, messages in error_response.items():
+                        if messages: 
+                            error_message = messages[0] 
+                            break 
+                    if not error_message:
+                        error_message = "An unknown error occurred."
+                    print(f"Error message extracted: {error_message}", flush=True)
+                    return {"success": False, "error_message": error_message}
+                except ValueError:
+                    print("Failed to parse error response as JSON", flush=True)
+                    return {"success": False, "error_message": "An unknown error occurred."}
     except Exception as e:
         print(f"Exception in update_user: {str(e)}", flush=True)
         return None
@@ -148,30 +152,12 @@ async def get_user_game_stats(user_id):
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://databaseapi:8007/api/player_stats/?player_id={user_id}")
             response_data = response.json()
-            print("JSON DATA\n\n:", flush=True)
-            pprint(response_data)
-            print("--\n", flush=True)
             if isinstance(response_data, list) and response_data:
                 payload = response_data[0]
                 main_stats = payload.get('main_stats', {})
                 stats_history = payload.get('stats_history', {})
-
-            """ print("PAYLOAD:",  flush=True)
-            for key, value in payload.items():
-                print(f"{key}: {value}",  flush=True)
-            
-            print("Main Stats:",  flush=True)
-            for key, value in main_stats.items():
-                print(f"{key}: {value}",  flush=True)
-            print("\nStats History:", flush=True)
-            if stats_history:  # Check if stats_history is not empty
-                for date, stats in stats_history.items():
-                    print(f"Date: {date}",  flush=True)
-                    for stat_key, stat_value in stats.items():
-                        print(f"  {stat_key}: {stat_value}",  flush=True)
             else:
-                print("No stats history available.",  flush=True) """
-    
+                return None, None
             if response.status_code == 200:
                 return main_stats, stats_history
             return None, None
@@ -187,31 +173,9 @@ async def get_user_match_history(user_id):
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://databaseapi:8007/api/match/?player_id={user_id}")
             response_data = response.json()
-            
-            print("JSON DATA MATCH HISTORY \n\n:", flush=True)
+            print("JSON DATA TOURNAMENT HISTORY \n\n:", flush=True)
             pprint(response_data)
             print("--\n", flush=True)
-            
-            """ payload = response_data[0]
-            main_stats = payload.get('main_stats', {})
-            stats_history = payload.get('stats_history', {}) """
-
-            """ print("PAYLOAD:",  flush=True)
-            for key, value in payload.items():
-                print(f"{key}: {value}",  flush=True)
-            
-            print("Main Stats:",  flush=True)
-            for key, value in main_stats.items():
-                print(f"{key}: {value}",  flush=True)
-            print("\nStats History:", flush=True)
-            if stats_history:  # Check if stats_history is not empty
-                for date, stats in stats_history.items():
-                    print(f"Date: {date}",  flush=True)
-                    for stat_key, stat_value in stats.items():
-                        print(f"  {stat_key}: {stat_value}",  flush=True)
-            else:
-                print("No stats history available.",  flush=True) """
-    
             if response.status_code == 200:
                 return response_data
             return None, None
@@ -219,3 +183,22 @@ async def get_user_match_history(user_id):
         print(f"Error getting user stats: {str(e)}", flush=True)
         return None, None
 
+
+
+async def get_user_tournament_history(user_id):
+    """
+    Get sanitize match data for a user_id from the database API
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"http://databaseapi:8007/api/tournament/?winner_tournament={user_id}")
+            response_data = response.json()
+            """  print("JSON DATA TOURNAMENT HISTORY \n\n:", flush=True)
+            pprint(response_data)
+            print("--\n", flush=True) """
+            if response.status_code == 200:
+                return response_data
+            return None, None
+    except Exception as e:
+        print(f"Error getting user stats: {str(e)}", flush=True)
+        return None, None

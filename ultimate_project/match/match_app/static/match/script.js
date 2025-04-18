@@ -38,6 +38,7 @@ function stopMatch(matchId)
 {	
 	window.gameInProgress = false;
 	document.body.classList.remove("match-active");
+	// window.busyElement = null;
 	cancelAnimationFrame(window.pongAnim);
 	const input = document.getElementById("match-player-name");
 	if (input)

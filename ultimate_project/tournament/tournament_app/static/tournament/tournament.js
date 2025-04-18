@@ -3,9 +3,7 @@ window.players = []
 window.websockets = []
 
 function initTournament() {
-	
-	dropTrash();
-	dropPlayersZone();
+		
 	if (typeof closeSimpleMatchSocket === 'function') 
 		closeSimpleMatchSocket();
 	else 
@@ -23,7 +21,7 @@ function initTournament() {
         `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/${window.selfId}/`
     );
 	window.tournamentSocket.onopen = () => {
-		console.log("Connexion Tournament établie 😊");	
+		console.log("Connexion Tournament établie 😊");		
 	}
 	window.tournamentSocket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");
@@ -50,7 +48,7 @@ function connectNewPlayer(playerId, playerName)
 
 	if (!playerId)
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', ": player name already exists!", ": player name already exists!", playerName, "")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', ": Player name already exists!", ": Player name already exists!", playerName, "")
 		// alert("player name yet exist!");
 		console.log(window.websockets);
 		window.websockets = window.websockets.filter(ws => ws.playerId !== undefined);	
@@ -86,14 +84,14 @@ function newPlayer(socket) {
 	const playerName = document.getElementById("player-name").value;
 	if (playerName.trim() === "")
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "enter a name!", "enter a name!", "", "")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "Enter a name!", "Enter a name!", "", "")
 
 		// alert("enter a name!");
 		return;
 	}
 	if (window.websockets.length >= 3)
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "you can't create more than three players!", "you can't create more than three players!", "", "")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "You can't create more than three players!", "You can't create more than three players!", "", "")
 
 		// alert("you can't create more than three players!");
 		return;
@@ -293,6 +291,8 @@ function createPlayerElement(socket, playerId, playerName)
 function dropPlayersZone()
 {
 	const players = document.getElementById("players");
+	if (!players)
+		return;
 	removeOldEventListener(players);
 	players.dragOver = function(e) {e.preventDefault();};
 	players.drop = function(e) {
@@ -310,6 +310,7 @@ function dropPlayersZone()
 			quitTournament(ws.socket);
 		else if (window.selfId == elementId)
 			quitTournament(window.tournamentSocket);
+		document.getElementById("clone")?.remove();	
 	};
 	addNewEventListener(players);	
 }
@@ -317,6 +318,8 @@ function dropPlayersZone()
 function dropTrash()
 {
 	const trash = document.getElementById("trash");
+	if (!trash)
+		return;
 	removeOldEventListener(trash);
 	trash.dragOver = function(e) {e.preventDefault();};
 	trash.drop = function(e) {
@@ -335,8 +338,19 @@ function dropTrash()
 				'https://dansylvain.github.io/pictures/marioNo.webp',
 				"You can't drop yourself!", "You can't drop yourself!", "", "");			
 		}
-		else		
-			ws.socket.close();	
+		else
+		{
+			const clone = document.getElementById("clone");
+			clone.style.left = `${e.clientX - clone.offsetWidth / 2}px`;
+			clone.style.top = `${e.clientY - clone.offsetHeight / 2}px`;
+			clone.style.position = "fixed"; // important pour coordonnées écran
+			clone.style.opacity = "1"; 
+			clone.classList.add("disappear");
+			setTimeout(()=>{
+				ws.socket.close();
+				clone.remove();	
+			}, 1000);
+		}		
 	};
 	addNewEventListener(trash);	
 }
@@ -368,21 +382,49 @@ function addNewEventListener(div)
 	div.addEventListener("drop", div.drop);
 }
 
-// window.addEventListener('DOMContentLoaded', ()=> {	
-// 	dropTrash();
-// 	dropPlayersZone();
-// });
+window.addEventListener('DOMContentLoaded', ()=> {
+	dropTrash();
+	dropPlayersZone();
+});
 
-// document.body.addEventListener('htmx:afterSwap', ()=> {
-// 	dropTrash();
-// 	dropPlayersZone();
-// });
+document.body.addEventListener('htmx:afterSwap', ()=> {
+	dropTrash();
+	dropPlayersZone();
+});
 
 function dragPlayer(div) {
 
 	div.draggable = true;
 	div.addEventListener("dragstart",
-		e => e.dataTransfer.setData("text/plain", e.target.id));
+		e => {
+			e.dataTransfer.setData("text/plain", e.target.id);
+			const clone = div.cloneNode(true);
+			clone.id = "clone";
+			// clone.style.borderRadius = "6px";	
+			const rect = div.getBoundingClientRect();
+			clone.style.width = `${rect.width * 0.6}px`;
+			// clone.style.backgroundColor = 'transparent';
+			// clone.style.height = `${rect.height}px`;
+
+			// clone.style.opacity = "0"; 
+			clone.style.position = "absolute";
+			clone.style.top = "-100";
+			clone.style.left = "-100";
+			// clone.style.visibility = "hidden"; // ← au lieu de display:none ou -9999px
+			document.body.appendChild(clone);
+		  
+			// // 🧠 Forcer le DOM à calculer sa taille (trigger reflow)
+			const offsetX = clone.offsetWidth / 2;
+			const offsetY = clone.offsetHeight / 2;
+			// const offsetX = 100;
+			// const offsetY = 100;
+			e.dataTransfer.setDragImage(clone, offsetX, offsetY);
+		  
+			// // Nettoyage
+			// setTimeout(() => clone.remove(), 0);
+		} );
+
+	
 }
 
 // function allQuitTournament() 
@@ -508,6 +550,7 @@ function dropTournament(div, tournamentId) {
 			enterTournament(ws.socket, tournamentId);
 		else
 			enterTournament(window.tournamentSocket, tournamentId);
+		document.getElementById("clone")?.remove();
 	});
 }
 

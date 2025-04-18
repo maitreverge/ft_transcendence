@@ -21,6 +21,18 @@
     "DuelDescription": "Enfréntate a otro jugador en un duelo y demuestra quién es el rey del ping-pong digital.",
     "TournamentDescription": "Participa en un torneo de eliminación directa contra 3 oponentes.",
     "ProfileDescription": "Personaliza tu perfil y consulta tu historial de partidos.",
-    "StatsDescription": "Consulta tu porcentaje de victorias, clasificación y rendimiento pasado."
+    "StatsDescription": "Consulta tu porcentaje de victorias, clasificación y rendimiento pasado.",
+
+    "Invitation cancelled!" : "¡Invitación cancelada!",
+    "The player is busy..." : "El jugador está ocupado...",
+    "You are busy..." : "Estás ocupado...",
+    "Enter a name for the second player" : "Introduce un nombre para el segundo jugador",
+    "Player name already exists!" : "¡El nombre del jugador ya existe!",
+    "Enter a name!" : "¡Introduce un nombre!",
+    "You can't create more than three players!" : "¡No puedes crear más de tres jugadores!",
+    " won the tournament!" : " ganó el torneo!",
+    "Not your player!" : "¡No es tu jugador!",
+    "You can't drop yourself!" : "¡No puedes eliminarte a ti mismo!",
+    " has sent you an invitation!" : " te ha enviado una invitación!"
   }
   
