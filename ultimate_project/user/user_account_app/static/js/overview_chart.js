@@ -13,6 +13,15 @@ document.body.addEventListener("htmx:load", function () {
   });
 });
 
+document.body.addEventListener("htmx:afterSwap", function () {
+  if (document.getElementById("mainStats")) {
+    initializeCharts();
+  }
+  requestAnimationFrame(() => {
+    window.scrollTo(0, 0);
+  });
+});
+
 // initialize charts for overview
 function initializeCharts() {
     const gamesPie = document.getElementById("gamesPie")?.getContext("2d");
