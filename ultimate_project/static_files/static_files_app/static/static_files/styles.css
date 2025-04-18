@@ -470,10 +470,10 @@ button {
     position:relative;
     /* left:50%;
     transform: translateX(-50%); */
-    filter: blur(2px) saturate(120%) hue-rotate(180deg);
+    /* filter: blur(2px) saturate(120%) hue-rotate(180deg); */
     opacity: 0.8;
-    filter: saturate(120%) hue-rotate(180deg)
-    drop-shadow(0 0 10px rgba(0, 200, 255, 0.7));
+    /* filter: saturate(120%) hue-rotate(180deg); */
+    /* drop-shadow(0 0 10px rgba(0, 200, 255, 0.7)); */
     animation: flotter 3s ease-in-out infinite;
     margin:20px;
   }

@@ -355,7 +355,7 @@ function cloneDisappear(e, ws)
 	setTimeout(()=>{
 		ws.socket.close();
 		clone.remove();	
-	}, 1000);
+	}, 500);
 }
 
 function dropMatch(div, lk, overlay)
@@ -384,6 +384,8 @@ function addNewEventListener(div)
 	div.addEventListener("dragover", div.dragOver);
 	div.addEventListener("drop", div.drop);
 }
+dropTrash();
+dropPlayersZone();
 
 window.addEventListener('DOMContentLoaded', ()=> {
 	dropTrash();
@@ -392,7 +394,7 @@ window.addEventListener('DOMContentLoaded', ()=> {
 
 document.body.addEventListener('htmx:afterSwap', ()=> {
 	dropTrash();
-	dropPlayersZone();
+	dropPlayersZone();   
 });
 
 function dragPlayer(div) {
