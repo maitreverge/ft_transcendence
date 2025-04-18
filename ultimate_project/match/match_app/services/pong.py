@@ -151,22 +151,27 @@ class Pong:
 
 	async def run_game(self):
 		
+		if self.state == State.waiting and self.start_flag:
+			await self.launch_pause(self.point_delay)
 		if not self.start_flag:
 			self.start_flag = True
 			self.start_time = self.get_time()
-			await self.send_start(3)
-			self.watch_cat_task = self.myEventLoop.create_task(
-				self.watch_cat(self.start_delay))
-		self.x_players = self.players.copy()
+			await self.launch_pause(self.start_delay)	
 		self.state = State.running
+		self.x_players = self.players.copy()
 		self.winner = None
 		self.wall_flag = True
-
 		self.pad_commands(self.players)	
 		if not self.pause:	
 			await self.scores()
 			await self.bounces()										
 			self.move_ball()
+
+	async def launch_pause(self, delay):
+
+		await self.send_start(delay - 1)
+		self.watch_cat_task = self.myEventLoop.create_task(
+			self.watch_cat(delay))
 
 	def get_time(self):
 		return timezone.localtime(timezone.now()).isoformat(timespec='seconds')
