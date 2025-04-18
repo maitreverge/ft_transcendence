@@ -609,7 +609,27 @@ function linkMatch(lk)
 	localP2.innerText = lk.p2Name;
 	setNextMatch(lk, localMatch);	
 	if (lk.p1Id && lk.p2Id)
-		localMatch.onclick = ()=> enterTournamentMatch(lk, overlay);	
+	{
+		localMatch.onclick = ()=> enterTournamentMatch(lk, overlay);
+		dropMatch(localMatch, lk, overlay);	
+	}
+}
+
+function dropMatch(div, lk, overlay)
+{
+	if (div.dropMatch)
+	{
+		div.removeEventListener("dragover", div.dragOver);
+		div.removeEventListener("drop", div.dropMatch);
+	}
+	div.dragOver = function(e) {e.preventDefault();};
+	div.dropMatch = function(e) {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		enterTournamentMatch(lk, overlay);
+	}
+	div.addEventListener("dragover", div.dragOver);
+	div.addEventListener("drop", div.dropMatch);
 }
 
 function setNextMatch(lk, localMatch)
