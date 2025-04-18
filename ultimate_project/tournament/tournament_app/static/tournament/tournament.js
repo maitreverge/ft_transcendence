@@ -4,6 +4,8 @@ window.websockets = []
 
 function initTournament() {
 	
+	dropTrash();
+	dropPlayersZone();
 	if (typeof closeSimpleMatchSocket === 'function') 
 		closeSimpleMatchSocket();
 	else 
@@ -288,42 +290,12 @@ function createPlayerElement(socket, playerId, playerName)
 // 	// }
 // }
 
-function dropTrash() {
-
-	const trash = document.getElementById("trash");
-	trash.addEventListener("dragover", e => e.preventDefault());
-	trash.addEventListener("drop", e => {
-		e.preventDefault();
-		const elementId = e.dataTransfer.getData("text/plain");
-		const ws = window.websockets.find(el => el.playerId == elementId);	
-		if (!ws && window.selfId != elementId)
-		{
-            messagePopUp('Oops!',
-				'https://dansylvain.github.io/pictures/marioNo.webp',
-				"Not your player!", "Not your player!", "", "")
-			return;
-		}
-		if (window.selfId == elementId)	
-		{
-			messagePopUp('Oops!',
-				'https://dansylvain.github.io/pictures/marioNo.webp',
-				"You can't drop yourself!", "You can't drop yourself!", "", "")
-			return;
-		}		
-		ws.socket.close();		
-	});
-}
-
-window.addEventListener('DOMContentLoaded', ()=> {
-	dropTrash();
-	dropPlayersZone();
-})
-
-function dropPlayersZone() {
-
+function dropPlayersZone()
+{
 	const players = document.getElementById("players");
-	players.addEventListener("dragover", e => e.preventDefault());
-	players.addEventListener("drop", e => {
+	removeOldEventListener(players);
+	players.dragOver = function(e) {e.preventDefault();};
+	players.drop = function(e) {
 		e.preventDefault();
 		const elementId = e.dataTransfer.getData("text/plain");
 		const ws = window.websockets.find(el => el.playerId == elementId);	
@@ -331,15 +303,80 @@ function dropPlayersZone() {
 		{
             messagePopUp('Oops!',
 				'https://dansylvain.github.io/pictures/marioNo.webp',
-				"Not your player!", "Not your player!", "", "")
+				"Not your player!", "Not your player!", "", "");
 			return;
 		}
 		if (ws)			
 			quitTournament(ws.socket);
 		else if (window.selfId == elementId)
-			quitTournament(window.tournamentSocket);	
-	});
+			quitTournament(window.tournamentSocket);
+	};
+	addNewEventListener(players);	
 }
+
+function dropTrash()
+{
+	const trash = document.getElementById("trash");
+	removeOldEventListener(trash);
+	trash.dragOver = function(e) {e.preventDefault();};
+	trash.drop = function(e) {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		const ws = window.websockets.find(el => el.playerId == elementId);	
+		if (!ws && window.selfId != elementId)
+		{
+            messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"Not your player!", "Not your player!", "", "");			
+		}
+		else if (window.selfId == elementId)	
+		{
+			messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"You can't drop yourself!", "You can't drop yourself!", "", "");			
+		}
+		else		
+			ws.socket.close();	
+	};
+	addNewEventListener(trash);	
+}
+
+function dropMatch(div, lk, overlay)
+{
+	removeOldEventListener(div);
+	div.dragOver = function(e) {e.preventDefault();};
+	div.drop = function(e) {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		enterTournamentMatch(lk, overlay);
+	}
+	addNewEventListener(div);	
+}
+
+function removeOldEventListener(div)
+{
+	if (div.drop)
+	{
+		div.removeEventListener("dragover", div.dragOver);
+		div.removeEventListener("drop", div.drop);
+	}
+}
+
+function addNewEventListener(div)
+{
+	div.addEventListener("dragover", div.dragOver);
+	div.addEventListener("drop", div.drop);
+}
+
+// window.addEventListener('DOMContentLoaded', ()=> {	
+// 	dropTrash();
+// 	dropPlayersZone();
+// });
+
+// document.body.addEventListener('htmx:afterSwap', ()=> {
+// 	dropTrash();
+// 	dropPlayersZone();
+// });
 
 function dragPlayer(div) {
 
@@ -613,23 +650,6 @@ function linkMatch(lk)
 		localMatch.onclick = ()=> enterTournamentMatch(lk, overlay);
 		dropMatch(localMatch, lk, overlay);	
 	}
-}
-
-function dropMatch(div, lk, overlay)
-{
-	if (div.dropMatch)
-	{
-		div.removeEventListener("dragover", div.dragOver);
-		div.removeEventListener("drop", div.dropMatch);
-	}
-	div.dragOver = function(e) {e.preventDefault();};
-	div.dropMatch = function(e) {
-		e.preventDefault();
-		const elementId = e.dataTransfer.getData("text/plain");
-		enterTournamentMatch(lk, overlay);
-	}
-	div.addEventListener("dragover", div.dragOver);
-	div.addEventListener("drop", div.dropMatch);
 }
 
 function setNextMatch(lk, localMatch)
