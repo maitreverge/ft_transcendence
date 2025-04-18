@@ -35,7 +35,7 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
-		self.start_time = "" 
+		self.start_time = self.get_time() # ! GET TIME MAYBE FAULTY HERE
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
