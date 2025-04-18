@@ -154,11 +154,15 @@ class Pong:
 		if not self.start_flag:
 			self.start_flag = True
 			self.start_time = self.get_time()
-			await self.send_start(3)
+			await self.send_start(self.start_delay - 1)
 			self.watch_cat_task = self.myEventLoop.create_task(
 				self.watch_cat(self.start_delay))
 		self.x_players = self.players.copy()
-		self.state = State.running
+		if self.state == State.waiting:
+			self.state = State.running
+			await self.send_start(self.point_delay - 1)
+			self.watch_cat_task = self.myEventLoop.create_task(
+				self.watch_cat(self.point_delay))
 		self.winner = None
 		self.wall_flag = True
 

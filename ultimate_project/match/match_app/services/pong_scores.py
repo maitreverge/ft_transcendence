@@ -14,7 +14,7 @@ async def score_point(self, cmp, limit, score_idx):
 		self.score[score_idx] += 1
 		self.ball = self.ball_rst.copy()
 		self.vect = self.get_random_vector()
-		await self.send_start(0)
+		await self.send_start(self.point_delay - 1)
 		self.watch_cat_task = self.myEventLoop.create_task(
 			self.watch_cat(self.point_delay))
 		self.wall_flag = False
