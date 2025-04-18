@@ -25,8 +25,6 @@
 
 🟧 Switch from `user_prod.csv` to `user.csv` in correction 
 
-🟧 Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
-
 🟧 ADMIN DOIT RESTER ID 1
 
 🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
@@ -36,6 +34,7 @@
 ======================================= DONE =====================================
 
 
+✅ Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
 
 ✅ Changer le mot de passe d'admin (`user_prod.csv`)
 
