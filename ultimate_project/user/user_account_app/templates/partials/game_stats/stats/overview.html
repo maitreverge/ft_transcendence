@@ -1,7 +1,10 @@
 {% load static %}
 <script src="/static/static_files/static_files/vendor/chart.js/Chart.min.js"></script>
 {{ main_stats|json_script:"mainStats" }}
-<script src="{% static '/js/overview_chart.js' %}"></script>
+<script
+  src="{% static 'js/overview_chart.js' %}"
+  onload="initializeCharts();"
+></script>
 
 <div id="overview-content" class="container-fluid px-0 mt-4">
   <!-- Single Card with Multiple Stats -->
@@ -267,5 +270,4 @@
     font-weight: 700;
     color: #e74a3b !important;
   }
-
 </style>
