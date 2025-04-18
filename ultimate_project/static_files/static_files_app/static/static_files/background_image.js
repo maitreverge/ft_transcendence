@@ -1,5 +1,7 @@
 if (typeof window.applyBackground === 'undefined') {
     // Fonction pour appliquer l'image de fond
+    console.log("typeof");
+
     window.applyBackground = (bg) => {
         const main = document.getElementById('main_content');
         if (main && bg) {
@@ -15,8 +17,8 @@ if (typeof window.applyBackground === 'undefined') {
 
 document.querySelectorAll('.side-nav').forEach(item => {
     const text = document.querySelector('.myText');
-    console.log("FUNC CALLED");
-    console.log(text);
+    console.log("queryselector");
+    // console.log(text);
 
     item.addEventListener('mouseenter', () => {
         if (text) text.style.opacity = '0';
@@ -35,11 +37,17 @@ document.querySelectorAll('.side-nav').forEach(item => {
 
 function setFirstBgImage()
 {
+    console.log("first image");
+
+
+
     window.currentBg = 'https://dansylvain.github.io/pictures/marvin.jpg';
     window.applyBackground(window.currentBg);
 
 }
 window.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM CONTENT LOQDED");
+
     // console.log("%%%%%%%% func onload executed %%%%%%%%");
     setFirstBgImage();
     
@@ -47,6 +55,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 document.body.addEventListener('htmx:afterSwap', () => {
     // console.log("%%%%%%%% HTMX content swapped %%%%%%%%");
+    console.log("AFTER SWAP");
+    window.currentBg = 'https://dansylvain.github.io/pictures/marvin.jpg';
+
     if (!window.currentBg)
         setFirstBgImage();
     else {
@@ -59,6 +70,8 @@ document.body.addEventListener('htmx:afterSwap', () => {
 
 if (typeof window.currentBg == 'undefined')
 {
+    console.log("UNDEFINED");
+
     setFirstBgImage();
     window.applyBackground(window.currentBg);
 }
