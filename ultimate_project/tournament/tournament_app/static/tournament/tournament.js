@@ -339,20 +339,22 @@ function dropTrash()
 				"You can't drop yourself!", "You can't drop yourself!", "", "");			
 		}
 		else
-		{
-			const clone = document.getElementById("clone");
-			clone.style.left = `${e.clientX - clone.offsetWidth / 2}px`;
-			clone.style.top = `${e.clientY - clone.offsetHeight / 2}px`;
-			clone.style.position = "fixed"; // important pour coordonnées écran
-			clone.style.opacity = "1"; 
-			clone.classList.add("disappear");
-			setTimeout(()=>{
-				ws.socket.close();
-				clone.remove();	
-			}, 1000);
-		}		
+			cloneDisappear(e);	
 	};
 	addNewEventListener(trash);	
+}
+
+function cloneDisappear(e)
+{
+	const clone = document.getElementById("clone");
+	clone.style.left = `${e.clientX - clone.offsetWidth / 2}px`;
+	clone.style.top = `${e.clientY - clone.offsetHeight / 2}px`;
+	clone.style.position = "fixed";
+	clone.classList.add("disappear");
+	setTimeout(()=>{
+		ws.socket.close();
+		clone.remove();	
+	}, 1000);
 }
 
 function dropMatch(div, lk, overlay)
@@ -400,31 +402,17 @@ function dragPlayer(div) {
 			e.dataTransfer.setData("text/plain", e.target.id);
 			const clone = div.cloneNode(true);
 			clone.id = "clone";
-			// clone.style.borderRadius = "6px";	
+			clone.style.borderRadius = "12px";	
 			const rect = div.getBoundingClientRect();
 			clone.style.width = `${rect.width * 0.6}px`;
-			// clone.style.backgroundColor = 'transparent';
-			// clone.style.height = `${rect.height}px`;
-
-			// clone.style.opacity = "0"; 
 			clone.style.position = "absolute";
 			clone.style.top = "-100";
 			clone.style.left = "-100";
-			// clone.style.visibility = "hidden"; // ← au lieu de display:none ou -9999px
-			document.body.appendChild(clone);
-		  
-			// // 🧠 Forcer le DOM à calculer sa taille (trigger reflow)
+			document.body.appendChild(clone);		  
 			const offsetX = clone.offsetWidth / 2;
 			const offsetY = clone.offsetHeight / 2;
-			// const offsetX = 100;
-			// const offsetY = 100;
-			e.dataTransfer.setDragImage(clone, offsetX, offsetY);
-		  
-			// // Nettoyage
-			// setTimeout(() => clone.remove(), 0);
+			e.dataTransfer.setDragImage(clone, offsetX, offsetY);		
 		} );
-
-	
 }
 
 // function allQuitTournament() 
