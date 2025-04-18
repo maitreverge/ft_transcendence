@@ -551,8 +551,8 @@ function sequelInitMatchWs3D(socket) {
     ];
 	let waitingState = ["waiting"];
     const score_div = document.getElementById("score");
-    setSpec3D(spec);
     const spec = document.getElementById("spec")
+    setSpec3D(spec);
     socket.onmessage = event => onMatchWsMessage3D(
         event, score_div, [waiting, endCont, end, spec], waitingState);
     if (window.player2Id != 0)
