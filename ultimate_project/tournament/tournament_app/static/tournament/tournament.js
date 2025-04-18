@@ -293,6 +293,8 @@ function createPlayerElement(socket, playerId, playerName)
 function dropPlayersZone()
 {
 	const players = document.getElementById("players");
+	if (!players)
+		return;
 	removeOldEventListener(players);
 	players.dragOver = function(e) {e.preventDefault();};
 	players.drop = function(e) {
@@ -317,6 +319,8 @@ function dropPlayersZone()
 function dropTrash()
 {
 	const trash = document.getElementById("trash");
+	if (!trash)
+		return;
 	removeOldEventListener(trash);
 	trash.dragOver = function(e) {e.preventDefault();};
 	trash.drop = function(e) {
