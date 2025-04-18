@@ -42,11 +42,16 @@
     <p id="inst-left"> <br> </p>
     <p>Be the first one to score 5 points.</p><button id="quit-match-button" onclick="
     stopMatch('{{matchId}}');
-    const matchDiv = document.getElementById('match');
-    if (matchDiv) matchDiv.remove();
     const rulesOverlay = document.getElementById('rules-overlay');
     if (rulesOverlay) rulesOverlay.style.display = 'none';
-    window.gameStartTimestamp = undefined;">EXIT</button>
+        window.gameStartTimestamp = undefined;
+    const matchDiv = document.getElementById('match');
+    setTimeout(()=>{
+        if (matchDiv) matchDiv.remove(); 
+    }, 3000);
+    
+   ">EXIT</button>
+    <button onclick="quitMatch()">BACK</button>
 </div>
 <script>
     document.body.classList.add("match-active");

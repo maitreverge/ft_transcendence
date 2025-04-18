@@ -263,39 +263,89 @@ function createPlayerElement(socket, playerId, playerName)
 	div.textContent = playerName;
 	div.id = playerId;	
 	const ws = window.websockets.find(ws => ws.playerId == playerId);	
-	if (playerId == window.selfId)
-	{
-		div.classList.add("self-player");
-		div.onclick = event => {
-			event.stopPropagation();
-			quitTournament(socket);	
-		}		
-	}
+	if (playerId == window.selfId)	
+		div.classList.add("self-player");	
 	else if (ws)
-		phantomPlayer(div, playerId, ws);
+		div.classList.add("phantom");
 	dragPlayer(div);
 	return div;
 }
 
-function phantomPlayer(div, playerId, ws) {
+// function phantomPlayer(div) {
 
-	const playersCont = document.getElementById("players");
-	div.classList.add("phantom");
-	div.onclick =  event => {
-		event.stopPropagation();
-		const players = [...playersCont.children]
-		if (players.some(el => el.id == playerId))		
-			ws.socket.close();
-		else
-			quitTournament(ws.socket)	
-	}
+// 	const playersCont = document.getElementById("players");
+// 	div.classList.add("phantom");
+
+// 	// dropTrash();
+// 	// dropPlayersZone();
+// 	// div.onclick =  event => {
+// 	// 	event.stopPropagation();
+// 	// 	const players = [...playersCont.children]
+// 	// 	if (players.some(el => el.id == playerId))		
+// 	// 		ws.socket.close();
+// 	// 	else
+// 	// 		quitTournament(ws.socket)	
+// 	// }
+// }
+
+function dropTrash() {
+
+	const trash = document.getElementById("trash");
+	trash.addEventListener("dragover", e => e.preventDefault());
+	trash.addEventListener("drop", e => {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		const ws = window.websockets.find(el => el.playerId == elementId);	
+		if (!ws && window.selfId != elementId)
+		{
+            messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"Not your player!", "Not your player!", "", "")
+			return;
+		}
+		if (window.selfId == elementId)	
+		{
+			messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"You can't drop yourself!", "You can't drop yourself!", "", "")
+			return;
+		}		
+		ws.socket.close();		
+	});
+}
+
+window.addEventListener('DOMContentLoaded', ()=> {
+	dropTrash();
+	dropPlayersZone();
+})
+
+function dropPlayersZone() {
+
+	const players = document.getElementById("players");
+	players.addEventListener("dragover", e => e.preventDefault());
+	players.addEventListener("drop", e => {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		const ws = window.websockets.find(el => el.playerId == elementId);	
+		if (!ws && window.selfId != elementId)
+		{
+            messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"Not your player!", "Not your player!", "", "")
+			return;
+		}
+		if (ws)			
+			quitTournament(ws.socket);
+		else if (window.selfId == elementId)
+			quitTournament(window.tournamentSocket);	
+	});
 }
 
 function dragPlayer(div) {
 
 	div.draggable = true;
 	div.addEventListener("dragstart",
-		e => {console.log("dans drag"); e.dataTransfer.setData("text/plain", e.target.id);});
+		e => e.dataTransfer.setData("text/plain", e.target.id));
 }
 
 // function allQuitTournament() 
@@ -406,16 +456,15 @@ function addToTournaments(socket, tournamentsContainer, tournament) {
 function dropTournament(div, tournamentId) {
 
 	div.addEventListener("dragover", e => e.preventDefault());
-	div.addEventListener("drop", e => {
-		console.log("dans drop");
+	div.addEventListener("drop", e => {	
 		e.preventDefault();
 		const elementId = e.dataTransfer.getData("text/plain");
 		const ws = window.websockets.find(el => el.playerId == elementId);	
 		if (!ws && window.selfId != elementId)
 		{
-            messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "Not your player!", "Not your player!", "", "")
-
-			// alert("not your player");
+            messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"Not your player!", "Not your player!", "", "")
 			return;
 		}
 		if (ws)
@@ -446,34 +495,6 @@ function dropTournament(div, tournamentId) {
 // 	});
 // }
 
-function catchPlayersInMatch2(lk, playerId, playerName)
-{
-	const wss = window.websockets.filter(
-		ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
-	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-		wss.push({playerId: window.selfId, playerName: window.selfName,
-			socket:window.tournamentSocket});
-	let player2Id = 0;
-	let player2Name = "";
-	let socket = window.tournamentSocket;
-	console.log("CATCH", socket, " ", window.tournamentSocket);
-	if (wss.length >= 1)
-	{
-		playerId = wss[0].playerId;
-		playerName = wss[0].playerName;
-		socket = wss[0].socket;
-	}
-	if (wss.length == 2)
-	{
-		player2Id = wss[1].playerId;
-		player2Name = wss[1].playerName;
-	}
-	enterTournament(socket, lk.tournamentId);
-	if (player2Id)
-		enterTournament(wss[1].socket, lk.tournamentId);
-	return [playerId, playerName, player2Id, player2Name];
-}
-
 function catchPlayersInMatch(lk)
 {
 	const wscopy = window.websockets.map( ws => ({...ws}))
@@ -495,41 +516,6 @@ function catchPlayersInMatch(lk)
 	else if (p2)
 		return [p2.playerId, p2.playerName, 0, ""];
 }
-
-// function enterMatch(lk, div, overlay, playerId, playerName) {
-// 	const scripts = Array.from(document.getElementsByTagName("script"));
-// 	scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
-// 	if (scripts.some(script => script.className === "match-script")) {
-// 		console.log("DEJA SCRIPT");
-// 		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
-// 	};
-// 	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-// 	{
-// 		window.selfMatchId = lk.matchId;
-// 		// localMatch.classList.add("next-match");
-// 	}
-// 	const [playerIdLLL, playerNameLLL, player2Id, player2Name] = catchPlayersInMatch(
-// 		lk, playerId, PlayerName)
-
-// 	fetch(
-// 		`/match/match${dim.value}d/` +
-// 		`?matchId=${lk.matchId}` +
-// 		`&playerId=${playerId}&playerName=${playerName}` +
-// 		`&player2Id=${player2Id}&player2Name=${player2Name}`
-// 	)
-// 	.then(response => {
-// 		if (!response.ok) 
-// 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
-// 		return response.text();
-// 	})
-// 	.then(data => {
-// 		const oldScripts = document.querySelectorAll("script.match-script");			
-// 		oldScripts.forEach(oldScript => oldScript.remove());
-// 		window.actualScriptTid = lk.tournamentId;//?
-// 		loadTournamentHtml(data, overlay);	
-// 	})
-// 	.catch(error => console.log(error))
-// };
 
 function getPattern(tournamentId) {
 
@@ -602,7 +588,6 @@ function linkMatch(lk)
 {
 	console.log("LINK MATCH ", lk);
 
-	// const dim = document.getElementById("dim");
 	const tournament = document.getElementById("tournaments").querySelector(
 		`[id='${lk.tournamentId}']`
 	);
@@ -618,68 +603,33 @@ function linkMatch(lk)
 		console.log("je sors de link match parceque localMatch est faux");
 		return;
 	}
-	// overlay.style = "transform:translate(-180px, 200px);"
 	const localP1 = localMatch.querySelector(`#pl1`);
 	const localP2 = localMatch.querySelector(`#pl2`);
-	// if (localP1.innerText.trim() !== "p1" && localP1.innerText.trim() !== "p2")
-	// {
-	// 	console.log("je sors de link match parceque p1 ou p2 ne sont pas vide");
-	// 	return;
-	// }
 	localP1.innerText = lk.p1Name;
 	localP2.innerText = lk.p2Name;
-	setNextMatch(lk, localMatch);
-	// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id)
-
-	// const ws = window.websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id);
-	// console.log("WAIBECHAUSETTE ", ws);
-	// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
-	// {
-	// 	// window.selfMatchId = lk.matchId;
-	// 	localMatch.classList.add("next-match");
-	// }
-	// else
-	// 	localMatch.classList.add("spec-match");
+	setNextMatch(lk, localMatch);	
 	if (lk.p1Id && lk.p2Id)
+	{
 		localMatch.onclick = ()=> enterTournamentMatch(lk, overlay);
-	//  function() {
-		// const scripts = Array.from(document.getElementsByTagName("script"));
-		// scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
-		// if (scripts.some(script => script.className === "match-script")) {
-		// 	console.log("DEJA SCRIPT");
-		// 	return; // Ne pas exécuter fetch si un script "match-script" existe déjà
-		// };
-		// const ws = window.websockets.find(ws => ws.playerId == lk.p1Id || ws.playerId == lk.p2Id)
-		// console.log("WAIBECHAUSETTE ", ws);
-		// if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
-		// {
-		// 	window.selfMatchId = lk.matchId;
-		// 	// localMatch.classList.add("next-match");
-		// }
-		// const [playerId, playerName, player2Id, player2Name] = catchPlayersInMatch(lk);
-		// console.log("TOURNAMENT TO ENTER IN MATCH : ", playerId, " ",  playerName, " ", player2Id, " ", player2Name);
-		// fetch(
-		// 	`/match/match${dim.value}d/` +
-		// 	`?matchId=${lk.matchId}` +
-		// 	`&playerId=${playerId}&playerName=${playerName}` +
-		// 	`&player2Id=${player2Id}&player2Name=${player2Name}`
-		// )		
-		// // fetch(
-		// // 	`/match/match${dim.value}d/` +
-		// // 	`?matchId=${lk.matchId}&playerId=${window.selfId}&playerName=${window.selfName}`)
-		// .then(response => {
-		// 	if (!response.ok) 
-		// 		throw new Error(`Error HTTP! Status: ${response.status}`);		  
-		// 	return response.text();
-		// })
-		// .then(data => {
-		// 	const oldScripts = document.querySelectorAll("script.match-script");			
-		// 	oldScripts.forEach(oldScript => oldScript.remove());
-		// 	window.actualScriptTid = lk.tournamentId;
-		// 	loadTournamentHtml(data, overlay);
-		// })
-		// .catch(error => console.log(error))
-	// };
+		dropMatch(localMatch, lk, overlay);	
+	}
+}
+
+function dropMatch(div, lk, overlay)
+{
+	if (div.dropMatch)
+	{
+		div.removeEventListener("dragover", div.dragOver);
+		div.removeEventListener("drop", div.dropMatch);
+	}
+	div.dragOver = function(e) {e.preventDefault();};
+	div.dropMatch = function(e) {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		enterTournamentMatch(lk, overlay);
+	}
+	div.addEventListener("dragover", div.dragOver);
+	div.addEventListener("drop", div.dropMatch);
 }
 
 function setNextMatch(lk, localMatch)
@@ -861,264 +811,3 @@ function updateMatchPlayers(plys)
 		}
 	});
 }
-
-// function updatePlayers2(socket, players) {
-// 	console.log("UPDATE PLAYER");
-//     const playersContainer = document.getElementById("players");
-// 	let playerElements = [...playersContainer.children];	
-	
-// 	const tournamentsContainer = document.getElementById("tournaments");
-// 	let tournamentElements = [...tournamentsContainer.children];
-
-// 	tournamentElements.slice().reverse().forEach(tournament => {
-// 		const playersCont = tournament.querySelector("#players-cont");
-// 		[...playersCont.children].slice().reverse().forEach(player =>{
-// 			if (players.every(el => el.playerId != player.id))
-// 			{
-// 				window.players = window.players.filter(el => {
-// 					if (el.id === player.id)				
-// 						return el.remove(), false
-// 					else
-// 						return true;				
-// 				});			
-// 			}
-// 		});
-// 	});
-// 		// findPlayer = searchPlayerInTournaments(player.playerId);
-// 		// console.log("find player: ", findPlayer);
-// 		// if (findPlayer)
-// 		// 	findPlayer.remove();
-	
-// 	playerElements = [...playersContainer.children];	
-// 	playerElements.slice().reverse().forEach(player => {	
-// 		if (players.every(el => el.playerId != player.id))	
-// 		{
-// 			window.players = window.players.filter(el => {
-// 				if (el.id === player.id)				
-// 					return el.remove(), false
-// 				else
-// 					return true;				
-// 			});
-// 			// playersContainer.removeChild(player);									
-// 		}	
-// 	});
-// 	playerElements = [...playersContainer.children];
-// 	players.forEach(player => {	
-// 		if (playerElements.every(el => el.id != player.playerId) &&
-// 			!searchPlayerInTournaments(player.playerId)
-// 		)		
-// 			addPlayerToContainer(socket, playersContainer, player.playerId);		
-// 	});	
-// }
-
-// function searchPlayerInTournaments(playerId) {
-
-// 	const tournamentsContainer = document.getElementById("tournaments");
-// 	let tournamentElements = [...tournamentsContainer.children];
-
-// 	for (const tournament of tournamentElements) { 
-// 		const playersCont = tournament.querySelector("#players-cont");       
-//         for (const player of [...playersCont.children]) {
-//             if (player.id == playerId) {
-//                 return player; 
-//             }
-//         }
-//     }
-// 	return null
-// }
-
-// function addPlayerToContainer(socket, container, playerId) {
-
-// 	const div = document.createElement("div");
-// 	div.className = "user";
-// 	div.textContent = `user: ${playerId}`;
-// 	div.id = playerId;	
-// 	if (playerId === window.selfId)
-// 	{
-// 		div.classList.add("self-player");
-// 		div.onclick = event => {
-// 			event.stopPropagation();
-// 			quitTournament(socket);
-// 			// tournamentId = Number(event.currentTarget.parentElement.id)
-// 		}		
-// 	}
-// 	// else	
-// 	// 	div.onclick = event =>	playerClick(socket, event, div);	
-//     container.appendChild(div);
-// 	window.players.push(div);
-// }
-
-
-
-// function updateTournaments2(socket, tournamentListUpdate) {
-// 	console.log("UPDATE TOURNAMENT");
-//     const tournamentsContainer = document.getElementById("tournaments");
-// 	let tournamentElements = [...tournamentsContainer.children];
-		
-// 	removeTournaments(
-// 		socket, tournamentListUpdate, tournamentsContainer, tournamentElements);
-
-// 	tournamentListUpdate.forEach(tourUp => {
-
-// 		if (tournamentElements.every(el => el.id != tourUp.tournamentId))		
-// 			addToTournaments(socket, tournamentsContainer, tourUp);
-
-// 		// tournamentElements = [...tournamentsContainer.children];		
-// 		// tournamentElements.forEach(tourEl => {
-// 		// 	if (tourEl.id == tourUp.tournamentId)
-// 		// 	{
-// 		// 		const playersCont = tourEl.querySelector("#players-cont");			
-// 				movePlayersInTournaments(tournamentsContainer, tourUp);
-// 		// 	}
-// 		// });
-		
-// 		if (tourUp.matchs.length > 0)
-// 		{
-// 			getPattern(tourUp.tournamentId);
-// 			setTimeout(()=>{
-// 				tourUp.matchs.forEach(match => {
-// 					if (match.linkMatch)
-// 					{
-// 						console.log("MATCHSSS ", match)				
-// 						lk = match.linkMatch;
-// 						linkMatch(lk.tournamentId, lk.localMatchId, lk.matchId, lk.p1Id, lk.p2Id);
-// 					}
-// 					if (match.matchResult)
-// 					{
-// 						console.log("match Reuslt EXISTE mouquate");
-// 						// mres = match.matchResult;
-// 						matchResult(match.matchResult);			
-		
-// 					}
-// 					else {
-// 						console.log("match Reuslt nexiste pas mouquate");
-// 					}
-// 				});
-// 			}, 3000);		
-// 		}	
-// 	});
-// 	// setSelfMatchId();	
-// }
-
-// function removeTournaments(socket, tournaments, tournamentsContainer, tournamentElements) {
-
-// 	// const playersContainer = document.getElementById("players");
-
-// 	tournamentElements.slice().reverse().forEach(tournament => {
-// 		if (tournaments.every(el => el.tournamentId != tournament.id)) {
-// 			// if (match.id == window.selfMatchId)
-// 			// {
-// 			// 	if (window.busyElement)
-// 			// 		window.busyElement.classList.remove("invitation-waiting");
-// 			// 	window.busyElement = null;
-// 			// 	window.selectedElement.classList.remove("invitation-confirmed");
-// 			// 	window.selectedElement = null;
-// 			// 	window.selfMatchId = null;
-// 			// }
-// 			// [...match.children].forEach(player => {
-// 			// 	playersContainer.appendChild(player);
-// 			// });
-// 			tournamentsContainer.removeChild(tournament);		
-// 		}
-// 	});
-// }
-
-
-
-// function movePlayersInTournaments(tournamentsContainer, tourUp) {
-// 	tournamentElements = [...tournamentsContainer.children];		
-// 	tournamentElements.forEach(tourEl => {
-// 		if (tourEl.id == tourUp.tournamentId)
-// 		{
-// 			const playersCont = tourEl.querySelector("#players-cont");			
-// 			const playerElements = [...playersCont.children];
-// 			tourUp.players.forEach(plyUp => {
-// 				if (playerElements.every(el => el.id != plyUp.playerId))
-// 				{
-// 					const winPly = window.players.find(el => el.id == plyUp.playerId);
-// 					if (winPly)
-// 						playersCont.appendChild(winPly);
-// 				}
-// 			});	
-// 		}
-// 	});
-
-// }
-
-// function movePlayerInTournament2(tournamentElement, tournament) {
-	
-// 	const playersContainer = document.getElementById("players");
-// 	const playerElements = [...playersContainer.children];
-// 	const tournamentPlayerElements = [...tournamentElement.children];
-// 	const tournamentsContainer = document.getElementById("tournaments");
-// 	const tournamentElements = [...tournamentsContainer.children];
-
-// 	if (tournament.players)
-// 	{
-// 		playerElements.slice().reverse().forEach(player => { // je met le joueur ds le bon tournois depuis cont player si ny est pas deja 
-// 			if (tournament.players.some(p => p.playerId == player.id) &&
-// 				tournamentPlayerElements.every(p => p.id != player.id))
-// 			{
-// 				console.log("appendchild to tournois; id:", player.id," ", tournamentElement.id);
-// 				tournamentElement.appendChild(player);
-// 			}			
-// 			else
-// 			{
-				
-// 				tournamentElements.slice().reverse().forEach(tourn => {
-// 					const playersCont = tourn.querySelector("#players-cont");
-// 					console.log("type: ", typeof(tourn));
-// 					[...playersCont.children].slice().reverse().forEach(player2 =>{
-
-// 						if (tournament.players.some(p => p.playerId == player2.id) &&
-// 						tournamentPlayerElements.every(p => p.id != player2.id))			
-// 						{
-// 							console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
-// 							tournamentElement.appendChild(player2);
-// 						}
-// 					});									
-// 				});
-// 			}						
-// 		});
-// 		if (playerElements.length === 0)
-// 		{
-// 			console.log("player est faux");
-// 			tournamentElements.slice().reverse().forEach(tourn => {
-// 				console.log("type: ", typeof(tourn));
-// 				const playersCont = tourn.querySelector("#players-cont");
-// 				[...playersCont.children].slice().reverse().forEach(player2 =>{
-					
-// 					if (tournament.players.some(p => p.playerId == player2.id) &&
-// 					tournamentPlayerElements.every(p => p.id != player2.id))			
-// 				{
-// 					console.log("appendchild to tournois; id:", player2.id," ", tournamentElement.id);
-// 					tournamentElement.appendChild(player2);
-// 				}
-// 			});									
-// 		});
-// 		}
-
-
-// 		tournamentPlayerElements.slice().reverse().forEach(player => { // je met le joueur du tournois ds cont player 
-// 			if (tournament.players.every(el => el.playerId != player.id))// && player.id != "overlay-pattern"))
-// 			{
-// 				console.log("appendchild to cont player; id:", player.id, " ", tournamentElement.id);
-// 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
-// 			}			
-// 		});
-// 	}
-// 	else // si le tournois est vide
-// 	{
-// 		tournamentPlayerElements.slice().reverse().forEach(player => {	// je met tous les joueur du tournois ds cont player 					
-// 			// if (player.id != "overlay-pattern")
-// 			// {
-// 				console.log("appendchild to cont player from void; id:", player.id, " ", tournamentElement.id);
-// 				playersContainer.appendChild(player);	// ou alors le bon tournois!				
-// 			// }
-// 				// ou alors le bon tournois!				
-// 		});
-// 	}
-// }
-
-
-
