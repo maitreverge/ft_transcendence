@@ -56,13 +56,17 @@
     <p id="inst-right"> <br> keys: ↑ / ↓</p>
     <p id="inst-left"> <br> keys: enter / +</p>
     <p>Be the first one to score 5 points.</p><button id="quit-match-button" onclick="
-    stopMatch('{{matchId}}');
-    var matchDiv = document.getElementById('match');
-    if (matchDiv)
-        matchDiv.remove();
-    var rulesOverlay = document.getElementById('rules-overlay');
-    if (rulesOverlay)
-        rulesOverlay.style.display = 'none';">EXIT</button>
+    stopMatch3D('{{matchId}}');
+    const rulesOverlay = document.getElementById('rules-overlay');
+    if (rulesOverlay) rulesOverlay.style.display = 'none';
+        window.gameStartTimestamp = undefined;
+    const matchDiv = document.getElementById('match');
+    setTimeout(()=>{
+        if (matchDiv) matchDiv.remove(); 
+    }, 3000);
+    
+   ">EXIT</button>
+    <button onclick="quitMatch3D()">BACK</button>
 </div>
 
 <script>

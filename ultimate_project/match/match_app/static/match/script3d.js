@@ -2,7 +2,17 @@ var tjs_keyup = null;
 var tjs_keydown = null;
 var is_towplayer = false;
 
-function stopMatch(matchId) {
+function quitMatch3D()
+{
+	document.body.classList.remove("match-active");
+	cancelAnimationFrame(window.pongAnim);	
+	closeWebSocket(window.matchSocket);
+	closeWebSocket(window.matchSocket2);
+	delMatchScript();
+	delMatch();
+}
+
+function stopMatch3D(matchId) {
     // unregister the event listeners
     window.gameInProgress = false;
 	document.body.classList.remove("match-active");
