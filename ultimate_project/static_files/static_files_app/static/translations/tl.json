@@ -14,7 +14,15 @@
     
     "ReadyToLeaveTitle": "mejrup'a'?",
     "ReadyToLeaveText": "DaH \"mej\" yIwuq, vaj bItaHbe' 'e' DaneH.",
-    "Cancel": "qIl"
+    "Cancel": "qIl",
+
+    "WelcomeToPong42": "🏓 yI'el ",
+    "GetReadyToCompete": "jaghpu'lIj DatuQmeH 'ej wa'DIch DapongmeH, SuvwI' Daqel!",
+    "DuelDescription": "wa' SuvwI' HIv! ping pong Qang ghaH'e'.",
+    "TournamentDescription": "wej jagh HIvmeH QawHaq Daqel!",
+    "ProfileDescription": "ghunlIj choH 'ej QujwI' qun yIlegh.",
+    "StatsDescription": "QapmeH mIw, Qang, Qav Qu' yIlegh."
+    
 
   }
   

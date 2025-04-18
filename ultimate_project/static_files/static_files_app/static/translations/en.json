@@ -14,6 +14,13 @@
 
     "ReadyToLeaveTitle": "Ready to Leave?",
     "ReadyToLeaveText": "Select \"Logout\" below if you are ready to end your current session.",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+
+    "WelcomeToPong42": "🏓 Welcome to ",
+    "GetReadyToCompete": "Get ready to challenge your friends in intense matches, remote or local, and climb the ranks!",
+    "DuelDescription": "Face another player in a duel and prove who's the king of digital ping pong.",
+    "TournamentDescription": "Join a knockout tournament against 3 other opponents.",
+    "ProfileDescription": "Customize your profile and view your match history.",
+    "StatsDescription": "Check your win rate, ranking, and past performances."
   }
 

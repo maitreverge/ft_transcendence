@@ -314,10 +314,15 @@ function dropTrash() {
 	});
 }
 
-window.addEventListener('DOMContentLoaded', ()=> {
+window.addEventListener('DOMContentLoaded', ()=> {	
 	dropTrash();
 	dropPlayersZone();
-})
+});
+
+document.body.addEventListener('htmx:afterSwap', ()=> {
+	dropTrash();
+	dropPlayersZone();
+});
 
 function dropPlayersZone() {
 
