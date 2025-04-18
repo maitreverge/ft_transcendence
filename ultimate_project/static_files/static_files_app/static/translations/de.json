@@ -22,6 +22,18 @@
     "DuelDescription": "Fordere einen anderen Spieler im Duell heraus und zeige, wer der König des digitalen Pingpongs ist.",
     "TournamentDescription": "Nimm an einem K.-o.-Turnier gegen 3 andere Gegner teil.",
     "ProfileDescription": "Passe dein Profil an und sieh dir deine Match-Historie an.",
-    "StatsDescription": "Sieh dir deine Siegquote, dein Ranking und deine vergangenen Leistungen an."
+    "StatsDescription": "Sieh dir deine Siegquote, dein Ranking und deine vergangenen Leistungen an.",
+    
+    "Invitation cancelled!" : "Einladung abgebrochen!",
+    "The player is busy..." : "Der Spieler ist beschäftigt...",
+    "You are busy..." : "Du bist beschäftigt...",
+    "Enter a name for the second player" : "Gib einen Namen für den zweiten Spieler ein",
+    "Player name already exists!" : "Spielername existiert bereits!",
+    "Enter a name!" : "Gib einen Namen ein!",
+    "You can't create more than three players!" : "Du kannst nicht mehr als drei Spieler erstellen!",
+    " won the tournament!" : " hat das Turnier gewonnen!",
+    "Not your player!" : "Das ist nicht dein Spieler!",
+    "You can't drop yourself!" : "Du kannst dich nicht selbst entfernen!",
+    " has sent you an invitation!" : " hat dir eine Einladung geschickt!"
   }
   

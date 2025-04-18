@@ -50,7 +50,7 @@ function connectNewPlayer(playerId, playerName)
 
 	if (!playerId)
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', ": player name already exists!", ": player name already exists!", playerName, "")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', ": Player name already exists!", ": Player name already exists!", playerName, "")
 		// alert("player name yet exist!");
 		console.log(window.websockets);
 		window.websockets = window.websockets.filter(ws => ws.playerId !== undefined);	
@@ -86,14 +86,14 @@ function newPlayer(socket) {
 	const playerName = document.getElementById("player-name").value;
 	if (playerName.trim() === "")
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "enter a name!", "enter a name!", "", "")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "Enter a name!", "Enter a name!", "", "")
 
 		// alert("enter a name!");
 		return;
 	}
 	if (window.websockets.length >= 3)
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "you can't create more than three players!", "you can't create more than three players!", "", "")
+        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "You can't create more than three players!", "You can't create more than three players!", "", "")
 
 		// alert("you can't create more than three players!");
 		return;

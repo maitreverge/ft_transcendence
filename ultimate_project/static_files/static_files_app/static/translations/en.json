@@ -21,6 +21,18 @@
     "DuelDescription": "Face another player in a duel and prove who's the king of digital ping pong.",
     "TournamentDescription": "Join a knockout tournament against 3 other opponents.",
     "ProfileDescription": "Customize your profile and view your match history.",
-    "StatsDescription": "Check your win rate, ranking, and past performances."
+    "StatsDescription": "Check your win rate, ranking, and past performances.",
+
+    "Invitation cancelled!" : "Invitation cancelled!",
+    "The player is busy..." : "The player is busy...",
+    "You are busy..." : "You are busy...",
+    "Enter a name for the second player" : "Enter a name for the second player",
+    "Player name already exists!" : "Player name already exists!",
+    "Enter a name!" : "Enter a name!",
+    "You can't create more than three players!" : "You can't create more than three players!",
+    " won the tournament!" : " won the tournament!",
+    "Not your player!" : "Not your player!",
+    "You can't drop yourself!" : "You can't drop yourself!",
+    " has sent you an invitation!" : " has sent you an invitation!"
   }
 

@@ -367,7 +367,7 @@ function invitationCancelled(targetName) {
 
 	console.log(`invitation with ${targetName} is cancelled`);
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled !", "invitation cancelled !", "", "")
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
 	// alert(`invitation with ${targetName} is cancelled`);
 	if (window.busyElement)	
 		window.busyElement.classList.remove("invitation-waiting");
@@ -380,7 +380,7 @@ function invitationCancelled(targetName) {
 
 function selectedBusy() {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy", "The player is busy", "", "");
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy...", "The player is busy...", "", "");
 
 	// alert("selectedBusy");
 	if (window.busyElement)
@@ -389,12 +389,12 @@ function selectedBusy() {
 }
 
 function selfBusy() {
-	messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy", "You are busy", "", "");
+	messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy...", "You are busy...", "", "");
 }
 
 function invitationRefused(targetName) {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "invitation cancelled !", "invitation cancelled !", "", "")
+    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
     if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
@@ -438,8 +438,8 @@ function newLocalMatch()
 	{
 		messagePopUp(
 			'Oops!', 'https://dansylvain.github.io/pictures/travolta.webp',
-			"enter a name for second player",
-			"enter a name for second player", "", "");		
+			"Enter a name for the second player",
+			"Enter a name for the second player", "", "");		
 		return;
 	}
 	sendPlayerClick(window.simpleMatchSocket, window.selfId, name);		
