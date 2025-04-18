@@ -281,15 +281,72 @@ function phantomPlayer(div, playerId, ws) {
 
 	const playersCont = document.getElementById("players");
 	div.classList.add("phantom");
-	div.onclick =  event => {
-		event.stopPropagation();
-		const players = [...playersCont.children]
-		if (players.some(el => el.id == playerId))		
-			ws.socket.close();
-		else
-			quitTournament(ws.socket)	
-	}
+
+	// dropTrash();
+	// dropPlayersZone();
+	// div.onclick =  event => {
+	// 	event.stopPropagation();
+	// 	const players = [...playersCont.children]
+	// 	if (players.some(el => el.id == playerId))		
+	// 		ws.socket.close();
+	// 	else
+	// 		quitTournament(ws.socket)	
+	// }
 }
+
+function dropTrash() {
+
+	const trash = document.getElementById("trash");
+	trash.addEventListener("dragover", e => e.preventDefault());
+	trash.addEventListener("drop", e => {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		const ws = window.websockets.find(el => el.playerId == elementId);	
+		if (!ws && window.selfId != elementId)
+		{
+            messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"Not your player!", "Not your player!", "", "")
+			return;
+		}
+		if (window.selfId == elementId)	
+		{
+			messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"You can't drop yourself!", "You can't drop yourself!", "", "")
+			return;
+		}		
+		ws.socket.close();		
+	});
+}
+
+window.addEventListener('DOMContentLoaded', ()=> {
+	dropTrash();
+	dropPlayersZone();
+})
+
+function dropPlayersZone() {
+
+	const players = document.getElementById("players");
+	players.addEventListener("dragover", e => e.preventDefault());
+	players.addEventListener("drop", e => {
+		e.preventDefault();
+		const elementId = e.dataTransfer.getData("text/plain");
+		const ws = window.websockets.find(el => el.playerId == elementId);	
+		if (!ws && window.selfId != elementId)
+		{
+            messagePopUp('Oops!',
+				'https://dansylvain.github.io/pictures/marioNo.webp',
+				"Not your player!", "Not your player!", "", "")
+			return;
+		}
+		if (ws)			
+			quitTournament(ws.socket);
+		else if (window.selfId == elementId)
+			quitTournament(window.tournamentSocket);	
+	});
+}
+
 
 function dragPlayer(div) {
 
@@ -424,26 +481,6 @@ function dropTournament(div, tournamentId) {
 	});
 }
 
-function dropTrash(div, tournamentId) {
-
-	div.addEventListener("dragover", e => e.preventDefault());
-	div.addEventListener("drop", e => {
-		e.preventDefault();
-		const elementId = e.dataTransfer.getData("text/plain");
-		const ws = window.websockets.find(el => el.playerId == elementId);	
-		if (!ws && window.selfId != elementId)
-		{
-            messagePopUp('Oops!',
-				'https://dansylvain.github.io/pictures/marioNo.webp',
-				"Not your player!", "Not your player!", "", "")
-			return;
-		}
-		if (ws)
-			enterTournament(ws.socket, tournamentId);
-		else
-			enterTournament(window.tournamentSocket, tournamentId);
-	});
-}
 // function dropMatch(lk, div, overlay) {
 
 // 	div.addEventListener("dragover", e => e.preventDefault());
