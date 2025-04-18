@@ -1,19 +1,58 @@
+// ! ====================================================== SEB DIFFERENCE ======================================================
 var tjs_keyup = null;
 var tjs_keydown = null;
 var is_towplayer = false;
+// ! ====================================================== SEB DIFFERENCE ======================================================
 
-function stopMatch(matchId) {
+function quitMatch3D()
+{
+	document.body.classList.remove("match-active");
+	cancelAnimationFrame(window.pongAnim);	
+	closeWebSocket3D(window.matchSocket);
+	closeWebSocket3D(window.matchSocket2);
+	delMatchScript3D();
+	delMatch3D();
+}
+
+function closeWebSocket3D(socket)
+{
+	if (socket && socket.readyState === WebSocket.OPEN)
+	{		
+		window.stopFlag = true
+		socket.close(3666);		
+	} 
+}
+
+function delMatchScript3D()
+{
+	const scripts = document.querySelectorAll("script.match-script");		
+	scripts.forEach(oldScript => oldScript.remove());	
+}
+
+function delMatch3D()
+{
+	const matchDiv = document.getElementById('match');
+    if (matchDiv)
+		matchDiv.remove();
+    const rulesOverlay = document.getElementById('rules-overlay');
+    if (rulesOverlay)
+		rulesOverlay.style.display = 'none';
+}
+
+function stopMatch3D(matchId) {
     // unregister the event listeners
     window.gameInProgress = false;
 	document.body.classList.remove("match-active");
 	cancelAnimationFrame(window.pong3DAnim);
 	const input = document.getElementById("match-player-name");
 	if (input)	
-		input.value = "";	
+	input.value = "";	
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
         document.removeEventListener("keydown", tjs_keydown);
+
+	document.body.classList.remove("match-active");
 
     if (!matchId)
     {
@@ -32,7 +71,6 @@ function stopMatch(matchId) {
                 throw new Error(`Error HTTP! Status: ${response.status}`);
             return response.text();
         })
-        .then(data => console.log(data))
         .catch(error => console.log(error))
     }
     else
@@ -43,23 +81,39 @@ function stopMatch(matchId) {
         console.log("jypigequeuedalle");
         if (!window.matchSocket)
             console.log("LE WEBSOCKET ETS NULL.");
-        else
-        {
-            console.log("je sais pas ce qu eje fou la");
-            if (window.matchSocket.readyState === WebSocket.OPEN)
-            {
-                console.log("je vais envoyer 42");
-                window.stopFlag = true
-                window.matchSocket.close(3666);
-                if (window.matchSocket2)
-                    window.matchSocket2.close(3666);
-            }
-            else
-            {
-                console.log("La WebSocket était déjà fermée.");
-            }
-            console.log("je nai pas plante");
-        }
+			else 
+			{
+				setTimeout(()=> {
+					console.log("je sais pas ce qu eje fou la");
+					if (window.matchSocket.readyState === WebSocket.OPEN)
+					{
+						console.log("je vais envoyer 42");
+						window.stopFlag = true
+						window.matchSocket.close(3666);
+						if (window.matchSocket2)
+							window.matchSocket2.close(3666);
+					} 
+					else 
+					{
+						console.log("La WebSocket était déjà fermée.");
+					}
+					console.log("je nai pas plante");
+				}, 1000);
+				// console.log("je sais pas ce qu eje fou la");
+				// if (window.matchSocket.readyState === WebSocket.OPEN)
+				// {
+				// 	console.log("je vais envoyer 42");
+				// 	window.stopFlag = true
+				// 	window.matchSocket.close(3666);
+				// 	if (window.matchSocket2)
+				// 		window.matchSocket2.close(3666);
+				// } 
+				// else 
+				// {
+				// 	console.log("La WebSocket était déjà fermée.");
+				// }
+				// console.log("je nai pas plante");
+			}
         console.log("toujours vivant");
         const oldScripts = document.querySelectorAll("script.match-script");
         console.log("olscript len", oldScripts.length);
@@ -69,6 +123,8 @@ function stopMatch(matchId) {
     //  console.log("pas spec!!");
 }
 
+
+// ? =============================== THREE JS ============================
 window.tjs_container = document.getElementById('scene-container');
 
 window.tjs_scene = new THREE.Scene();
@@ -79,9 +135,9 @@ window.tjs_container.appendChild(window.tjs_renderer.domElement);
 
 window.tjs_textureLoader = window.tjs_textureLoader || new THREE.TextureLoader();
 
-window.tjs_rgeo = window.tjs_rgeo || new THREE.BoxGeometry(3, 5, 40 * (60 / 100));
+window.tjs_rgeo = window.tjs_rgeo || new THREE.BoxGeometry(5, 5, 20 * (60 / 100));
 window.tjs_sgeo = window.tjs_sgeo || new THREE.SphereGeometry(2, 32, 32);
-window.tjs_tgeo = window.tjs_tgeo || new THREE.BoxGeometry(84.5, 5, 60);
+window.tjs_tgeo = window.tjs_tgeo || new THREE.BoxGeometry(95, 5, 60);
 
 function tjs_loadfull(url) {
     return [
@@ -114,13 +170,13 @@ window.tjs_scene.add(window.tjs_r1);
 window.tjs_scene.add(window.tjs_r2);
 window.tjs_scene.add(window.tjs_table);
 
-window.tjs_r1.position.z = -20;
+window.tjs_r1.position.z = 0;
 window.tjs_r1.position.y = 0;
-window.tjs_r1.position.x = 10.5;
+window.tjs_r1.position.x = 5;
 
-window.tjs_r2.position.z = -20;
+window.tjs_r2.position.z = 0;
 window.tjs_r2.position.y = 0;
-window.tjs_r2.position.x = 87.5;
+window.tjs_r2.position.x = 92.5;
 
 window.tjs_ball.position.x = -1;
 window.tjs_ball.position.z = -1;
@@ -130,6 +186,9 @@ window.tjs_upgrade = {
     points: 0,
     cooldown: 10,
 }
+
+// ? =============================== THREE JS ============================
+
 
 function actionCooldownUpdate() {
     const u = document.getElementById('upgrade');
@@ -417,12 +476,11 @@ function displayPlayersInfos3D(data, score_div)
 function onMatchWsMessage3D(
     event, score_div, [waiting, endCont, end, spec], waitingState) {
     const data = JSON.parse(event.data);
-
     startDelay3D(data);
     displayPlayersInfos3D(data, score_div);
     setEnd3D(data, endCont, end, spec);
     setWaiting3D(data, waiting, waitingState);
-
+	
     if (data.yp1 !== undefined && data.yp2 !== undefined) {
         window.tjs_r1.position.z = (60 / 100) * (data.yp1);
         window.tjs_r2.position.z = (60 / 100) * (data.yp2);
@@ -430,33 +488,6 @@ function onMatchWsMessage3D(
         window.tjs_ball.position.x = (100 / 100) * (data.ball[0] - 1);
         window.tjs_ball.position.z = (60 / 100) * (data.ball[1] - 1);
     }
-}
-
-function startCountdown3D(delay)
-{
-	loaderElement = document.querySelector(".loader");
-	if (loaderElement)
-		loaderElement.style.opacity = "1";
-
-    const countdownEl = document.querySelector('.countdown');
-    const countdownEndsAt = window.gameStartTimestamp * 1000 + delay * 1000;
-
-	function updateCountdown() {
-        const now = Date.now();
-        const remaining = Math.ceil((countdownEndsAt - now) / 1000);
-
-        if (remaining > 0) {
-            countdownEl.textContent = remaining;
-            requestAnimationFrame(updateCountdown);
-        } else if (remaining > -1) {
-            countdownEl.textContent = "GO!";
-            requestAnimationFrame(updateCountdown);
-        } else {
-            loaderElement.style.opacity = "0";
-            window.gameStartTimestamp = undefined;
-        }
-    }
-	updateCountdown();
 }
 
 function startDelay3D(data)
@@ -496,6 +527,7 @@ function setEnd3D(data, endCont, end, spec)
 		class="winner-gif">
 		`;		
 		endCont.classList.add("end-cont");
+		endCont.style.display = "block";
 		console.log("🏁 Match terminé, reset du timestamp");
 		window.gameStartTimestamp = undefined;	
 	}
@@ -529,11 +561,11 @@ function setSpec3D(spec)
 
 function sequelInitMatchWs3D(socket) {
     const [waiting, endCont, end] = [
-        document.getElementById("waiting"),
+		document.getElementById("waiting"),
         document.getElementById("end-cont"),
         document.getElementById("end")
     ];
-    let waitingState = ["waiting"];
+	let waitingState = ["waiting"];
     const score_div = document.getElementById("score");
     const spec = document.getElementById("spec")
     setSpec3D(spec);
@@ -559,7 +591,7 @@ function initSecPlayer3D() {
 	};
 	window.matchSocket2.onclose = (event) => {
 		console.log("Connexion Match disconnected 😈 2nd Player");
-	};	
+	};
 }
 
 function initMatchWs3D() {
