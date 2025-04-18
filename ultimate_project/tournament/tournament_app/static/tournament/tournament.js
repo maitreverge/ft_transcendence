@@ -405,7 +405,7 @@ function dragPlayer(div) {
 			clone.id = "clone";
 			clone.style.borderRadius = "12px";	
 			const rect = div.getBoundingClientRect();
-			clone.style.width = `${rect.width * 0.6}px`;
+			clone.style.width = `${rect.width * 0.85}px`;
 			clone.style.position = "absolute";
 			clone.style.top = "-100";
 			clone.style.left = "-100";
