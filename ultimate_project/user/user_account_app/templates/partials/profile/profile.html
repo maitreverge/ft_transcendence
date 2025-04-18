@@ -9,102 +9,106 @@
         </div>
 
         <div class="card-body">
-          <form class="account_profile">
-            <!-- First Name -->
+          <!-- Success Message -->
+          {% if success_message %}
+          <div class="alert alert-success text-center" id="successMessage" role="alert">
+            ✅ {{ success_message }}
+          </div>
+          {% endif %}
+          <!-- Error Message -->
+          {% if error_message %}
+          <div class="alert alert-danger text-center" id="errorMessage" role="alert">
+            ❌ {{ error_message }}
+          </div>
+          {% endif %}
+          <form
+            method="POST"
+            class="account_profile"
+            hx-post="/account/profile/"
+            hx-target="#account-content"
+            hx-swap="innerHTML"
+          >
+            {% csrf_token %}
+            <!-- First and Last Name -->
             <div class="form-group row">
-              <div class="col-sm-6 mb-3 mb-sm-0 d-flex align-items-center">
+              <div class="col-sm-6 mb-3 mb-sm-0">
+                <label for="first_name">First Name</label>
                 <input
                   type="text"
                   class="form-control form-control-user"
-                  id="exampleFirstName"
+                  id="first_name"
+                  name="first_name"
                   placeholder="First Name"
                   value="{{ user.first_name|default:'' }}"
-                  readonly
                 />
-                <button
-                  type="button"
-                  class="btn btn-light btn-sm ml-2 edit-btn"
-                  hx-get="/user/edit-field/?field=first_name"
-                  hx-target="#exampleFirstName"
-                  hx-swap="outerHTML"
-                  hx-push-url="true"
-                >
-                  <i class="fas fa-edit"></i>
-                </button>
               </div>
-              <!-- Last Name -->
-              <div class="col-sm-6 d-flex align-items-center">
+              <div class="col-sm-6">
+                <label for="last_name">Last Name</label>
                 <input
                   type="text"
                   class="form-control form-control-user"
-                  id="exampleLastName"
+                  id="last_name"
+                  name="last_name"
                   placeholder="Last Name"
                   value="{{ user.last_name|default:'' }}"
-                  readonly
                 />
-                <button
-                  type="button"
-                  class="btn btn-light btn-sm ml-2 edit-btn"
-                  hx-get="/user/edit-field/?field=last_name"
-                  hx-target="#exampleLastName"
-                  hx-swap="outerHTML"
-                  hx-push-url="true"
-                >
-                  <i class="fas fa-edit"></i>
-                </button>
               </div>
             </div>
-
             <!-- Username -->
             <div class="form-group row">
-              <div class="col-sm-6 mb-3 mb-sm-0 d-flex align-items-center">
+              <div class="col-sm-6 mb-3 mb-sm-0">
+                <label for="username">Username</label>
                 <input
                   type="text"
                   class="form-control form-control-user"
-                  id="exampleDisplayName"
+                  id="username"
+                  name="username"
                   placeholder="Username"
                   value="{{ user.username|default:'' }}"
-                  readonly
                 />
-                <button
-                  type="button"
-                  class="btn btn-light btn-sm ml-2 edit-btn"
-                  hx-get="/user/edit-field/?field=username"
-                  hx-target="#exampleDisplayName"
-                  hx-swap="outerHTML"
-                  hx-push-url="true"
-                >
-                  <i class="fas fa-edit"></i>
-                </button>
               </div>
             </div>
-
             <!-- Email Address -->
-            <div class="form-group d-flex align-items-center">
+            <div class="form-group">
+              <label for="email">Email Address</label>
               <input
                 type="email"
                 class="form-control form-control-user"
-                id="exampleInputEmail"
+                id="email"
+                name="email"
                 placeholder="Email Address"
                 value="{{ user.email|default:'' }}"
-                readonly
               />
-              <button
-                type="button"
-                class="btn btn-light btn-sm ml-2 edit-btn"
-                hx-get="/user/edit-field/?field=email"
-                hx-target="#exampleInputEmail"
-                hx-swap="outerHTML"
-                hx-push-url="true"
-              >
-                <i class="fas fa-edit"></i>
+            </div>
+            <!-- Submit Button -->
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-primary btn-user">
+                Save Changes
               </button>
             </div>
-
           </form>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  // Function to handle hiding success/error message after 2 seconds
+  function handleMessageTimeout() {
+    var successMessage = document.getElementById("successMessage");
+    if (successMessage) {
+      setTimeout(function () {
+        successMessage.style.display = "none";
+      }, 2000);
+    }
+    var errorMessage = document.getElementById("errorMessage");
+    if (errorMessage) {
+      setTimeout(function () {
+        errorMessage.style.display = "none";
+      }, 2000);
+    }
+  }
+  document.body.addEventListener('htmx:afterSwap', handleMessageTimeout);
+</script>
 

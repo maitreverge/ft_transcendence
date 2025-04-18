@@ -15,11 +15,11 @@
           {% if match.is_last_match %}
             {% if match.winner_tournament and match.winner_tournament.winner_tournament == user.id %}
                 <span class="badge bg-winner text-white mb-2" style="font-size: 0.8rem">
-                    👑 Tournament: #{{ match.tournament }} - Won
+                    👑 Tournament ID: #{{ match.tournament }} - Won
                 </span>
             {% elif match.winner_tournament %}
                 <span class="badge bg-loser text-white mb-2" style="font-size: 0.8rem">
-                    💔 Tournament: #{{ match.tournament }} - Lost
+                    💔 Tournament ID: #{{ match.tournament }} - Lost
                 </span>
             {% endif %}
           {% else %}

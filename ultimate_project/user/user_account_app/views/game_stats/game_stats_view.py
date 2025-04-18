@@ -8,7 +8,7 @@ from pprint import pprint
 # Custom import
 from utils import manage_user_data
 
-# === 🔍 Overview game stats 🔍 ===
+# === 📈 Overview game stats 📈 ===
 
 async def handle_get_game_stats(request, username, context):
     try:
@@ -28,7 +28,6 @@ async def handle_get_game_stats(request, username, context):
         context['stats_history'] = stats_history
         return render_to_string("partials/game_stats/stats/overview.html", context,  request=request), False
     except Exception as e:
-        print(f"ERROR CAUGHT: {e}", flush=True) #rm
         context["error"] = "An error occurred while retrieving player statistics. Please try again later."
         return render(request, "partials/game_stats/error_stats.html", context), True
 
@@ -69,7 +68,7 @@ async def game_stats_overview(request: HttpRequest):
         return render(request, "layouts/account.html", context)
     
 
-# === 🔍 Match history stats 🔍 ===
+# === 📈 Match history stats 📈 ===
 
 async def handle_get_match_history(request, username, context):
     try:
@@ -95,17 +94,7 @@ async def handle_get_match_history(request, username, context):
                     match["is_last_match"] = False
             else:
                 match["is_last_match"] = False  # Not in a tournament
-        print("MATCH HISTORY AFTER MIOD \n\n:", flush=True)
-        pprint(match_history)
-        print("--\n", flush=True)
         context['match_history'] = match_history
-        
-        
-        """ tournament_history = await manage_user_data.get_user_tournament_history(user['id'])
-        if (tournament_history == None):
-            context["error"] = "No tournament history found. Please try again later."
-            return render(request, "partials/game_stats/error_stats.html", context), True
-        context['tournament_history'] = tournament_history """
         return render_to_string("partials/game_stats/stats/match_history.html", context,  request=request), False
     except Exception as e:
         context["error"] = "An error occurred while retrieving player statistics. Please try again later."
