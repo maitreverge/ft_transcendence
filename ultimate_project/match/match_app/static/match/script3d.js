@@ -204,11 +204,11 @@ function actionCooldownUpdate() {
 
     // update the html button
     if (!window.tjs_upgrade.cooldown) {
-        u.innerHTML = `Upgrade (+${window.tjs_upgrade.points})`;
+        u.innerHTML = `${window.tjs_upgrade.points} 🪙`;
     } else if (window.tjs_upgrade.points) {
-        u.innerHTML = `Upgrade (+${window.tjs_upgrade.points}) ${window.tjs_upgrade.cooldown}s`;
+        u.innerHTML = `${window.tjs_upgrade.points} 🪙 (${window.tjs_upgrade.cooldown}s)`;
     } else {
-        u.innerHTML = `Upgrade ${window.tjs_upgrade.cooldown}s`;
+        u.innerHTML = `${window.tjs_upgrade.cooldown}s`;
     }
 
     return 1;

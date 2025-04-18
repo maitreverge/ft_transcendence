@@ -230,7 +230,20 @@
 }
 
 .config_buttons {
-    background-color: #4CAF50; 
+    justify-content: center;
+    min-width: 100px;
+    border: 3px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    padding: 7px;
+    margin: 5px 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.config_buttons:hover {
+    background-color: #151515;
 }
 
 #center_buttons {
