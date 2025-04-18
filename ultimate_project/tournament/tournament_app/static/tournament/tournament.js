@@ -263,36 +263,30 @@ function createPlayerElement(socket, playerId, playerName)
 	div.textContent = playerName;
 	div.id = playerId;	
 	const ws = window.websockets.find(ws => ws.playerId == playerId);	
-	if (playerId == window.selfId)
-	{
-		div.classList.add("self-player");
-		div.onclick = event => {
-			event.stopPropagation();
-			quitTournament(socket);	
-		}		
-	}
+	if (playerId == window.selfId)	
+		div.classList.add("self-player");	
 	else if (ws)
-		phantomPlayer(div, playerId, ws);
+		div.classList.add("phantom");
 	dragPlayer(div);
 	return div;
 }
 
-function phantomPlayer(div, playerId, ws) {
+// function phantomPlayer(div) {
 
-	const playersCont = document.getElementById("players");
-	div.classList.add("phantom");
+// 	const playersCont = document.getElementById("players");
+// 	div.classList.add("phantom");
 
-	// dropTrash();
-	// dropPlayersZone();
-	// div.onclick =  event => {
-	// 	event.stopPropagation();
-	// 	const players = [...playersCont.children]
-	// 	if (players.some(el => el.id == playerId))		
-	// 		ws.socket.close();
-	// 	else
-	// 		quitTournament(ws.socket)	
-	// }
-}
+// 	// dropTrash();
+// 	// dropPlayersZone();
+// 	// div.onclick =  event => {
+// 	// 	event.stopPropagation();
+// 	// 	const players = [...playersCont.children]
+// 	// 	if (players.some(el => el.id == playerId))		
+// 	// 		ws.socket.close();
+// 	// 	else
+// 	// 		quitTournament(ws.socket)	
+// 	// }
+// }
 
 function dropTrash() {
 
@@ -347,12 +341,11 @@ function dropPlayersZone() {
 	});
 }
 
-
 function dragPlayer(div) {
 
 	div.draggable = true;
 	div.addEventListener("dragstart",
-		e => {console.log("dans drag"); e.dataTransfer.setData("text/plain", e.target.id);});
+		e => e.dataTransfer.setData("text/plain", e.target.id));
 }
 
 // function allQuitTournament() 
