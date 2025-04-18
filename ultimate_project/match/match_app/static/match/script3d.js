@@ -1,15 +1,42 @@
+// ! ====================================================== SEB DIFFERENCE ======================================================
 var tjs_keyup = null;
 var tjs_keydown = null;
 var is_towplayer = false;
+// ! ====================================================== SEB DIFFERENCE ======================================================
 
 function quitMatch3D()
 {
 	document.body.classList.remove("match-active");
 	cancelAnimationFrame(window.pongAnim);	
-	closeWebSocket(window.matchSocket);
-	closeWebSocket(window.matchSocket2);
-	delMatchScript();
-	delMatch();
+	closeWebSocket3D(window.matchSocket);
+	closeWebSocket3D(window.matchSocket2);
+	delMatchScript3D();
+	delMatch3D();
+}
+
+function closeWebSocket3D(socket)
+{
+	if (socket && socket.readyState === WebSocket.OPEN)
+	{		
+		window.stopFlag = true
+		socket.close(3666);		
+	} 
+}
+
+function delMatchScript3D()
+{
+	const scripts = document.querySelectorAll("script.match-script");		
+	scripts.forEach(oldScript => oldScript.remove());	
+}
+
+function delMatch3D()
+{
+	const matchDiv = document.getElementById('match');
+    if (matchDiv)
+		matchDiv.remove();
+    const rulesOverlay = document.getElementById('rules-overlay');
+    if (rulesOverlay)
+		rulesOverlay.style.display = 'none';
 }
 
 function stopMatch3D(matchId) {
@@ -19,7 +46,7 @@ function stopMatch3D(matchId) {
 	cancelAnimationFrame(window.pong3DAnim);
 	const input = document.getElementById("match-player-name");
 	if (input)	
-		input.value = "";	
+	input.value = "";	
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
@@ -44,7 +71,6 @@ function stopMatch3D(matchId) {
                 throw new Error(`Error HTTP! Status: ${response.status}`);
             return response.text();
         })
-        .then(data => console.log(data))
         .catch(error => console.log(error))
     }
     else
@@ -81,6 +107,8 @@ function stopMatch3D(matchId) {
     //  console.log("pas spec!!");
 }
 
+
+// ? =============================== THREE JS ============================
 window.tjs_container = document.getElementById('scene-container');
 
 window.tjs_scene = new THREE.Scene();
@@ -142,6 +170,9 @@ window.tjs_upgrade = {
     points: 0,
     cooldown: 10,
 }
+
+// ? =============================== THREE JS ============================
+
 
 function actionCooldownUpdate() {
     const u = document.getElementById('upgrade');
@@ -429,12 +460,11 @@ function displayPlayersInfos3D(data, score_div)
 function onMatchWsMessage3D(
     event, score_div, [waiting, endCont, end, spec], waitingState) {
     const data = JSON.parse(event.data);
-
     startDelay3D(data);
     displayPlayersInfos3D(data, score_div);
     setEnd3D(data, endCont, end, spec);
     setWaiting3D(data, waiting, waitingState);
-
+	
     if (data.yp1 !== undefined && data.yp2 !== undefined) {
         window.tjs_r1.position.z = (60 / 100) * (data.yp1);
         window.tjs_r2.position.z = (60 / 100) * (data.yp2);
@@ -481,6 +511,7 @@ function setEnd3D(data, endCont, end, spec)
 		class="winner-gif">
 		`;		
 		endCont.classList.add("end-cont");
+		endCont.style.display = "block";
 		console.log("🏁 Match terminé, reset du timestamp");
 		window.gameStartTimestamp = undefined;	
 	}
@@ -514,14 +545,14 @@ function setSpec3D(spec)
 
 function sequelInitMatchWs3D(socket) {
     const [waiting, endCont, end] = [
-        document.getElementById("waiting"),
+		document.getElementById("waiting"),
         document.getElementById("end-cont"),
         document.getElementById("end")
     ];
-    let waitingState = ["waiting"];
+	let waitingState = ["waiting"];
     const score_div = document.getElementById("score");
-    const spec = document.getElementById("spec")
     setSpec3D(spec);
+    const spec = document.getElementById("spec")
     socket.onmessage = event => onMatchWsMessage3D(
         event, score_div, [waiting, endCont, end, spec], waitingState);
     if (window.player2Id != 0)
@@ -544,7 +575,7 @@ function initSecPlayer3D() {
 	};
 	window.matchSocket2.onclose = (event) => {
 		console.log("Connexion Match disconnected 😈 2nd Player");
-	};	
+	};
 }
 
 function initMatchWs3D() {
