@@ -317,13 +317,13 @@ class Pong:
 		for p in self.users:
 			try:					
 				await p["socket"].send(text_data=json.dumps({
-				"state": self.state.name,			
-				"winnerId": w_and_l[0][0],
-				"looserId": w_and_l[1][0],
-				"names": self.names,
-				"winnerName": w_and_l[0][1],
-				"looserName": w_and_l[1][1],
-				"score": self.score
+					"state": self.state.name,			
+					"winnerId": w_and_l[0][0],
+					"looserId": w_and_l[1][0],
+					"names": self.names,
+					"winnerName": w_and_l[0][1],
+					"looserName": w_and_l[1][1],
+					"score": self.score
 				})) 
 			except Exception as e:
 				pass		

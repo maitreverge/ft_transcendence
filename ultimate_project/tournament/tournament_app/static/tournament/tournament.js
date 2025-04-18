@@ -3,9 +3,7 @@ window.players = []
 window.websockets = []
 
 function initTournament() {
-	
-	dropTrash();
-	dropPlayersZone();
+		
 	if (typeof closeSimpleMatchSocket === 'function') 
 		closeSimpleMatchSocket();
 	else 
@@ -23,7 +21,7 @@ function initTournament() {
         `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/${window.selfId}/`
     );
 	window.tournamentSocket.onopen = () => {
-		console.log("Connexion Tournament établie 😊");	
+		console.log("Connexion Tournament établie 😊");		
 	}
 	window.tournamentSocket.onclose = () => {
 		console.log("Connexion Tournament disconnected 😈");
@@ -312,6 +310,7 @@ function dropPlayersZone()
 			quitTournament(ws.socket);
 		else if (window.selfId == elementId)
 			quitTournament(window.tournamentSocket);
+		document.getElementById("clone")?.remove();	
 	};
 	addNewEventListener(players);	
 }
@@ -339,8 +338,19 @@ function dropTrash()
 				'https://dansylvain.github.io/pictures/marioNo.webp',
 				"You can't drop yourself!", "You can't drop yourself!", "", "");			
 		}
-		else		
-			ws.socket.close();	
+		else
+		{
+			const clone = document.getElementById("clone");
+			clone.style.left = `${e.clientX - clone.offsetWidth / 2}px`;
+			clone.style.top = `${e.clientY - clone.offsetHeight / 2}px`;
+			clone.style.position = "fixed"; // important pour coordonnées écran
+			clone.style.opacity = "1"; 
+			clone.classList.add("disappear");
+			setTimeout(()=>{
+				ws.socket.close();
+				clone.remove();	
+			}, 1000);
+		}		
 	};
 	addNewEventListener(trash);	
 }
@@ -372,15 +382,15 @@ function addNewEventListener(div)
 	div.addEventListener("drop", div.drop);
 }
 
-// window.addEventListener('DOMContentLoaded', ()=> {	
-// 	dropTrash();
-// 	dropPlayersZone();
-// });
+window.addEventListener('DOMContentLoaded', ()=> {
+	dropTrash();
+	dropPlayersZone();
+});
 
-// document.body.addEventListener('htmx:afterSwap', ()=> {
-// 	dropTrash();
-// 	dropPlayersZone();
-// });
+document.body.addEventListener('htmx:afterSwap', ()=> {
+	dropTrash();
+	dropPlayersZone();
+});
 
 function dragPlayer(div) {
 
@@ -389,22 +399,29 @@ function dragPlayer(div) {
 		e => {
 			e.dataTransfer.setData("text/plain", e.target.id);
 			const clone = div.cloneNode(true);
-			clone.style.borderRadius = "12px";
-			clone.style.boxShadow = "0 0 8px rgba(0,0,0,0.3)";
+			clone.id = "clone";
+			// clone.style.borderRadius = "6px";	
+			const rect = div.getBoundingClientRect();
+			clone.style.width = `${rect.width * 0.6}px`;
+			// clone.style.backgroundColor = 'transparent';
+			// clone.style.height = `${rect.height}px`;
+
+			// clone.style.opacity = "0"; 
 			clone.style.position = "absolute";
-			clone.style.top = "0";
-			clone.style.left = "0";
-			clone.style.visibility = "hidden"; // ← au lieu de display:none ou -9999px
+			clone.style.top = "-100";
+			clone.style.left = "-100";
+			// clone.style.visibility = "hidden"; // ← au lieu de display:none ou -9999px
 			document.body.appendChild(clone);
 		  
-			// 🧠 Forcer le DOM à calculer sa taille (trigger reflow)
+			// // 🧠 Forcer le DOM à calculer sa taille (trigger reflow)
 			const offsetX = clone.offsetWidth / 2;
 			const offsetY = clone.offsetHeight / 2;
-		  
+			// const offsetX = 100;
+			// const offsetY = 100;
 			e.dataTransfer.setDragImage(clone, offsetX, offsetY);
 		  
-			// Nettoyage
-			setTimeout(() => clone.remove(), 0);
+			// // Nettoyage
+			// setTimeout(() => clone.remove(), 0);
 		} );
 
 	
@@ -533,6 +550,7 @@ function dropTournament(div, tournamentId) {
 			enterTournament(ws.socket, tournamentId);
 		else
 			enterTournament(window.tournamentSocket, tournamentId);
+		document.getElementById("clone")?.remove();
 	});
 }
 

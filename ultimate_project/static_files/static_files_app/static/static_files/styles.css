@@ -245,6 +245,20 @@ input:checked + .slider:before {
 	background: rgb(251, 255, 0);
 }
 
+@keyframes shrink {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.disappear {
+  animation: shrink 1s ease forwards;  
+}
 /* .tournament {
 	width:fit-content;
 	height:fit-content;
