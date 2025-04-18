@@ -40,9 +40,9 @@ function stopMatch(matchId)
 	document.body.classList.remove("match-active");
 	// window.busyElement = null;
 	cancelAnimationFrame(window.pongAnim);
-	const input = document.getElementById("match-player-name");
-	if (input)
-		input.value = "";	
+	// const input = document.getElementById("match-player-name");
+	// if (input)
+	// 	input.value = "";	
 	if (!matchId)
 	{
 		console.log("matchID EST NULLE");
