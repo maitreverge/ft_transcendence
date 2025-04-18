@@ -461,6 +461,7 @@ button {
     filter: saturate(120%) hue-rotate(180deg)
     drop-shadow(0 0 10px rgba(0, 200, 255, 0.7));
     animation: flotter 3s ease-in-out infinite;
+    margin:20px;
   }
 
   @keyframes flotter {
