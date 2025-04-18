@@ -23,8 +23,6 @@
 
 🟧 DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT...
 
-🟧 Changer le mot de passe d'admin / Delete l'admin en production (`user_prod.csv`)
-
 🟧 Switch from `user_prod.csv` to `user.csv` in correction 
 
 🟧 Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
@@ -37,6 +35,9 @@
 
 ======================================= DONE =====================================
 
+
+
+✅ Changer le mot de passe d'admin (`user_prod.csv`)
 
 ✅ Beautify 2fa page
 
