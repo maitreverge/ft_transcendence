@@ -12,11 +12,11 @@ def index(request):
 
     if "HX-Request" not in request.headers:
         return redirect("/home/")
-    obj = {"username": username, "request": request}
+    obj = {"username": username, "request": request, "host_ip": os.getenv('HOST_IP')}
     return render(request, "index.html", obj)
 
 def login(request):
-    obj = {"username": "", "page": "login.html"}
+    obj = {"username": "", "page": "login.html", "host_ip": os.getenv('HOST_IP')}
     return render(request, "index.html", obj)
 
 def home(request):
@@ -58,9 +58,11 @@ def reload_template(request):
         username = request.session.get("username")
         context["status_code"] = code
         context["page"] = "error.html"
+        context["host_ip"] = os.getenv('HOST_IP')
         return render(request, "index.html", context)
     username = request.headers.get("X-Username") or request.session.get("username")
     context["page"] = page_html
+    context["host_ip"] = os.getenv('HOST_IP')
     return render(request, "index.html", context)
 
 
@@ -78,6 +80,7 @@ def match_simple_template(request, user_id):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "page": page_html,
+            "host_ip": os.getenv('HOST_IP')
         },
     )
 
@@ -96,6 +99,7 @@ def tournament_template(request, user_id):
             "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "page": page_html,
+            "host_ip": os.getenv('HOST_IP')
         },
     )
 
@@ -107,7 +111,7 @@ def translations(request, lang):
             "static_files_app",
             "static",
             "translations",
-            f"{lang}.json",
+            f"{lang}.json"
         )
         with open(file_path, "r") as file:
             return JsonResponse(file.read(), safe=False)
