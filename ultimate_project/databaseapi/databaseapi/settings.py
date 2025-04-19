@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
-    "django_extensions",  # For CSV init players
+    "django_extensions",  # ! For CSV init players
 ]
 
 MIDDLEWARE = [
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # This must be BEFORE CommonMiddleware
+    "corsheaders.middleware.CorsMiddleware",  # ! This must be BEFORE CommonMiddleware
     "django.middleware.common.CommonMiddleware",
 ]
 
@@ -152,8 +152,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
-    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    # "PAGE_SIZE": 10  # Number of items per page
 }
 
 
@@ -163,7 +161,6 @@ class HealthCheckFilter(logging.Filter):
         return "/health/" not in record.getMessage()
 
 
-# Logging configuration for healthcheck
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -176,7 +173,7 @@ LOGGING = {
         "console": {
             "level": "INFO",
             "class": "logging.StreamHandler",
-            "filters": ["healthcheck_filter"],  # Apply filter here
+            "filters": ["healthcheck_filter"],
         },
     },
     "loggers": {

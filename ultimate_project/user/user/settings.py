@@ -27,12 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
     sys.path.append(str(BASE_DIR))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # ! SECURED BY FLO
 SECRET_KEY = os.getenv("DJANGO_KEY")
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
@@ -162,7 +158,7 @@ LOGGING = {
         "console": {
             "level": "INFO",
             "class": "logging.StreamHandler",
-            "filters": ["healthcheck_filter"],  # Apply filter here
+            "filters": ["healthcheck_filter"],
         },
     },
     "loggers": {
@@ -176,12 +172,6 @@ LOGGING = {
 
 CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
 CORS_ALLOW_ORIGINS = [
-    # "http://localhost:8000",  # Basic
-    # "http://localhost:8001",  # Tournament
-    # "http://localhost:8002",  # Match
-    # "http://localhost:8003",  # Static files
-    # "http://localhost:8004",  # User
-    # "http://localhost:8005",  # FastAPI
     "http://localhost:8007",  # DatabaseAPI
     "https://localhost:8443"  # For secure HTTPS access
     f"https://{HOST_IP}",  # Production
@@ -199,7 +189,6 @@ SESSION_COOKIE_SAMESITE = (
 CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
 CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
-#CSRF_COOKIE_NAME = "csrf_token"  # Change the CSRF cookie name
 
 # CSRF Middleware settings
 CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]  # Add your domain(s) here
