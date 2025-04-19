@@ -5,7 +5,6 @@
 		background-image: url("https://dansylvain.github.io/pictures/login_pong.png");
 		background-position: center;
 		background-size: 80%;
-		/* Shows 80% of the original image size */
 		background-repeat: no-repeat;
 		min-height: 100%;
 		box-sizing: border-box;
@@ -15,7 +14,7 @@
 		overflow: hidden;
 	}
 
-	/* Pong Background Animation Styles */
+	/* Pong background with les raquettes */
 	.pong-background {
 		position: fixed;
 		top: 0;
@@ -39,7 +38,6 @@
 	}
 
 
-/* Add this to ensure the card respects your border radius */
 .card {
     position: relative;
     z-index: 10;
@@ -47,24 +45,22 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Important to ensure child elements respect border radius */
-    border-radius: 1rem; /* Match this with your login-picture radius */
+    overflow: hidden;
+    border-radius: 1rem;
 	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.295), 0 15px 20px rgba(0, 0, 0, 0.493);
-    /* transition: box-shadow 2s ease; */
 }
 
-/* Also make sure the card body doesn't override our settings */
 .card-body {
 	overflow: hidden;
     border-radius: inherit;
 }
 
-/* And ensure the row doesn't break our radius */
 .card-body > .row {
     overflow: hidden;
     border-radius: inherit;
 }
 
+/* Main background color */
 .background-color-form{
 	background-color: rgb(248, 133, 56);
 }
@@ -73,12 +69,12 @@
 <div class="pong-background" id="pong-background"></div>
 
 <div class="container" data-page-type="login">
-	<!-- Outer Row -->
+	
 	<div class="row justify-content-center align-items-center min-vh-100">
 		<div class="col-xl-10 col-lg-12 col-md-9">
 			<div class="card o-hidden border-0 my-5">
 				<div class="card-body p-0 background-color-form">
-					<!-- Nested Row within Card Body -->
+					<!-- ! MAIN ROW -->
 					<div class="row">
 						<div class="col-lg-6 d-none d-lg-block login-picture"></div>
 						<div class="col-lg-6">

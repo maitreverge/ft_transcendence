@@ -3,10 +3,6 @@
 🟧
 ⚠️
 
-# BUG REPORT
-🟧 ACCOUNT THOMAS => Quand on resize la page, les views droppent en bas
-
-
 --------------------------------------------------------------------------------
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
@@ -25,17 +21,18 @@
 
 🟧 Switch from `user_prod.csv` to `user.csv` in correction 
 
-🟧 Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
-
 🟧 ADMIN DOIT RESTER ID 1
 
-🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
+🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py`
+
+🟧 Auth_files refactor (merge Dan brach avant, le faire, puis Dan remerge ma brache apres)
 
 
 
 ======================================= DONE =====================================
 
 
+✅ Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
 
 ✅ Changer le mot de passe d'admin (`user_prod.csv`)
 
