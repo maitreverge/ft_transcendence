@@ -70,7 +70,6 @@ def reload_template(request):
 @never_cache
 def match_simple_template(request, user_id):
     url = f"http://tournament:8001/tournament/simple-match/{user_id}/"
-    print(f"###################### userid {user_id} #################", flush=True)
     page_html = requests.get(url).text
 
     username = request.headers.get("X-Username") or request.session.get("username")
@@ -90,7 +89,6 @@ def match_simple_template(request, user_id):
 @never_cache
 def tournament_template(request, user_id):
     url = f"http://tournament:8001/tournament/tournament/{user_id}/"
-    print(f"###################### userid {user_id} #################", flush=True)
     page_html = requests.get(url).text
 
     username = request.headers.get("X-Username") or request.session.get("username")
@@ -137,10 +135,7 @@ def twoFactorAuth(request):
 
     query_username = request.GET.get("username")
     if query_username:
-        print(f"Found username in query parameters: {query_username}", flush=True)
         username = query_username
-
-    print(f"Using username for 2FA page: {username}", flush=True)
 
     if "HX-Request" in request.headers:
         return render(request, "two-factor-auth.html", {"username": username})
