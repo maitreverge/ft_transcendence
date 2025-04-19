@@ -45,7 +45,7 @@
                                 data-bg="https://dansylvain.github.io/pictures/home_stats.png">
                                 <a id="side-nav-stats"
                                     class="nav-link btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn"
-                                    hx-get="/account/game-stats/" hx-target="#main_div" hx-swap="innerHTML"
+                                    hx-get="/account/game-stats/overview/" hx-target="#main_div" hx-swap="innerHTML"
                                     hx-push-url="true">
                                     <i class="mr-2 fa-solid fa-chart-simple"></i>
                                     <h5 class="mb-0" data-translate="Statistics">Statistics</h5>
@@ -75,34 +75,44 @@
             <!-- Main Content -->
             <div id="main_content" role="main" class="col-0 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 px-4">
                 <div class="  myText container mt-5 background_color_text">
-                    <h1 class="h1 display-4 title_color_text mb-4 text-center font-weight-bold"><span data-translate="WelcomeToPong42">🏓 Welcome to </span><strong>Pong42 🏓</strong></h1>
-                    <div class="h3 title_color_text text-center font-italic" data-translate="GetReadyToCompete">Get ready to challenge your friends in intense matches, remote or local, and climb the ranks!</div>
-                  
-                    <hr >
-                  
+                    <h1 class="h1 display-4 title_color_text mb-4 text-center font-weight-bold"><span
+                            data-translate="WelcomeToPong42">🏓 Welcome to </span><strong>Pong42 🏓</strong></h1>
+                    <div class="h3 title_color_text text-center font-italic" data-translate="GetReadyToCompete">Get
+                        ready to challenge your friends in intense matches, remote or local, and climb the ranks!</div>
+
+                    <hr>
+
                     <div class="row">
-                      <div class="col-md-6 mb-4">
-                        <h3 class="title_color_text text-uppercase-center font-weight-bold">🎮<span class="ml-2" data-translate="Match">Match</span></h3>
-                        <p data-translate="DuelDescription">Face another player in a duel and prove who's the king of digital ping pong.</p>
-                      </div>
-                  
-                      <div class="col-md-6 mb-4">
-                        <h3 class="title_color_text text-uppercase font-weight-bold">🏆 <span class="ml-2" data-translate="Tournament">Tournament</span></h3>
-                        <p data-translate="TournamentDescription">Join a knockout tournament against 3 other opponents.</p>
-                      </div>
-                  
-                      <div class="col-md-6 mb-4">
-                        <h3 class="title_color_text text-uppercase font-weight-bold">👤 <span class="ml-2" data-translate="Profile">Profile</span></h3>
-                        <p data-translate="ProfileDescription">Customize your profile and view your match history.</p>
-                      </div>
-                  
-                      <div class="col-md-6 mb-4">
-                        <h3 class="title_color_text text-uppercase font-weight-bold">📊 <span class="ml-2" data-translate="Statistics">Statistics</span></h3>
-                        <p data-translate="StatsDescription">Check your win rate, ranking, and past performances.</p>
-                      </div>
+                        <div class="col-md-6 mb-4">
+                            <h3 class="title_color_text text-uppercase-center font-weight-bold">🎮<span class="ml-2"
+                                    data-translate="Match">Match</span></h3>
+                            <p data-translate="DuelDescription">Face another player in a duel and prove who's the king
+                                of digital ping pong.</p>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <h3 class="title_color_text text-uppercase font-weight-bold">🏆 <span class="ml-2"
+                                    data-translate="Tournament">Tournament</span></h3>
+                            <p data-translate="TournamentDescription">Join a knockout tournament against 3 other
+                                opponents.</p>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <h3 class="title_color_text text-uppercase font-weight-bold">👤 <span class="ml-2"
+                                    data-translate="Profile">Profile</span></h3>
+                            <p data-translate="ProfileDescription">Customize your profile and view your match history.
+                            </p>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <h3 class="title_color_text text-uppercase font-weight-bold">📊 <span class="ml-2"
+                                    data-translate="Statistics">Statistics</span></h3>
+                            <p data-translate="StatsDescription">Check your win rate, ranking, and past performances.
+                            </p>
+                        </div>
                     </div>
-                  </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>
