@@ -17,7 +17,6 @@ function applyTranslations(translations) {
     });
 }
 
-
 function changeLanguage(event) {
     const lang = event.target.value;
     localStorage.setItem('preferred_language', lang);
@@ -41,7 +40,6 @@ function observeDOMChanges() {
 
     observer.observe(document.body, { childList: true, subtree: true });
 }
-
 
 window.onload = function() {
     const lang = localStorage.getItem('preferred_language') || 'en';
