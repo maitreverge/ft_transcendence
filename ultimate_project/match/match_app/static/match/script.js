@@ -5,20 +5,20 @@ function quitMatch()
 	window.gameStartTimestamp = undefined; 	
 	removeKeyBoardEvent();
 	cancelAnimationFrame(window.pongAnim);
-	closeMatchWebSockets()
+	manualCloseMatchWss();
 	delMatchScript();
 	delMatch();
 }
 
-function closeMatchWebSockets()
+function manualCloseMatchWss()
 {
 	window.stopFlag = true;
-	const closeMatchWebSocket = (socket)=> {
+	const closeMatchWs = (socket)=> {
 		if (socket && socket.readyState === WebSocket.OPEN)			
 			socket.close(3666);		
 	};
-	closeMatchWebSocket(window.matchSocket);
-	closeMatchWebSocket(window.matchSocket2);
+	closeMatchWs(window.matchSocket);
+	closeMatchWs(window.matchSocket2);
 }
 
 function delMatchScript()
@@ -272,10 +272,9 @@ function onMatchWsMessage(
 	const ballRect = pads[2].getBoundingClientRect();
 	pads[2].style.top = -(matchRect.width / 100);
 	pads[2].style.width = (matchRect.width / 100) * 2;
-	pads[2].style.height = (matchRect.height / 100) * 2;
-	
-    if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined) {
-        
+	pads[2].style.height = (matchRect.height / 100) * 2;	
+    if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
+	{        
 		window.targetPads[0] = data.yp1 * (matchRect.height / 100);
 		window.targetPads[1] = data.yp2 * (matchRect.height / 100);
 
@@ -363,13 +362,11 @@ function initSecPlayer()
 {
 	if (window.player2Id != 0)
 	{
-		window.matchSocket2 = new WebSocket(
-			`wss://${window.pidom}/ws/match/${window.matchId}/` +
-			`?playerId=${window.player2Id}`);
+		window.matchSocket2 = createWebSocket(window.player2Id);
 		window.matchSocket2.onopen = () => {
 			console.log("Connexion Match établie 2nd Player😊");
 		};
-		window.matchSocket2.onclose = (event) => {
+		window.matchSocket2.onclose = () => {
 			console.log("Connexion Match disconnected 😈 2nd Player");
 		};	
 	}
@@ -382,6 +379,13 @@ function initDomain()
         window.pidom = "localhost:8443";
 	else
 		window.pidom = window.location.hostname + ":8443";
+}
+
+function createWebSocket(playerId)
+{
+	return new WebSocket(
+        `wss://${window.pidom}/ws/match/${window.matchId}/` +
+        `?playerId=${playerId}`);
 }
 
 function closeMatchWssOnEnter()
@@ -405,20 +409,20 @@ function initMatchWs()
 	if (closeMatchWssOnEnter())
 		return;    
 	window.antiLoop = true;
-    window.matchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${window.playerId}`);
-	window.matchSocket.onopen = () => {
-		console.log("Connexion Match établie 😊");
-	};
-	window.matchSocket.onclose = (event) => {	
-		console.log("Connexion Match disconnected 😈");		
-		window.antiLoop = false;	
-		if (event.code !== 3000 && !window.stopFlag)		
-			initMatchWs();	
-		window.stopFlag = false;
-	};
+    window.matchSocket = createWebSocket(window.playerId);
+	window.matchSocket.onopen = ()=> console.log("Connexion Match établie 😊");
+	window.matchSocket.onclose = event => matchWsDisconnectStrategy(event);
 	sequelInitMatchWs(window.matchSocket);
+}
+
+function matchWsDisconnectStrategy(event)
+{
+	console.log("Connexion Match disconnected 😈");	
+		
+	window.antiLoop = false;	
+	if (event.code !== 3000 && !window.stopFlag)		
+		initMatchWs();	
+	window.stopFlag = false;
 }
 
 function sequelInitMatchWs(socket)
