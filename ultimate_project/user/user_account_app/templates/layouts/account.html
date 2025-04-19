@@ -1,5 +1,5 @@
 {% load static %}
-<div class="container-fluid m-0">
+<div class="container-fluid m-0" id="main-container-account-content">
   <div class="m-0 p-0">
     <div class="row">
       <!--Sidebar for account-->
@@ -117,8 +117,9 @@
       <!-- Main Content -->
       <main
         role="main"
-        class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 pl-3 pr-0 m-0"
-      >
+        class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 pl-0 pr-0 m-0"
+        id="main-account-content"
+        >
         <!-- prettier-ignore -->
         <div id="account-content">
           {% if page %}
@@ -134,3 +135,21 @@
     </div>
   </div>
 </div>
+
+<style>
+
+  #main-container-account-content .container-fluid {
+    /* background-color: var(--background-color); */
+    background-color: transparent !important;
+  }
+
+  #main-account-content {
+    background-color: var(--text-color) !important;
+  }
+
+  #account-content {
+    height: 100%;
+    background-color: var(--text-color) !important;
+  }
+
+</style>

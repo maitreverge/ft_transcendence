@@ -1,10 +1,10 @@
 {% load static %}
 <div class="container-fluid m-0 p-0" id="game-stats-content">
   <!-- Button Row -->
-  <div class="container-fluid mt-3">
+  <div class="container-fluid mt-3" id="button-game-stats">
     <div
       class="d-flex flex-wrap justify-content-center py-2 px-2 shadow-sm rounded"
-    style="gap: 1.5rem; background-color: var(--navbars-color)"
+      style="gap: 1.5rem; background-color: var(--navbars-color)"
     >
       <!-- Overview Button -->
       <a
@@ -17,7 +17,7 @@
         <i class="mr-2 fa-solid fa-chart-bar fa-xl"></i>
         <h5 class="mb-0 ms-2">Overview</h5>
       </a>
-  
+
       <!-- Match History Button -->
       <a
         class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center px-4"
@@ -31,7 +31,6 @@
       </a>
     </div>
   </div>
-  
 
   <!-- Content Section -->
   <div id="stats-content" class="mt-4">

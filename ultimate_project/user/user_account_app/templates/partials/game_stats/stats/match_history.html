@@ -3,8 +3,9 @@
   {% for match in match_history reversed %}
 
   <div
-    class="poly-card d-flex flex-column flex-md-row justify-content-center px-3 py-3 mb-4 w-100 {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}"
-  >
+    class="poly-card d-flex flex-column flex-md-row justify-content-center mx-auto px-3 py-3 mb-4 {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}"
+    style="width: 95%;"
+    >
     <!-- First Section: Tournament ID - Match ID -->
     <div
       class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
@@ -157,7 +158,6 @@
   .bg-time {
     background-color: var(--navbars-color);
   }
-
 
   .bg-winner {
     background-color: #f1c40f;; /* Green - success */
