@@ -22,9 +22,6 @@ HOST_IP = os.getenv("HOST_IP")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # ! SECURED BY FLO
 SECRET_KEY = os.getenv("DJANGO_KEY")
 
@@ -193,12 +190,6 @@ LOGGING = {
 
 CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
 CORS_ALLOW_ORIGINS = [
-    # "http://localhost:8000",
-    # "http://localhost:8001",
-    # "http://localhost:8002",
-    # "http://localhost:8003",
-    # "http://localhost:8004",
-    # "http://localhost:8005",
     "http://localhost:8007",
     "https://localhost:8443",
     f"https://{HOST_IP}",

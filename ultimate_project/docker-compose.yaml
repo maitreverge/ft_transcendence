@@ -41,7 +41,7 @@ services:
     environment:
       name: database
       pi_domain: $PI_DOMAIN
-      port: $POSTGRES_PORT # really usefull ?
+      port: $POSTGRES_PORT
       PGUSER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -98,7 +98,7 @@ services:
       port: ${static_files_port}
       name: static_files
       pi_domain: ${PI_DOMAIN}
-      DJANGO_SETTINGS_MODULE: static_files.settings # TODO SECURITY
+      DJANGO_SETTINGS_MODULE: static_files.settings
     image: img_static_files
     env_file:
       - .env
@@ -106,10 +106,10 @@ services:
       - transcendence_network
     healthcheck:
         test: ["CMD-SHELL", "curl -f -s http://localhost:${static_files_port}/health/ > /dev/null 2>&1"]
-        interval: 10s    # How often to run the health check (every 90 seconds)
-        timeout: 2s       # Maximum time to wait for the check to complete
-        retries: 10         # Number of consecutive failures needed to mark container as unhealthy
-        start_period: 60s  # Initial grace period where failures don't count (container startup time)
+        interval: 10s
+        timeout: 2s
+        retries: 10
+        start_period: 60s
     volumes:
       - staticvol:/app/staticfiles
     restart: always
