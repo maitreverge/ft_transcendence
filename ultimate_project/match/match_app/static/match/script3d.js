@@ -198,11 +198,11 @@ function actionCooldownUpdate() {
 
     // update the html button
     if (!window.tjs_upgrade.cooldown) {
-        u.innerHTML = `Upgrade (+${window.tjs_upgrade.points})`;
+        u.innerHTML = `${window.tjs_upgrade.points} 🪙`;
     } else if (window.tjs_upgrade.points) {
-        u.innerHTML = `Upgrade (+${window.tjs_upgrade.points}) ${window.tjs_upgrade.cooldown}s`;
+        u.innerHTML = `${window.tjs_upgrade.points} 🪙 (${window.tjs_upgrade.cooldown}s)`;
     } else {
-        u.innerHTML = `Upgrade ${window.tjs_upgrade.cooldown}s`;
+        u.innerHTML = `${window.tjs_upgrade.cooldown}s`;
     }
 
     return 1;
@@ -267,18 +267,29 @@ function doRotation() {
     window.tjs_camera.lookAt(tjs_camera_offset_x, 0, tjs_camera_offset_z);
 }
 
-function actionRestViewUP() {
-    window.tjs_radius = 60;
-    window.tjs_theta  = 0;   // horizontal angle
-    window.tjs_phi    = 0;   // vertical angle
-    doRotation();
+var tjs_view = 1;
+
+function actionSwitchView() {
+    tjs_view = !tjs_view;
+    if (tjs_view == 1) {
+        window.tjs_radius = 90;
+        window.tjs_theta  = Math.PI / 2;    // horizontal angle
+        window.tjs_phi    = 1.3;            // vertical angle
+        doRotation();
+    } else {
+        window.tjs_radius = 60;
+        window.tjs_theta  = 0;   // horizontal angle
+        window.tjs_phi    = 0;   // vertical angle
+        doRotation();
+    }
 }
 
-function actionRestViewFPS() {
-    window.tjs_radius = 90;
-    window.tjs_theta  = Math.PI / 2;    // horizontal angle
-    window.tjs_phi    = 1.3;            // vertical angle
-    doRotation();
+function actionZoomIN() {
+    setRadius3D(window.tjs_radius - 20);
+}
+
+function actionZoomOUT() {
+    setRadius3D(window.tjs_radius + 20);
 }
 
 window.tjs_isDragging = false;
@@ -314,16 +325,19 @@ window.tjs_container.onmousemove = function (e) {
     window.tjs_previous_mouse = { x: e.clientX, y: e.clientY };
 };
 
-// if mouse is inside the container and scrolling
-window.tjs_container.onwheel = function (e) {
-    window.tjs_radius -= e.deltaY * 0.1;
-    window.tjs_radius = Math.max(10, Math.min(500, window.tjs_radius));
+function setRadius3D(radius) {
+    window.tjs_radius = Math.max(10, Math.min(500, radius));
 
     window.tjs_camera.position.x = window.tjs_radius * Math.sin(window.tjs_phi) * Math.sin(window.tjs_theta) + tjs_camera_offset_x;
     window.tjs_camera.position.z = window.tjs_radius * Math.sin(window.tjs_phi) * Math.cos(window.tjs_theta) + tjs_camera_offset_z;
     window.tjs_camera.position.y = window.tjs_radius * Math.cos(window.tjs_phi);
 
     window.tjs_camera.lookAt(tjs_camera_offset_x, 0, tjs_camera_offset_z);
+}
+
+// if mouse is inside the container and scrolling
+window.tjs_container.onwheel = function (e) {
+    setRadius3D(window.tjs_radius - e.deltaY * 0.1);
 };
 
 window.tjs_container.addEventListener('wheel', function (event) {
@@ -352,7 +366,7 @@ function animate() {
 var tjs_camera_offset_x = 50;
 var tjs_camera_offset_z = 30;
 
-actionRestViewUP();
+actionSwitchView();
 animate();
 
 function setCommands3D(socket, socket2) {

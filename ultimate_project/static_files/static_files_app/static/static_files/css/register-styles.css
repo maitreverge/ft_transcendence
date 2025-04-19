@@ -1,0 +1,97 @@
+.register-picture {
+	background-image: url("https://dansylvain.github.io/pictures/register_pong.png");
+	background-position: center;
+	background-size: 80%;
+	/* Shows 80% of the original image size */
+	background-repeat: no-repeat;
+	min-height: 100%;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	border-radius: 20em;
+	overflow: hidden;
+}
+
+/* Custom validation styles for invalid email field */
+.is-invalid {
+	border-color: #dc3545 !important;
+	box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+/* Make password error more visible */
+#password-error {
+	color: #dc3545;
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
+}
+
+/* Make email error more visible */
+#email-error {
+	color: #dc3545;
+	font-size: 0.875rem;
+	margin-bottom: 0.5rem;
+}
+
+/* Style the password strength indicator */
+#password-strength-meter {
+	width: 100%;
+	background-color: #e9ecef;
+	border-radius: 4px;
+	margin-top: 5px;
+}
+
+#password-strength-text {
+	font-weight: 500;
+}
+
+.pong-background {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	overflow: hidden;
+	background-color: #e9a136;
+}
+
+.pong-icon {
+	position: absolute;
+	width: 50px;
+	height: 50px;
+	background-image: url("https://dansylvain.github.io/pictures/raquette_logo.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	pointer-events: none;
+	opacity: 0.6;
+	transform: scaleX(-1);
+	/* Flip the pong png on register */
+}
+
+.card {
+	position: relative;
+	z-index: 10;
+	background-color: rgba(255, 255, 255, 0.95);
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	border-radius: 1rem;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.295), 0 15px 20px rgba(0, 0, 0, 0.493);
+}
+
+/* Also make sure the card body doesn't override our settings */
+.card-body {
+	overflow: hidden;
+	border-radius: inherit;
+}
+
+/* And ensure the row doesn't break our radius */
+.card-body>.row {
+	overflow: hidden;
+	border-radius: inherit;
+}
+
+.background-color-form {
+	background-color: rgb(248, 133, 56);
+}
