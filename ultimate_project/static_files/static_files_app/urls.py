@@ -20,7 +20,6 @@ urlpatterns = [
     ),
     path("translations/<str:lang>.json", views.translations, name="translations"),
     path("register/", views.register, name="register"),
-    path("forgot-password/", views.forgotPassword, name="forgot-password"),
     path("login/", views.forgotPassword, name="login"),
     path("two-factor-auth/", views.twoFactorAuth, name="login"),
     path("error/<int:code>/", views.error, name="error"),
