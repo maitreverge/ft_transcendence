@@ -232,31 +232,28 @@ function displayPlayersInfos(data, pads)
 	if (!data.names)
 		return;
 	pads[3].innerText = data.score[0] + " | " + data.score[1];	
-	const leftName = document.getElementById("inst-left");
-	const rightName = document.getElementById("inst-right");
-	if (window.selfMatchId != window.matchId)
-	{
-		leftName.innerHTML = data.names[0];
-		rightName.innerHTML = data.names[1];		
-	}			
-	else if (window.player2Id != 0)
-	{			
-		leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-		rightName.innerHTML = data.names[1] + "<br> keys: enter / +";	
-	}			
+	const left = document.getElementById("inst-left");
+	const rght = document.getElementById("inst-right");
+	if (window.selfMatchId != window.matchId)	
+		assignInfos(left, rght, data.names[0], data.names[1]);				
+	else if (window.player2Id != 0)	
+		assignInfos(left, rght, data.names[0] + "<br> keys: ↑ / ↓",
+			data.names[1] + "<br> keys: enter / +");		
 	else if (data.plyIds)
 	{
-		if (window.playerId == data.plyIds[0])
-		{
-			leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-			rightName.innerHTML = data.names[1];
-		}
-		else
-		{
-			leftName.innerHTML = data.names[0];
-			rightName.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-		} 
+		if (window.playerId == data.plyIds[0])		
+			assignInfos(left, rght, data.names[0] + "<br> keys: ↑ / ↓",
+				data.names[1]);
+		else		
+			assignInfos(left, rght, data.names[0],
+				data.names[1] + "<br> keys: ↑ / ↓");	
 	}	
+}
+
+function assignInfos(left, rght, leftInfo, rghtInfo)
+{
+	left.innerHTML = leftInfo;
+	rght.innerHTML = rghtInfo;
 }
 
 function onMatchWsMessage(
@@ -431,13 +428,16 @@ function sequelInitMatchWs(socket)
 	const pads = [
 		document.getElementById("p1"),
 		document.getElementById("p2"),
-		document.getElementById("ball"),
-		document.getElementById("score"),		
+		document.getElementById("ball")		,		
 	];
-	const [waiting, endCont, end] = [		
+	const [waiting, endCont, end, left, rght, score] = [		
 		document.getElementById("waiting"),
 		document.getElementById("end-cont"),
-		document.getElementById("end")];	
+		document.getElementById("end"),
+		document.getElementById("inst-left"),
+		document.getElementById("inst-right"),
+		document.getElementById("score")
+	];	
 	let waitingState = ["waiting"];
 	requestAnimationFrame(()=>animate2D(pads));
 	const spec = document.getElementById("spec");
