@@ -27,6 +27,8 @@
 
 🟧 Auth_files refactor (merge Dan brach avant, le faire, puis Dan remerge ma brache apres)
 
+🟧 DELETE the fastAPI forwarning cookie print log
+
 
 
 ======================================= DONE =====================================
