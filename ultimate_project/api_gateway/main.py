@@ -229,7 +229,6 @@ async def reverse_proxy_handler(
     request: Request,
     serve_from_static: bool = False,
     static_service_name: str = None,
-    is_full_page: bool = False,
 ):
     """
      Proxies a request either directly to a target service container or through
@@ -311,12 +310,12 @@ async def reverse_proxy_handler(
             forwarded_headers["X-User-ID"] = str(user_info.get("user_id", ""))
             forwarded_headers["X-Username"] = user_info.get("username", "")
         # Debug log cookies
-        print("=" * 50 + "\n", flush=True)
-        print(f"🔑 Forwarding headers:", flush=True)
-        for key, value in forwarded_headers.items():
-            print(f"{key}: {value}", flush=True)
-        print("=" * 50 + "\n", flush=True)
-        print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
+        # print("=" * 50 + "\n", flush=True)
+        # print(f"🔑 Forwarding headers:", flush=True)
+        # for key, value in forwarded_headers.items():
+        #     print(f"{key}: {value}", flush=True)
+        # print("=" * 50 + "\n", flush=True)
+        # print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
         request_cookies = request.cookies
         request_method = request.method
         request_body = await request.body()
@@ -331,7 +330,7 @@ async def reverse_proxy_handler(
             print("\n\n========== RESPONSE DEBUG ==========\n", flush=True)
             print(f"🔗 Final URL: {final_url}", flush=True)
             print(f"🔄 Status Code: {response.status_code}", flush=True)
-            print(f"📩 Headers:\n{response.headers}", flush=True)
+            # print(f"📩 Headers:\n{response.headers}", flush=True)
             print("\n====================================\n", flush=True)
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
