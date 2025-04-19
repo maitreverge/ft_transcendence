@@ -384,6 +384,7 @@ function addNewEventListener(div)
 	div.addEventListener("dragover", div.dragOver);
 	div.addEventListener("drop", div.drop);
 }
+
 dropTrash();
 dropPlayersZone();
 

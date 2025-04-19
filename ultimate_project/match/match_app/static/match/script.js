@@ -5,6 +5,7 @@ function quitMatch()
 	cancelAnimationFrame(window.pongAnim);	
 	closeWebSocket(window.matchSocket);
 	closeWebSocket(window.matchSocket2);
+	removeKeyBoardEvent();
 	delMatchScript();
 	delMatch();
 }
@@ -36,6 +37,7 @@ function delMatch()
 
 function stopMatch(matchId)
 {	
+	removeKeyBoardEvent();
 	window.gameInProgress = false;
 	document.body.classList.remove("match-active");
 	// window.busyElement = null;
@@ -110,54 +112,121 @@ function stopMatch(matchId)
 		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
 }
 
-function setCommands(socket, socket2) {
-    const keysPressed = {}; // Stocker les touches enfoncées
-    let animationFrameId = null; // Stocke l'ID du requestAnimationFrame
-
-    function sendCommands() {
-        if (socket.readyState === WebSocket.OPEN) {
-            if (keysPressed["ArrowUp"]) {
-				
-                socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
-            }
-            if (keysPressed["ArrowDown"]) {
-				
-                socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
-            }
-        }
-
-        if (socket2 && socket2.readyState === WebSocket.OPEN) {
-            if (keysPressed["+"]) {
-                socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
-            }
-            if (keysPressed["Enter"]) {
-                socket2.send(JSON.stringify({ action: 'move', dir: 'down' }));
-            }
-        }
-
-        animationFrameId = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
-    }
-
-    document.addEventListener("keydown", function(event) {
-		// event.preventDefault();
-        if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
-            keysPressed[event.key] = true;
-        }
-        
-        if (!animationFrameId) { // Démarre l'animation seulement si elle n'est pas déjà en cours
-            animationFrameId = requestAnimationFrame(sendCommands);
-        }
-    });
-
-    document.addEventListener("keyup", function(event) {
-        delete keysPressed[event.key];
-
-        if (Object.keys(keysPressed).length === 0) {
-            cancelAnimationFrame(animationFrameId); //! penser a cancel aussi lanimation de la balle!!!!!!!!!!!!!!!!!!!!!!!!!!!1111111
-            animationFrameId = null;
-        }
-    });
+function removeKeyBoardEvent()
+{
+	document.removeEventListener("keydown", addKeyBoardEvent.keyDown);
+	document.removeEventListener("keyup", addKeyBoardEvent.keyUp);
 }
+
+function addKeyBoardEvent()
+{
+	addKeyBoardEvent.keysPressed = {};   
+	addKeyBoardEvent.keyBoardAnim = null;
+	addKeyBoardEvent.keyDown = (e)=> {
+		e.preventDefault();
+        if (!addKeyBoardEvent.keysPressed[e.key])
+            addKeyBoardEvent.keysPressed[e.key] = true;  
+        if (!addKeyBoardEvent.keyBoardAnim)
+            addKeyBoardEvent.keyBoardAnim = requestAnimationFrame(sendCommands);        
+	};
+	addKeyBoardEvent.keyUp = (e)=> {
+		e.preventDefault();
+        delete addKeyBoardEvent.keysPressed[e.key];
+        if (Object.keys(addKeyBoardEvent.keysPressed).length === 0)
+		{
+            cancelAnimationFrame(addKeyBoardEvent.keyBoardAnim);
+            addKeyBoardEvent.keyBoardAnim = null;
+        }
+    };
+	document.addEventListener("keydown", addKeyBoardEvent.keyDown);
+	document.addEventListener("keyup", addKeyBoardEvent.keyUp);
+}
+
+function sendCommands()
+{
+	const socket = window.matchSocket;
+	const socket2 = window.matchSocket2; 
+	if (socket.readyState === WebSocket.OPEN)
+	{
+		if (addKeyBoardEvent.keysPressed["ArrowUp"]) 				
+			socket.send(JSON.stringify({action: 'move', dir: 'up'}));
+		
+		if (addKeyBoardEvent.keysPressed["ArrowDown"]) 				
+			socket.send(JSON.stringify({action: 'move', dir: 'down'}));            
+	}
+	if (socket2 && socket2.readyState === WebSocket.OPEN)
+	{
+		if (addKeyBoardEvent.keysPressed["+"]) 
+			socket2.send(JSON.stringify({action: 'move', dir: 'up'}));            
+		if (addKeyBoardEvent.keysPressed["Enter"]) 
+			socket2.send(JSON.stringify({action: 'move', dir: 'down'}));            
+	}
+	addKeyBoardEvent.keyBoardAnim = requestAnimationFrame(sendCommands); 
+}
+
+// function setCommands(socket, socket2) {
+//     const keysPressed = {}; // Stocker les touches enfoncées
+//     let keyBoardAnim = null; // Stocke l'ID du requestAnimationFrame
+
+    // function sendCommands() {
+    //     if (socket.readyState === WebSocket.OPEN)
+	// 	{
+    //         if (keysPressed["ArrowUp"]) 				
+    //             socket.send(JSON.stringify({action: 'move', dir: 'up'}));
+            
+    //         if (keysPressed["ArrowDown"]) 				
+    //             socket.send(JSON.stringify({action: 'move', dir: 'down'}));            
+    //     }
+    //     if (socket2 && socket2.readyState === WebSocket.OPEN)
+	// 	{
+    //         if (keysPressed["+"]) 
+    //             socket2.send(JSON.stringify({action: 'move', dir: 'up'}));            
+    //         if (keysPressed["Enter"]) 
+    //             socket2.send(JSON.stringify({action: 'move', dir: 'down'}));            
+    //     }
+    //     keyBoardAnim = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
+    // }
+
+	// const keyDown = (e)=> {
+	// 	e.preDefault();
+    //     if (!keysPressed[e.key])
+    //         keysPressed[e.key] = true;  
+    //     if (!keyBoardAnim)
+    //         keyBoardAnim = requestAnimationFrame(sendCommands);        
+	// };
+	// const keyUp = (e)=> {
+	// 	e.preDefault();
+    //     delete keysPressed[e.key];
+    //     if (Object.keys(keysPressed).length === 0)
+	// 	{
+    //         cancelAnimationFrame(keyBoardAnim);
+    //         keyBoardAnim = null;
+    //     }
+    // };
+	// document.addEventListener("keydown", keyDown);
+	// document.addEventListener("keyup", keyUp);
+
+
+    // document.addEventListener("keydown", function(event) {
+	// 	event.preventDefault();
+    //     if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
+    //         keysPressed[event.key] = true;
+    //     }
+        
+    //     if (!keyBoardAnim) { // Démarre l'animation seulement si elle n'est pas déjà en cours
+    //         keyBoardAnim = requestAnimationFrame(sendCommands);
+    //     }
+    // });
+
+    // document.addEventListener("keyup", function(event) {
+    //     delete keysPressed[event.key];
+
+    //     if (Object.keys(keysPressed).length === 0) {
+    //         cancelAnimationFrame(keyBoardAnim); //! penser a cancel aussi lanimation de la balle!!!!!!!!!!!!!!!!!!!!!!!!!!!1111111
+    //         keyBoardAnim = null;
+    //     }
+    // });
+// }
 
 window.window.newTargetX = window.window.newTargetX || 0
 window.window.newTargetY = window.window.window.newTargetY || 0;
@@ -345,7 +414,7 @@ function sequelInitMatchWs(socket) {
 		event, pads, [waiting, endCont, end, spec], waitingState);	
 	if (window.player2Id != 0)
 		initSecPlayer();	
-	setCommands(socket, window.matchSocket2);
+	addKeyBoardEvent();
 }
 
 function initSecPlayer() {
