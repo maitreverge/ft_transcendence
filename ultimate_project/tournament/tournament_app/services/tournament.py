@@ -259,17 +259,17 @@ class Tournament():
         # Loops 3 times because there is 3 matches within a tournament
 		for i in range(3):
 			# `or 0` Handles `None` users
-			p1 = max(1, matches[i]["matchResult"]["p1Id"] or 0)
-			p2 = max(1, matches[i]["matchResult"]["p2Id"] or 0)
-			win = max(1, matches[i]["matchResult"]["winnerId"] or 0)
-			score_p1 = matches[i]["matchResult"]["score"][0]
-			score_p2 = matches[i]["matchResult"]["score"][1]
+			match_result = matches[i].get("matchResult", {})
+			p1 = max(1, match_result.get("p1Id", 0) or 0)
+			p2 = max(1, match_result.get("p2Id", 0) or 0)
+			win = max(1, match_result.get("winnerId", 0) or 0)
+			score = match_result.get("score", [0, 0])
+			score_p1 = score[0] if len(score) > 0 else 0
+			score_p2 = score[1] if len(score) > 1 else 0
+			start_time = parse_datetime(match_result.get("startTime")) if match_result.get("startTime") else None
+			end_time = parse_datetime(match_result.get("endTime")) if match_result.get("endTime") else None
 			tournament = tournament_id
-			# Compile each key in a JSON body
-			# HERE FOR MY DATA
-			start_time = parse_datetime(matches[i]["matchResult"]["startTime"])
-			end_time = parse_datetime(matches[i]["matchResult"]["endTime"])
-			
+   
 			data = {
 				"player1": p1,
 				"player2": p2,

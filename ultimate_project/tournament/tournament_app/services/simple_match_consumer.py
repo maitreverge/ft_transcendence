@@ -314,8 +314,14 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		win = max(1, match_results["winnerId"] or 0)
 		score_p1 = match_results["score"][0]
 		score_p2 = match_results["score"][1]
-		start_time = parse_datetime(match_results["startTime"])
-		end_time = parse_datetime(match_results["endTime"])
+		if (match_results["startTime"]):
+			start_time = parse_datetime(match_results["startTime"])
+		else:
+			start_time = None
+		if (match_results["endTime"]):
+			end_time = parse_datetime(match_results["endTime"])
+		else:
+			end_time = None
 	
 		data = {
             "player1": p1,
