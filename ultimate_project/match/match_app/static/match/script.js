@@ -41,75 +41,40 @@ function stopMatch(matchId)
 	cancelAnimationFrame(window.pongAnim);
 	window.gameInProgress = false;
 	document.body.classList.remove("match-active");
-	// window.busyElement = null;
-	// const input = document.getElementById("match-player-name");
-	// if (input)
-	// 	input.value = "";	
 	if (!matchId)
 	{
-		console.log("matchID EST NULLE");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);			
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
+		delMatchScript();	
 		return;
-	}
-		
-	if (window.selfMatchId == matchId)
+	}		
+	if (window.selfMatchId == matchId)	
+		sendStopMatch(matchId);	
+	else
+		document.getElementById('match').remove()		
+	if (window.matchSocket)
 	{
-		fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
+		setTimeout(()=> {	
+			if (window.matchSocket.readyState === WebSocket.OPEN)
+			{
+				console.log("je vais envoyer 42");
+				window.stopFlag = true
+				window.matchSocket.close(3666);
+				if (window.matchSocket2)
+					window.matchSocket2.close(3666);
+			}		
+		}, 1000);		
+	}
+	delMatchScript();
+}
+
+function sendStopMatch(matchId)
+{
+	fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
 		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
 			return response.text();
 		})
-		// .then(data => console.log(data))
 		.catch(error => console.log(error))
-	}
-	else
-		document.getElementById('match').remove()
-	console.log("YOUHOUHOUHOU");
-	// if (window.selfMatchId != window.matchId)
-	// {
-		console.log("jypigequeuedalle");
-		if (!window.matchSocket)
-			console.log("LE WEBSOCKET ETS NULL.");
-		else 
-		{
-			setTimeout(()=> {
-				console.log("je sais pas ce qu eje fou la");
-				if (window.matchSocket.readyState === WebSocket.OPEN)
-				{
-					console.log("je vais envoyer 42");
-					window.stopFlag = true
-					window.matchSocket.close(3666);
-					if (window.matchSocket2)
-						window.matchSocket2.close(3666);
-				} 
-				else 
-				{
-					console.log("La WebSocket était déjà fermée.");
-				}
-				console.log("je nai pas plante");
-			}, 1000);
-			// console.log("je sais pas ce qu eje fou la");
-			// if (window.matchSocket.readyState === WebSocket.OPEN)
-			// {
-			// 	console.log("je vais envoyer 42");
-			// 	window.stopFlag = true
-			// 	window.matchSocket.close(3666);
-			// 	if (window.matchSocket2)
-			// 		window.matchSocket2.close(3666);
-			// } 
-			// else 
-			// {
-			// 	console.log("La WebSocket était déjà fermée.");
-			// }
-			// console.log("je nai pas plante");
-		}
-		console.log("toujours vivant");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);			
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
 }
 
 function removeKeyBoardEvent()
