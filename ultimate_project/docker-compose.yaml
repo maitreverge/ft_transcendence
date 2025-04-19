@@ -27,7 +27,7 @@ services:
       - "8000:80"
     volumes:
       - staticvol:/usr/share/nginx/static
-      # !   :ro => Read Only
+      # !   :ro => Both keys built through volumes on Read Only
       - ./nginx/envv/local.crt:/etc/nginx/ssl/local.crt:ro
       - ./nginx/envv/local.key:/etc/nginx/ssl/local.key:ro
     networks:
