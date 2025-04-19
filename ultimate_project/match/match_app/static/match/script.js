@@ -3,20 +3,21 @@ function quitMatch()
 {
 	document.body.classList.remove("match-active");
 	cancelAnimationFrame(window.pongAnim);	
-	closeWebSocket(window.matchSocket);
-	closeWebSocket(window.matchSocket2);
+	closeMatchWebSockets()
 	removeKeyBoardEvent();
 	delMatchScript();
 	delMatch();
 }
 
-function closeWebSocket(socket)
+function closeMatchWebSockets()
 {
-	if (socket && socket.readyState === WebSocket.OPEN)
-	{		
-		window.stopFlag = true
-		socket.close(3666);		
-	} 
+	window.stopFlag = true;
+	const closeMatchWebSocket = (socket)=> {
+		if (socket && socket.readyState === WebSocket.OPEN)			
+			socket.close(3666);		
+	}
+	closeMatchWebSocket(window.matchSocket);
+	closeMatchWebSocket(window.matchSocket2);
 }
 
 function delMatchScript()
@@ -27,42 +28,28 @@ function delMatchScript()
 
 function delMatch()
 {
-	const matchDiv = document.getElementById('match');
-    if (matchDiv)
-		matchDiv.remove();
+	document.getElementById('match')?.remove();    
     const rulesOverlay = document.getElementById('rules-overlay');
-    if (rulesOverlay)
-		rulesOverlay.style.display = 'none';
+	if (rulesOverlay)
+		rulesOverlay.style.display = 'none';	 
 }
 
 function stopMatch(matchId)
 {	
-	removeKeyBoardEvent();
-	cancelAnimationFrame(window.pongAnim);
-	window.gameInProgress = false;
-	document.body.classList.remove("match-active");
 	if (!matchId)
 	{
 		delMatchScript();	
 		return;
 	}		
+	removeKeyBoardEvent();
+	cancelAnimationFrame(window.pongAnim);
+	window.gameInProgress = false;
+	window.gameStartTimestamp = undefined; 
+	document.body.classList.remove("match-active");
 	if (window.selfMatchId == matchId)	
 		sendStopMatch(matchId);	
-	else
-		document.getElementById('match').remove()		
-	if (window.matchSocket)
-	{
-		setTimeout(()=> {	
-			if (window.matchSocket.readyState === WebSocket.OPEN)
-			{
-				console.log("je vais envoyer 42");
-				window.stopFlag = true
-				window.matchSocket.close(3666);
-				if (window.matchSocket2)
-					window.matchSocket2.close(3666);
-			}		
-		}, 1000);		
-	}
+	setTimeout(closeMatchWebSockets, 1000);			
+	delMatch();	
 	delMatchScript();
 }
 
