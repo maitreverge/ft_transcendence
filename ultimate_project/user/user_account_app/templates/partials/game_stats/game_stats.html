@@ -8,7 +8,7 @@
     >
       <!-- Overview Button -->
       <a
-        class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center px-4"
+        class="btn btn-sm rounded-pill d-flex align-items-center justify-content-center px-4 py-2"
         href="/account/game-stats/overview/"
         hx-target="#stats-content"
         hx-swap="innerHTML scroll:false"
@@ -20,7 +20,7 @@
 
       <!-- Match History Button -->
       <a
-        class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center px-4"
+        class="btn btn-sm rounded-pill d-flex align-items-center justify-content-center px-4"
         href="/account/game-stats/match-history/"
         hx-target="#stats-content"
         hx-swap="innerHTML"
@@ -38,3 +38,17 @@
     {{ page_stats|safe }}
   </div>
 </div>
+
+<style>
+  #button-game-stats .btn {
+    color: var(--text-color);
+    background-color: var(--background-color);
+  }
+
+  #button-game-stats .btn:hover,
+  .btn:focus {
+    background-color: var(--title-color) !important;
+    color: white !important;
+    border-color: var(--title-color) !important;
+  }
+</style>

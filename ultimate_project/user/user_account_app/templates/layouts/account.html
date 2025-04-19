@@ -6,6 +6,7 @@
       <nav
         class="sidebar d-none col-sm-4 col-md-3 col-lg-3 col-xl-2 d-sm-block shadow-sm m-0 p-0 d-sm-flex flex-column "
         style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;"
+        id="sidebar-account"
       >
         <div class="sidebar-sticky text-center">
           <!-- Account Settings Title -->
@@ -20,7 +21,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-profile"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/profile/"
                   hx-target="#account-content"
@@ -35,7 +36,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-stats"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/game-stats/overview/"
                   hx-target="#account-content"
@@ -50,7 +51,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-security"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/security/"
                   hx-target="#account-content"
@@ -65,7 +66,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-conf"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/confidentiality/"
                   hx-target="#account-content"
@@ -151,5 +152,7 @@
     height: 100%;
     background-color: var(--text-color) !important;
   }
+
+  
 
 </style>
