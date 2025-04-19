@@ -25,7 +25,9 @@
 
 🟧 ADMIN DOIT RESTER ID 1
 
-🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py` 
+🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py`
+
+🟧 Auth_files refactor (merge Dan brach avant, le faire, puis Dan remerge ma brache apres)
 
 
 
