@@ -334,7 +334,6 @@ class SimpleConsumer(AsyncWebsocketConsumer):
         }
 		path = "api/match/"
 		await sdb(path, data)
-		print(f"WINNER {win}", flush=True)
 		# Update Player 1 stats
 		data_p1 = {
 			"is_won": 1 if win == p1 else 0,
