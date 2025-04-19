@@ -11,13 +11,21 @@
         <div class="card-body">
           <!-- Success Message -->
           {% if success_message %}
-          <div class="alert alert-success text-center" id="successMessage" role="alert">
+          <div
+            class="alert alert-success text-center"
+            id="successMessage"
+            role="alert"
+          >
             ✅ {{ success_message }}
           </div>
           {% endif %}
           <!-- Error Message -->
           {% if error_message %}
-          <div class="alert alert-danger text-center" id="errorMessage" role="alert">
+          <div
+            class="alert alert-danger text-center"
+            id="errorMessage"
+            role="alert"
+          >
             ❌ {{ error_message }}
           </div>
           {% endif %}
@@ -54,18 +62,27 @@
                 />
               </div>
             </div>
-            <!-- Username -->
-            <div class="form-group row">
+            <!-- Username with Info Icon -->
+            <div class="form-group row align-items-center">
               <div class="col-sm-6 mb-3 mb-sm-0">
-                <label for="username">Username</label>
-                <input
-                  type="text"
-                  class="form-control form-control-user"
-                  id="username"
-                  name="username"
-                  placeholder="Username"
-                  value="{{ user.username|default:'' }}"
-                />
+                <label for="username" class="mb-1">Username</label>
+                <div class="d-flex align-items-center">
+                  <input
+                    type="text"
+                    class="form-control form-control-user readonly-grid-input"
+                    id="username"
+                    name="username"
+                    value="{{ user.username|default:'' }}"
+                    readonly
+                  />
+                  <i
+                    class="fas fa-info-circle text-primary ml-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="This username is locked. To change it, go to the Confidentiality section in your account settings."
+                    style="cursor: pointer"
+                  ></i>
+                </div>
               </div>
             </div>
             <!-- Email Address -->
@@ -109,6 +126,37 @@
       }, 2000);
     }
   }
-  document.body.addEventListener('htmx:afterSwap', handleMessageTimeout);
+  document.body.addEventListener("htmx:afterSwap", handleMessageTimeout);
 </script>
+
+<!-- Info bubble -->
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+
+<style>
+  .readonly-grid-input {
+    background-image: 
+      repeating-linear-gradient(
+        45deg,
+        #ccc,
+        #ccc 4px,
+        transparent 4px,
+        transparent 12px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        #ccc,
+        #ccc 4px,
+        transparent 4px,
+        transparent 12px
+      );
+    background-color: #d6d6d6;
+    background-size: 16px 16px;
+    color: #6c757d;
+    cursor: not-allowed;
+  }
+</style>
 
