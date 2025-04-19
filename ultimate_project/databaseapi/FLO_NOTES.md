@@ -23,16 +23,13 @@
 
 🟧 ADMIN DOIT RESTER ID 1
 
-🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py`
-
-🟧 Auth_files refactor (merge Dan brach avant, le faire, puis Dan remerge ma brache apres)
-
-🟧 DELETE the fastAPI forwarning cookie print log
-
-
-
 ======================================= DONE =====================================
 
+
+
+✅ Disable SwaggerUI in `docs_url=None,`  ===>  `main.py`
+
+✅ Auth_files refactor (merge Dan brach avant, le faire, puis Dan remerge ma brache apres)
 
 ✅ Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
 

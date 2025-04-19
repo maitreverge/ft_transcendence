@@ -15,9 +15,6 @@ from auth_validators import is_authenticated
 from csrf_tokens import csrf_validator
 
 
-# from fastapi.middleware.cors import CORSMiddleware
-
-
 # =================== 🚀 FastAPI Application Setup for API Gateway 🚀 ============
 
 app = FastAPI(
@@ -192,20 +189,6 @@ async def jwt_refresh_middleware(request: Request, call_next):
     return response
 
 
-# This middleware is used to debug incoming cookies in FastAPI.
-# It prints the incoming cookies to the console for debugging purposes.
-# [Middleware n°4]
-# @app.middleware("http")
-# async def debug_cookies_middleware(request: Request, call_next):
-#     print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
-#     response = await call_next(request)
-#     if "set-cookie" in response.headers:
-#         set_cookie_headers = response.headers.getlist("set-cookie")
-#         for cookie in set_cookie_headers:
-#             print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
-#     return response
-
-
 # This middleware suppress nginx warning about different timestamps between fastAPI and ngninx
 @app.middleware("http")
 async def clean_duplicate_headers_middleware(request: Request, call_next):
@@ -223,7 +206,7 @@ async def clean_duplicate_headers_middleware(request: Request, call_next):
     return response
 
 
-# ===== ⚠️ Exception Handling ⚠️ =====
+# =========================== ⚠️ Exception Handling ⚠️ ===========================
 
 # When an exception of type StarletteHTTPException is raised during
 # the processing of a request, the custom exception handler
@@ -374,11 +357,9 @@ async def reverse_proxy_handler(
 
 # ============================ 🏠 REDIRECT TO HOME 🏠 ============================
 
-
 @app.get("/")
 async def redirect_to_home():
     return RedirectResponse(url="/home/")
-
 
 # ========================= 🏆 Tournament Route Setup 🏆 =========================
 
@@ -684,9 +665,6 @@ async def verify_2fa_login(request: Request):
 
     # Process the 2FA verification and generate JWT
     return await auth.verify_2fa_and_login(request, response, username, token)
-
-
-
 
 
 @app.api_route("/{path:path}", methods=["GET"])
