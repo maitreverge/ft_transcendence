@@ -50,19 +50,19 @@
     //     if (matchDiv) matchDiv.remove(); 
     // }, 3000);
     
-   ">EXIT</button>
+   ">GIVE UP</button>
     <button onclick="quitMatch()">BACK</button>
 </div>
 <script>
     document.body.classList.add("match-active");
 
-    window.gameInProgress = true;
+    // window.gameInProgress = true;
 
-    document.addEventListener('keydown', function(e) {
-        if (window.gameInProgress && ['ArrowUp', 'ArrowDown'].includes(e.key)) {
-            e.preventDefault();
-        }
-    });
+    // document.addEventListener('keydown', function(e) {
+    //     if (window.gameInProgress && ['ArrowUp', 'ArrowDown'].includes(e.key)) {
+    //         e.preventDefault();
+    //     }
+    // });
 
     window.addEventListener("DOMContentLoaded", () => {
     let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");

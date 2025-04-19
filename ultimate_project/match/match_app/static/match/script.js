@@ -2,9 +2,10 @@
 function quitMatch()
 {
 	document.body.classList.remove("match-active");
-	cancelAnimationFrame(window.pongAnim);	
-	closeMatchWebSockets()
+	window.gameStartTimestamp = undefined; 	
 	removeKeyBoardEvent();
+	cancelAnimationFrame(window.pongAnim);
+	closeMatchWebSockets()
 	delMatchScript();
 	delMatch();
 }
@@ -34,23 +35,29 @@ function delMatch()
 		rulesOverlay.style.display = 'none';	 
 }
 
+function displayGiveUp(visible)
+{
+	const giveUp = document.getElementById("quit-match-button");
+	if (giveUp)
+	{
+		if (visible)
+			giveUp.style.display = "block";
+		else
+			giveUp.style.display = "none";	
+	}	
+}
+
 function stopMatch(matchId)
 {	
-	if (!matchId)
-	{
-		delMatchScript();	
-		return;
-	}		
+	if (!matchId)	
+		return delMatchScript();			
 	removeKeyBoardEvent();
-	cancelAnimationFrame(window.pongAnim);
-	window.gameInProgress = false;
-	window.gameStartTimestamp = undefined; 
-	document.body.classList.remove("match-active");
+	cancelAnimationFrame(window.pongAnim);	
+	displayGiveUp(false);		
+	window.gameStartTimestamp = undefined; 	
 	if (window.selfMatchId == matchId)	
 		sendStopMatch(matchId);	
-	setTimeout(closeMatchWebSockets, 1000);			
-	delMatch();	
-	delMatchScript();
+	setTimeout(closeMatchWebSockets, 1000);		
 }
 
 function sendStopMatch(matchId)
@@ -336,13 +343,19 @@ function setWaiting(data, waiting, waitingState)
 }
 
 function setSpec(spec)
-{
+{	
 	if (spec)
 	{
 		if (window.selfMatchId != window.matchId)
+		{
 			spec.style.display = "block";
+			displayGiveUp(false);			
+		}
 		else
+		{
 			spec.style.display = "none";
+			displayGiveUp(true);		
+		}
 	}
 }
 
