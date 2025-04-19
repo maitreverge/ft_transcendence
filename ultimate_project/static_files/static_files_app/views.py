@@ -6,7 +6,6 @@ import os
 import static_files.settings as settings
 from django.http import JsonResponse
 
-@never_cache
 def index(request):
     username = request.headers.get("X-Username")
     SERVER_IP = os.getenv('HOST_IP', '127.0.0.42')
@@ -16,7 +15,6 @@ def index(request):
     obj = {"username": username, "request": request}
     return render(request, "index.html", obj)
 
-@never_cache
 def login(request):
     obj = {"username": "", "page": "login.html"}
     return render(request, "index.html", obj)
@@ -33,7 +31,6 @@ def home(request):
     obj = {"username": username, "page": "partials/home.html", "host_ip": os.getenv('HOST_IP')}
     return render(request, "index.html", obj)
 
-@never_cache
 def reload_template(request):
     
     """
@@ -67,7 +64,6 @@ def reload_template(request):
     return render(request, "index.html", context)
 
 
-@never_cache
 def match_simple_template(request, user_id):
     url = f"http://tournament:8001/tournament/simple-match/{user_id}/"
     page_html = requests.get(url).text
@@ -86,7 +82,6 @@ def match_simple_template(request, user_id):
     )
 
 
-@never_cache
 def tournament_template(request, user_id):
     url = f"http://tournament:8001/tournament/tournament/{user_id}/"
     page_html = requests.get(url).text
@@ -105,7 +100,6 @@ def tournament_template(request, user_id):
     )
 
 
-@never_cache
 def translations(request, lang):
     try:
         file_path = os.path.join(
@@ -121,7 +115,6 @@ def translations(request, lang):
         return JsonResponse({"error": "File not found"}, status=404)
 
 
-@never_cache
 def register(request):
     username = request.headers.get("X-Username") or request.session.get("username")
 
@@ -129,7 +122,6 @@ def register(request):
     return render(request, "index.html", obj)
 
 
-@never_cache
 def twoFactorAuth(request):
     username = request.headers.get("X-Username") or request.session.get("username")
 
@@ -144,7 +136,6 @@ def twoFactorAuth(request):
     return render(request, "index.html", obj)
 
 @csrf_exempt    
-@never_cache
 def error(request, code=404):
     username = request.session.get("username")
     obj = {"username": username, "status_code": code, "page": "error.html"}
