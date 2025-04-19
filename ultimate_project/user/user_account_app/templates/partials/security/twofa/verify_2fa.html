@@ -26,8 +26,9 @@
           >
             {% csrf_token %}
             <div class="form-group">
-              <label>Enter the 6-digit code from your authenticator app:</label>
+              <label for="otp_input">Enter the 6-digit code from your authenticator app:</label>
               <input
+                id="otp_input"
                 type="text"
                 name="token"
                 maxlength="6"
