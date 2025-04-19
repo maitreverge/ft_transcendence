@@ -16,7 +16,7 @@ function closeMatchWebSockets()
 	const closeMatchWebSocket = (socket)=> {
 		if (socket && socket.readyState === WebSocket.OPEN)			
 			socket.close(3666);		
-	}
+	};
 	closeMatchWebSocket(window.matchSocket);
 	closeMatchWebSocket(window.matchSocket2);
 }
@@ -359,8 +359,70 @@ function setSpec(spec)
 	}
 }
 
-function sequelInitMatchWs(socket) {
+function initSecPlayer()
+{
+	if (window.player2Id != 0)
+	{
+		window.matchSocket2 = new WebSocket(
+			`wss://${window.pidom}/ws/match/${window.matchId}/` +
+			`?playerId=${window.player2Id}`);
+		window.matchSocket2.onopen = () => {
+			console.log("Connexion Match établie 2nd Player😊");
+		};
+		window.matchSocket2.onclose = (event) => {
+			console.log("Connexion Match disconnected 😈 2nd Player");
+		};	
+	}
+}
 
+function initDomain()
+{
+	if (window.location.hostname === "localhost" ||
+		window.location.hostname === "127.0.0.1")
+        window.pidom = "localhost:8443";
+	else
+		window.pidom = window.location.hostname + ":8443";
+}
+
+function closeMatchWssOnEnter()
+{
+	const socket = window.matchSocket;
+	const socket2 = window.matchSocket2;	
+
+	const closeMatchWsOnEnter = (socket)=> {
+		if (socket && socket.readyState === WebSocket.OPEN && window.antiLoop)	
+			return socket.close(), true;
+		return false;			
+	};
+	const ret = closeMatchWsOnEnter(socket); 
+	const ret2 = closeMatchWsOnEnter(socket2);
+	return (ret || ret2); 
+}
+
+function initMatchWs()
+{
+    initDomain();
+	if (closeMatchWssOnEnter())
+		return;    
+	window.antiLoop = true;
+    window.matchSocket = new WebSocket(
+        `wss://${window.pidom}/ws/match/${window.matchId}/` +
+        `?playerId=${window.playerId}`);
+	window.matchSocket.onopen = () => {
+		console.log("Connexion Match établie 😊");
+	};
+	window.matchSocket.onclose = (event) => {	
+		console.log("Connexion Match disconnected 😈");		
+		window.antiLoop = false;	
+		if (event.code !== 3000 && !window.stopFlag)		
+			initMatchWs();	
+		window.stopFlag = false;
+	};
+	sequelInitMatchWs(window.matchSocket);
+}
+
+function sequelInitMatchWs(socket)
+{
 	const pads = [
 		document.getElementById("p1"),
 		document.getElementById("p2"),
@@ -376,66 +438,7 @@ function sequelInitMatchWs(socket) {
 	const spec = document.getElementById("spec");
 	setSpec(spec);
 	socket.onmessage = event => onMatchWsMessage(
-		event, pads, [waiting, endCont, end, spec], waitingState);	
-	if (window.player2Id != 0)
-		initSecPlayer();	
+		event, pads, [waiting, endCont, end, spec], waitingState);		
+	initSecPlayer();	
 	addKeyBoardEvent();
-}
-
-function initSecPlayer() {
-
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        window.pidom = "localhost:8443";
-	else
-		window.pidom = window.location.hostname + ":8443";
-
-    window.matchSocket2 = new WebSocket(
-        `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${window.player2Id}`);
-	window.matchSocket2.onopen = () => {
-		console.log("Connexion Match établie 2nd Player😊");
-	};
-	window.matchSocket2.onclose = (event) => {
-		console.log("Connexion Match disconnected 😈 2nd Player");
-	};	
-}
-
-function initMatchWs() {
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        window.pidom = "localhost:8443";
-	else
-		window.pidom = window.location.hostname + ":8443";
-
-//si je viens du debut je sui sclosé (et je reviens par boucle) si je viens de onclse je continu normal
-	console.log("INIT MATCH 😊😊😊");
-	console.log("STOP: " + window.stopFlag);
-	console.log("ANTILOPP: " + window.antiLoop);
-	if (window.matchSocket && window.antiLoop)
-		return window.matchSocket.close();
-	if (window.matchSocket2 && window.antiLoop)
-		return window.matchSocket2.close();
-    // if (window.matchSocket)
-	// 	window.matchSocket.close();
-	window.antiLoop = true;
-    window.matchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${window.playerId}`);
-	window.matchSocket.onopen = () => {
-		console.log("Connexion Match établie 😊");
-	};
-	window.matchSocket.onclose = (event) => {	
-		console.log("Connexion Match disconnected 😈");		
-		window.antiLoop = false;
-		console.log("CODE: " + event.code);
-		console.log("STOP: " + window.stopFlag);
-		if (event.code !== 3000 && !window.stopFlag)
-		{			
-			console.log("codepas42");
-			initMatchWs();	
-		}
-		else
-			console.log("code42");
-		window.stopFlag = false;
-	};
-	sequelInitMatchWs(window.matchSocket);
 }
