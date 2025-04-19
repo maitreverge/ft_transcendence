@@ -54,8 +54,8 @@ async def match_players_update(request: HttpRequest):
 @csrf_exempt
 async def match_result(request: HttpRequest):
     
-    print("MATCH RESULT", flush=True)
     data = json.loads(request.body.decode("utf-8"))   
+    print(f"\033[31mMATCH RESULT {data}\033[0m", flush=True)
     await sm_cs.SimpleConsumer.match_result(data)
     await t_cs.TournamentConsumer.match_result(data)
     return JsonResponse({"status": "succes"})

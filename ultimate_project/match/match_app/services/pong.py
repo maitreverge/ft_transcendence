@@ -35,7 +35,7 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
-		self.start_time = "" 
+		self.start_time = self.get_time() # ! GET TIME MAYBE FAULTY HERE
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
@@ -151,22 +151,27 @@ class Pong:
 
 	async def run_game(self):
 		
+		if self.state == State.waiting and self.start_flag:
+			await self.launch_pause(self.point_delay)
 		if not self.start_flag:
 			self.start_flag = True
 			self.start_time = self.get_time()
-			await self.send_start(3)
-			self.watch_cat_task = self.myEventLoop.create_task(
-				self.watch_cat(self.start_delay))
-		self.x_players = self.players.copy()
+			await self.launch_pause(self.start_delay)	
 		self.state = State.running
+		self.x_players = self.players.copy()
 		self.winner = None
 		self.wall_flag = True
-
 		self.pad_commands(self.players)	
 		if not self.pause:	
 			await self.scores()
 			await self.bounces()										
 			self.move_ball()
+
+	async def launch_pause(self, delay):
+
+		await self.send_start(delay - 1)
+		self.watch_cat_task = self.myEventLoop.create_task(
+			self.watch_cat(delay))
 
 	def get_time(self):
 		return timezone.localtime(timezone.now()).isoformat(timespec='seconds')
@@ -224,12 +229,13 @@ class Pong:
 					data = {'p1': False, 'p2': False}	
 				else:
 					data = await response.json()
-				print(f"PLAYERS CHECKING ALIVE: {data}", flush=True)
+				print(f"PLAYERS CHECKING ALIVE: {data} {self.id}", flush=True)
 				await self.alives_players_strategy(data)
 
 	async def alives_players_strategy(self, data):
 
 		alives_players = (data.get("p1"), data.get("p2"))
+		print(f"\033[31m VOILA LES TYPES {type(alives_players[0])} {type(alives_players[1])} \033[0m]", flush=True)
 		if all(alives_players):
 			return
 		if not any(alives_players):

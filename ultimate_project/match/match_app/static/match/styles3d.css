@@ -11,40 +11,6 @@
     z-index: 300;
 }
 
-#p1 {
-	/* position: absolute;
-    top:-20%; */
-	left:5%;
-    background-image: url('pal_left.png');
-	background-size: 100% 100%;
-	background-position: center;
-	background-repeat: no-repeat;
-   
-	/* transform: translate(-50%, -50%); */
-}
-
-#p2 {
-	/* position: absolute;
-    top:calc(-20% + 50%); */
-	/* top:-20%; */
-	right:5%;
-    background-image: url('pal_right.png');
-	background-size: 100% 100%;
-	background-position: center;
-	background-repeat: no-repeat;
-
-	/* transform: translate(-50%, -50%); */
-}
-
-#p3 {
-	position: absolute;
-	top:0%;
-	width: 100%;
-	height: 40%;
-	background-color: rgb(133, 134, 149);
-	/* transform: translate(-50%, -50%); */
-}
-
 #waiting {
 	position:absolute;
 	top:50%;
@@ -69,32 +35,11 @@
     /* display:block !important; */
 }
 
-.end-cont {
-}
-
 #end {
 	position:absolute;
 	top:50%;
 	left:50%;
 	transform: translate(-50%, -50%);
-    z-index: 3000;
-
-}
-
-#ball {
-
-	position: absolute;
-	top:-1%;
-	left:-1%;
-	/* transform: translate(-50%, -50%); */
-	/* width:2vw;
-	height:2vw; */
-	border-radius: 50%;
-    background-color: blue;
-	background-image: url('https://dansylvain.github.io/pictures/tennisBall_sm.png');
-	background-size: 100% 100%;
-	background-position: center;
-    z-index: 400;
 }
 
 #quit-match-button {
@@ -107,25 +52,14 @@
     cursor: pointer;
 }
 
-
 #match {
-    aspect-ratio: 4 / 3;
 	position: fixed;
-    top: calc((70vh - (70vh / 4 * 3)) / 2);
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(90vw, calc(70vh * 4 / 3));
-    min-width: min(500px, 90vw);
-    /* max-width: 500px; */
-    /* background-color: rgba(30, 30, 30, 1); */
+	top:0;
+	left:0;
+	width:100vw;
+	height:100vh;
+    background-color: rgba(30, 30, 30, 1);
     z-index: 200;
-    background-image: url('https://dansylvain.github.io/pictures/noPanicRusted.webp');
-    background-size: cover;
-
-}
-
-#match.small-size {
-    max-width: 700px;
 }
 
 #rules-overlay {
@@ -134,7 +68,6 @@
     left: 0;
     width: 100vw;
     height: 15vh;
-    background-color: rgba(30, 30, 30, 1);
     color: white;
     z-index: 999;
     display: flex;
@@ -143,27 +76,6 @@
     align-items: center;
     padding: 10px;
     z-index: 500;
-}
-
-/* commanetaire */
-body.match-active::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(30, 30, 30, 1); /* Couleur de fond autour du match */
-    z-index: 100; /* en dessous de #match */
-    opacity: 1;
-}
-
-.match-sylvain-gif {
-	overflow: hidden;
-    /* background-image: url(''); */
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
 }
 
 #inst-left {
@@ -195,6 +107,7 @@ body.match-active::before {
                 0px 0px 30px rgba(255, 165, 0, 0.5);
     text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
     animation: glow 1.5s infinite alternate, colorShift 3s infinite alternate;
+    z-index: 1000;
 }
 
 @keyframes glow {
@@ -215,7 +128,7 @@ body.match-active::before {
         text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
     }
     100% {
-        color: #00aaff; /* Bleu électrique */
+        color: #00aaff;
         border-color: #00aaff;
         text-shadow: 2px 2px 5px rgba(0, 140, 255, 0.7);
     }
@@ -223,17 +136,18 @@ body.match-active::before {
 
 #spec {
     position: fixed;
-    top: 0; /* ou autre valeur si tu veux le descendre un peu */
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
     z-index: 300;
 }
-#spec img
-{
+
+#spec img {
     border-radius: 0 0 15px 15px;
     border: solid; 
     border-width: 0.5px;
 }
+
 /* From Uiverse.io by mrhyddenn */
 .loader {
     opacity: 0;
@@ -249,7 +163,6 @@ body.match-active::before {
     justify-content: center;
     align-items: center;
     transform: translate(-50%, -50%);
-    z-index: 500;
   }
 
   .circle {
@@ -290,8 +203,6 @@ body.match-active::before {
     display: none !important;
 }
 
-
-
 #waiting {
     height: 100px;
     width:100px;
@@ -303,37 +214,38 @@ body.match-active::before {
     z-index: 1000;
     color: transparent;
     animation: blink 1s infinite;
-
 }
 
-#match:has(#waiting:not(.no-waiting)) {
-	background-image: url('https://dansylvain.github.io/pictures/tyler.jpg');
-}
-
-/* Animation clignotante */
+/* animation clignotante */
 @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
 
-/* RESIZE BUTTON */
-
-#resize-button {
-    position: absolute;
-    bottom: 10px;  /* Placer le bouton en bas */
-    left: 50%;     /* Centrer horizontalement */
-    transform: translateX(-50%); /* Ajuste le bouton pour qu'il soit exactement centré */
-    z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
+#scene-container {
+    width: 80%;
+    height: 80%;
+    margin: 0 auto;
+    border: 2px solid white;
 }
 
-#resize-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.config_buttons {
+    background-color: #4CAF50; 
+}
+
+#center_buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#countdown3d {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    color: white;
+    font-size: 3em;
 }

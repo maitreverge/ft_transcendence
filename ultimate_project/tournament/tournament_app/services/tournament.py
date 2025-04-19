@@ -137,7 +137,7 @@ class Tournament():
 			await self.send_all_players(match_result)
 			tournament_result = self.get_tournament_result(match_result)
 			await self.send_all_players(tournament_result)
-			await self.send_db(tournament_result)
+			# await self.send_db(tournament_result)
 			asyncio.create_task(self.end_remove())
 			self.launch = False
 
@@ -217,8 +217,8 @@ class Tournament():
 	async def end_remove(self):
 
 		print(f"END REMOVE", flush=True)
-		await asyncio.sleep(30)
-		await self.del_tournament()
+		# await asyncio.sleep(30)
+		# await self.del_tournament()
 
 	def get_next_players(self):
 
@@ -332,7 +332,7 @@ class Tournament():
 		id_tournament = await self.extract_last_tournament_id()
 		all_matches = tournament_result["matchs"]
 		
-		# await self.save_tournament_matches(all_matches, id_tournament)
+		await self.save_tournament_matches(all_matches, id_tournament)
 		
 	async def match_players_update(self, match_update):
 
