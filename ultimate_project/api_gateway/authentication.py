@@ -153,17 +153,15 @@ async def verify_2fa_and_login(
 
     # Try to get username from form directly as fallback
     if not username or not token:
-        print("❌ One or more required fields missing", flush=True)
+        
         # Extract form data once instead of twice
         form_data = await request.form()
 
         if not username:
             username = form_data.get("username")
-            print(f"🔑 Extracted username from form: {username}", flush=True)
 
         if not token:
             token = form_data.get("token")
-            print(f"🔑 Extracted token from form: {token}", flush=True)
 
         # If still missing after fallback, return error
         if not username or not token:
@@ -182,10 +180,7 @@ async def verify_2fa_and_login(
         user_response = requests.get(get_user_url)
 
         if user_response.status_code != 200:
-            print(
-                f"❌ Failed to retrieve user information: {user_response.status_code}",
-                flush=True,
-            )
+            
             return JSONResponse(
                 content={
                     "success": False,
@@ -195,7 +190,6 @@ async def verify_2fa_and_login(
             )
 
         user_data = user_response.json()
-        print(f"🔍 User data response: {user_data}", flush=True)
 
         # Check if we got a list of users or a paginated response
         if isinstance(user_data, list) and len(user_data) > 0:
@@ -212,21 +206,16 @@ async def verify_2fa_and_login(
                 content={"success": False, "message": "User not found"}, status_code=404
             )
 
-        # print(f"🔍 User object: {user}", flush=True)
-
         # Verify the 2FA token
         secret = user.get("_two_fa_secret")
         if not secret:
-            print(f"❌ 2FA secret not found for user", flush=True)
             return JSONResponse(
                 content={"success": False, "message": "2FA not set up properly"},
                 status_code=400,
             )
 
-        print(f"🔑 Using secret to verify token", flush=True)
         totp = pyotp.TOTP(secret)
         if not totp.verify(token):
-            print(f"❌ Invalid 2FA code", flush=True)
             return JSONResponse(
                 content={"success": False, "message": "Invalid 2FA code"},
                 status_code=401,
@@ -262,17 +251,12 @@ async def verify_2fa_and_login(
         access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
         refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
-        # print(f"2FA Verified. Access Token: {access_token[:20]}...", flush=True)
-        # print(f"2FA Verified. Refresh Token: {refresh_token[:20]}...", flush=True)
-
         # Create a JSONResponse with success message
         json_response = JSONResponse(
             content={"success": True, "message": "2FA verification successful"}
         )
 
         generate_cookies(json_response, access_token, refresh_token)
-
-        # print(f"🔒 Response headers: {dict(json_response.headers)}", flush=True)
 
         return json_response
 
@@ -456,7 +440,6 @@ async def register_fastAPI(
         access_token = jwt.encode(access_payload, SECRET_JWT_KEY, algorithm="HS256")
         refresh_token = jwt.encode(refresh_payload, SECRET_JWT_KEY, algorithm="HS256")
 
-        # Debug logging
         print(f"Registration successful for {username}", flush=True)
 
         # Create the response object

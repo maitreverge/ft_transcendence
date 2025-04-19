@@ -11,7 +11,7 @@ def csrf_validator(request):
         print("❌ CSRF token is invalid ❌", flush=True)
         return False
 
-    print("✅ CSRF token is valid ✅", flush=True)
+    # print("✅ CSRF token is valid ✅", flush=True)
     return True
 
 
