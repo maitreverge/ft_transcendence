@@ -1,7 +1,13 @@
+{% load static %}
 <footer class="sticky-footer">
-    <div class="container my-auto">
+    <div class="container my-auto" style="position: relative;">
         <div class="copyright text-center my-auto">
             <span>Copyright &copy; Pong <sup>42</sup></span>
         </div>
+    </div>
+    <div style="position: absolute; bottom: 0; right: 0;">
+        remote game url: <br>
+        <span style="display: block; text-align: right;">http://{{ host_ip }}/</span>
+              
     </div>
 </footer>

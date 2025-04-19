@@ -1,6 +1,6 @@
   // this function is part of the history logic
   window.addEventListener("beforeunload", () => {
-    console.log("URL sauvegardée avec history.state et sessionStorage");
+    // console.log("URL sauvegardée avec history.state et sessionStorage");
     stopMatch();
     let currentURL = window.location.href;
     history.replaceState({ lastVisitedPage: currentURL }, "");
@@ -20,9 +20,10 @@
 
   function closeWebsockets() {
 
-    console.log("########### closing websockets #######");
+    // console.log("########### closing websockets #######");
     if (typeof closeSimpleMatchSocket === "function") closeSimpleMatchSocket();
     if (typeof closeTournamentSocket === "function") closeTournamentSocket();
+    
   }
 
   closeWebsockets();

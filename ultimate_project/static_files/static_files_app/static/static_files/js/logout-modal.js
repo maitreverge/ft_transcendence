@@ -1,11 +1,10 @@
 function logoutUser() {
-    // Create a fetch request to logout endpoint
     fetch("/auth/logout/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "same-origin", // Important for cookies
+      credentials: "same-origin",
     }).then((response) => {
       htmx
         .ajax("GET", "/login/", {
