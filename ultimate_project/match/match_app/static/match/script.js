@@ -2,20 +2,23 @@
 function quitMatch()
 {
 	document.body.classList.remove("match-active");
-	cancelAnimationFrame(window.pongAnim);	
-	closeWebSocket(window.matchSocket);
-	closeWebSocket(window.matchSocket2);
+	window.gameStartTimestamp = undefined; 	
+	removeKeyBoardEvent();
+	cancelAnimationFrame(window.pongAnim);
+	closeMatchWebSockets()
 	delMatchScript();
 	delMatch();
 }
 
-function closeWebSocket(socket)
+function closeMatchWebSockets()
 {
-	if (socket && socket.readyState === WebSocket.OPEN)
-	{		
-		window.stopFlag = true
-		socket.close(3666);		
-	} 
+	window.stopFlag = true;
+	const closeMatchWebSocket = (socket)=> {
+		if (socket && socket.readyState === WebSocket.OPEN)			
+			socket.close(3666);		
+	};
+	closeMatchWebSocket(window.matchSocket);
+	closeMatchWebSocket(window.matchSocket2);
 }
 
 function delMatchScript()
@@ -26,150 +29,175 @@ function delMatchScript()
 
 function delMatch()
 {
-	const matchDiv = document.getElementById('match');
-    if (matchDiv)
-		matchDiv.remove();
+	document.getElementById('match')?.remove();    
     const rulesOverlay = document.getElementById('rules-overlay');
-    if (rulesOverlay)
-		rulesOverlay.style.display = 'none';
+	if (rulesOverlay)
+		rulesOverlay.style.display = 'none';	 
+}
+
+function displayGiveUp(visible)
+{
+	const giveUp = document.getElementById("quit-match-button");
+	if (giveUp)
+	{
+		if (visible)
+			giveUp.style.display = "block";
+		else
+			giveUp.style.display = "none";	
+	}	
 }
 
 function stopMatch(matchId)
 {	
-	window.gameInProgress = false;
-	document.body.classList.remove("match-active");
-	// window.busyElement = null;
-	cancelAnimationFrame(window.pongAnim);
-	// const input = document.getElementById("match-player-name");
-	// if (input)
-	// 	input.value = "";	
-	if (!matchId)
-	{
-		console.log("matchID EST NULLE");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);			
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-		return;
-	}
-		
-	if (window.selfMatchId == matchId)
-	{
-		fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
+	if (!matchId)	
+		return delMatchScript();			
+	removeKeyBoardEvent();
+	cancelAnimationFrame(window.pongAnim);	
+	displayGiveUp(false);		
+	window.gameStartTimestamp = undefined; 	
+	if (window.selfMatchId == matchId)	
+		sendStopMatch(matchId);	
+	setTimeout(closeMatchWebSockets, 1000);		
+}
+
+function sendStopMatch(matchId)
+{
+	fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
 		.then(response => {
 			if (!response.ok) 
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
 			return response.text();
 		})
-		// .then(data => console.log(data))
 		.catch(error => console.log(error))
-	}
-	else
-		document.getElementById('match').remove()
-	console.log("YOUHOUHOUHOU");
-	// if (window.selfMatchId != window.matchId)
-	// {
-		console.log("jypigequeuedalle");
-		if (!window.matchSocket)
-			console.log("LE WEBSOCKET ETS NULL.");
-		else 
+}
+
+function removeKeyBoardEvent()
+{
+	document.removeEventListener("keydown", addKeyBoardEvent.keyDown);
+	document.removeEventListener("keyup", addKeyBoardEvent.keyUp);
+}
+
+function addKeyBoardEvent()
+{
+	addKeyBoardEvent.keysPressed = {};   
+	addKeyBoardEvent.keyBoardAnim = null;
+	addKeyBoardEvent.keyDown = (e)=> {
+		e.preventDefault();
+        if (!addKeyBoardEvent.keysPressed[e.key])
+            addKeyBoardEvent.keysPressed[e.key] = true;  
+        if (!addKeyBoardEvent.keyBoardAnim)
+            addKeyBoardEvent.keyBoardAnim = requestAnimationFrame(sendCommands);        
+	};
+	addKeyBoardEvent.keyUp = (e)=> {
+		e.preventDefault();
+        delete addKeyBoardEvent.keysPressed[e.key];
+        if (Object.keys(addKeyBoardEvent.keysPressed).length === 0)
 		{
-			setTimeout(()=> {
-				console.log("je sais pas ce qu eje fou la");
-				if (window.matchSocket.readyState === WebSocket.OPEN)
-				{
-					console.log("je vais envoyer 42");
-					window.stopFlag = true
-					window.matchSocket.close(3666);
-					if (window.matchSocket2)
-						window.matchSocket2.close(3666);
-				} 
-				else 
-				{
-					console.log("La WebSocket était déjà fermée.");
-				}
-				console.log("je nai pas plante");
-			}, 1000);
-			// console.log("je sais pas ce qu eje fou la");
-			// if (window.matchSocket.readyState === WebSocket.OPEN)
-			// {
-			// 	console.log("je vais envoyer 42");
-			// 	window.stopFlag = true
-			// 	window.matchSocket.close(3666);
-			// 	if (window.matchSocket2)
-			// 		window.matchSocket2.close(3666);
-			// } 
-			// else 
-			// {
-			// 	console.log("La WebSocket était déjà fermée.");
-			// }
-			// console.log("je nai pas plante");
-		}
-		console.log("toujours vivant");
-		const oldScripts = document.querySelectorAll("script.match-script");
-		console.log("olscript len", oldScripts.length);			
-		oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
+            cancelAnimationFrame(addKeyBoardEvent.keyBoardAnim);
+            addKeyBoardEvent.keyBoardAnim = null;
+        }
+    };
+	document.addEventListener("keydown", addKeyBoardEvent.keyDown);
+	document.addEventListener("keyup", addKeyBoardEvent.keyUp);
 }
 
-function setCommands(socket, socket2) {
-    const keysPressed = {}; // Stocker les touches enfoncées
-    let animationFrameId = null; // Stocke l'ID du requestAnimationFrame
+function sendCommands()
+{
+	const socket = window.matchSocket;
+	const socket2 = window.matchSocket2; 
+	if (socket.readyState === WebSocket.OPEN)
+	{
+		if (addKeyBoardEvent.keysPressed["ArrowUp"]) 				
+			socket.send(JSON.stringify({action: 'move', dir: 'up'}));
+		
+		if (addKeyBoardEvent.keysPressed["ArrowDown"]) 				
+			socket.send(JSON.stringify({action: 'move', dir: 'down'}));            
+	}
+	if (socket2 && socket2.readyState === WebSocket.OPEN)
+	{
+		if (addKeyBoardEvent.keysPressed["+"]) 
+			socket2.send(JSON.stringify({action: 'move', dir: 'up'}));            
+		if (addKeyBoardEvent.keysPressed["Enter"]) 
+			socket2.send(JSON.stringify({action: 'move', dir: 'down'}));            
+	}
+	addKeyBoardEvent.keyBoardAnim = requestAnimationFrame(sendCommands); 
+}
 
-    function sendCommands() {
-        if (socket.readyState === WebSocket.OPEN) {
-            if (keysPressed["ArrowUp"]) {
-				
-                socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
-            }
-            if (keysPressed["ArrowDown"]) {
-				
-                socket.send(JSON.stringify({ action: 'move', dir: 'down' }));
-            }
-        }
+// function setCommands(socket, socket2) {
+//     const keysPressed = {}; // Stocker les touches enfoncées
+//     let keyBoardAnim = null; // Stocke l'ID du requestAnimationFrame
 
-        if (socket2 && socket2.readyState === WebSocket.OPEN) {
-            if (keysPressed["+"]) {
-                socket2.send(JSON.stringify({ action: 'move', dir: 'up' }));
-            }
-            if (keysPressed["Enter"]) {
-                socket2.send(JSON.stringify({ action: 'move', dir: 'down' }));
-            }
-        }
+    // function sendCommands() {
+    //     if (socket.readyState === WebSocket.OPEN)
+	// 	{
+    //         if (keysPressed["ArrowUp"]) 				
+    //             socket.send(JSON.stringify({action: 'move', dir: 'up'}));
+            
+    //         if (keysPressed["ArrowDown"]) 				
+    //             socket.send(JSON.stringify({action: 'move', dir: 'down'}));            
+    //     }
+    //     if (socket2 && socket2.readyState === WebSocket.OPEN)
+	// 	{
+    //         if (keysPressed["+"]) 
+    //             socket2.send(JSON.stringify({action: 'move', dir: 'up'}));            
+    //         if (keysPressed["Enter"]) 
+    //             socket2.send(JSON.stringify({action: 'move', dir: 'down'}));            
+    //     }
+    //     keyBoardAnim = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
+    // }
 
-        animationFrameId = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
-    }
+	// const keyDown = (e)=> {
+	// 	e.preDefault();
+    //     if (!keysPressed[e.key])
+    //         keysPressed[e.key] = true;  
+    //     if (!keyBoardAnim)
+    //         keyBoardAnim = requestAnimationFrame(sendCommands);        
+	// };
+	// const keyUp = (e)=> {
+	// 	e.preDefault();
+    //     delete keysPressed[e.key];
+    //     if (Object.keys(keysPressed).length === 0)
+	// 	{
+    //         cancelAnimationFrame(keyBoardAnim);
+    //         keyBoardAnim = null;
+    //     }
+    // };
+	// document.addEventListener("keydown", keyDown);
+	// document.addEventListener("keyup", keyUp);
 
-    document.addEventListener("keydown", function(event) {
-		// event.preventDefault();
-        if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
-            keysPressed[event.key] = true;
-        }
+
+    // document.addEventListener("keydown", function(event) {
+	// 	event.preventDefault();
+    //     if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
+    //         keysPressed[event.key] = true;
+    //     }
         
-        if (!animationFrameId) { // Démarre l'animation seulement si elle n'est pas déjà en cours
-            animationFrameId = requestAnimationFrame(sendCommands);
-        }
-    });
+    //     if (!keyBoardAnim) { // Démarre l'animation seulement si elle n'est pas déjà en cours
+    //         keyBoardAnim = requestAnimationFrame(sendCommands);
+    //     }
+    // });
 
-    document.addEventListener("keyup", function(event) {
-        delete keysPressed[event.key];
+    // document.addEventListener("keyup", function(event) {
+    //     delete keysPressed[event.key];
 
-        if (Object.keys(keysPressed).length === 0) {
-            cancelAnimationFrame(animationFrameId); //! penser a cancel aussi lanimation de la balle!!!!!!!!!!!!!!!!!!!!!!!!!!!1111111
-            animationFrameId = null;
-        }
-    });
-}
+    //     if (Object.keys(keysPressed).length === 0) {
+    //         cancelAnimationFrame(keyBoardAnim); //! penser a cancel aussi lanimation de la balle!!!!!!!!!!!!!!!!!!!!!!!!!!!1111111
+    //         keyBoardAnim = null;
+    //     }
+    // });
+// }
 
 window.window.newTargetX = window.window.newTargetX || 0
 window.window.newTargetY = window.window.window.newTargetY || 0;
 
 window.targetPads = window.targetPads || [0, 0];
 
-function animate(pads) {
+function animate2D(pads) {
 
 	pads[2].style.transform = `translate(${window.newTargetX}px, ${window.newTargetY}px)`;
 	pads[0].style.transform = `translateY(${targetPads[0]}px)`;
 	pads[1].style.transform = `translateY(${targetPads[1]}px)`;
-	window.pongAnim = requestAnimationFrame(() => animate(pads));
+	window.pongAnim = requestAnimationFrame(() => animate2D(pads));
 }
 
 function startCountdown(delay)
@@ -315,18 +343,86 @@ function setWaiting(data, waiting, waitingState)
 }
 
 function setSpec(spec)
-{
+{	
 	if (spec)
 	{
 		if (window.selfMatchId != window.matchId)
+		{
 			spec.style.display = "block";
+			displayGiveUp(false);			
+		}
 		else
+		{
 			spec.style.display = "none";
+			displayGiveUp(true);		
+		}
 	}
 }
 
-function sequelInitMatchWs(socket) {
+function initSecPlayer()
+{
+	if (window.player2Id != 0)
+	{
+		window.matchSocket2 = new WebSocket(
+			`wss://${window.pidom}/ws/match/${window.matchId}/` +
+			`?playerId=${window.player2Id}`);
+		window.matchSocket2.onopen = () => {
+			console.log("Connexion Match établie 2nd Player😊");
+		};
+		window.matchSocket2.onclose = (event) => {
+			console.log("Connexion Match disconnected 😈 2nd Player");
+		};	
+	}
+}
 
+function initDomain()
+{
+	if (window.location.hostname === "localhost" ||
+		window.location.hostname === "127.0.0.1")
+        window.pidom = "localhost:8443";
+	else
+		window.pidom = window.location.hostname + ":8443";
+}
+
+function closeMatchWssOnEnter()
+{
+	const socket = window.matchSocket;
+	const socket2 = window.matchSocket2;	
+
+	const closeMatchWsOnEnter = (socket)=> {
+		if (socket && socket.readyState === WebSocket.OPEN && window.antiLoop)	
+			return socket.close(), true;
+		return false;			
+	};
+	const ret = closeMatchWsOnEnter(socket); 
+	const ret2 = closeMatchWsOnEnter(socket2);
+	return (ret || ret2); 
+}
+
+function initMatchWs()
+{
+    initDomain();
+	if (closeMatchWssOnEnter())
+		return;    
+	window.antiLoop = true;
+    window.matchSocket = new WebSocket(
+        `wss://${window.pidom}/ws/match/${window.matchId}/` +
+        `?playerId=${window.playerId}`);
+	window.matchSocket.onopen = () => {
+		console.log("Connexion Match établie 😊");
+	};
+	window.matchSocket.onclose = (event) => {	
+		console.log("Connexion Match disconnected 😈");		
+		window.antiLoop = false;	
+		if (event.code !== 3000 && !window.stopFlag)		
+			initMatchWs();	
+		window.stopFlag = false;
+	};
+	sequelInitMatchWs(window.matchSocket);
+}
+
+function sequelInitMatchWs(socket)
+{
 	const pads = [
 		document.getElementById("p1"),
 		document.getElementById("p2"),
@@ -338,70 +434,11 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("end-cont"),
 		document.getElementById("end")];	
 	let waitingState = ["waiting"];
-	requestAnimationFrame(()=>animate(pads));
+	requestAnimationFrame(()=>animate2D(pads));
 	const spec = document.getElementById("spec");
 	setSpec(spec);
 	socket.onmessage = event => onMatchWsMessage(
-		event, pads, [waiting, endCont, end, spec], waitingState);	
-	if (window.player2Id != 0)
-		initSecPlayer();	
-	setCommands(socket, window.matchSocket2);
-}
-
-function initSecPlayer() {
-
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        window.pidom = "localhost:8443";
-	else
-		window.pidom = window.location.hostname + ":8443";
-
-    window.matchSocket2 = new WebSocket(
-        `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${window.player2Id}`);
-	window.matchSocket2.onopen = () => {
-		console.log("Connexion Match établie 2nd Player😊");
-	};
-	window.matchSocket2.onclose = (event) => {
-		console.log("Connexion Match disconnected 😈 2nd Player");
-	};	
-}
-
-function initMatchWs() {
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        window.pidom = "localhost:8443";
-	else
-		window.pidom = window.location.hostname + ":8443";
-
-//si je viens du debut je sui sclosé (et je reviens par boucle) si je viens de onclse je continu normal
-	console.log("INIT MATCH 😊😊😊");
-	console.log("STOP: " + window.stopFlag);
-	console.log("ANTILOPP: " + window.antiLoop);
-	if (window.matchSocket && window.antiLoop)
-		return window.matchSocket.close();
-	if (window.matchSocket2 && window.antiLoop)
-		return window.matchSocket2.close();
-    // if (window.matchSocket)
-	// 	window.matchSocket.close();
-	window.antiLoop = true;
-    window.matchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${window.playerId}`);
-	window.matchSocket.onopen = () => {
-		console.log("Connexion Match établie 😊");
-	};
-	window.matchSocket.onclose = (event) => {	
-		console.log("Connexion Match disconnected 😈");		
-		window.antiLoop = false;
-		console.log("CODE: " + event.code);
-		console.log("STOP: " + window.stopFlag);
-		if (event.code !== 3000 && !window.stopFlag)
-		{			
-			console.log("codepas42");
-			initMatchWs();	
-		}
-		else
-			console.log("code42");
-		window.stopFlag = false;
-	};
-	sequelInitMatchWs(window.matchSocket);
+		event, pads, [waiting, endCont, end, spec], waitingState);		
+	initSecPlayer();	
+	addKeyBoardEvent();
 }
