@@ -130,20 +130,10 @@
                                         class="font-weight-bold  nav-link btn btn-outline-primary btn-sm rounded-pill w-100 d-flex align-items-center justify-content-center sidebar-btn">
                                         <span class="mr-2">2D</span>
                                         <label for="dim" class="switch">
-                                            <input type="checkbox" id="dim" class="mb-0" hidden>
-                                            <span class="slider mb-0"></span>
+                                            <input type="checkbox" id="dim" hidden>
+                                            <span class="slider"></span>
                                         </label>
-                                        <!-- <span class="ml-2">3D</span> -->
-                                        <span class="ml-2 cube-wrapper">
-											<div class="cube">
-											  <div class="face front">3D</div>
-											  <div class="face back"></div>
-											  <div class="face right"></div>
-											  <div class="face left"></div>
-											  <div class="face top"></div>
-											  <div class="face bottom"></div>
-											</div>
-										  </span>
+                                        <span class="ml-2">3D</span>
                                     </a>
                                 </div>
 
@@ -187,88 +177,6 @@
         }
     });
 </script>
-
-<style>
-	.cube-wrapper {
-	  display: inline-block;
-	  perspective: 500px;
-	  width: 2.5em;
-	  height: 2em;
-	  margin: 0 5px;
-	}
-	
-	.cube {
-	  width: 100%;
-	  height: 100%;
-	  position: relative;
-	  transform-style: preserve-3d;
-	  transform: rotateX(15deg) rotateY(15deg);
-	  animation: cube-rotate 4s ease-in-out infinite;
-	}
-	
-	.face {
-	  position: absolute;
-	  width: 100%;
-	  height: 100%;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  font-weight: bold;
-	  color: white;
-	  border-radius: 2px;
-	}
-	
-	.front {
-	  background: #2d88ff;
-	  transform: translateZ(1em);
-	}
-	
-	.back {
-	  background: #2d88ff;
-	  transform: translateZ(-1em) rotateY(180deg);
-	  opacity: 0.8;
-	}
-	
-	.right {
-	  background: #0e4fa7;
-	  transform: translateX(1em) rotateY(90deg);
-	  width: 2em;
-	  left: -1em;
-	  opacity: 0.9;
-	}
-	
-	.left {
-	  background: #0e4fa7;
-	  transform: translateX(-1em) rotateY(-90deg);
-	  width: 2em;
-	  right: -1em;
-	  opacity: 0.9;
-	}
-	
-	.top {
-	  background: #3a94ff;
-	  transform: translateY(-1em) rotateX(90deg);
-	  height: 2em;
-	  top: 1em;
-	  opacity: 0.85;
-	}
-	
-	.bottom {
-	  background: #1a6ed1;
-	  transform: translateY(1em) rotateX(-90deg);
-	  height: 2em;
-	  bottom: 1em;
-	  opacity: 0.85;
-	}
-	
-	@keyframes cube-rotate {
-	  0% { transform: rotateX(15deg) rotateY(15deg); }
-	  25% { transform: rotateX(25deg) rotateY(45deg); }
-	  50% { transform: rotateX(15deg) rotateY(75deg); }
-	  75% { transform: rotateX(5deg) rotateY(45deg); }
-	  100% { transform: rotateX(15deg) rotateY(15deg); }
-	}
-  </style>
 <!-- Add FontAwesome Icons -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'tournament/tuto-overlay.js' %}"></script>
