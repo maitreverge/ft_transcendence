@@ -418,7 +418,8 @@ function initMatchWs()
 function matchWsDisconnectStrategy(event)
 {
 	console.log("Connexion Match disconnected 😈");	
-		
+	
+	removeKeyBoardEvent();
 	window.antiLoop = false;	
 	if (event.code !== 3000 && !window.stopFlag)		
 		initMatchWs();	

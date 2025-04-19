@@ -153,13 +153,14 @@ async def horz_bounce(self, cmp, limit, pad_y_idx, dir):
 		self.ball[0] += bounce_vect[0]				
 		self.ball[1] += bounce_vect[1]
 		self.has_wall = True
-		# await asyncio.sleep(self.bounce_delay)
+		self.touch_test()
 		self.speed_test("horz bounce", 31)	
-		await self.bounce_send_state()
+		await asyncio.sleep(self.bounce_delay)
+		# await self.bounce_send_state()
 		mag = self.get_magnitude(self.vect) 				
 		y = (self.ball[1] - self.pads_y[pad_y_idx]) / (self.pad_height / 2) 
+		y = max(min(y, 0.9), -0.9)
 		y = y * mag
-		# y = max(min(y, 0.9), -0.9)
 		x = (self.vect[0] ** 2) + (self.vect[1] ** 2) - (y ** 2)								
 		x = math.sqrt(abs(x))	
 
@@ -189,6 +190,13 @@ def is_overflow(self, new_vect):
 	if not self.y_top  <= self.ball[1] + new_vect[1] <= self.y_bot:
 		return True
 	return False
+
+def touch_test(self):
+	
+	print(f"\033[37m{self.ball[0]}\033[0m" , flush=True)
+	if self.ball[0] != self.x_left_pad and self.ball[0] != self.x_rght_pad: 
+		print(f"\033[35m touch test horz: {self.ball[0]}\033[0m" , flush=True)
+		
 
 def speed_test(self, place, color):	
 
@@ -292,12 +300,12 @@ async def bounce(self, limit):
 	self.ball[0] += bounce_vect[0]				
 	self.ball[1] += bounce_vect[1]
 	self.has_wall = True
-	# await asyncio.sleep(self.bounce_delay)
 	# if not self.x_left_pad <= self.ball[0] <= self.x_rght_pad  or \
 	# 	not self.ball_hray <= self.ball[1] <= 100 - self.ball_hray:
 	# 	print(f"\033[32m ds VERT bounce {self.ball} \033[0m", flush=True)
 	self.speed_test("vert bounce", 32)	
-	await self.bounce_send_state()
+	await asyncio.sleep(self.bounce_delay)
+	# await self.bounce_send_state()
 	self.vect[1] = -self.vect[1]		
 	self.wall_flag = False
 
