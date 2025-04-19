@@ -22,7 +22,7 @@ app = FastAPI(
     description="This API Gateway routes requests to various microservices. \
         Define endpoints to get any data here :)",
     version="1.0.0",
-    # docs_url=None, # ! Comment this line to enable access to SwaggerUI
+    docs_url=None, # ! Comment this line to enable access to SwaggerUI
 )
 
 # ======================= 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 =================
