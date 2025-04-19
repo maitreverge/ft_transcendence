@@ -4,7 +4,7 @@ function quitMatch()
 	document.body.classList.remove("match-active");
 	window.gameStartTimestamp = undefined; 	
 	removeKeyBoardEvent();
-	cancelAnimationFrame(window.pongAnim);
+	cancelMatchAnimations();
 	manualCloseMatchWss();
 	delMatchScript();
 	delMatch();
@@ -47,12 +47,19 @@ function displayGiveUp(visible)
 	}	
 }
 
+function cancelMatchAnimations()
+{
+	cancelAnimationFrame(window.pongAnim);
+	cancelAnimationFrame(addKeyBoardEvent.keyBoardAnim);
+	cancelAnimationFrame(window.countDownAnim);
+}
+
 function stopMatch(matchId)
 {	
 	if (!matchId)	
 		return delMatchScript();			
 	removeKeyBoardEvent();
-	cancelAnimationFrame(window.pongAnim);	
+	cancelMatchAnimations();
 	displayGiveUp(false);		
 	window.gameStartTimestamp = undefined; 	
 	if (window.selfMatchId == matchId)	
@@ -123,86 +130,9 @@ function sendCommands()
 	addKeyBoardEvent.keyBoardAnim = requestAnimationFrame(sendCommands); 
 }
 
-// function setCommands(socket, socket2) {
-//     const keysPressed = {}; // Stocker les touches enfoncées
-//     let keyBoardAnim = null; // Stocke l'ID du requestAnimationFrame
-
-    // function sendCommands() {
-    //     if (socket.readyState === WebSocket.OPEN)
-	// 	{
-    //         if (keysPressed["ArrowUp"]) 				
-    //             socket.send(JSON.stringify({action: 'move', dir: 'up'}));
-            
-    //         if (keysPressed["ArrowDown"]) 				
-    //             socket.send(JSON.stringify({action: 'move', dir: 'down'}));            
-    //     }
-    //     if (socket2 && socket2.readyState === WebSocket.OPEN)
-	// 	{
-    //         if (keysPressed["+"]) 
-    //             socket2.send(JSON.stringify({action: 'move', dir: 'up'}));            
-    //         if (keysPressed["Enter"]) 
-    //             socket2.send(JSON.stringify({action: 'move', dir: 'down'}));            
-    //     }
-    //     keyBoardAnim = requestAnimationFrame(sendCommands); // Appelle la fonction en boucle
-    // }
-
-	// const keyDown = (e)=> {
-	// 	e.preDefault();
-    //     if (!keysPressed[e.key])
-    //         keysPressed[e.key] = true;  
-    //     if (!keyBoardAnim)
-    //         keyBoardAnim = requestAnimationFrame(sendCommands);        
-	// };
-	// const keyUp = (e)=> {
-	// 	e.preDefault();
-    //     delete keysPressed[e.key];
-    //     if (Object.keys(keysPressed).length === 0)
-	// 	{
-    //         cancelAnimationFrame(keyBoardAnim);
-    //         keyBoardAnim = null;
-    //     }
-    // };
-	// document.addEventListener("keydown", keyDown);
-	// document.addEventListener("keyup", keyUp);
-
-
-    // document.addEventListener("keydown", function(event) {
-	// 	event.preventDefault();
-    //     if (!keysPressed[event.key]) { // Empêche d'ajouter plusieurs fois la même touche
-    //         keysPressed[event.key] = true;
-    //     }
-        
-    //     if (!keyBoardAnim) { // Démarre l'animation seulement si elle n'est pas déjà en cours
-    //         keyBoardAnim = requestAnimationFrame(sendCommands);
-    //     }
-    // });
-
-    // document.addEventListener("keyup", function(event) {
-    //     delete keysPressed[event.key];
-
-    //     if (Object.keys(keysPressed).length === 0) {
-    //         cancelAnimationFrame(keyBoardAnim); //! penser a cancel aussi lanimation de la balle!!!!!!!!!!!!!!!!!!!!!!!!!!!1111111
-    //         keyBoardAnim = null;
-    //     }
-    // });
-// }
-
-window.window.newTargetX = window.window.newTargetX || 0
-window.window.newTargetY = window.window.window.newTargetY || 0;
-
-window.targetPads = window.targetPads || [0, 0];
-
-function animate2D(pads) {
-
-	pads[2].style.transform = `translate(${window.newTargetX}px, ${window.newTargetY}px)`;
-	pads[0].style.transform = `translateY(${targetPads[0]}px)`;
-	pads[1].style.transform = `translateY(${targetPads[1]}px)`;
-	window.pongAnim = requestAnimationFrame(() => animate2D(pads));
-}
-
 function startCountdown(delay)
 {
-	loaderElement = document.querySelector(".loader");
+	const loaderElement = document.querySelector(".loader");
 	if (loaderElement)
 		loaderElement.style.opacity = "1";
 
@@ -215,10 +145,10 @@ function startCountdown(delay)
 
         if (remaining > 0) {
             countdownEl.textContent = remaining;
-            requestAnimationFrame(updateCountdown);
+            window.countDownAnim = requestAnimationFrame(updateCountdown);
         } else if (remaining > -1) {
             countdownEl.textContent = "GO!";
-            requestAnimationFrame(updateCountdown);
+            window.countDownAnim = requestAnimationFrame(updateCountdown);
         } else {
             loaderElement.style.opacity = "0";
             window.gameStartTimestamp = undefined;
@@ -227,11 +157,11 @@ function startCountdown(delay)
 	updateCountdown();
 }
 
-function displayPlayersInfos(data, pads)
+function displayPlayersInfos(data, score)
 {
 	if (!data.names)
 		return;
-	pads[3].innerText = data.score[0] + " | " + data.score[1];	
+	score.innerText = data.score[0] + " | " + data.score[1];	
 	const left = document.getElementById("inst-left");
 	const rght = document.getElementById("inst-right");
 	if (window.selfMatchId != window.matchId)	
@@ -256,28 +186,28 @@ function assignInfos(left, rght, leftInfo, rghtInfo)
 	rght.innerHTML = rghtInfo;
 }
 
-function onMatchWsMessage(
-	event, pads, [waiting, endCont, end, spec], waitingState) 
+function movePads(data, pads, match)
+{
+	const matchRect = match.getBoundingClientRect();
+
+	pads.ball.style.top = -(matchRect.width / 100);
+	pads.ball.style.width = (matchRect.width / 100) * 2;
+	pads.ball.style.height = (matchRect.height / 100) * 2;		       
+	window.targetPads[0] = data.yp1 * (matchRect.height / 100);
+	window.targetPads[1] = data.yp2 * (matchRect.height / 100);
+	window.targetBall[0] = data.ball[0] * (matchRect.width / 100);
+	window.targetBall[1] = data.ball[1] * (matchRect.height / 100);	
+}
+
+function onMatchWsMessage(event, pads, elements, waitingState) 
 {	
 	const data = JSON.parse(event.data);
-	startDelay(data);
-	displayPlayersInfos(data, pads);	
-	setEnd(data, endCont, end, spec);
-	setWaiting(data, waiting, waitingState);
-	match = document.getElementById("match");
-	const matchRect = match.getBoundingClientRect();
-	const ballRect = pads[2].getBoundingClientRect();
-	pads[2].style.top = -(matchRect.width / 100);
-	pads[2].style.width = (matchRect.width / 100) * 2;
-	pads[2].style.height = (matchRect.height / 100) * 2;	
-    if (pads[0] && pads[1] && data.yp1 !== undefined && data.yp2 !== undefined)
-	{        
-		window.targetPads[0] = data.yp1 * (matchRect.height / 100);
-		window.targetPads[1] = data.yp2 * (matchRect.height / 100);
 
-		window.newTargetX = data.ball[0] * (matchRect.width / 100);
-		window.newTargetY = data.ball[1] * (matchRect.height / 100);	
-    }
+	startDelay(data);
+	displayPlayersInfos(data, elements.score);	
+	setEnd(data, elements.endCont, elements.end, elements.spec);
+	setWaiting(data, elements.waiting, waitingState);
+	movePads(data, pads, elements.match);
 }
 
 function startDelay(data)
@@ -340,19 +270,30 @@ function setWaiting(data, waiting, waitingState)
 
 function setSpec(spec)
 {	
-	if (spec)
+	if (!spec)
+		return;	
+	if (window.selfMatchId != window.matchId)
 	{
-		if (window.selfMatchId != window.matchId)
-		{
-			spec.style.display = "block";
-			displayGiveUp(false);			
-		}
-		else
-		{
-			spec.style.display = "none";
-			displayGiveUp(true);		
-		}
+		spec.style.display = "block";
+		displayGiveUp(false);			
 	}
+	else
+	{
+		spec.style.display = "none";
+		displayGiveUp(true);		
+	}	
+}
+
+window.targetBall = window.targetBall || [0, 0];
+window.targetPads = window.targetPads || [0, 0];
+
+function pongUpdate(pads)
+{
+	pads.ball.style.transform =
+		`translate(${window.targetBall[0]}px, ${window.targetBall[1]}px)`;		
+	pads.p1.style.transform = `translateY(${window.targetPads[0]}px)`;
+	pads.p2.style.transform = `translateY(${window.targetPads[1]}px)`;
+	window.pongAnim = requestAnimationFrame(()=> pongUpdate(pads));
 }
 
 function initSecPlayer()
@@ -406,10 +347,23 @@ function initMatchWs()
 	if (closeMatchWssOnEnter())
 		return;    
 	window.antiLoop = true;
+	const [pads, elements] = get_match_elements();	
+	setSpec(elements.spec);	
+	window.pongAnim = requestAnimationFrame(()=> pongUpdate(pads));	
+	initFirstPlayer(pads, elements);	
+	initSecPlayer();	
+	addKeyBoardEvent();
+}
+
+function initFirstPlayer(pads, elements)
+{
+	let waitingState = ["waiting"];
+	
     window.matchSocket = createWebSocket(window.playerId);
 	window.matchSocket.onopen = ()=> console.log("Connexion Match établie 😊");
 	window.matchSocket.onclose = event => matchWsDisconnectStrategy(event);
-	sequelInitMatchWs(window.matchSocket);
+	window.matchSocket.onmessage = event => onMatchWsMessage(
+		event, pads, elements, waitingState);
 }
 
 function matchWsDisconnectStrategy(event)
@@ -423,27 +377,22 @@ function matchWsDisconnectStrategy(event)
 	window.stopFlag = false;
 }
 
-function sequelInitMatchWs(socket)
+function get_match_elements()
 {
-	const pads = [
-		document.getElementById("p1"),
-		document.getElementById("p2"),
-		document.getElementById("ball")		,		
-	];
-	const [waiting, endCont, end, left, rght, score] = [		
-		document.getElementById("waiting"),
-		document.getElementById("end-cont"),
-		document.getElementById("end"),
-		document.getElementById("inst-left"),
-		document.getElementById("inst-right"),
-		document.getElementById("score")
-	];	
-	let waitingState = ["waiting"];
-	requestAnimationFrame(()=>animate2D(pads));
-	const spec = document.getElementById("spec");
-	setSpec(spec);
-	socket.onmessage = event => onMatchWsMessage(
-		event, pads, [waiting, endCont, end, spec], waitingState);		
-	initSecPlayer();	
-	addKeyBoardEvent();
+	const pads = {
+		p1: document.getElementById("p1"),
+		p2: document.getElementById("p2"),
+		ball: document.getElementById("ball")	
+	};
+	const elements = {		
+		waiting: document.getElementById("waiting"),
+		endCont: document.getElementById("end-cont"),
+		end: document.getElementById("end"),
+		left: document.getElementById("inst-left"),
+		rght: document.getElementById("inst-right"),
+		score: document.getElementById("score"),
+		spec: document.getElementById("spec"),
+		match: document.getElementById("match")
+	};
+	return [pads, elements];
 }
