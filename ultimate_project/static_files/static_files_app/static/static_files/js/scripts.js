@@ -23,6 +23,7 @@
     // console.log("########### closing websockets #######");
     if (typeof closeSimpleMatchSocket === "function") closeSimpleMatchSocket();
     if (typeof closeTournamentSocket === "function") closeTournamentSocket();
+    
   }
 
   closeWebsockets();
