@@ -339,17 +339,18 @@ function dropTrash()
 				"You can't drop yourself!", "You can't drop yourself!", "", "");			
 		}
 		else
-			cloneDisappear(e);	
+			cloneDisappear(e, ws);	
 	};
 	addNewEventListener(trash);	
 }
 
-function cloneDisappear(e)
+function cloneDisappear(e, ws)
 {
 	const clone = document.getElementById("clone");
 	clone.style.left = `${e.clientX - clone.offsetWidth / 2}px`;
 	clone.style.top = `${e.clientY - clone.offsetHeight / 2}px`;
 	clone.style.position = "fixed";
+	clone.style.opacity = "1";
 	clone.classList.add("disappear");
 	setTimeout(()=>{
 		ws.socket.close();

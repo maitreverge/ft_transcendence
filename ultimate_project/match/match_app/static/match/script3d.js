@@ -45,13 +45,13 @@ function stopMatch3D(matchId) {
 	document.body.classList.remove("match-active");
 	cancelAnimationFrame(window.pong3DAnim);
 	const input = document.getElementById("match-player-name");
-	if (input)	
-	input.value = "";	
+
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
         document.removeEventListener("keydown", tjs_keydown);
 
+    stopEventListener3D();
 	document.body.classList.remove("match-active");
 
     if (!matchId)
