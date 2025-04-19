@@ -466,14 +466,14 @@ button {
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
-    z-index: 1000;
+    z-index: 150;
     position:relative;
     /* left:50%;
     transform: translateX(-50%); */
-    filter: blur(2px) saturate(120%) hue-rotate(180deg);
+    /* filter: blur(2px) saturate(120%) hue-rotate(180deg); */
     opacity: 0.8;
-    filter: saturate(120%) hue-rotate(180deg)
-    drop-shadow(0 0 10px rgba(0, 200, 255, 0.7));
+    /* filter: saturate(120%) hue-rotate(180deg); */
+    /* drop-shadow(0 0 10px rgba(0, 200, 255, 0.7)); */
     animation: flotter 3s ease-in-out infinite;
     margin:20px;
   }
@@ -482,3 +482,17 @@ button {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
   }
+
+    /* Option styles */
+    option {
+      padding: 10px;
+      background-color: #222;
+      color: #00ff99;
+      border: none;
+      transition: background-color 0.3s;
+    }
+  
+    option:hover {
+      background-color: #00ff99;
+      color: #111;
+    }
