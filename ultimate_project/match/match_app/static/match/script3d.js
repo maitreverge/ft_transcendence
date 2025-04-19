@@ -355,8 +355,8 @@ window.addEventListener('resize', function () {
     window.tjs_camera.updateProjectionMatrix();
 });
 
-function animate() {
-    window.pong3DAnim = requestAnimationFrame(animate);
+function animate3D() {
+    window.pong3DAnim = requestAnimationFrame(animate3D);
 
     window.tjs_ball.rotation.z += 0.1;
 
@@ -367,7 +367,7 @@ var tjs_camera_offset_x = 50;
 var tjs_camera_offset_z = 30;
 
 actionSwitchView();
-animate();
+animate3D();
 
 function setCommands3D(socket, socket2) {
     const keysPressed = {}; // Stocker les touches enfoncées

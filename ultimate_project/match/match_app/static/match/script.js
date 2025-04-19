@@ -38,10 +38,10 @@ function delMatch()
 function stopMatch(matchId)
 {	
 	removeKeyBoardEvent();
+	cancelAnimationFrame(window.pongAnim);
 	window.gameInProgress = false;
 	document.body.classList.remove("match-active");
 	// window.busyElement = null;
-	cancelAnimationFrame(window.pongAnim);
 	// const input = document.getElementById("match-player-name");
 	// if (input)
 	// 	input.value = "";	
@@ -233,12 +233,12 @@ window.window.newTargetY = window.window.window.newTargetY || 0;
 
 window.targetPads = window.targetPads || [0, 0];
 
-function animate(pads) {
+function animate2D(pads) {
 
 	pads[2].style.transform = `translate(${window.newTargetX}px, ${window.newTargetY}px)`;
 	pads[0].style.transform = `translateY(${targetPads[0]}px)`;
 	pads[1].style.transform = `translateY(${targetPads[1]}px)`;
-	window.pongAnim = requestAnimationFrame(() => animate(pads));
+	window.pongAnim = requestAnimationFrame(() => animate2D(pads));
 }
 
 function startCountdown(delay)
@@ -407,7 +407,7 @@ function sequelInitMatchWs(socket) {
 		document.getElementById("end-cont"),
 		document.getElementById("end")];	
 	let waitingState = ["waiting"];
-	requestAnimationFrame(()=>animate(pads));
+	requestAnimationFrame(()=>animate2D(pads));
 	const spec = document.getElementById("spec");
 	setSpec(spec);
 	socket.onmessage = event => onMatchWsMessage(
