@@ -4,10 +4,10 @@
     <div class="col-lg-10 col-md-10 col-sm-12">
       <div class="card mb-3 shadow">
         <div class="card-body text-center">
-          <h5 class="card-title primary-text">Delete Account</h5>
-          <p class="card-text secondary-text">
+          <h1 class="card-title mb-3">Delete Account</h1>
+          <h2 class="card-text mb-3">
             Are you sure you want to delete your account? This action is irreversible.
-          </p>
+          </h2>
 
           <!-- Delete Account Button -->
           <a
@@ -16,7 +16,7 @@
             hx-get="/account/confidentiality/delete-account/"
             hx-target="#account-content"
             hx-push-url="true"
-            id="delete-account-page"
+            id="delete-account-btn"
           >
             Delete Account
           </a>
@@ -29,31 +29,29 @@
 
 <style>
 
-  .btn-danger-custom {
-    display: inline-block;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    border: 2px solid #e74a3b;
-    background-color: transparent;
+.btn-outline-danger {
+    border-color: #e74a3b;
     color: #e74a3b;
-    text-align: center;
-    text-decoration: none;
-    outline: none;
-    box-shadow: none;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   }
 
-  .btn-danger-custom:hover,
-  .btn-danger-custom:focus,
-  .btn-danger-custom:active {
+  .btn-outline-danger.active,
+  .btn-outline-danger:focus {
+    background-color: #e74a3b !important;
+    border-color: #e74a3b !important;
+  }
+
+  .btn-outline-danger:hover {
     background-color: #e74a3b;
     color: white;
     border-color: #e74a3b;
-    text-decoration: none;
-    outline: none;
-    box-shadow: none;
+  }
+
+  #delete-account-btn {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    transition: all 0.3s ease-in-out;
   }
 </style>
