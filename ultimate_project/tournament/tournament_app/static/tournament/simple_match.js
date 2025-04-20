@@ -114,7 +114,7 @@ function enterMatch(match)
 {
 	const dim = document.getElementById("dim");
 	let player2Id = 0;
-	let player2Name = "";
+	let player2Name = "";	
 	if (match.multy)
 	{
 		player2Id = -window.selfId;//match.otherId;
@@ -131,8 +131,26 @@ function enterMatch(match)
 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
 		return response.text();
 	})
-	.then(data => loadSimpleMatchHtml(data, "overlay-match"))
+	.then(data =>{
+		setSelfMatchId(match);
+		loadSimpleMatchHtml(data, "overlay-match");
+	}) 
 	.catch(error => console.log(error));	
+}
+
+function isMyMatch(match)
+{
+	return window.selfId == match.playerId || window.selfId == match.otherId;
+}
+
+function setSelfMatchId(match)
+{
+	console.log("MATCHHHHHHHHHHHHHHHHH ", match); 
+
+	if (isMyMatch(match))
+		window.selfMatchId = match.matchId;
+	else
+		window.selfMatchId = null;
 }
 
 function moveSimplePlayerInMatch(matchElement, match) {
@@ -149,13 +167,14 @@ function moveSimplePlayerInMatch(matchElement, match) {
 	});	
 }
 
-function addToMatchs(socket, matchsContainer, match) {
+function addToMatchs(matchsContainer, match) {
   	
 	const div = document.createElement("div");
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
-	if (div.id == window.selfMatchId)
+	// if (div.id == window.selfMatchId)
+	if (isMyMatch(match))
 		div.classList.add("self-match");	
 	div.onclick = ()=> enterMatch(match);
     matchsContainer.appendChild(div);
@@ -168,7 +187,8 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 
 	matchElements.slice().reverse().forEach(match => {
 		if (matchs.every(el => el.matchId != match.id)) {
-			if (match.id == window.selfMatchId)
+			// if (match.id == window.selfMatchId)
+			if (isMyMatch(match))
 			{
 				if (window.busyElement)// je dois savoir si le match qui dois etre remove est lie a un joueur en remote et retourver ce joueur pour lui enlever la classe (quil l'ait ou non)
 					window.busyElement.classList.remove("invitation-waiting");
@@ -177,7 +197,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 					window.selectedElement.classList.remove(
 						"invitation-confirmed");
 				window.selectedElement = null;
-				window.selfMatchId = null;
+				// window.selfMatchId = null;
 			}
 			// [...match.children].forEach(player => {
 			// 	playersContainer.appendChild(player);
@@ -198,7 +218,7 @@ function updateMatchs(socket, matchs) {
 	matchElements = [...matchsContainer.children];
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
-			addToMatchs(socket, matchsContainer, match);
+			addToMatchs(matchsContainer, match);
 		else			
 			matchElements.forEach(el => {
 				if (el.id == match.matchId)
@@ -272,7 +292,7 @@ function invitationCancelled(targetName) {
 	if (window.selectedElement)		
 		window.selectedElement.classList.remove("invitation-confirmed");	
 	window.selectedElement = null;
-	window.selfMatchId = null;	
+	// window.selfMatchId = null;	//!!!!!!!!!!!!!!!!!
 }
 
 function selectedBusy() {
@@ -324,7 +344,7 @@ function invitationConfirmed(matchId, targetId) {
 		window.busyElement.classList.remove("invitation-waiting");
 		window.selectedElement.classList.add("invitation-confirmed")	
 	}
-	window.selfMatchId = matchId;
+	// window.selfMatchId = matchId;///////!!!!!!!!!!!!!!!!!!
 }
 
 function newLocalMatch()

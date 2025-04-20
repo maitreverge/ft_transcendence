@@ -727,7 +727,7 @@ function enterTournamentMatch(lk, overlay)
 		return response.text();
 	})
 	.then(data => {
-		setSelfMatchId(lk);
+		setTournamentSelfMatchId(lk);
 		const oldScripts = document.querySelectorAll("script.match-script");			
 		oldScripts.forEach(oldScript => oldScript.remove());
 		window.actualScriptTid = lk.tournamentId;
@@ -745,7 +745,7 @@ function isYetInMatch()
 	return false;	
 }
 
-function setSelfMatchId(lk)
+function setTournamentSelfMatchId(lk)
 {
 	const ws = window.websockets.find(ws =>
 		ws.playerId == lk.p1Id ||
