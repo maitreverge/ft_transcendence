@@ -1,13 +1,13 @@
   // this function is part of the history logic
   window.addEventListener("beforeunload", () => {
     // console.log("URL sauvegardée avec history.state et sessionStorage");
-    stopMatch();
+    stopMatchHtmx();
     let currentURL = window.location.href;
     history.replaceState({ lastVisitedPage: currentURL }, "");
     sessionStorage.setItem("lastVisitedPage", currentURL);
   });
 
-  function stopMatch() {
+  function stopMatchHtmx() {
     fetch(`/match/stop-match/${window.selfId}/${window.selfMatchId}/`)
       .then(response => {
         if (!response.ok)
