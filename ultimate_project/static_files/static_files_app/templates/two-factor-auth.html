@@ -4,12 +4,11 @@
 <div class="pong-background" id="pong-background"></div>
 
 <div class="container" data-page-type="two_factor_auth" id="two_factor_auth_container">
-	<div class="col-lg-4 mb-4 mx-auto">
+	<div class="class_custom mb-4 mx-auto">
 		<div class="card shadow mb-4 background-color-form">
-			<!-- <div class="card-header py-3 background-color-form">
-			</div> -->
 			<div class="card-body background-color-form text-center">
 				<h1 class="h1 text-gray-900 font-weight-bold text-uppercase">Verify your account</h1>
+
 				<!-- ! FORM TO VERIFY THE CODE -->
 				<form hx-post="/auth/verify-2fa/" id="two_factor_auth_form" hx-target="#login_error" hx-swap="outerHTML"
 					hx-headers='{"HX-Request": "true"}' hx-indicator="#loading-spinner">
