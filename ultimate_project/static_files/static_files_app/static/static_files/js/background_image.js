@@ -44,7 +44,7 @@ function setFirstBgImage()
 window.addEventListener('DOMContentLoaded', () => {
     // console.log("DOM CONTENT LOQDED");
     // console.log("%%%%%%%% func onload executed %%%%%%%%");
-    setFirstBgImage();
+    // setFirstBgImage();
     
 });
 

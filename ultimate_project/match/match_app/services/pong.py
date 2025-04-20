@@ -62,14 +62,14 @@ class Pong:
 		self.pad_speed = 2
 		self.ball_rst = [50, 50]
 		self.ball = self.ball_rst.copy()
-		self.ball_speed = 0.1
+		self.ball_speed = 0.2
 		self.max_ball_speed = 10
 		self.ball_acceleration = 1.2
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
-		self.bounce_delay = 0.05
-		self.send_delay = 0.05
-		self.gear_delay = 0.05
+		self.bounce_delay = 0.01
+		self.send_delay = 0.01
+		self.gear_delay = 0.01
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
