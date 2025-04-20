@@ -35,7 +35,7 @@ class Pong:
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)
 		self.state = State.waiting
-		self.start_time = self.get_time() # ! GET TIME MAYBE FAULTY HERE
+		self.start_time = self.get_time() 
 		self.start_flag = False
 		self.pause = True
 		self.score = [0, 0]
@@ -64,12 +64,12 @@ class Pong:
 		self.ball = self.ball_rst.copy()
 		self.ball_speed = 0.1
 		self.max_ball_speed = 10
-		self.ball_acceleration = 1.1
+		self.ball_acceleration = 1.2
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
-		self.bounce_delay = 0.005
-		self.send_delay = 0.005
-		self.gear_delay = 0.005
+		self.bounce_delay = 0.05
+		self.send_delay = 0.05
+		self.gear_delay = 0.05
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
@@ -415,3 +415,4 @@ Pong.max_score_rise = scores.max_score_rise
 Pong.is_overflow = physics.is_overflow
 
 Pong.speed_test = physics.speed_test
+Pong.touch_test = physics.touch_test
