@@ -145,8 +145,9 @@ function isMyMatch(match)
 
 function setSelfMatchId(match)
 {
-	console.log("MATCHHHHHHHHHHHHHHHHH ", match); 
-
+	// console.log("MATCHHHHHHHHHHHHHHHHH ", match); 
+	console.log("SELF SET MATCH match avant bleue: ", match);
+	console.log("%cCeci est bleue", "color: blue");//data
 	if (isMyMatch(match))
 		window.selfMatchId = match.matchId;
 	else
@@ -174,8 +175,13 @@ function addToMatchs(matchsContainer, match) {
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
 	// if (div.id == window.selfMatchId)
+	console.log("ADD TO MATCH match avant bleue: ", match);
+	console.log("%cCeci est bleue", "color: blue");/////data
 	if (isMyMatch(match))
+	{
 		div.classList.add("self-match");	
+		div.selfMatch = true;
+	}
 	div.onclick = ()=> enterMatch(match);
     matchsContainer.appendChild(div);
 	moveSimplePlayerInMatch(div, match);
@@ -188,8 +194,12 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 	matchElements.slice().reverse().forEach(match => {
 		if (matchs.every(el => el.matchId != match.id)) {
 			// if (match.id == window.selfMatchId)
-			if (isMyMatch(match))
+			console.log("REMOVE MATCH match avant bleue: ", match);
+			console.log("%cCeci est bleue", "color: blue");//div
+			if (match.selfMatch)
 			{
+				console.log("%cCeci est rouge", "color: red");
+
 				if (window.busyElement)// je dois savoir si le match qui dois etre remove est lie a un joueur en remote et retourver ce joueur pour lui enlever la classe (quil l'ait ou non)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
