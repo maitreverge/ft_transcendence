@@ -59,13 +59,13 @@ function cancelMatchAnimations()
 
 function stopMatch(matchId)
 {	
-	if (!matchId)	
-		return delMatchScript();			
+	if (!matchId)	//////////!!!!!!!!!
+		return delMatchScript();		//////////!!!!!!!!!	
 	removeKeyBoardEvent();
 	cancelMatchAnimations();
 	displayGiveUp(false);		
 	window.gameStartTimestamp = undefined; 	
-	if (window.selfMatchId == matchId)	
+	if (window.selfMatchId == matchId)	//!!!!!!!!!!!!!!!!!
 		sendStopMatch(matchId);	
 	setTimeout(manualCloseMatchWss, 1000);		
 }
@@ -78,6 +78,7 @@ function sendStopMatch(matchId)
 				throw new Error(`Error HTTP! Status: ${response.status}`);		  
 			return response.text();
 		})
+		.then(()=> window.selfMatchId = null)
 		.catch(error => console.log(error))
 }
 

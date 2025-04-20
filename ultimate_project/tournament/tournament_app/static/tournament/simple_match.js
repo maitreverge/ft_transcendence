@@ -110,114 +110,11 @@ function loadSimpleMatchHtml(data, target) {
 	}
 }
 
-// function setSelfMatchId() {
-
-// 	const matchsContainer = document.getElementById("matchs");
-// 	const matchElements = [...matchsContainer.children];
-// 	const dim = document.getElementById("dim");
-
-//     matchElements.forEach(match => {		
-// 		if (match.id == window.selfMatchId)
-// 			match.classList.add("self-match");					
-//         match.onclick = function() {
-//             // console.log("AVANT ", window.selfName, " ", )
-// 			// if ()
-// 			// console.log("AAAwindows2playername ", window.player2Name, typeof(window.player2Name));
-// 			let player2Id = -window.selfId;
-// 			if (!window.multy)
-// 			{
-// 				console.log("je suis qd mmm rentre ne taffole pas");
-// 				window.multy = false;
-// 				// console.log("AAAplayer2name est ! ", window.player2Name);
-// 				player2Id = 0;
-// 			}
-// 			fetch(
-// 				`/match/match${dim.value}d/` +
-// 				`?matchId=${match.id}&playerId=${window.selfId}&playerName=${window.selfName}&player2Id=${player2Id}&player2Name=${window.player2Name}`)
-// 			.then(response => {
-// 				if (!response.ok) 
-// 					throw new Error(`Error HTTP! Status: ${response.status}`);		  
-// 				return response.text();
-// 			})
-// 			.then(data => loadSimpleMatchHtml(data, "overlay-match"))
-// 			.catch(error => console.log(error));			
-// 		};					
-// 	});
-// }
-
-
-// matchWebsockets = []
-// function newMatchPlayer(socket) {
-  
-// 	const playerName = document.getElementById("match-player-name").value;
-// 	if (playerName.trim() === "")
-// 	{
-// 		alert("enter a name!");
-// 		return;
-// 	}
-// 	if (socket.readyState === WebSocket.OPEN) 
-// 		socket.send(JSON.stringify({
-// 			type: "newPlayer",
-// 			playerName: playerName			
-// 		}));
-// 	matchWebsockets.push({playerName: playerName});
-// }
-
-// function connectNewMatchPlayer(playerId, playerName) {
-
-// 	console.log("CONNECT NEW PLAYER ", playerId, " ", playerName);
-// 	const ws = websockets.find(ws => ws.playerName === playerName);	
-// 	ws.playerId = playerId;
-// 	console.log("ws id ", ws.playerName, ws.playerId);
-// 	const socket = new WebSocket(
-//         `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
-//     );
-// 	ws.socket = socket;
-// 	socket.onopen = () => {
-// 		console.log(`Connexion Tournament ${playerName} établie 😊`);	
-// 	}
-// 	socket.onclose = () => {
-// 		console.log(`Connexion Tournament ${playerName} disconnected 😈`);
-// 	};	
-// 	socket.onmessage = event =>
-// 		{};// onTournamentMessage(event, window.tournamentSocket);	
-// } 
-// function movePlayerInMatch(socket, matchElement, match) {
-	
-// 	const playersContainer = document.getElementById("players");
-// 	const playerElements = [...playersContainer.children];
-// 	const matchPlayerElements = [...matchElement.children];
-
-// 	if (match.players)
-// 	{		
-// 		// match.players.forEach(p => console.log("foriche ", p.playerId))
-// 		playerElements.slice().reverse().forEach(player => {
-
-// 			if (match.players.some(p => p.playerId == player.id) &&
-// 				matchPlayerElements.every(p => p.id != player.id))
-// 			{				
-// 				// const clone = player.cloneNode(true)
-// 				// clone.onclick = player.onclick;
-// 				// matchElement.appendChild(clone);	
-// 				matchElement.appendChild(player);	
-// 			}		
-// 		});
-// 		matchPlayerElements.slice().reverse().forEach(player => {
-// 			if (match.players.every(el => el.playerId != player.id))
-// 			{
-// 				playersContainer.appendChild(player);
-// 				// addPlayerToContainer(socket, playersContainer, player.id);	
-// 				// player.remove();			
-// 			}			
-// 		});
-// 	}	
-// }
-
 function enterMatch(match)
 {
 	const dim = document.getElementById("dim");
 	let player2Id = 0;
-	let player2Name = "";
+	let player2Name = "";	
 	if (match.multy)
 	{
 		player2Id = -window.selfId;//match.otherId;
@@ -234,8 +131,27 @@ function enterMatch(match)
 			throw new Error(`Error HTTP! Status: ${response.status}`);		  
 		return response.text();
 	})
-	.then(data => loadSimpleMatchHtml(data, "overlay-match"))
+	.then(data =>{
+		setSelfMatchId(match);
+		loadSimpleMatchHtml(data, "overlay-match");
+	}) 
 	.catch(error => console.log(error));	
+}
+
+function isMyMatch(match)
+{
+	return window.selfId == match.playerId || window.selfId == match.otherId;
+}
+
+function setSelfMatchId(match)
+{
+	// console.log("MATCHHHHHHHHHHHHHHHHH ", match); 
+	console.log("SELF SET MATCH match avant bleue: ", match);
+	console.log("%cCeci est bleue", "color: blue");//data
+	if (isMyMatch(match))
+		window.selfMatchId = match.matchId;
+	else
+		window.selfMatchId = null;
 }
 
 function moveSimplePlayerInMatch(matchElement, match) {
@@ -252,14 +168,20 @@ function moveSimplePlayerInMatch(matchElement, match) {
 	});	
 }
 
-function addToMatchs(socket, matchsContainer, match) {
+function addToMatchs(matchsContainer, match) {
   	
 	const div = document.createElement("div");
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
-	if (div.id == window.selfMatchId)
+	// if (div.id == window.selfMatchId)
+	console.log("ADD TO MATCH match avant bleue: ", match);
+	console.log("%cCeci est bleue", "color: blue");/////data
+	if (isMyMatch(match))
+	{
 		div.classList.add("self-match");	
+		div.selfMatch = true;
+	}
 	div.onclick = ()=> enterMatch(match);
     matchsContainer.appendChild(div);
 	moveSimplePlayerInMatch(div, match);
@@ -271,8 +193,13 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 
 	matchElements.slice().reverse().forEach(match => {
 		if (matchs.every(el => el.matchId != match.id)) {
-			if (match.id == window.selfMatchId)
+			// if (match.id == window.selfMatchId)
+			console.log("REMOVE MATCH match avant bleue: ", match);
+			console.log("%cCeci est bleue", "color: blue");//div
+			if (match.selfMatch)
 			{
+				console.log("%cCeci est rouge", "color: red");
+
 				if (window.busyElement)// je dois savoir si le match qui dois etre remove est lie a un joueur en remote et retourver ce joueur pour lui enlever la classe (quil l'ait ou non)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
@@ -280,7 +207,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 					window.selectedElement.classList.remove(
 						"invitation-confirmed");
 				window.selectedElement = null;
-				window.selfMatchId = null;
+				// window.selfMatchId = null;
 			}
 			// [...match.children].forEach(player => {
 			// 	playersContainer.appendChild(player);
@@ -301,7 +228,7 @@ function updateMatchs(socket, matchs) {
 	matchElements = [...matchsContainer.children];
 	matchs.forEach(match => {	
 		if (matchElements.every(el => el.id != match.matchId))		
-			addToMatchs(socket, matchsContainer, match);
+			addToMatchs(matchsContainer, match);
 		else			
 			matchElements.forEach(el => {
 				if (el.id == match.matchId)
@@ -375,7 +302,7 @@ function invitationCancelled(targetName) {
 	if (window.selectedElement)		
 		window.selectedElement.classList.remove("invitation-confirmed");	
 	window.selectedElement = null;
-	window.selfMatchId = null;	
+	// window.selfMatchId = null;	//!!!!!!!!!!!!!!!!!
 }
 
 function selectedBusy() {
@@ -427,7 +354,7 @@ function invitationConfirmed(matchId, targetId) {
 		window.busyElement.classList.remove("invitation-waiting");
 		window.selectedElement.classList.add("invitation-confirmed")	
 	}
-	window.selfMatchId = matchId;
+	// window.selfMatchId = matchId;///////!!!!!!!!!!!!!!!!!!
 }
 
 function newLocalMatch()

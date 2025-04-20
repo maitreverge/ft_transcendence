@@ -710,8 +710,7 @@ function setNextMatch(lk, localMatch)
 function enterTournamentMatch(lk, overlay)
 {
 	if (isYetInMatch())
-		return;
-	setSelfMatchId(lk);
+		return;	
 	const [playerId, playerName, player2Id, player2Name] =
 		catchPlayersInMatch(lk);
 	console.log("TOURNAMENT TO ENTER IN MATCH : ", playerId, " ",  playerName, " ", player2Id, " ", player2Name);
@@ -728,6 +727,7 @@ function enterTournamentMatch(lk, overlay)
 		return response.text();
 	})
 	.then(data => {
+		setTournamentSelfMatchId(lk);
 		const oldScripts = document.querySelectorAll("script.match-script");			
 		oldScripts.forEach(oldScript => oldScript.remove());
 		window.actualScriptTid = lk.tournamentId;
@@ -745,14 +745,16 @@ function isYetInMatch()
 	return false;	
 }
 
-function setSelfMatchId(lk)
+function setTournamentSelfMatchId(lk)
 {
 	const ws = window.websockets.find(ws =>
 		ws.playerId == lk.p1Id ||
 		ws.playerId == lk.p2Id
 	)
 	if (window.selfId == lk.p1Id ||	window.selfId == lk.p2Id ||	ws)	
-		window.selfMatchId = lk.matchId;	
+		window.selfMatchId = lk.matchId;
+	else
+		window.selfMatchId = null;
 }
 
 function loadTournamentHtml(data, overlay) {
