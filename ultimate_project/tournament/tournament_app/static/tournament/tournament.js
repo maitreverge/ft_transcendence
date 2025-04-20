@@ -228,8 +228,22 @@ function onTournamentMessage(event, socket) {
 // 		"Je suis le joueur " + window.selfId;	
 // }
 
+
+
 function tournamentResult(data)
 {
+	if (data.matchs.every(match =>
+		!areMyPlayersIn([match.linkMatch.p1Id, match.linkMatch.p2Id]) &&
+		
+		
+		window.tournamentList.forEach(tour => {
+			if (tour.tournamentId == data.tournamentId)
+				!areMyPlayersIn(tour);
+		});	
+		
+		
+	))
+		return;	
     messagePopUp('Yeah!', 'https://dansylvain.github.io/pictures/trumpDance.webp', " won the tournament!", " won the tournament!", data.winnerName, "")	// Le tournoi est terminé
 	console.log("TOURNAMENT RESULT ", data);
 }
@@ -690,20 +704,16 @@ function linkMatch(lk)
 }
 
 function setNextMatch(lk, localMatch)
-{
-	const ws = window.websockets.find(ws =>
-		ws.playerId == lk.p1Id ||
-		ws.playerId == lk.p2Id
-	);
-	if (window.selfId == lk.p1Id || window.selfId == lk.p2Id || ws)
+{	
+	if (areMyPlayersIn([lk.p1Id, lk.p2Id]))	
 	{
-		console.log("ADD NEXT MATCH selfid ", window.selfId, " p1id ", lk.p1Id, " p2id ", lk.p2Id, " ws ", ws);
+		// console.log("ADD NEXT MATCH selfid ", window.selfId, " p1id ", lk.p1Id, " p2id ", lk.p2Id, ;
 		localMatch.classList.remove("spec-match");
 		localMatch.classList.add("next-match");	
 	}
 	else
 	{
-		console.log("ADD SPEC MATCH selfid ", window.selfId, " p1id ", lk.p1Id, " p2id ", lk.p2Id, " ws ", ws);
+		// console.log("ADD SPEC MATCH selfid ", window.selfId, " p1id ", lk.p1Id, " p2id ", lk.p2Id, " ws ", ws);
 		localMatch.classList.remove("next-match");
 		localMatch.classList.add("spec-match");
 	}
@@ -746,13 +756,31 @@ function isYetInMatch()
 	return false;	
 }
 
-function setTournamentSelfMatchId(lk)
+// function isMyPlayerIn(p1Id, p2Id)
+// {
+// 	const ws = window.websockets.find(ws =>
+// 		ws.playerId == p1Id ||
+// 		ws.playerId == p2Id
+// 	)
+// 	if (window.selfId == p1Id || window.selfId == p2Id || ws)
+// 		return true;
+// 	return false;	
+// }
+
+
+function areMyPlayersIn(playersId)
 {
-	const ws = window.websockets.find(ws =>
-		ws.playerId == lk.p1Id ||
-		ws.playerId == lk.p2Id
-	)
-	if (window.selfId == lk.p1Id ||	window.selfId == lk.p2Id ||	ws)	
+	return playersId.some(playerId => {
+		if (window.selfId == playerId)
+			return true;
+		const ws = window.websockets.find(ws => ws.playerId == playerId);
+		return !!ws;
+	});
+}
+
+function setTournamentSelfMatchId(lk)
+{		
+	if (areMyPlayersIn([lk.p1Id, lk.p2Id]))	
 		window.selfMatchId = lk.matchId;
 	else
 		window.selfMatchId = null;
@@ -820,7 +848,6 @@ function matchResult(rsl)
 
 function updateMatchsPlayers(pack)
 {
-
 	if (pack)
 		pack.forEach(plys => updateMatchPlayers(plys));
 }
