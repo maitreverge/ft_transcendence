@@ -1,4 +1,7 @@
 
+window.targetBall = window.targetBall || [0, 0];
+window.targetPads = window.targetPads || [0, 0];
+
 function quitMatch()
 {
 	document.body.classList.remove("match-active");
@@ -49,9 +52,9 @@ function displayGiveUp(visible)
 
 function cancelMatchAnimations()
 {
-	cancelAnimationFrame(window.pongAnim);
+	cancelAnimationFrame(pongUpdate.pongAnim);
 	cancelAnimationFrame(addKeyBoardEvent.keyBoardAnim);
-	cancelAnimationFrame(window.countDownAnim);
+	cancelAnimationFrame(startCountdown.countAnim);
 }
 
 function stopMatch(matchId)
@@ -145,10 +148,10 @@ function startCountdown(delay)
 
         if (remaining > 0) {
             countdownEl.textContent = remaining;
-            window.countDownAnim = requestAnimationFrame(updateCountdown);
+            startCountdown.countAnim = requestAnimationFrame(updateCountdown);
         } else if (remaining > -1) {
             countdownEl.textContent = "GO!";
-            window.countDownAnim = requestAnimationFrame(updateCountdown);
+			startCountdown.countAnim = requestAnimationFrame(updateCountdown);
         } else {
             loaderElement.style.opacity = "0";
             window.gameStartTimestamp = undefined;
@@ -190,7 +193,9 @@ function movePads(data, pads, match)
 {
 	const matchRect = match.getBoundingClientRect();
 
-	pads.ball.style.top = -(matchRect.width / 100);
+	if (!data.ball)
+		return;
+	pads.ball.style.top = -(matchRect.width / 100);//???
 	pads.ball.style.width = (matchRect.width / 100) * 2;
 	pads.ball.style.height = (matchRect.height / 100) * 2;		       
 	window.targetPads[0] = data.yp1 * (matchRect.height / 100);
@@ -284,16 +289,13 @@ function setSpec(spec)
 	}	
 }
 
-window.targetBall = window.targetBall || [0, 0];
-window.targetPads = window.targetPads || [0, 0];
-
 function pongUpdate(pads)
 {
 	pads.ball.style.transform =
 		`translate(${window.targetBall[0]}px, ${window.targetBall[1]}px)`;		
 	pads.p1.style.transform = `translateY(${window.targetPads[0]}px)`;
 	pads.p2.style.transform = `translateY(${window.targetPads[1]}px)`;
-	window.pongAnim = requestAnimationFrame(()=> pongUpdate(pads));
+	pongUpdate.pongAnim = requestAnimationFrame(()=> pongUpdate(pads));
 }
 
 function initSecPlayer()
@@ -349,10 +351,10 @@ function initMatchWs()
 	window.antiLoop = true;
 	const [pads, elements] = get_match_elements();	
 	setSpec(elements.spec);	
-	window.pongAnim = requestAnimationFrame(()=> pongUpdate(pads));	
 	initFirstPlayer(pads, elements);	
 	initSecPlayer();	
 	addKeyBoardEvent();
+	pongUpdate(pads);	
 }
 
 function initFirstPlayer(pads, elements)

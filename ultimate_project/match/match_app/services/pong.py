@@ -67,9 +67,9 @@ class Pong:
 		self.ball_acceleration = 1.2
 		self.vect = self.get_random_vector() 
 		# self.vect = [0.3, -0.5]
-		self.bounce_delay = 0.005
-		self.send_delay = 0.005
-		self.gear_delay = 0.005
+		self.bounce_delay = 0.05
+		self.send_delay = 0.05
+		self.gear_delay = 0.05
 		self.init_bounces_sides()
 
 	def init_bounces_sides(self):
