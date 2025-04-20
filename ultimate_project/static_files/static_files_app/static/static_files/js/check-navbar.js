@@ -3,7 +3,7 @@ document.body.addEventListener("htmx:afterSettle", () => {
     const isHomeUrl = window.location.pathname === "/home/";
 
     if (navbarAbsent && isHomeUrl) {
-        console.log ("HOLLLY shit! there is no navbar!");
+        // console.log ("HOLLLY shit! there is no navbar!");
         htmx.ajax('GET', '/home/', {
         target: 'body',
         pushURL: '/home/',
