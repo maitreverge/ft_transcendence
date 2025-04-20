@@ -36,7 +36,8 @@ async function invitationPopup(socket, applicantId, applicantName)
     sendConfirmation(socket, applicantId, applicantName, result.isConfirmed);
 }
 
-function handlePendingInvitations() {
+function handlePendingInvitations()
+{
     // Traite toutes les invitations en attente lorsque la page devient active
     pendingInvitations.forEach(invitation => {
         const { applicantId, applicantName, socket } = invitation;
@@ -47,7 +48,8 @@ function handlePendingInvitations() {
     pendingInvitations = [];
 }
 
-function showNotification(message, applicantId) {
+function showNotification(message, applicantId)
+{
     if (Notification.permission === "granted") {
         new Notification(message);
     } else if (Notification.permission !== "denied") {
@@ -88,10 +90,16 @@ function receiveInvitation(socket, applicantId, applicantName) {
  *!                           END OF CHANGES
  *========================================================================**/
 
-function loadSimpleMatchHtml(data, target) {
+function delSimpleMatchScript()
+{
+	const scripts = document.querySelectorAll("script.match-script");		
+	scripts.forEach(oldScript => oldScript.remove());	
+}
 
-	const oldScripts = document.querySelectorAll("script.match-script");			
-	oldScripts.forEach(oldScript => oldScript.remove());	
+function loadSimpleMatchHtml(data, target)
+{
+
+	delSimpleMatchScript();	
 	const overlay = document.getElementById(target);
 	overlay.innerHTML = data;
 	const scripts = overlay.getElementsByTagName("script");
@@ -168,7 +176,8 @@ function moveSimplePlayerInMatch(matchElement, match) {
 	});	
 }
 
-function addToMatchs(matchsContainer, match) {
+function addToMatchs(matchsContainer, match)
+{
   	
 	const div = document.createElement("div");
 	div.className = "match";
@@ -187,10 +196,8 @@ function addToMatchs(matchsContainer, match) {
 	moveSimplePlayerInMatch(div, match);
 }
 
-function removeMatchs(socket, matchs, matchsContainer, matchElements) {
-
-	// const playersContainer = document.getElementById("players");
-
+function removeMatchs(socket, matchs, matchsContainer, matchElements)
+{
 	matchElements.slice().reverse().forEach(match => {
 		if (matchs.every(el => el.matchId != match.id)) {
 			// if (match.id == window.selfMatchId)
@@ -200,7 +207,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 			{
 				console.log("%cCeci est rouge", "color: red");
 
-				if (window.busyElement)// je dois savoir si le match qui dois etre remove est lie a un joueur en remote et retourver ce joueur pour lui enlever la classe (quil l'ait ou non)
+				if (window.busyElement)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
 				if (window.selectedElement)	
@@ -217,7 +224,8 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements) {
 	});
 }
 
-function updateMatchs(socket, matchs) {
+function updateMatchs(socket, matchs)
+{
 
 	console.log("UPDATE MATCH", matchs);
 
@@ -278,8 +286,8 @@ function updateMatchs(socket, matchs) {
 // 	});
 // }
 
-function sendConfirmation(socket, applicantId, applicantName, response) {
-
+function sendConfirmation(socket, applicantId, applicantName, response)
+{
 	console.log(`i will send ${response} to applicant: ${applicantName}`);
 
 	if (socket.readyState === WebSocket.OPEN) 
@@ -290,7 +298,8 @@ function sendConfirmation(socket, applicantId, applicantName, response) {
 		}));
 }
 
-function invitationCancelled(targetName) {
+function invitationCancelled(targetName)
+{
 
 	console.log(`invitation with ${targetName} is cancelled`);
 
@@ -305,7 +314,8 @@ function invitationCancelled(targetName) {
 	// window.selfMatchId = null;	//!!!!!!!!!!!!!!!!!
 }
 
-function selectedBusy() {
+function selectedBusy()
+{
 
     messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy...", "The player is busy...", "", "");
 
@@ -315,11 +325,13 @@ function selectedBusy() {
 	window.busyElement = null;
 }
 
-function selfBusy() {
+function selfBusy()
+{
 	messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy...", "You are busy...", "", "");
 }
 
-function invitationRefused(targetName) {
+function invitationRefused(targetName)
+{
 
     messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
     if (window.busyElement)
@@ -339,8 +351,8 @@ function messagePopUp(titre, url, text, traduction, start_var, end_var)
       });
 }
 
-function invitationConfirmed(matchId, targetId) {
-
+function invitationConfirmed(matchId, targetId)
+{
     // document.getElementById("response").innerHTML = '<img id="myGif" src="https://media1.tenor.com/m/A-ozELwp694AAAAC/thumbs-thumbs-up-kid.gif" alt="gif marrant">';
 	// setTimeout(() => {
     //     document.getElementById("myGif")?.remove();
@@ -442,8 +454,8 @@ function sendPlayerClick(socket, selectedId, selectedName)
 // 		"Je suis le joueur " + window.selfId + " " + window.user_name;	
 // }
 
-function invitation(socket, data) {
-
+function invitation(socket, data)
+{
 	switch (data.subtype)
 	{
 		case "back":	   		
@@ -469,16 +481,13 @@ function invitation(socket, data) {
 	}
 }
 
-function onSimpleMatchMessage(event, socket) {
-
+function onSimpleMatchMessage(event, socket)
+{
 	console.log("Message reçu :", event.data);
 	const data = JSON.parse(event.data);
 	
 	switch (data.type)
 	{
-		// case "selfAssign":
-		// 	setSelfId(data.selfId);
-		// 	break;
 		case "newPlayerId":
 			connectNewMatchPlayer(data.playerId, data.playerName);
 		break;
@@ -498,8 +507,8 @@ function onSimpleMatchMessage(event, socket) {
 	}
 }
 
-function closeSimpleMatchSocket() {
-
+function closeSimpleMatchSocket()
+{
 	if (typeof stopMatch === 'function')
 		stopMatch(window.selfMatchId);
     if (
@@ -537,7 +546,8 @@ function updateSimpleWinPlayers(socket, playersUp)
 	});
 }
 
-function updateSimplePlayersCont(playersUp) {
+function updateSimplePlayersCont(playersUp)
+{
 
 	console.log("UPDATE SIMPLE PLAYERS CONT ", playersUp);
 
@@ -547,14 +557,16 @@ function updateSimplePlayersCont(playersUp) {
 	playersUp.forEach(plyUp => {
 		if (playerElements.every(el => el.id != plyUp.playerId))
 		{
-			const winPly = window.simplePlayers.find(el => el.id == plyUp.playerId);
+			const winPly = window.simplePlayers.find(
+				el => el.id == plyUp.playerId
+			);
 			playersCont.appendChild(winPly);
 		}	
 	});
 }
 
-function createSimplePlayerElement(socket, playerId, playerName) {
-
+function createSimplePlayerElement(socket, playerId, playerName)
+{
 	console.log("CREATE PL ELEMENT ", playerId);
 	const div = document.createElement("div");
 	div.className = "user";
@@ -567,20 +579,24 @@ function createSimplePlayerElement(socket, playerId, playerName) {
 	return div;
 }
 
-function initSimpleMatch() {
-	
+function initSimpleMatchDomain()
+{
+	if (window.location.hostname === "localhost" ||
+		window.location.hostname === "127.0.0.1")
+        window.pidom = "localhost:8443";
+	else
+		window.pidom = window.location.hostname + ":8443";
+}
+
+function initSimpleMatch()
+{	
 	window.busyElement = null;
 	console.log("INIT SIMPLE MATCH");	
 	if (typeof closeTournamentSocket === 'function') 
 		closeTournamentSocket();
 	else 
-		console.log("closeTournamentSocket is not define");
-	
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        window.pidom = "localhost:8443";
-	else
-		window.pidom = window.location.hostname + ":8443";
-
+		console.log("closeTournamentSocket is not define");	
+	initSimpleMatchDomain();
 	console.log("INIT SIMPLE MATCH");
     if (window.simpleMatchSocket)
         window.simpleMatchSocket.close();

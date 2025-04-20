@@ -205,7 +205,7 @@ function movePads(data, pads, match)
 	window.targetBall[1] = data.ball[1] * (matchRect.height / 100);	
 }
 
-function onMatchWsMessage(event, pads, elements, waitingState) 
+function onMatchWsMessage(event, pads, elements, waitingState)
 {	
 	const data = JSON.parse(event.data);
 
@@ -346,9 +346,9 @@ function closeMatchWssOnEnter()
 
 function initMatchWs()
 {
-    initDomain();
 	if (closeMatchWssOnEnter())
 		return;    
+	initDomain();
 	window.antiLoop = true;
 	const [pads, elements] = get_match_elements();	
 	setSpec(elements.spec);	
