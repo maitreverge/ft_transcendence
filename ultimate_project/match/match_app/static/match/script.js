@@ -67,7 +67,7 @@ function stopMatch(matchId)
 	window.gameStartTimestamp = undefined; 	
 	if (window.selfMatchId == matchId)	
 		sendStopMatch(matchId);	
-	setTimeout(closeMatchWebSockets, 1000);		
+	setTimeout(manualCloseMatchWss, 1000);		
 }
 
 function sendStopMatch(matchId)
