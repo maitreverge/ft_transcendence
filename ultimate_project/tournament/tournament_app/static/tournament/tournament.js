@@ -158,9 +158,9 @@ function closeWsTournament()
     // closeWs(window.matchSocket2);
     // closeWs(window.simpleMatchSocket);
     closeWs(window.tournamentSocket);
-    window.websockets?.forEach(ws => closeWsNav(ws.socket));
+    window.websockets?.forEach(ws => closeWs(ws.socket));
 }
-
+window.closeWsTournament = closeWsTournament;
 // function closeTournamentSocket()
 // {	
 // 	// if (typeof stopMatch === 'function')
