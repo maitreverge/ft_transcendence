@@ -507,8 +507,19 @@ function onSimpleMatchMessage(event, socket)
 	}
 }
 
-function closeSimpleMatchSocket()
+function closeWsSimpleMatch()
 {
+<<<<<<< HEAD
+	const closeWs = socket => {
+		if (socket && socket.readyState === WebSocket.OPEN)	
+			socket.close();					
+	};
+    // closeWs(window.matchSocket); 
+    // closeWs(window.matchSocket2);
+    closeWs(window.simpleMatchSocket);
+    // closeWs(window.tournamentSocket);
+    // window.websockets?.forEach(ws => closeWsNav(ws.socket));
+=======
 	// if (typeof stopMatch === 'function')
 	// 	stopMatch(window.selfMatchId);
     if (
@@ -516,7 +527,18 @@ function closeSimpleMatchSocket()
 		window.simpleMatchSocket.readyState === WebSocket.OPEN
 	)
         window.simpleMatchSocket.close();    
+>>>>>>> a5ad44e573bc74a033e1f77c3817ac6275b40cd1
 }
+// function closeSimpleMatchSocket()
+// {
+// 	if (typeof stopMatch === 'function')
+// 		stopMatch(window.selfMatchId);
+//     if (
+// 		window.simpleMatchSocket && 
+// 		window.simpleMatchSocket.readyState === WebSocket.OPEN
+// 	)
+//         window.simpleMatchSocket.close();    
+// }
 
 function updateSimplePlayers(socket, playersUp)
 {
@@ -599,7 +621,7 @@ function initSimpleMatch()
 	initSimpleMatchDomain();
 	console.log("INIT SIMPLE MATCH");
     if (window.simpleMatchSocket)
-        window.simpleMatchSocket.close();
+        window.simpleMatchSocket.close();//!!!!!!!!!!
     window.simpleMatchSocket = new WebSocket(
         `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
     );

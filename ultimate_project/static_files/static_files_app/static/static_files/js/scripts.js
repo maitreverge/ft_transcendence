@@ -18,13 +18,13 @@
       .catch(error => console.log(error))
   }
 
-  function closeWebsockets() {
+  // function closeWebsockets() {
 
-    // console.log("########### closing websockets #######");
-    if (typeof closeSimpleMatchSocket === "function") closeSimpleMatchSocket();
-    if (typeof closeTournamentSocket === "function") closeTournamentSocket();
+  //   // console.log("########### closing websockets #######");
+  //   if (typeof closeSimpleMatchSocket === "function") closeSimpleMatchSocket();
+  //   if (typeof closeTournamentSocket === "function") closeTournamentSocket();
     
-  }
+  // }
 
   // closeWebsockets();
   function interceptUrlChanges() {

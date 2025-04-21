@@ -12,6 +12,7 @@ function quitMatch()
 	delMatchScript();
 	delMatch();
 }
+window.quitMatch = quitMatch;
 
 function manualCloseMatchWss()
 {
@@ -60,19 +61,19 @@ function cancelMatchAnimations()
 		cancelAnimationFrame(startCountdown.countAnim);
 }
 
-window.stopMatch = function stopMatch(matchId)
-{	
-	console.log("STOP")
-	if (!matchId)	//////////!!!!!!!!!
-		return console.log("le match id est null", "color:red"), delMatchScript();		//////////!!!!!!!!!	
+function stopMatch(matchId)
+{
+	// if (!matchId)	//////////!!!!!!!!!
+	// 	return delMatchScript();		//////////!!!!!!!!!	
 	removeKeyBoardEvent();
 	cancelMatchAnimations();
 	displayGiveUp(false);		
 	window.gameStartTimestamp = undefined; 	
 	if (window.selfMatchId == matchId)	//!!!!!!!!!!!!!!!!!
-		console.log("le self match id est egal a lid du match", "color:red"), sendStopMatch(matchId);	
+		sendStopMatch(matchId);	
 	setTimeout(manualCloseMatchWss, 1000);		
 }
+window.stopMatch = stopMatch;
 
 function sendStopMatch(matchId)
 {
@@ -196,12 +197,20 @@ function assignInfos(left, rght, leftInfo, rghtInfo)
 	rght.innerHTML = rghtInfo;
 }
 
+tog = true;
 function movePads(data, pads, match)
 {
 	const matchRect = match.getBoundingClientRect();
-
+	 
 	if (!data.ball)
 		return;
+	if (tog)
+	{
+		tog = true;
+		pads.p1.style.display = "block";
+		pads.p2.style.display = "block";
+		pads.ball.style.display = "block";
+	}
 	pads.ball.style.top = -(matchRect.width / 100);//???
 	pads.ball.style.width = (matchRect.width / 100) * 2;
 	pads.ball.style.height = (matchRect.height / 100) * 2;		       
@@ -340,7 +349,7 @@ function closeMatchWssOnEnter()
 	const socket = window.matchSocket;
 	const socket2 = window.matchSocket2;	
 
-	const closeMatchWsOnEnter = (socket)=> {
+	const closeMatchWsOnEnter = socket => {
 		if (socket && socket.readyState === WebSocket.OPEN && window.antiLoop)	
 			return socket.close(), true;
 		return false;			

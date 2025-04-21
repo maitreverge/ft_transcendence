@@ -20,7 +20,7 @@ function initTournament()
 	initTournamentDomain();
 	console.log("INIT TOURNAMENT");
     if (window.tournamentSocket)
-        window.tournamentSocket.close();
+        window.tournamentSocket.close();//!!!!!!
     window.tournamentSocket = new WebSocket(
         `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/${window.selfId}/`
     );
@@ -85,8 +85,7 @@ function connectNewPlayer(playerId, playerName)
 // }
   
 function newPlayer(socket)
-{
-  
+{  
 	const playerName = document.getElementById("player-name").value;
 	if (playerName.trim() === "")
 	{
@@ -149,17 +148,30 @@ function enterTournament(socket, tournamentId)
 		}));
 }
 
-function closeTournamentSocket()
-{	
-	// if (typeof stopMatch === 'function')
-	// 	stopMatch(window.selfMatchId);//!
-    if (
-		window.tournamentSocket && 
-		window.tournamentSocket.readyState === WebSocket.OPEN
-	)
-		window.tournamentSocket.close();
-	window.websockets.forEach(ws => ws.socket.close());    
+function closeWsTournament()
+{
+	const closeWs = socket => {
+		if (socket && socket.readyState === WebSocket.OPEN)	
+			socket.close();					
+	};
+    // closeWs(window.matchSocket); 
+    // closeWs(window.matchSocket2);
+    // closeWs(window.simpleMatchSocket);
+    closeWs(window.tournamentSocket);
+    window.websockets?.forEach(ws => closeWsNav(ws.socket));
 }
+
+// function closeTournamentSocket()
+// {	
+// 	// if (typeof stopMatch === 'function')
+// 	// 	stopMatch(window.selfMatchId);//!
+//     if (
+// 		window.tournamentSocket && 
+// 		window.tournamentSocket.readyState === WebSocket.OPEN
+// 	)
+// 	window.tournamentSocket.close();
+// 	window.websockets.forEach(ws => ws.socket.close());    
+// }
 
 function onTournamentMessage(event, socket) {
 
@@ -217,6 +229,7 @@ function areMyPlayersPlayInSomeMatch(data)
 
 function areMyPlayersInTournament(data)
 {
+	console.log("ARE IN ", window.tournamentList);
 	return (window.tournamentList && window.tournamentList.some(tour => 
 		tour.tournamentId == data.tournamentId
 		&& areMyPlayersIn(tour.players)	
@@ -362,7 +375,7 @@ function cloneDisappear(e, ws)
 	clone.style.opacity = "1";
 	clone.classList.add("disappear");
 	setTimeout(()=>{
-		ws.socket.close();
+		closeWsTournament?.closeWs(ws.socket);	
 		clone.remove();	
 	}, 500);
 }
