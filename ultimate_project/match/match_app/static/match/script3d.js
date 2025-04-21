@@ -153,7 +153,7 @@ function tjs_loadfull(url) {
 window.tjs_tmat = tjs_loadfull('https://threejs.org/examples/textures/terrain/grasslight-big.jpg');
 window.tjs_rmat = tjs_loadfull('https://threejs.org/examples/textures/hardwood2_diffuse.jpg');
 
-window.tjs_smat = window.tjs_smat || new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/sprite.png') });
+window.tjs_smat = new THREE.MeshBasicMaterial({ map: window.tjs_textureLoader.load('https://threejs.org/examples/textures/sprite.png') });
 
 window.tjs_r1 = new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
 window.tjs_r2 = new THREE.Mesh(window.tjs_rgeo, window.tjs_rmat);
@@ -210,13 +210,13 @@ function actionCooldownUpdate() {
 
 // function call on button click
 function actionUpgrade() {
-    if (window.tjs_upgrade.points < 1) {
+    if (window.tjs_upgrade.points < 1)
         return;
-    }
+
     window.tjs_upgrade.points--;
     switch (window.tjs_upgrade.user_lvl) {
         case 0:
-            window.tjs_ball.material.color.setHex(0x00ff00);
+            window.tjs_ball.material.color.setHex(0xff0000);
             break;
         case 1:
             window.tjs_ball.material.color.setHex(0xffffff);
@@ -233,6 +233,11 @@ function actionUpgrade() {
             window.tjs_r2.material = tjs_loadfull('https://threejs.org/examples/textures/disturb.jpg');
             break;
         default:
+            window.tjs_r1.material = window.tjs_rmat;
+            window.tjs_r2.material = window.tjs_rmat;
+            window.tjs_table.material = window.tjs_tmat;
+            window.tjs_ball.material.map = window.tjs_textureLoader.load('https://threejs.org/examples/textures/sprite.png');
+            window.tjs_upgrade.user_lvl = -1;
             break;
     }
     window.tjs_upgrade.user_lvl++;
@@ -374,6 +379,11 @@ function setCommands3D(socket, socket2) {
     let animationFrameId = null; // Stocke l'ID du requestAnimationFrame
 
     function sendCommands3D() {
+        if (keysPressed[" "]) {
+            delete keysPressed[" "];
+            actionUpgrade();
+        }
+
         if (socket.readyState === WebSocket.OPEN) {
             if (keysPressed["ArrowUp"]) {
                 socket.send(JSON.stringify({ action: 'move', dir: 'up' }));
@@ -404,6 +414,16 @@ function setCommands3D(socket, socket2) {
         if (!keysPressed[event.key]) {
             keysPressed[event.key] = true;
         }
+
+        if (event.key === "ArrowUp")
+            delete keysPressed["ArrowDown"];
+        if (event.key === "ArrowDown")
+            delete keysPressed["ArrowUp"];
+
+        if (event.key === "Enter")
+            delete keysPressed["+"];
+        if (event.key === "+")
+            delete keysPressed["Enter"];
 
         // Démarre l'animation seulement si elle n'est pas déjà en cours
         if (!animationFrameId) {
