@@ -13,10 +13,10 @@ function initTournamentDomain()
 
 function initTournament()
 {		
-	if (typeof closeSimpleMatchSocket === 'function') 
-		closeSimpleMatchSocket();
-	else 
-		console.log("closeSimpleMatch not define");	
+	// if (typeof closeSimpleMatchSocket === 'function') 
+	// 	closeSimpleMatchSocket();
+	// else 
+	// 	console.log("closeSimpleMatch not define");	
 	initTournamentDomain();
 	console.log("INIT TOURNAMENT");
     if (window.tournamentSocket)
@@ -151,13 +151,13 @@ function enterTournament(socket, tournamentId)
 
 function closeTournamentSocket()
 {	
-	if (typeof stopMatch === 'function')
-		stopMatch(window.selfMatchId);//!
+	// if (typeof stopMatch === 'function')
+	// 	stopMatch(window.selfMatchId);//!
     if (
 		window.tournamentSocket && 
 		window.tournamentSocket.readyState === WebSocket.OPEN
 	)
-	window.tournamentSocket.close();
+		window.tournamentSocket.close();
 	window.websockets.forEach(ws => ws.socket.close());    
 }
 

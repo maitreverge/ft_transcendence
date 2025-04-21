@@ -41,6 +41,16 @@
   function handleNavigation(event) {
     alert("truc: " + JSON.stringify(event));
     console.log('***************************** Navigation event *************************');
+ 
+	  const closeWsNav = (socket)=> {
+		  if (socket && socket.readyState === WebSocket.OPEN)	
+			  socket.close();					
+	  };
+    closeWsNav(window.matchSocket); 
+    closeWsNav(window.matchSocket2);
+    closeWsNav(window.simpleMatchSocket);
+    closeWsNav(window.tournamentSocket);
+    window.websockets.forEach(ws => closeWsNav(ws.socket));    
   }
   
   // Se déclenche sur back/forward

@@ -509,8 +509,8 @@ function onSimpleMatchMessage(event, socket)
 
 function closeSimpleMatchSocket()
 {
-	if (typeof stopMatch === 'function')
-		stopMatch(window.selfMatchId);
+	// if (typeof stopMatch === 'function')
+	// 	stopMatch(window.selfMatchId);
     if (
 		window.simpleMatchSocket && 
 		window.simpleMatchSocket.readyState === WebSocket.OPEN
@@ -592,10 +592,10 @@ function initSimpleMatch()
 {	
 	window.busyElement = null;
 	console.log("INIT SIMPLE MATCH");	
-	if (typeof closeTournamentSocket === 'function') 
-		closeTournamentSocket();
-	else 
-		console.log("closeTournamentSocket is not define");	
+	// if (typeof closeTournamentSocket === 'function') 
+	// 	closeTournamentSocket();
+	// else 
+	// 	console.log("closeTournamentSocket is not define");	
 	initSimpleMatchDomain();
 	console.log("INIT SIMPLE MATCH");
     if (window.simpleMatchSocket)
