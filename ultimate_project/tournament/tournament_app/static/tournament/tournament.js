@@ -36,14 +36,27 @@ function initTournament()
 
 function messagePopUp(titre, url, text, traduction, start_var, end_var)
 {
-    Swal.fire({
-        title: titre,
-        html: `<span>${start_var}</span><span data-translate="${traduction}">${text}</span><span>${end_var}</span>`,
-        imageUrl: url,
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: 'GIF fun'
-      });
+	const options = {
+		title: titre,
+		html: `<span>${start_var}</span><span data-translate="${traduction}">${text}</span><span>${end_var}</span>`,
+		imageUrl: url,
+		imageWidth: 300,
+		imageHeight: 300,
+		imageAlt: 'GIF fun'
+	};
+	
+	if (url == "https://dansylvain.github.io/pictures/trumpDance.webp"){
+		options.backdrop = `
+		rgba(2, 243, 14, 0.64)
+		url("https://dansylvain.github.io/pictures/final-conf.gif")
+		center center/cover
+		no-repeat
+		fixed
+		`;
+	}
+	// Add backdrop conditionally if using the Trump dance animation
+	
+	Swal.fire(options);
 }
 
 function connectNewPlayer(playerId, playerName)
