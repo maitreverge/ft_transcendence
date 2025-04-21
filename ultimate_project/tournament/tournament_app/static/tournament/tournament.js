@@ -375,7 +375,8 @@ function cloneDisappear(e, ws)
 	clone.style.opacity = "1";
 	clone.classList.add("disappear");
 	setTimeout(()=>{
-		closeWsTournament?.closeWs(ws.socket);	
+		if (ws.socket && ws.socket.readyState === WebSocket.OPEN)	
+			ws.socket.close();	
 		clone.remove();	
 	}, 500);
 }
@@ -484,7 +485,7 @@ function updateTournaments(socket, tournamentsUp)
 
 	tournamentsUp.forEach(tourUp => {
 		if (tournamentEls.every(el => el.id != tourUp.tournamentId))
-			addToTournaments(socket, tournamentsCont, tourUp);
+			addToTournaments(tournamentsCont, tourUp);
 		if (tourUp.matchs.length > 0)			
 			patternPromises.push(getPattern(tourUp.tournamentId));			
 	});
@@ -505,7 +506,7 @@ function updateTournaments(socket, tournamentsUp)
 	}));
 }
 
-function addToTournaments(socket, tournamentsContainer, tournament)
+function addToTournaments(tournamentsContainer, tournament)
 {
 	console.log("ADD TO TOURNAMENT ", tournamentsContainer, " : ", tournament);
 
