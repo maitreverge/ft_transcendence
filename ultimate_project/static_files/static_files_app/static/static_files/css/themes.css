@@ -44,7 +44,7 @@ span
 
 span:hover
 {
-  color: var(--background-color);
+  /* color: var(--background-color); */
 }
 #homelogo  {
   font-size: 30px;
