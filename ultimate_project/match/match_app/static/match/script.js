@@ -33,10 +33,8 @@ function delMatchScript()
 
 function delMatch()
 {
-	document.getElementById('match')?.remove();    
-    const rulesOverlay = document.getElementById('rules-overlay');
-	if (rulesOverlay)
-		rulesOverlay.style.display = 'none';	 
+	document.getElementById('match')?.remove();  
+	document.getElementById('rules-overlay')?.remove();    	 
 }
 
 function displayGiveUp(visible)
