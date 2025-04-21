@@ -347,7 +347,7 @@ function closeMatchWssOnEnter()
 	const socket = window.matchSocket;
 	const socket2 = window.matchSocket2;	
 
-	const closeMatchWsOnEnter = (socket)=> {
+	const closeMatchWsOnEnter = socket => {
 		if (socket && socket.readyState === WebSocket.OPEN && window.antiLoop)	
 			return socket.close(), true;
 		return false;			

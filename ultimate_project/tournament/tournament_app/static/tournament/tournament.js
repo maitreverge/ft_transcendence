@@ -13,14 +13,14 @@ function initTournamentDomain()
 
 function initTournament()
 {		
-	if (typeof closeSimpleMatchSocket === 'function') 
-		closeSimpleMatchSocket();
-	else 
-		console.log("closeSimpleMatch not define");	
+	// if (typeof closeSimpleMatchSocket === 'function') 
+	// 	closeSimpleMatchSocket();
+	// else 
+	// 	console.log("closeSimpleMatch not define");	
 	initTournamentDomain();
 	console.log("INIT TOURNAMENT");
     if (window.tournamentSocket)
-        window.tournamentSocket.close();
+        window.tournamentSocket.close();//!!!!!!
     window.tournamentSocket = new WebSocket(
         `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/${window.selfId}/`
     );
@@ -149,17 +149,30 @@ function enterTournament(socket, tournamentId)
 		}));
 }
 
-function closeTournamentSocket()
-{	
-	if (typeof stopMatch === 'function')
-		stopMatch(window.selfMatchId);//!
-    if (
-		window.tournamentSocket && 
-		window.tournamentSocket.readyState === WebSocket.OPEN
-	)
-	window.tournamentSocket.close();
-	window.websockets.forEach(ws => ws.socket.close());    
+function closeWsTournament()
+{
+	const closeWs = socket => {
+		if (socket && socket.readyState === WebSocket.OPEN)	
+			socket.close();					
+	};
+    // closeWs(window.matchSocket); 
+    // closeWs(window.matchSocket2);
+    // closeWs(window.simpleMatchSocket);
+    closeWs(window.tournamentSocket);
+    window.websockets?.forEach(ws => closeWsNav(ws.socket));
 }
+
+// function closeTournamentSocket()
+// {	
+// 	// if (typeof stopMatch === 'function')
+// 	// 	stopMatch(window.selfMatchId);//!
+//     if (
+// 		window.tournamentSocket && 
+// 		window.tournamentSocket.readyState === WebSocket.OPEN
+// 	)
+// 	window.tournamentSocket.close();
+// 	window.websockets.forEach(ws => ws.socket.close());    
+// }
 
 function onTournamentMessage(event, socket) {
 
@@ -363,7 +376,7 @@ function cloneDisappear(e, ws)
 	clone.style.opacity = "1";
 	clone.classList.add("disappear");
 	setTimeout(()=>{
-		ws.socket.close();
+		closeWsTournament?.closeWs(ws.socket);	
 		clone.remove();	
 	}, 500);
 }

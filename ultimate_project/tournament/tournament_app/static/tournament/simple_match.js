@@ -507,16 +507,28 @@ function onSimpleMatchMessage(event, socket)
 	}
 }
 
-function closeSimpleMatchSocket()
+function closeWsSimpleMatch()
 {
-	if (typeof stopMatch === 'function')
-		stopMatch(window.selfMatchId);
-    if (
-		window.simpleMatchSocket && 
-		window.simpleMatchSocket.readyState === WebSocket.OPEN
-	)
-        window.simpleMatchSocket.close();    
+	const closeWs = socket => {
+		if (socket && socket.readyState === WebSocket.OPEN)	
+			socket.close();					
+	};
+    // closeWs(window.matchSocket); 
+    // closeWs(window.matchSocket2);
+    closeWs(window.simpleMatchSocket);
+    // closeWs(window.tournamentSocket);
+    // window.websockets?.forEach(ws => closeWsNav(ws.socket));
 }
+// function closeSimpleMatchSocket()
+// {
+// 	if (typeof stopMatch === 'function')
+// 		stopMatch(window.selfMatchId);
+//     if (
+// 		window.simpleMatchSocket && 
+// 		window.simpleMatchSocket.readyState === WebSocket.OPEN
+// 	)
+//         window.simpleMatchSocket.close();    
+// }
 
 function updateSimplePlayers(socket, playersUp)
 {
@@ -592,14 +604,14 @@ function initSimpleMatch()
 {	
 	window.busyElement = null;
 	console.log("INIT SIMPLE MATCH");	
-	if (typeof closeTournamentSocket === 'function') 
-		closeTournamentSocket();
-	else 
-		console.log("closeTournamentSocket is not define");	
+	// if (typeof closeTournamentSocket === 'function') 
+	// 	closeTournamentSocket();
+	// else 
+	// 	console.log("closeTournamentSocket is not define");	
 	initSimpleMatchDomain();
 	console.log("INIT SIMPLE MATCH");
     if (window.simpleMatchSocket)
-        window.simpleMatchSocket.close();
+        window.simpleMatchSocket.close();//!!!!!!!!!!
     window.simpleMatchSocket = new WebSocket(
         `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
     );
