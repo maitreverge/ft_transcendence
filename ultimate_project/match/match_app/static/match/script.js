@@ -62,8 +62,8 @@ function cancelMatchAnimations()
 
 function stopMatch(matchId)
 {	
-	if (!matchId)	//////////!!!!!!!!!
-		return delMatchScript();		//////////!!!!!!!!!	
+	// if (!matchId)	//////////!!!!!!!!!
+	// 	return delMatchScript();		//////////!!!!!!!!!	
 	removeKeyBoardEvent();
 	cancelMatchAnimations();
 	displayGiveUp(false);		
