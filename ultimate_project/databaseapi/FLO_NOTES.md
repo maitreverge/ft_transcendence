@@ -8,18 +8,18 @@
 --------------------------------------------------------------------------------
 
 # FRONT WORK
-🟧 Couleurs des match patterns (lizeret de couleurs / couleurs des block des joueurs)
 🟧 Message popus, celui de trump, son z index est bcp trop eleve (entre le z index du match et celui du tournois, 95 bonne valeur (match est a 100))
 
 
 🟧 Petit decallage entre le joeur (ml-2, dans le html de match)
 
-couleurs complementaires
+🟧 couleurs complementaires
 
 # OPTIONNAL WORK
 🟧 Maybe add a litthe css animation for tournament wins
 
 # DONE FRONT
+✅ Couleurs des match patterns (lizeret de couleurs / couleurs des block des joueurs)
 ✅ Tailles des videos tutos (agrandir)
 ✅ Certains messages popus ont le message "OOPS" (changer le titre)
 ✅ GIF Matrix

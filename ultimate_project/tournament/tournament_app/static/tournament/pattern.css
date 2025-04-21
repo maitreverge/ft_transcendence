@@ -21,7 +21,7 @@
   position: relative;
   padding: 10px;
   border-radius: 8px;
-  background-color: hwb(36 1% 2%);
+  background-color: var(--next-match-color);
   z-index: 0;
   isolation: isolate;
   box-shadow: 0 0 0 4px transparent;
@@ -44,7 +44,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-color: hwb(36 1% 2%);
+  /* background-color: hwb(36 1% 2%); */
+  background-color: var(--next-match-color);
   border-radius: 6px;
   z-index: -1;
 }
