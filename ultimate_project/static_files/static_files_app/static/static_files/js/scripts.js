@@ -37,3 +37,14 @@
   }
 
   interceptUrlChanges();
+
+  function handleNavigation(event) {
+    alert("truc: " + JSON.stringify(event));
+    console.log('***************************** Navigation event *************************');
+  }
+  
+  // Se déclenche sur back/forward
+  window.addEventListener('popstate', handleNavigation);
+  
+  // Se déclenche au rechargement initial
+  window.addEventListener('DOMContentLoaded', handleNavigation);
