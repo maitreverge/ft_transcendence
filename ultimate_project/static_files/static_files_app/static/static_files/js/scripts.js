@@ -38,13 +38,24 @@
 
   interceptUrlChanges();
 
-  function handleNavigation(event) {
-    alert("truc: " + JSON.stringify(event));
+  function handleNavigation() {
+    alert("truc: ");
     console.log('***************************** Navigation event *************************');
+ 
+	  // const closeWsNav = (socket)=> {
+		//   if (socket && socket.readyState === WebSocket.OPEN)	
+		// 	  socket.close();					
+	  // };
+    // closeWsNav(window.matchSocket); 
+    // closeWsNav(window.matchSocket2);
+    // closeWsNav(window.simpleMatchSocket);
+    // closeWsNav(window.tournamentSocket);
+    // window.websockets?.forEach(ws => closeWsNav(ws.socket));
+    if (typeof window.stopMatch === "function")
+      window.stopMatch(window.selfMatchId);
   }
   
   // Se déclenche sur back/forward
-  window.addEventListener('popstate', handleNavigation);
+  // window.addEventListener('popstate', handleNavigation);
   
-  // Se déclenche au rechargement initial
-  window.addEventListener('DOMContentLoaded', handleNavigation);
+  // window.addEventListener('DOMContentLoaded', handleNavigation);

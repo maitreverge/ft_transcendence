@@ -12,6 +12,7 @@ function quitMatch()
 	delMatchScript();
 	delMatch();
 }
+window.quitMatch = quitMatch;
 
 function manualCloseMatchWss()
 {
@@ -61,7 +62,7 @@ function cancelMatchAnimations()
 }
 
 function stopMatch(matchId)
-{	
+{
 	// if (!matchId)	//////////!!!!!!!!!
 	// 	return delMatchScript();		//////////!!!!!!!!!	
 	removeKeyBoardEvent();
@@ -72,6 +73,7 @@ function stopMatch(matchId)
 		sendStopMatch(matchId);	
 	setTimeout(manualCloseMatchWss, 1000);		
 }
+window.stopMatch = stopMatch;
 
 function sendStopMatch(matchId)
 {

@@ -85,8 +85,7 @@ function connectNewPlayer(playerId, playerName)
 // }
   
 function newPlayer(socket)
-{
-  
+{  
 	const playerName = document.getElementById("player-name").value;
 	if (playerName.trim() === "")
 	{
