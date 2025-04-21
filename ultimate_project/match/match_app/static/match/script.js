@@ -60,16 +60,17 @@ function cancelMatchAnimations()
 		cancelAnimationFrame(startCountdown.countAnim);
 }
 
-function stopMatch(matchId)
+window.stopMatch = function stopMatch(matchId)
 {	
+	console.log("STOP")
 	if (!matchId)	//////////!!!!!!!!!
-		return delMatchScript();		//////////!!!!!!!!!	
+		return console.log("le match id est null", "color:red"), delMatchScript();		//////////!!!!!!!!!	
 	removeKeyBoardEvent();
 	cancelMatchAnimations();
 	displayGiveUp(false);		
 	window.gameStartTimestamp = undefined; 	
 	if (window.selfMatchId == matchId)	//!!!!!!!!!!!!!!!!!
-		sendStopMatch(matchId);	
+		console.log("le self match id est egal a lid du match", "color:red"), sendStopMatch(matchId);	
 	setTimeout(manualCloseMatchWss, 1000);		
 }
 

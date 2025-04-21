@@ -1,7 +1,7 @@
   // this function is part of the history logic
   window.addEventListener("beforeunload", () => {
     // console.log("URL sauvegardée avec history.state et sessionStorage");
-    stopMatchHtmx();
+    // stopMatchHtmx();
     let currentURL = window.location.href;
     history.replaceState({ lastVisitedPage: currentURL }, "");
     sessionStorage.setItem("lastVisitedPage", currentURL);
@@ -26,35 +26,42 @@
     
   }
 
-  closeWebsockets();
+  // closeWebsockets();
   function interceptUrlChanges() {
     const originalReplaceState = history.replaceState;
 
     history.replaceState = function (state, title, url) {
       originalReplaceState.apply(history, arguments);
-      closeWebsockets();
+      // closeWebsockets();
     };
   }
 
   interceptUrlChanges();
 
-  function handleNavigation(event) {
-    alert("truc: " + JSON.stringify(event));
+  function handleNavigation() {
+    alert("truc: ");
     console.log('***************************** Navigation event *************************');
  
-	  const closeWsNav = (socket)=> {
-		  if (socket && socket.readyState === WebSocket.OPEN)	
-			  socket.close();					
-	  };
-    closeWsNav(window.matchSocket); 
-    closeWsNav(window.matchSocket2);
-    closeWsNav(window.simpleMatchSocket);
-    closeWsNav(window.tournamentSocket);
-    window.websockets.forEach(ws => closeWsNav(ws.socket));    
+	  // const closeWsNav = (socket)=> {
+		//   if (socket && socket.readyState === WebSocket.OPEN)	
+		// 	  socket.close();					
+	  // };
+    // closeWsNav(window.matchSocket); 
+    // closeWsNav(window.matchSocket2);
+    // closeWsNav(window.simpleMatchSocket);
+    // closeWsNav(window.tournamentSocket);
+    // window.websockets?.forEach(ws => closeWsNav(ws.socket));
+    if (typeof window.stopMatch === "function")
+      window.stopMatch(window.selfMatchId);
   }
   
   // Se déclenche sur back/forward
-  window.addEventListener('popstate', handleNavigation);
+  // window.addEventListener('popstate', handleNavigation);
   
-  // Se déclenche au rechargement initial
-  window.addEventListener('DOMContentLoaded', handleNavigation);
+  // // Se déclenche au rechargement initial
+  // window.addEventListener('DOMContentLoaded', () => {
+  //   history.pushState(null, '', window.location.href);
+  //   // handleNavigation();
+  //   // history.replaceState(null, '', window.location.href);
+ 
+  // })
