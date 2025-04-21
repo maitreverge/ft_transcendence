@@ -124,18 +124,22 @@ body, h5 {
 .tuto-box {
   background: white;
   border-radius: 12px;
-  padding: 320px;
-  max-width: 6400px;
+  padding: 160px;
+  max-width: 3200px;
+  /* max-height: 1600px; */
   text-align: center;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .tuto-box img {
-  width: 100%;
-  max-height: 1000px;
-  object-fit: contain;
-  border-radius: 8px;
-}
+	width: 100%;
+	max-height: 1000px;
+	object-fit: contain;
+	border-radius: 8px;
+	display: block;
+	margin: 0 auto;
+	zoom: 2;
+  }
 
 /* SWITCH BUTTON 2D / 3D */
 
