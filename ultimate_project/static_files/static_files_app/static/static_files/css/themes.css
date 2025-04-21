@@ -294,3 +294,8 @@ font-size: 1.1em;
   .navbar-link:hover {
     color: var(--text-color);
   }
+
+
+div:where(.swal2-container) {
+    z-index: 90 !important;
+}
