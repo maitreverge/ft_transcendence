@@ -8,7 +8,7 @@ function quitMatch()
 	window.gameStartTimestamp = undefined; 	
 	removeKeyBoardEvent();
 	cancelMatchAnimations();
-	manualCloseMatchWss();
+	manualCloseMatchWss();//!
 	delMatchScript();
 	delMatch();
 }
@@ -52,9 +52,12 @@ function displayGiveUp(visible)
 
 function cancelMatchAnimations()
 {
-	cancelAnimationFrame(pongUpdate.pongAnim);
-	cancelAnimationFrame(addKeyBoardEvent.keyBoardAnim);
-	cancelAnimationFrame(startCountdown.countAnim);
+	if (typeof pongUpdate?.pongAnim === "number")
+		cancelAnimationFrame(pongUpdate.pongAnim);
+	if (typeof addKeyBoardEvent?.keyBoardAnim === "number")
+		cancelAnimationFrame(addKeyBoardEvent.keyBoardAnim);
+	if (typeof startCountdown?.countAnim === "number")
+		cancelAnimationFrame(startCountdown.countAnim);
 }
 
 function stopMatch(matchId)
@@ -84,8 +87,10 @@ function sendStopMatch(matchId)
 
 function removeKeyBoardEvent()
 {
-	document.removeEventListener("keydown", addKeyBoardEvent.keyDown);
-	document.removeEventListener("keyup", addKeyBoardEvent.keyUp);
+	if (typeof addKeyBoardEvent?.keyDown === "function") 
+		document.removeEventListener("keydown", addKeyBoardEvent.keyDown);
+	if (typeof addKeyBoardEvent?.keyUp === "function") 
+		document.removeEventListener("keyup", addKeyBoardEvent.keyUp);
 }
 
 function addKeyBoardEvent()

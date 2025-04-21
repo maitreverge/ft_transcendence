@@ -150,10 +150,9 @@ function enterTournament(socket, tournamentId)
 }
 
 function closeTournamentSocket()
-{
-	
+{	
 	if (typeof stopMatch === 'function')
-		stopMatch(window.selfMatchId);
+		stopMatch(window.selfMatchId);//!
     if (
 		window.tournamentSocket && 
 		window.tournamentSocket.readyState === WebSocket.OPEN
@@ -169,10 +168,6 @@ function onTournamentMessage(event, socket) {
 	
 	switch (data.type)
 	{
-		// case "selfAssign":
-		// 	setSelfId(data.selfId);
-		// 	break;
-		
 		case "tournamentResult":
 			tournamentResult(data);
 		break;
@@ -208,44 +203,23 @@ function onTournamentMessage(event, socket) {
 			window.pack = data.pack;
 			updateMatchsPlayers(data.pack);			
 			break;
-		// case "closeMatch":
-		// 	console.log("case closematch");
-		// 	if (window.matchSocket && window.matchSocket.readyState === WebSocket.OPEN)
-		// 	{					
-		// 		window.stopFlag = true
-		// 		window.matchSocket.close(3666);
-		// 	}
-		// 	break;
 		default:				
 			break;
 	}
 }
 
-// function setSelfId(selfId) {
-
-// 	window.selfId = selfId;	
-// 	document.getElementById("player").innerText = 
-// 		"Je suis le joueur " + window.selfId;	
-// }
-
-
-
 function tournamentResult(data)
-{
-	if (data.matchs.every(match =>
-		!areMyPlayersIn([match.linkMatch.p1Id, match.linkMatch.p2Id]) &&
-		
-		
-		window.tournamentList.forEach(tour => {
-			if (tour.tournamentId == data.tournamentId)
-				!areMyPlayersIn(tour);
-		});	
-		
-		
-	))
-		return;	
-    messagePopUp('Yeah!', 'https://dansylvain.github.io/pictures/trumpDance.webp', " won the tournament!", " won the tournament!", data.winnerName, "")	// Le tournoi est terminé
+{			
 	console.log("TOURNAMENT RESULT ", data);
+
+	if (!window.tournamentList || !window.tournamentList.some(tour => (
+		tour.tournamentId == data.tournamentId && areMyPlayersIn(tour.players)	
+	)))
+		return;
+    messagePopUp(
+		'Yeah!', 'https://dansylvain.github.io/pictures/trumpDance.webp',
+		" won the tournament!", " won the tournament!", data.winnerName, ""
+	);	
 }
 
 function updatePlayers(socket, playersUp)
