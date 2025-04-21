@@ -8,7 +8,7 @@
 --------------------------------------------------------------------------------
 
 # FRONT WORK
-🟧 GIF Matrix
+✅ GIF Matrix
 🟧 Couleurs des match patterns (lizeret de couleurs / couleurs des block des joueurs)
 🟧 Tailles des videos tutos (agrandir)
 🟧 Petit decallage entre le joeur (ml-2, dans le html de match)
