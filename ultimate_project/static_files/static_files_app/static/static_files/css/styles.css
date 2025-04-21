@@ -124,18 +124,22 @@ body, h5 {
 .tuto-box {
   background: white;
   border-radius: 12px;
-  padding: 20px;
-  max-width: 400px;
+  padding: 160px;
+  max-width: 3200px;
+  /* max-height: 1600px; */
   text-align: center;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .tuto-box img {
-  width: 100%;
-  max-height: 250px;
-  object-fit: contain;
-  border-radius: 8px;
-}
+	width: 100%;
+	max-height: 1000px;
+	object-fit: contain;
+	border-radius: 8px;
+	display: block;
+	margin: 0 auto;
+	zoom: 2;
+  }
 
 /* SWITCH BUTTON 2D / 3D */
 
@@ -227,7 +231,7 @@ input:checked + .slider:before {
 	display: flex;
 	justify-content: center;
 	align-items: center;  
-	background: #f2e2ba;
+	background: var(--alien-player-color);
 }
 
 .match::before {
@@ -290,7 +294,7 @@ input:checked + .slider:before {
 }
 
 .self-player {
-	background-color: #f2bac9;
+	background-color: var(--self-player-color);
 }
 
 .self-match {
@@ -339,7 +343,7 @@ button {
 
 .phantom {
 	background-size: cover;
-    background-color: #bad7f2;
+    background-color: var(--phantom-player-color);
 }
 
 /* toggler day/night */

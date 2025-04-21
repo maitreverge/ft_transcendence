@@ -36,14 +36,27 @@ function initTournament()
 
 function messagePopUp(titre, url, text, traduction, start_var, end_var)
 {
-    Swal.fire({
-        title: titre,
-        html: `<span>${start_var}</span><span data-translate="${traduction}">${text}</span><span>${end_var}</span>`,
-        imageUrl: url,
-        imageWidth: 300,
-        imageHeight: 300,
-        imageAlt: 'GIF fun'
-      });
+	const options = {
+		title: titre,
+		html: `<span>${start_var}</span><span data-translate="${traduction}">${text}</span><span>${end_var}</span>`,
+		imageUrl: url,
+		imageWidth: 300,
+		imageHeight: 300,
+		imageAlt: 'GIF fun'
+	};
+	
+	if (url == "https://dansylvain.github.io/pictures/trumpDance.webp"){
+		options.backdrop = `
+		rgba(2, 243, 14, 0.64)
+		url("https://dansylvain.github.io/pictures/final-conf.gif")
+		center center/cover
+		no-repeat
+		fixed
+		`;
+	}
+	// Add backdrop conditionally if using the Trump dance animation
+	
+	Swal.fire(options);
 }
 
 function connectNewPlayer(playerId, playerName)
@@ -52,7 +65,7 @@ function connectNewPlayer(playerId, playerName)
 
 	if (!playerId)
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', ": Player name already exists!", ": Player name already exists!", playerName, "")
+        messagePopUp('💥 Oops! 💥', 'https://dansylvain.github.io/pictures/travolta.webp', ": Player name already exists!", ": Player name already exists!", playerName, "")
 		// alert("player name yet exist!");
 		console.log(window.websockets);
 		window.websockets = window.websockets.filter(ws => ws.playerId !== undefined);	
@@ -89,14 +102,14 @@ function newPlayer(socket)
 	const playerName = document.getElementById("player-name").value;
 	if (playerName.trim() === "")
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/travolta.webp', "Enter a name!", "Enter a name!", "", "")
+        messagePopUp('🔤 Oops! 🔤', 'https://dansylvain.github.io/pictures/travolta.webp', "Enter a name!", "Enter a name!", "", "")
 
 		// alert("enter a name!");
 		return;
 	}
 	if (window.websockets.length >= 8)
 	{
-        messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "You can't create more than three players!", "You can't create more than three players!", "", "")
+        messagePopUp('🚫 Oops! 🚫', 'https://dansylvain.github.io/pictures/marioNo.webp', "You can't create more than three players!", "You can't create more than three players!", "", "")
 
 		// alert("you can't create more than three players!");
 		return;
@@ -243,7 +256,7 @@ function tournamentResult(data)
 	if (!(areMyPlayersPlayInSomeMatch(data) || areMyPlayersInTournament(data)))
 		return;
     messagePopUp(
-		'Yeah!', 'https://dansylvain.github.io/pictures/trumpDance.webp',
+		'🏆 Yeah! 🏆', 'https://dansylvain.github.io/pictures/trumpDance.webp',
 		" won the tournament!", " won the tournament!", data.winnerName, ""
 	);	
 }
@@ -325,7 +338,7 @@ function dropPlayersZone()
 		const ws = window.websockets.find(el => el.playerId == elementId);	
 		if (!ws && window.selfId != elementId)
 		{
-            messagePopUp('Oops!',
+            messagePopUp('🚷 Oops! 🚷',
 				'https://dansylvain.github.io/pictures/marioNo.webp',
 				"Not your player!", "Not your player!", "", "");
 			return;
@@ -352,13 +365,13 @@ function dropTrash()
 		const ws = window.websockets.find(el => el.playerId == elementId);	
 		if (!ws && window.selfId != elementId)
 		{
-            messagePopUp('Oops!',
+            messagePopUp('🚷 Oops! 🚷',
 				'https://dansylvain.github.io/pictures/marioNo.webp',
 				"Not your player!", "Not your player!", "", "");			
 		}
 		else if (window.selfId == elementId)	
 		{
-			messagePopUp('Oops!',
+			messagePopUp('🚯 Oops! 🚯',
 				'https://dansylvain.github.io/pictures/marioNo.webp',
 				"You can't drop yourself!", "You can't drop yourself!", "", "");			
 		}
@@ -551,7 +564,7 @@ function dropTournament(div, tournamentId)
 		const ws = window.websockets.find(el => el.playerId == elementId);	
 		if (!ws && window.selfId != elementId)
 		{
-            messagePopUp('Oops!',
+            messagePopUp('🚷 Oops! 🚷',
 				'https://dansylvain.github.io/pictures/marioNo.webp',
 				"Not your player!", "Not your player!", "", "")
 			return;

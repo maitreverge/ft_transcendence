@@ -8,13 +8,29 @@
 --------------------------------------------------------------------------------
 
 # FRONT WORK
-🟧 GIF Matrix
-🟧 Couleurs des match patterns (lizeret de couleurs / couleurs des block des joueurs)
-🟧 Tailles des videos tutos (agrandir)
-🟧 Petit decallage entre le joeur (ml-2, dans le html de match)
-🟧 Message popus, celui de trump, son z index est bcp trop eleve (entre le z index du match et celui du tournois, 95 bonne valeur (match est a 100))
-🟧 Certains messages popus ont le message "OOPS" (changer le titre)
 
+
+🟧 Petit decallage entre le joeur (ml-2, dans le html de match)
+
+🟧 couleurs complementaires
+
+# OPTIONNAL WORK
+🟧 Maybe add a litthe css animation for tournament wins
+
+# DONE FRONT
+✅ Message popus, celui de trump, son z index est bcp trop eleve (entre le z index du match et celui du tournois, 95 bonne valeur (match est a 100))
+✅ Couleurs des match patterns (lizeret de couleurs / couleurs des block des joueurs)
+✅ Tailles des videos tutos (agrandir)
+✅ Certains messages popus ont le message "OOPS" (changer le titre)
+✅ GIF Matrix
+
+{
+	.self-player::before {
+    font-size: 2rem;
+	content: "😀 ";
+	margin-right: 4px;
+}
+}
 
 # BACK WORK
 
