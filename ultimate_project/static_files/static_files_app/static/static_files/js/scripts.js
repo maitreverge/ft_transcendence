@@ -58,10 +58,4 @@
   // Se déclenche sur back/forward
   // window.addEventListener('popstate', handleNavigation);
   
-  // // Se déclenche au rechargement initial
-  // window.addEventListener('DOMContentLoaded', () => {
-  //   history.pushState(null, '', window.location.href);
-  //   // handleNavigation();
-  //   // history.replaceState(null, '', window.location.href);
- 
-  // })
+  // window.addEventListener('DOMContentLoaded', handleNavigation);
