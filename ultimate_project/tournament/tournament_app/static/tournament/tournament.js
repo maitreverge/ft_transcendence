@@ -94,7 +94,7 @@ function newPlayer(socket)
 		// alert("enter a name!");
 		return;
 	}
-	if (window.websockets.length >= 3)
+	if (window.websockets.length >= 8)
 	{
         messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/marioNo.webp', "You can't create more than three players!", "You can't create more than three players!", "", "")
 
@@ -283,7 +283,9 @@ function createPlayerElement(socket, playerId, playerName)
 	const div = document.createElement("div");
 	div.className = "user";
 	div.textContent = playerName;
-	div.id = playerId;	
+	div.id = playerId;
+	// div.style.position = "absolute";	
+	// div.style.display = "block";
 	const ws = window.websockets.find(ws => ws.playerId == playerId);	
 	if (playerId == window.selfId)	
 		div.classList.add("self-player");	
@@ -431,7 +433,7 @@ function dragPlayer(div)
 			clone.id = "clone";
 			clone.style.borderRadius = "12px";	
 			const rect = div.getBoundingClientRect();
-			clone.style.width = `${rect.width * 0.85}px`;
+			clone.style.width = `${rect.width * 0.9}px`;
 			clone.style.position = "absolute";
 			clone.style.top = "-100";
 			clone.style.left = "-100";
