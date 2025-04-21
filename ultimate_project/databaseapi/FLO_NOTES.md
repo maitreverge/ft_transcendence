@@ -13,7 +13,8 @@
 🟧 Tailles des videos tutos (agrandir)
 🟧 Petit decallage entre le joeur (ml-2, dans le html de match)
 🟧 Message popus, celui de trump, son z index est bcp trop eleve (entre le z index du match et celui du tournois, 95 bonne valeur (match est a 100))
-🟧 Certains messages popus ont le message "OOPS" (changer le titre)
+✅ Certains messages popus ont le message "OOPS" (changer le titre)
+🟧 Maybe add a litthe css animation for tournament wins
 
 
 # BACK WORK

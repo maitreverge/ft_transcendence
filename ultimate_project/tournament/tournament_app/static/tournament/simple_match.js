@@ -20,7 +20,7 @@ document.addEventListener('visibilitychange', () => {
 async function invitationPopup(socket, applicantId, applicantName)
 {
     const result = await Swal.fire({
-        title: 'Oops!',
+        title: '🎮 Yeah! 🎮',
         html: `<span>${applicantName}</span><span data-translate=" has sent you an invitation!"> has sent you an invitation!</span>`,
         text: ' You have an invitation!',
         imageUrl: 'https://dansylvain.github.io/pictures/thumbs.webp',
@@ -30,6 +30,8 @@ async function invitationPopup(socket, applicantId, applicantName)
         showCancelButton: true,
         confirmButtonText: 'Accept',
         cancelButtonText: 'Decline',
+		confirmButtonColor: '#3cc13b',
+		cancelButtonColor: '#d33',
       });
       console.log("RESULT: ", result, result.isConfirmed)
     // const userConfirmed = confirm(`You have an invitation from ${applicantName}`);
@@ -303,7 +305,7 @@ function invitationCancelled(targetName)
 
 	console.log(`invitation with ${targetName} is cancelled`);
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
+    messagePopUp('❌ Oops! ❌', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
 	// alert(`invitation with ${targetName} is cancelled`);
 	if (window.busyElement)	
 		window.busyElement.classList.remove("invitation-waiting");
@@ -317,7 +319,7 @@ function invitationCancelled(targetName)
 function selectedBusy()
 {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy...", "The player is busy...", "", "");
+    messagePopUp('🫷 Oops! 🫸', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy...", "The player is busy...", "", "");
 
 	// alert("selectedBusy");
 	if (window.busyElement)
@@ -327,13 +329,13 @@ function selectedBusy()
 
 function selfBusy()
 {
-	messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy...", "You are busy...", "", "");
+	messagePopUp('⏳ Oops! ⏳', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy...", "You are busy...", "", "");
 }
 
 function invitationRefused(targetName)
 {
 
-    messagePopUp('Oops!', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
+    messagePopUp('❌ Oops! ❌', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
     if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
