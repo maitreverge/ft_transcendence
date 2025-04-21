@@ -208,13 +208,26 @@ function onTournamentMessage(event, socket) {
 	}
 }
 
+function areMyPlayersPlayInSomeMatch(data)
+{
+	return data.matchs.some(match =>
+		areMyPlayersIn([match.linkMatch.p1Id, match.linkMatch.p2Id])
+	)
+}
+
+function areMyPlayersInTournament(data)
+{
+	return (window.tournamentList && window.tournamentList.some(tour => 
+		tour.tournamentId == data.tournamentId
+		&& areMyPlayersIn(tour.players)	
+	))
+}
+			
 function tournamentResult(data)
 {			
 	console.log("TOURNAMENT RESULT ", data);
 
-	if (!window.tournamentList || !window.tournamentList.some(tour => (
-		tour.tournamentId == data.tournamentId && areMyPlayersIn(tour.players)	
-	)))
+	if (!(areMyPlayersPlayInSomeMatch(data) || areMyPlayersInTournament(data)))
 		return;
     messagePopUp(
 		'Yeah!', 'https://dansylvain.github.io/pictures/trumpDance.webp',
