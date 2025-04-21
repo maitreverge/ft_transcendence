@@ -9,6 +9,9 @@
 	/* height: 100%; */
 	/* transform: translate(-50%, -50%); */
     z-index: 300;
+    display: none;
+    transform: translateY(50%);
+    /* background-color: rgb(244, 37, 22); */
 }
 
 #p1 {
@@ -20,7 +23,7 @@
 	background-position: center;
 	background-repeat: no-repeat;
    
-	/* transform: translate(-50%, -50%); */
+	
 }
 
 #p2 {
@@ -82,11 +85,11 @@
 }
 
 #ball {
-
+    display: none;
 	position: absolute;
 	top:-1%;
 	left:-1%;
-	/* transform: translate(-50%, -50%); */
+	transform: translate(-50%, -50%);
 	/* width:2vw;
 	height:2vw; */
 	border-radius: 50%;

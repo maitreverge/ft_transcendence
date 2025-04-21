@@ -217,6 +217,7 @@ function areMyPlayersPlayInSomeMatch(data)
 
 function areMyPlayersInTournament(data)
 {
+	console.log("ARE IN ", window.tournamentList);
 	return (window.tournamentList && window.tournamentList.some(tour => 
 		tour.tournamentId == data.tournamentId
 		&& areMyPlayersIn(tour.players)	

@@ -195,12 +195,20 @@ function assignInfos(left, rght, leftInfo, rghtInfo)
 	rght.innerHTML = rghtInfo;
 }
 
+tog = true;
 function movePads(data, pads, match)
 {
 	const matchRect = match.getBoundingClientRect();
-
+	 
 	if (!data.ball)
 		return;
+	if (tog)
+	{
+		tog = true;
+		pads.p1.style.display = "block";
+		pads.p2.style.display = "block";
+		pads.ball.style.display = "block";
+	}
 	pads.ball.style.top = -(matchRect.width / 100);//???
 	pads.ball.style.width = (matchRect.width / 100) * 2;
 	pads.ball.style.height = (matchRect.height / 100) * 2;		       
