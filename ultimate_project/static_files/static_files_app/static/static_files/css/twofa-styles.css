@@ -7,11 +7,9 @@
 	align-items: center;
 }
 
-.col-lg-4 {
+.class_custom {
 	width: 100%;
-	/* Ensure it takes full width in medium screens */
 	max-width: 400px;
-	/* Maximum width for the card */
 }
 
 /* Pong Background Animation Styles */
@@ -40,6 +38,5 @@
 .background-color-form {
 	background-color: rgba(248, 133, 56, 0.822);
 	border-radius: 1rem;
-	/* Match this with your login-picture radius */
 	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.295), 0 15px 20px rgba(0, 0, 0, 0.493);
 }
