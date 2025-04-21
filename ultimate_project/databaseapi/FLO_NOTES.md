@@ -14,6 +14,8 @@
 
 🟧 Petit decallage entre le joeur (ml-2, dans le html de match)
 
+couleurs complementaires
+
 # OPTIONNAL WORK
 🟧 Maybe add a litthe css animation for tournament wins
 
@@ -21,6 +23,14 @@
 ✅ Tailles des videos tutos (agrandir)
 ✅ Certains messages popus ont le message "OOPS" (changer le titre)
 ✅ GIF Matrix
+
+{
+	.self-player::before {
+    font-size: 2rem;
+	content: "😀 ";
+	margin-right: 4px;
+}
+}
 
 # BACK WORK
 

@@ -231,7 +231,7 @@ input:checked + .slider:before {
 	display: flex;
 	justify-content: center;
 	align-items: center;  
-	background: #f2e2ba;
+	background: var(--alien-player-color);
 }
 
 .match::before {
@@ -294,7 +294,7 @@ input:checked + .slider:before {
 }
 
 .self-player {
-	background-color: #f2bac9;
+	background-color: var(--self-player-color);
 }
 
 .self-match {
@@ -343,7 +343,7 @@ button {
 
 .phantom {
 	background-size: cover;
-    background-color: #bad7f2;
+    background-color: var(--phantom-player-color);
 }
 
 /* toggler day/night */
