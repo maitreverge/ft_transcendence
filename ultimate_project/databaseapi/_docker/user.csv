@@ -11,9 +11,6 @@ Pablo,Picasso,user9,user9@hehe.com,password,False
 Jean-Marie,Bigard Ma Couillasse,user10,user10@hehe.com,password,False
 Bond,James Bond,user11,user11@hehe.com,password,False
 Genghis,Khan,user12,user12@hehe.com,password,False
-Coco,Channel,user13,user13@hehe.com,password,False
-Pop,Smoke,user14,user14@hehe.com,password,False
-Carglass Repare,Carglass Remplace,user15,user15@hehe.com,password,False
 test-first_name,test-last_name,test,test@test.com,password,False
 two-fa-first_name,two-fa-last_name,test_2fa,test_2fa@hehe.com,password,True,S3EF2KESUQR45MRTL7MXDSJVI6JQDG4R
 same-auth,same-auth,same_auth,same_auth@hehe.com,password,False

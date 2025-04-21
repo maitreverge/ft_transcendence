@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 
 
 INPUT_FILE = "_docker/user.csv"
+# !!!!!!!!!!!!!!! SWITCH IN PROD
+# INPUT_FILE = "_docker/user_prod.csv"
 
 
 def create_user(current_user):

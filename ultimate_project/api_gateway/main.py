@@ -15,9 +15,6 @@ from auth_validators import is_authenticated
 from csrf_tokens import csrf_validator
 
 
-# from fastapi.middleware.cors import CORSMiddleware
-
-
 # =================== 🚀 FastAPI Application Setup for API Gateway 🚀 ============
 
 app = FastAPI(
@@ -25,7 +22,7 @@ app = FastAPI(
     description="This API Gateway routes requests to various microservices. \
         Define endpoints to get any data here :)",
     version="1.0.0",
-    # docs_url=None, # ! Comment this line to enable access to SwaggerUI
+    docs_url=None, # ! Comment this line to enable access to SwaggerUI
 )
 
 # ======================= 🚀 SERVICES TO BE SERVED BY FASTAPI 🚀 =================
@@ -192,20 +189,6 @@ async def jwt_refresh_middleware(request: Request, call_next):
     return response
 
 
-# This middleware is used to debug incoming cookies in FastAPI.
-# It prints the incoming cookies to the console for debugging purposes.
-# [Middleware n°4]
-# @app.middleware("http")
-# async def debug_cookies_middleware(request: Request, call_next):
-#     print(f"🔍 Incoming Cookies in FastAPI: {request.cookies}", flush=True)
-#     response = await call_next(request)
-#     if "set-cookie" in response.headers:
-#         set_cookie_headers = response.headers.getlist("set-cookie")
-#         for cookie in set_cookie_headers:
-#             print(f"🔍 Outgoing Set-Cookie header: {cookie}", flush=True)
-#     return response
-
-
 # This middleware suppress nginx warning about different timestamps between fastAPI and ngninx
 @app.middleware("http")
 async def clean_duplicate_headers_middleware(request: Request, call_next):
@@ -223,7 +206,7 @@ async def clean_duplicate_headers_middleware(request: Request, call_next):
     return response
 
 
-# ===== ⚠️ Exception Handling ⚠️ =====
+# =========================== ⚠️ Exception Handling ⚠️ ===========================
 
 # When an exception of type StarletteHTTPException is raised during
 # the processing of a request, the custom exception handler
@@ -246,7 +229,6 @@ async def reverse_proxy_handler(
     request: Request,
     serve_from_static: bool = False,
     static_service_name: str = None,
-    is_full_page: bool = False,
 ):
     """
      Proxies a request either directly to a target service container or through
@@ -328,12 +310,12 @@ async def reverse_proxy_handler(
             forwarded_headers["X-User-ID"] = str(user_info.get("user_id", ""))
             forwarded_headers["X-Username"] = user_info.get("username", "")
         # Debug log cookies
-        print("=" * 50 + "\n", flush=True)
-        print(f"🔑 Forwarding headers:", flush=True)
-        for key, value in forwarded_headers.items():
-            print(f"{key}: {value}", flush=True)
-        print("=" * 50 + "\n", flush=True)
-        print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
+        # print("=" * 50 + "\n", flush=True)
+        # print(f"🔑 Forwarding headers:", flush=True)
+        # for key, value in forwarded_headers.items():
+        #     print(f"{key}: {value}", flush=True)
+        # print("=" * 50 + "\n", flush=True)
+        # print(f"🍪 Forwarding cookies: {request.cookies}", flush=True)
         request_cookies = request.cookies
         request_method = request.method
         request_body = await request.body()
@@ -348,7 +330,7 @@ async def reverse_proxy_handler(
             print("\n\n========== RESPONSE DEBUG ==========\n", flush=True)
             print(f"🔗 Final URL: {final_url}", flush=True)
             print(f"🔄 Status Code: {response.status_code}", flush=True)
-            print(f"📩 Headers:\n{response.headers}", flush=True)
+            # print(f"📩 Headers:\n{response.headers}", flush=True)
             print("\n====================================\n", flush=True)
             response.raise_for_status()
         except httpx.HTTPStatusError as exc:
@@ -374,11 +356,9 @@ async def reverse_proxy_handler(
 
 # ============================ 🏠 REDIRECT TO HOME 🏠 ============================
 
-
 @app.get("/")
 async def redirect_to_home():
     return RedirectResponse(url="/home/")
-
 
 # ========================= 🏆 Tournament Route Setup 🏆 =========================
 
@@ -684,9 +664,6 @@ async def verify_2fa_login(request: Request):
 
     # Process the 2FA verification and generate JWT
     return await auth.verify_2fa_and_login(request, response, username, token)
-
-
-
 
 
 @app.api_route("/{path:path}", methods=["GET"])

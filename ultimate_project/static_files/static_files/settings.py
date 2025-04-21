@@ -156,7 +156,7 @@ LOGGING = {
         "console": {
             "level": "INFO",
             "class": "logging.StreamHandler",
-            "filters": ["healthcheck_filter"],  # Apply filter here
+            "filters": ["healthcheck_filter"],
         },
     },
     "loggers": {
@@ -168,7 +168,9 @@ LOGGING = {
     },
 }
 
-CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
+CORS_ALLOW_CREDENTIALS = True
+
+# ! Allows full origin on static-files service
 CORS_ALLOW_ORIGINS = [
     "http://localhost:8000",  # Basic
     "http://localhost:8001",  # Tournament

@@ -1,111 +1,13 @@
 {% load static %}
 
-<style>
-.register-picture {
-		background-image: url("https://dansylvain.github.io/pictures/register_pong.png");
-		background-position: center;
-		background-size: 80%;
-		/* Shows 80% of the original image size */
-		background-repeat: no-repeat;
-		min-height: 100%;
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-		border-radius: 20em;
-		overflow: hidden;
-	}
+<link href="{% static 'static_files/css/register-styles.css' %}" rel="stylesheet" />
 
-	/* Custom validation styles for invalid email field */
-	.is-invalid {
-		border-color: #dc3545 !important;
-		box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-	}
-
-	/* Make password error more visible */
-	#password-error {
-		color: #dc3545;
-		font-size: 0.875rem;
-		margin-top: 0.25rem;
-	}
-
-	/* Make email error more visible */
-	#email-error {
-		color: #dc3545;
-		font-size: 0.875rem;
-		margin-bottom: 0.5rem;
-	}
-
-	/* Style the password strength indicator */
-	#password-strength-meter {
-		width: 100%;
-		background-color: #e9ecef;
-		border-radius: 4px;
-		margin-top: 5px;
-	}
-
-	#password-strength-text {
-		font-weight: 500;
-	}
-
-	.pong-background {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: -1;
-		overflow: hidden;
-		background-color: #e9a136;
-	}
-
-	.pong-icon {
-		position: absolute;
-		width: 50px;
-		height: 50px;
-		background-image: url('https://dansylvain.github.io/pictures/raquette_logo.png');
-		background-size: contain;
-		background-repeat: no-repeat;
-		pointer-events: none;
-		opacity: 0.6;
-		transform: scaleX(-1); /* Flip the pong png on register */
-	}
-
-	.card {
-	position: relative;
-	z-index: 10;
-	background-color: rgba(255, 255, 255, 0.95);
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	border-radius: 1rem;
-	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.295), 0 15px 20px rgba(0, 0, 0, 0.493);
-
-}
-
-/* Also make sure the card body doesn't override our settings */
-.card-body {
-	overflow: hidden;
-	border-radius: inherit;
-}
-
-/* And ensure the row doesn't break our radius */
-.card-body > .row {
-	overflow: hidden;
-	border-radius: inherit;
-}
-
-.background-color-form{
-	background-color: rgb(248, 133, 56);
-}
-</style>
-
+<!-- ! PONG BACKGROUND  -->
 <div class="pong-background" id="pong-background"></div>
 
 <div class="container d-flex align-items-center min-vh-100" data-page-type="register">
 	<div class="card o-hidden border-0 my-5 w-100">
 		<div class="card-body p-0 background-color-form">
-			<!-- Nested Row within Card Body -->
 			<div class="row">
 				<div class="col-lg-5 d-none d-lg-block register-picture"></div>
 				<div class="col-lg-7">
@@ -156,8 +58,8 @@
 												style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
 												aria-valuemax="100"></div>
 										</div>
-										<!-- <small id="password-strength-text" class="form-text mt-1">Password strength: Not entered</small> -->
-										<div id="password-strength-text" class="text-center small">Password strength: Not entered</div>
+										<div id="password-strength-text" class="text-center small">Password strength:
+											Not entered</div>
 									</div>
 
 								</div>
@@ -184,7 +86,6 @@
 									class="btn btn-primary btn-user btn-block" value="Register" />
 							</div>
 
-							<!-- ! END FORM  -->
 						</form>
 
 						<!-- ! Feedback error div for the backend -->
@@ -201,8 +102,8 @@
 
 						<!-- ! Link towards login  -->
 						<div class="text-center small" style="font-size: large;">
-							<a id="login-link" hx-trigger="click" hx-push-url="true" hx-get="/login/"
-								hx-target="body" href="" data-translate="Already have an account?"> Already have
+							<a id="login-link" hx-trigger="click" hx-push-url="true" hx-get="/login/" hx-target="body"
+								href="" data-translate="Already have an account?"> Already have
 								an account?</a>
 						</div>
 					</div>
@@ -216,36 +117,6 @@
 <script>
 	initPongAnimation(true);
 	registerChecks();
-
-	document.addEventListener("htmx:beforeSwap", function (evt) {
-		console.log("REGISTER FORM LISTENNING");
-		console.log(evt.detail.target.id);
-
-		if (evt.detail.target.id === "register-form") {
-			try {
-				console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
-				const response = JSON.parse(evt.detail.xhr.responseText);
-
-				if (response.success) {
-					evt.detail.shouldSwap = false;
-
-					htmx
-						.ajax("GET", "/home/", {
-							target: "body",
-							swap: "outerHTML",
-							headers: { "HX-Login-Success": "true" },
-						})
-						.then(function () {
-							history.pushState(null, "", "/home/");
-						});
-				} else {
-					const messageElement = document.getElementById("register-form");
-					const sanitizedMessage = DOMPurify.sanitize(response.message);
-					messageElement.textContent = sanitizedMessage;
-				}
-			} catch (e) {
-				console.error("Erreur de traitement de la réponse:", e);
-			}
-		}
-	});
 </script>
+
+<script src="{% static 'static_files/js/register-module.js' %}"></script>

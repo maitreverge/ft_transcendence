@@ -1,5 +1,4 @@
 services:
-  
   match:
     container_name: ctn_match
     build :
@@ -9,7 +8,7 @@ services:
       env: prod
       name: match
       port: $match_port
-      HOST_IP: $HOST_IP # maybe not set up yet
+      HOST_IP: $HOST_IP
       rasp: $rasp
       DJANGO_SETTINGS_MODULE: match.settings
     env_file:
@@ -21,8 +20,8 @@ services:
       - staticvol:/app/staticfiles
     healthcheck:
       test: ["CMD-SHELL", "curl -f -s http://localhost:${match_port}/health/ > /dev/null 2>&1"]
-      interval: 10s    # How often to run the health check (every 90 seconds)
-      timeout: 2s       # Maximum time to wait for the check to complete
-      retries: 10         # Number of consecutive failures needed to mark container as unhealthy
-      start_period: 60s  # Initial grace period where failures don't count (container startup time)
+      interval: 10s
+      timeout: 2s
+      retries: 10
+      start_period: 60s
     restart: always

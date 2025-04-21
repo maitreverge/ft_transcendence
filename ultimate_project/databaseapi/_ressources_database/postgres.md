@@ -26,6 +26,14 @@ psql -h localhost -p 5432 -U user1 -d transc_db
 \d table_name -- Describe table databases
 ```
 
+``` python
+# HOW TO DELETE INLINE
+from databaseapi_app.models import Player
+result = Player.objects.get(id=13)
+
+Player.objects.get(id=13).delete()
+```
+
 
 ```python
 from match_app.models import Player, Match

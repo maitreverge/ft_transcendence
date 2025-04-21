@@ -22,9 +22,6 @@ HOST_IP = os.getenv("HOST_IP")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # ! SECURED BY FLO
 SECRET_KEY = os.getenv("DJANGO_KEY")
 
@@ -56,7 +53,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
-    "django_extensions",  # For CSV init players
+    "django_extensions",  # ! For CSV init players
 ]
 
 MIDDLEWARE = [
@@ -66,7 +63,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # This must be BEFORE CommonMiddleware
+    "corsheaders.middleware.CorsMiddleware",  # ! This must be BEFORE CommonMiddleware
     "django.middleware.common.CommonMiddleware",
 ]
 
@@ -155,8 +152,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
-    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    # "PAGE_SIZE": 10  # Number of items per page
 }
 
 
@@ -166,7 +161,6 @@ class HealthCheckFilter(logging.Filter):
         return "/health/" not in record.getMessage()
 
 
-# Logging configuration for healthcheck
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -179,7 +173,7 @@ LOGGING = {
         "console": {
             "level": "INFO",
             "class": "logging.StreamHandler",
-            "filters": ["healthcheck_filter"],  # Apply filter here
+            "filters": ["healthcheck_filter"],
         },
     },
     "loggers": {
@@ -193,12 +187,6 @@ LOGGING = {
 
 CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
 CORS_ALLOW_ORIGINS = [
-    # "http://localhost:8000",
-    # "http://localhost:8001",
-    # "http://localhost:8002",
-    # "http://localhost:8003",
-    # "http://localhost:8004",
-    # "http://localhost:8005",
     "http://localhost:8007",
     "https://localhost:8443",
     f"https://{HOST_IP}",

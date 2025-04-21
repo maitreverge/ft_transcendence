@@ -221,22 +221,22 @@ class Match(models.Model):
     id = models.AutoField(primary_key=True)
 
     player1 = models.ForeignKey(
-        to=Player,  # Explicit reference to Player model
-        on_delete=models.CASCADE,  # If a player is deleted, the match is also deleted
+        to=Player,
+        on_delete=models.CASCADE,
         related_name="player1",
-        to_field="id", # to be more explicit but by default use id
+        to_field="id",
     )
     player2 = models.ForeignKey(
         to=Player,
         on_delete=models.CASCADE,
         related_name="player2",
-        to_field="id", # to be more explicit but by default use id
+        to_field="id",
     )
-    winner = models.ForeignKey(  # Renamed from winner_match to winner
+    winner = models.ForeignKey(
         to=Player,
         on_delete=models.CASCADE,
-        related_name="winner_match",  # Keep the original related_name to avoid migration issues
-        to_field="id", # to be more explicit but by default use id
+        related_name="winner_match",
+        to_field="id",
     )
 
     score_p1 = models.IntegerField(default=0)

@@ -466,7 +466,7 @@ button {
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
-    z-index: 1000;
+    z-index: 90;
     position:relative;
     /* left:50%;
     transform: translateX(-50%); */
@@ -482,3 +482,17 @@ button {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }
   }
+
+    /* Option styles */
+    option {
+      padding: 10px;
+      background-color: #222;
+      color: #00ff99;
+      border: none;
+      transition: background-color 0.3s;
+    }
+  
+    option:hover {
+      background-color: #00ff99;
+      color: #111;
+    }

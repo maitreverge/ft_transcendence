@@ -59,7 +59,6 @@ if (!window.nameGeneratorLoaded) {
                     node.classList.contains('swal2-container') &&
                     node.textContent.includes('won the tournament!')
                 ) {
-                    console.log('Tournoi terminé, reset des noms...');
                     window.usedNames.clear();
                 }
             }

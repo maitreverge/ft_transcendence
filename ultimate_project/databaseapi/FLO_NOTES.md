@@ -17,20 +17,25 @@
 
 🟧 CLEAN AND SIMPLIFY COMMENTS
 
-🟧 DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT...
+⚠️ DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT... => Les logs 
 
-🟧 Switch from `user_prod.csv` to `user.csv` in correction 
+{
+	WARN[0000] The "PI_DOMAIN" variable is not set. Defaulting to a blank string. 
+	WARN[0000] The "PI_DOMAIN" variable is not set. Defaulting to a blank string. 
+	WARN[0000] The "PI_DOMAIN" variable is not set. Defaulting to a blank string. 
+	WARN[0000] The "rasp" variable is not set. Defaulting to a blank string. 
+	WARN[0000] The "rasp" variable is not set. Defaulting to a blank string.
+}
 
-🟧 ADMIN DOIT RESTER ID 1
-
-🟧 Disable SwaggerUI in `docs_url=None,`  ===>  `main.py`
-
-🟧 Auth_files refactor (merge Dan brach avant, le faire, puis Dan remerge ma brache apres)
-
-
+🟧 Switch from `user_prod.csv` to `user.csv` in correction in `init_users.py` + ADMIN DOIT RESTER ID 1
 
 ======================================= DONE =====================================
 
+
+
+✅ Disable SwaggerUI in `docs_url=None,`  ===>  `main.py`
+
+✅ Auth_files refactor (merge Dan brach avant, le faire, puis Dan remerge ma brache apres)
 
 ✅ Mettre un bouton retour HOME sur les pages d'erreur (maxi casse couilles)
 
