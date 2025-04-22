@@ -2,13 +2,12 @@
 	background-image: url("https://dansylvain.github.io/pictures/register_pong.png");
 	background-position: center;
 	background-size: 80%;
-	/* Shows 80% of the original image size */
 	background-repeat: no-repeat;
 	min-height: 100%;
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-	border-radius: 20em;
+	border-radius: 50em;
 	overflow: hidden;
 }
 
