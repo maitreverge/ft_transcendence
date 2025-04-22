@@ -61,4 +61,4 @@
   window.addEventListener('popstate', handleNavigation);
   
   // window.addEventListener('DOMContentLoaded', handleNavigation);
-  window.addEventListener('htmx:afterswap', handleNavigation);
+  window.addEventListener('htmx:afterSwap', handleNavigation);
