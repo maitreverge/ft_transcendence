@@ -42,6 +42,13 @@
 	transform: translate(-50%, -50%);
 }
 
+.match-buttons{
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	margin-bottom: 5%;
+}
+
 #quit-match-button {
     position: relative;
     z-index: 1000;
@@ -50,6 +57,34 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    padding: 10px 20px;
+    font-size: 25px;
+    font-weight: bold;
+    min-width: 150px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+#go-back-button {
+	position: relative;
+    z-index: 1000;
+    background-color: rgb(136, 136, 136);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+	padding: 10px 20px;
+    font-size: 25px;
+    font-weight: bold;
+    min-width: 150px;
+    height: 55px; 
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 #match {
