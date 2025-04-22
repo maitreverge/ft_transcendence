@@ -7,10 +7,29 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<style>
+    .swal2-popup {
+        width: 100% !important;   /* Makes the popup wider */
+        max-width: 1200px !important; /* Sets a maximum width */
+        padding: 2em !important; /* More internal spacing */
+    }
+    
     .swal2-image {
         max-width: 100%;
         height: auto !important; /* Force height to adjust to width */
         object-fit: contain; /* Ensures image is fully visible */
+    }
+    
+    .swal2-title {
+        font-size: 1.8em !important; /* Larger title */
+    }
+    
+    .swal2-html-container {
+        font-size: 1.4em !important; /* Larger text content */
+    }
+    
+    .swal2-confirm, .swal2-cancel {
+        font-size: 1.2em !important; /* Larger buttons */
+        padding: 12px 24px !important;
     }
 	  </style>
 </head>
@@ -23,39 +42,28 @@
 		function startCarousel() {
 			const steps = [
 			{
-					width: "1000%",
 					title: '🎮 MATCH TUTORIAL 🎮',
 					text: 'In the next steps, you\'ll learn how to play Simple Matches',
 					imageUrl: 'https://dansylvain.github.io/pictures/tuto.webp',
-					imageWidth: "1000%",
-					// width: 'auto',         // Let the popup size to content
-					// heightAuto: true,      // Allow height to adjust to content
-					// padding: '2em',        // More padd
-					// imageHeight: 300,
+					imageWidth: 800,
 				},
 				{
 					title: 'Step 1',
 					text: 'hsdgvjhsfbjvh',
 					imageUrl: 'https://dansylvain.github.io/pictures/match_1.png',
-					// imageWidth: 20000,
-					// imageWidth: "1000%",
-					imageHeight: 1500,
-					// grow: 'fullscreen'
-					// imageHeight: 600,
+					imageWidth: 800,
 				},
 				{
 					title: 'Step 2',
 					text: 'Here\'s the second step.',
 					imageUrl: 'https://dansylvain.github.io/pictures/match_2.png',
-					imageWidth: 600,
-					imageHeight: 300,
+					imageWidth: 800,
 				},
 				{
 					title: 'Step 3',
 					text: 'Final step!',
 					imageUrl: 'https://dansylvain.github.io/pictures/match_3.png',
-					imageWidth: 600,
-					imageHeight: 300,
+					imageWidth: 800,
 				}
 
 				// Add more steps here if needed!
@@ -71,6 +79,8 @@
 					imageUrl: step.imageUrl,
 					imageWidth: step.imageWidth,
 					imageHeight: step.imageHeight,
+					width: 'auto',         // Let popup size adjust to content
+                    heightAuto: true,
 
 					// ✅ Always show Cancel button except on the first step
 					showCancelButton: index > 0,
