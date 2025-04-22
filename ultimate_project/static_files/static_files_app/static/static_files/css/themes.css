@@ -4,10 +4,11 @@
     --main-color: #594F49;
     --text-color: #7fd4eb;
     --title-color: #3A95B4;
-	--self-player-color: #28be14;
-	--alien-player-color: #627c60;
-	--phantom-player-color: #266df0;
-	--next-match-color: #00ff15;
+    --self-player-color: #28be14;
+    --alien-player-color: #627c60;
+    --phantom-player-color: #266df0;
+    --next-match-color: #00ff15;
+    --loser: rgb(250, 8, 48);
 }
 
 
@@ -21,6 +22,8 @@
 	--alien-player-color: #627c60;
 	--phantom-player-color: #266df0;
 	--next-match-color: #00ff15;
+  --loser: rgb(250, 8, 48);
+
 }
 
 /* Cibler les éléments spécifiques du site */
