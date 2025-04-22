@@ -223,6 +223,7 @@ input:checked + .slider:before {
 	font-size: 30;
 	content: "👽 ";
 	margin-right: 4px;
+	/* margin-left: 8px; */
 }
 
 .user {
@@ -285,6 +286,12 @@ input:checked + .slider:before {
 
 .invitation-confirmed {
 	background-color: rgb(16, 90, 175);
+	/* margin-left: 20px; */ 
+}
+
+/* Apply margin to alien player only when he's already inside a match */
+.self-match .invitation-confirmed {
+    margin-left: 20px;
 }
 
 .self-player::before {
@@ -299,6 +306,7 @@ input:checked + .slider:before {
 
 .self-match {
 	background: rgb(48, 48, 25);
+	/* margin-right: 20px; */
 }
 
 button {
