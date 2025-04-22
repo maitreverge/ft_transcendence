@@ -32,14 +32,6 @@ DEBUG = os.getenv("env", "prod") != "prod"
 
 ALLOWED_HOSTS = ["*", f"https://{HOST_IP}"]
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://127.0.0.1:8443",
-    "https://localhost:8443",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    f"https://{HOST_IP}",
-]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -188,4 +180,10 @@ CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
 CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
 
 # CSRF Middleware settings
-CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]  # Add your domain(s) here
+CSRF_TRUSTED_ORIGINS = [
+    "https://127.0.0.1:8443",
+    "https://localhost:8443",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    f"https://{HOST_IP}",
+]
