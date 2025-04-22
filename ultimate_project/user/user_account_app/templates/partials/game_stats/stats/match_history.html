@@ -4,8 +4,8 @@
 
   <div
     class="poly-card d-flex flex-column flex-md-row justify-content-center mx-auto px-3 py-3 mb-4 {% if match.winner == user.id %} border-won {% else %} border-lost {% endif %}"
-    style="width: 95%;"
-    >
+    style="width: 95%"
+  >
     <!-- First Section: Tournament ID - Match ID -->
     <div
       class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
@@ -15,21 +15,21 @@
         {% if match.tournament %}
           {% if match.is_last_match %}
             {% if match.winner_tournament and match.winner_tournament.winner_tournament == user.id %}
-                <span class="badge bg-winner text-white mb-2" style="font-size: 0.8rem">
+                <span class="badge bg-winner card-text-bg mb-2">
                     👑 Tournament ID: #{{ match.tournament }} - Won
                 </span>
             {% elif match.winner_tournament %}
-                <span class="badge bg-loser text-white mb-2" style="font-size: 0.8rem">
+                <span class="badge bg-loser card-text-bg mb-2">
                     💔 Tournament ID: #{{ match.tournament }} - Lost
                 </span>
             {% endif %}
           {% else %}
-              <span class="badge bg-tournament text-white mb-2" style="font-size: 0.8rem">
+              <span class="badge bg-tournament card-text-bg mb-2">
                   Tournament ID: #{{ match.tournament }}
               </span>
           {% endif %}
         {% endif %}
-        <span class="badge bg-match text-white" style="font-size: 0.8rem"
+        <span class="badge bg-match card-text-bg"
           >Match ID: #{{ match.id }}</span
         >
       </div>
@@ -39,11 +39,9 @@
     <div
       class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
     >
-      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">
-        PLAYERS
-      </p>
+      <p data-translate="match-hist-dt-1" class="mb-1 card-text">PLAYERS</p>
       <div
-        class="fw-bold mb-2 row w-100 justify-content-center align-items-center gx-2 text-nowrap"
+        class="fw-bold mb-2 d-flex justify-content-center align-items-center gap-2 flex-wrap"
         style="font-size: 1.1rem"
       >
         <div class="col-auto">
@@ -55,7 +53,7 @@
           <span class="blue-text">{{ match.player1_details.username }}</span>
           {% endif %}
         </div>
-        <div class="col-auto text-muted" style="font-weight: bold">VS</div>
+        <div class="col-auto card-text">VS</div>
         <div class="col-auto">
           {% if match.winner == match.player2 %}
           <span class="winner-box red-box"
@@ -67,12 +65,10 @@
         </div>
       </div>
       <!-- Score Label -->
-      <p class="text-muted mb-1" style="font-size: 0.85rem; font-weight: bold">
-        SCORE
-      </p>
+      <p data-translate="match-hist-dt-2" class="card-text mb-1">SCORE</p>
       <!-- Score Values -->
       <div
-        class="fw-medium row w-100 justify-content-center align-items-center gx-2"
+        class="fw-medium d-flex justify-content-center align-items-center gap-2 flex-wrap"
         style="font-size: 1rem"
       >
         <div class="col-auto">
@@ -82,7 +78,7 @@
           <span class="blue-text">{{ match.score_p1 }}</span>
           {% endif %}
         </div>
-        <div class="col-auto text-muted">:</div>
+        <div class="col-auto card-text">:</div>
         <div class="col-auto">
           {% if match.winner == match.player2 %}
           <span class="winner-box red-box">{{ match.score_p2 }}</span>
@@ -98,40 +94,94 @@
       class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
     >
       <div class="d-flex flex-column align-items-center">
-        <span class="badge bg-time text-white mb-2" style="font-size: 0.8rem"
-          >Start-Time: {{ match.start_time }}</span
-        >
-        <span class="badge bg-time text-white" style="font-size: 0.8rem"
-          >End-Time: {{ match.end_time }}</span
-        >
+        <div class="d-flex flex-row align-items-center mb-1 flex-wrap">
+          <span data-translate="match-hist-dt-3" class="badge bg-time card-text-bg"
+            >Start-Time
+          </span>
+          <span class="badge bg-time card-text-bg ml-1">
+            {{ match.start_time }}</span
+          >
+        </div>
+        <div class="d-flex flex-row align-items-center mb-1 flex-wrap">
+          <span data-translate="match-hist-dt-4" class="badge bg-time card-text-bg"
+            >End-Time
+          </span>
+          <span class="badge bg-time card-text-bg ml-1">
+            {{ match.end_time }}</span
+          >
+        </div>
       </div>
     </div>
   </div>
 
+  <!--Card if match history is empty -->
   {% empty %}
-  <div class="card mb-4 shadow">
-    <div class="card-body text-center">
-      <h5 class="card-title primary-text">No Match History</h5>
-      <p class="card-text secondary-text">
+  <div
+    class="poly-card d-flex flex-column flex-md-row justify-content-center align-items-center mx-auto px-3 py-3 mb-4 shadow"
+    style="width: 95%"
+  >
+    <!-- Content block, aligned like other match entries -->
+    <div
+      class="d-flex flex-column justify-content-center align-items-center text-center col-12 col-md-6"
+    >
+      <h5 data-translate="match-hist-dt-5" class="card-text">No Match History</h5>
+      <h5 data-translate="match-hist-dt-6" class="card-text">
         You haven’t played any matches yet. Your match history will appear here
         once you start playing!
-      </p>
+      </h5>
       <a
-        class="btn btn-outline-primary"
+        class="btn-go-play btn-rounded mt-3"
         hx-get="/tournament/simple-match/"
         hx-target="#main_div"
         hx-swap="innerHTML"
         hx-push-url="true"
+        data-translate="match-hist-dt-7"
       >
         Start Playing
       </a>
     </div>
   </div>
   {% endfor %}
-  <!--  -->
 </div>
 
 <style>
+  .btn-rounded {
+    border: 2px solid var(--text-color);
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    text-align: center;
+    border-width: 2px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+
+  .btn-go-play {
+    color: var(--text-color) !important;
+    background-color: var(--background-color) !important;
+  }
+
+  .btn-go-play.btn-rounded:hover,
+  .btn-go-play.btn-rounded:focus {
+    color: var(--text-color) !important;
+    text-decoration: none !important;
+    border-color: var(--title-color) !important;
+    background-color: var(--background-color) !important;
+    cursor: pointer;
+  }
+</style>
+
+
+<style>
+  .poly-card {
+    justify-content: space-between;
+    background: var(--navbars-color);
+    backdrop-filter: blur(24px) saturate(160%);
+    border-radius: 1.25rem;
+    padding: 1rem;
+    width: 100%;
+    align-items: center;
+  }
+
   /*Border for winner or looser */
   .border-lost {
     border-color: #dc3545 !important;
@@ -148,19 +198,19 @@
   }
 
   .bg-tournament {
-    background-color: var(--navbars-color);
+    background-color: var(--title-color);
   }
 
   .bg-match {
-    background-color: var(--navbars-color);
+    background-color: var(--title-color);
   }
 
   .bg-time {
-    background-color: var(--navbars-color);
+    background-color: var(--title-color);
   }
 
   .bg-winner {
-    background-color: #f1c40f;; /* Green - success */
+    background-color: #f1c40f; /* Green - success */
     color: white;
   }
 
@@ -169,20 +219,24 @@
     color: white;
   }
 
-  .match-card {
-    background-color: #fdfdfd;
-    font-size: 0.95rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    border-width: 2px; /* Default border */
-    border-style: solid; /* Default border style */
-    padding-top: 2rem; /* Space for the top section */
-    position: relative; /* Keeps the content inside the card */
+  .card-text-bg {
+    font-size: 0.8rem;
+    color: white !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  .winner-box.blue-box {
-    display: inline-flex;
-    align-items: center;
-    background-color: #007bff;
+  .card-text {
+    font-size: 0.8rem;
+    color: var(--text-color) !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .winner-box {
+    display: inline-block; /* changed from inline-flex */
     color: white;
     padding: 2px 10px;
     border-radius: 20px;
@@ -191,21 +245,15 @@
     text-align: center;
     box-sizing: border-box;
     white-space: nowrap;
+    vertical-align: middle;
   }
 
   .winner-box.red-box {
-    display: inline-flex;
-    align-items: center;
     background-color: #dc3545;
-    margin: 0;
-    color: white;
-    padding: 2px 10px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 1rem;
-    text-align: center;
-    box-sizing: border-box;
-    white-space: nowrap;
+  }
+
+  .winner-box.blue-box {
+    background-color: #007bff;
   }
 
   .blue-text {
@@ -218,7 +266,9 @@
     font-weight: bold;
   }
 
-  .poly-card span:hover {
-    pointer-events: none !important;
+  .poly-card span {
+    pointer-events: none;
+    cursor: default;
+    user-select: none;
   }
 </style>
