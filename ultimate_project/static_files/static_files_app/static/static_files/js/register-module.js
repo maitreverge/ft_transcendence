@@ -4,7 +4,7 @@ document.addEventListener("htmx:beforeSwap", function (evt) {
 
 	if (evt.detail.target.id === "register-form") {
 		try {
-			console.log("Réponse brute:", evt.detail.xhr.responseText); // 🔍 Debug
+			console.log("Réponse brute:", evt.detail.xhr.responseText); // debug
 			const response = JSON.parse(evt.detail.xhr.responseText);
 
 			if (response.success) {

@@ -128,7 +128,6 @@ USE_TZ = True
 
 STATIC_URL = f"/static/{NAME}/" if DEBUG else "/static/"
 
-# Répertoire où collecter les fichiers statiques (après collectstatic)
 STATIC_ROOT = "/app/staticfiles"
 
 # Default primary key field type
@@ -197,4 +196,4 @@ CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
 CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
 
 # CSRF Middleware settings
-CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]  # Add your domain(s) here
+CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]

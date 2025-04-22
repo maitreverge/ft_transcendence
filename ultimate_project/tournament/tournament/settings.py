@@ -55,7 +55,6 @@ INSTALLED_APPS = [
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
-        # Utilise la mémoire pour les messages #! prod: redis
     },
 }
 
@@ -135,7 +134,6 @@ USE_TZ = True
 
 STATIC_URL = f"/static/{NAME}/" if DEBUG else "/static/"
 
-# Répertoire où collecter les fichiers statiques (après collectstatic)
 STATIC_ROOT = "/app/staticfiles"
 
 # Default primary key field type
@@ -178,13 +176,13 @@ LOGGING = {
     },
 }
 
-CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies in requests
 
 CORS_ALLOW_ORIGINS = [
     "http://localhost:8002",  # Match
     "http://localhost:8007",  # DatabaseAPI
     "https://localhost:8443"  # For secure HTTPS access
-    f"https://{HOST_IP}",  # Production
+    f"https://{HOST_IP}",     # Production
 ]
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "DELETE"]
 CORS_ALLOW_HEADERS = ["*"]
@@ -196,9 +194,9 @@ SESSION_COOKIE_SAMESITE = (
     "Lax"  # Allows cookies on same-site navigation, blocks cross-site
 )
 
-CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
+CSRF_COOKIE_SECURE = True     # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
 CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
 
 # CSRF Middleware settings
-CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]  # Add your domain(s) here
+CSRF_TRUSTED_ORIGINS = ["https://localhost:8443"]

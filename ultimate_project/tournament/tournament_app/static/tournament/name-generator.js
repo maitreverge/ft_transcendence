@@ -41,7 +41,6 @@ if (!window.nameGeneratorLoaded) {
     });
 
     document.body.addEventListener('htmx:afterSwap', (e) => {
-        // Si le champ #player-name est dans la réponse HTMX, on préremplit
         if (document.getElementById('player-name')) {
             prefillName();
         }

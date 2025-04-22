@@ -1,6 +1,5 @@
   // this function is part of the history logic
   window.addEventListener("beforeunload", () => {
-    // console.log("URL sauvegardée avec history.state et sessionStorage");
     // stopMatchHtmx();
     let currentURL = window.location.href;
     history.replaceState({ lastVisitedPage: currentURL }, "");
@@ -63,7 +62,6 @@
 
   }
   
-  // Se déclenche sur back/forward
   window.addEventListener('popstate', handleNavigation);
   
   // window.addEventListener('DOMContentLoaded', handleNavigation);
