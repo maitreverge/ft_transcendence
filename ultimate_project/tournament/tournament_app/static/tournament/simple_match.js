@@ -21,7 +21,9 @@ async function invitationPopup(socket, applicantId, applicantName)
 {
     const result = await Swal.fire({
         title: '🎮 Yeah! 🎮',
-        html: `<span>${applicantName}</span><span data-translate=" has sent you an invitation!"> has sent you an invitation!</span>`,
+        html:
+			`<span>${applicantName}</span><span data-translate="` + 
+			` has sent you an invitation!"> has sent you an invitation!</span>`,
         text: ' You have an invitation!',
         imageUrl: 'https://dansylvain.github.io/pictures/thumbs.webp',
         imageWidth: 300,
@@ -32,8 +34,8 @@ async function invitationPopup(socket, applicantId, applicantName)
         cancelButtonText: 'Decline',
 		confirmButtonColor: '#3cc13b',
 		cancelButtonColor: '#d33',
-      });
-      console.log("RESULT: ", result, result.isConfirmed)
+    });
+    console.log("RESULT: ", result, result.isConfirmed)
     // const userConfirmed = confirm(`You have an invitation from ${applicantName}`);
     sendConfirmation(socket, applicantId, applicantName, result.isConfirmed);
 }
@@ -52,31 +54,28 @@ function handlePendingInvitations()
 
 function showNotification(message, applicantId)
 {
-    if (Notification.permission === "granted") {
+    if (Notification.permission === "granted") 
         new Notification(message);
-    } else if (Notification.permission !== "denied") {
+    else if (Notification.permission !== "denied")
+	{
         // Demande la permission si elle n'a pas encore été accordée ni refusée
         Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                new Notification(message);
-            }
+            if (permission === "granted") 
+                new Notification(message);            
         });
-    } else {
-        console.log("Notification permission not granted");
     }
+	else 
+        console.log("Notification permission not granted");    
 }
 
-function receiveInvitation(socket, applicantId, applicantName) {
+function receiveInvitation(socket, applicantId, applicantName)
+{
     console.log("I have had an invitation from: " + applicantName);
     
-    if (isPageVisible) {
-        // Si l'onglet est actif, demande la confirmation immédiatement
+    if (isPageVisible)
         invitationPopup(socket, applicantId, applicantName);
-    } else {
-        // Si l'onglet est en arrière-plan, stocke l'invitation en attente
-        pendingInvitations.push({socket, applicantId, applicantName});
-        // showNotification(`You have an invitation from ${applicantId}`, applicantId);
-    }
+    else
+        pendingInvitations.push({socket, applicantId, applicantName});   
 }
 
 // function receiveInvitation(socket, applicantId) {
@@ -127,7 +126,7 @@ function enterMatch(match)
 	let player2Name = "";	
 	if (match.multy)
 	{
-		player2Id = -window.selfId;//match.otherId;
+		player2Id = -window.selfId;
 		player2Name = match.otherName;
 	}
 	fetch(
@@ -154,8 +153,7 @@ function isMyMatch(match)
 }
 
 function setSelfMatchId(match)
-{
-	// console.log("MATCHHHHHHHHHHHHHHHHH ", match); 
+{	
 	console.log("SELF SET MATCH match avant bleue: ", match);
 	console.log("%cCeci est bleue", "color: blue");//data
 	if (isMyMatch(match))
@@ -164,8 +162,8 @@ function setSelfMatchId(match)
 		window.selfMatchId = null;
 }
 
-function moveSimplePlayerInMatch(matchElement, match) {
-
+function moveSimplePlayerInMatch(matchElement, match)
+{
 	console.log("MOVE SIMPLE PLAYER IN MATCH", match);
 
 	if (!match.players)
@@ -179,13 +177,11 @@ function moveSimplePlayerInMatch(matchElement, match) {
 }
 
 function addToMatchs(matchsContainer, match)
-{
-  	
+{  	
 	const div = document.createElement("div");
 	div.className = "match";
 	div.textContent = `match: ${match.matchId}`;
 	div.id = match.matchId;
-	// if (div.id == window.selfMatchId)
 	console.log("ADD TO MATCH match avant bleue: ", match);
 	console.log("%cCeci est bleue", "color: blue");/////data
 	if (isMyMatch(match))
@@ -201,14 +197,13 @@ function addToMatchs(matchsContainer, match)
 function removeMatchs(socket, matchs, matchsContainer, matchElements)
 {
 	matchElements.slice().reverse().forEach(match => {
-		if (matchs.every(el => el.matchId != match.id)) {
-			// if (match.id == window.selfMatchId)
+		if (matchs.every(el => el.matchId != match.id))
+		{			
 			console.log("REMOVE MATCH match avant bleue: ", match);
 			console.log("%cCeci est bleue", "color: blue");//div
 			if (match.selfMatch)
 			{
 				console.log("%cCeci est rouge", "color: red");
-
 				if (window.busyElement)
 					window.busyElement.classList.remove("invitation-waiting");
 				window.busyElement = null;
@@ -217,10 +212,7 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements)
 						"invitation-confirmed");
 				window.selectedElement = null;
 				// window.selfMatchId = null;
-			}
-			// [...match.children].forEach(player => {
-			// 	playersContainer.appendChild(player);
-			// });
+			}		
 			matchsContainer.removeChild(match);		
 		}
 	});
@@ -228,7 +220,6 @@ function removeMatchs(socket, matchs, matchsContainer, matchElements)
 
 function updateMatchs(socket, matchs)
 {
-
 	console.log("UPDATE MATCH", matchs);
 
     const matchsContainer = document.getElementById("matchs");
@@ -302,11 +293,13 @@ function sendConfirmation(socket, applicantId, applicantName, response)
 
 function invitationCancelled(targetName)
 {
-
 	console.log(`invitation with ${targetName} is cancelled`);
 
-    messagePopUp('❌ Oops! ❌', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
-	// alert(`invitation with ${targetName} is cancelled`);
+    messagePopUp(
+		'❌ Oops! ❌',
+		'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp',
+		"Invitation cancelled!", "Invitation cancelled!", "", ""
+	);
 	if (window.busyElement)	
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
@@ -318,10 +311,11 @@ function invitationCancelled(targetName)
 
 function selectedBusy()
 {
-
-    messagePopUp('🫷 Oops! 🫸', 'https://dansylvain.github.io/pictures/busy.webp', "The player is busy...", "The player is busy...", "", "");
-
-	// alert("selectedBusy");
+    messagePopUp(
+		'🫷 Oops! 🫸',
+		'https://dansylvain.github.io/pictures/busy.webp',
+		"The player is busy...", "The player is busy...", "", ""
+	);
 	if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
@@ -329,13 +323,20 @@ function selectedBusy()
 
 function selfBusy()
 {
-	messagePopUp('⏳ Oops! ⏳', 'https://dansylvain.github.io/pictures/busy.webp', "You are busy...", "You are busy...", "", "");
+	messagePopUp(
+		'⏳ Oops! ⏳',
+		'https://dansylvain.github.io/pictures/busy.webp',
+		"You are busy...", "You are busy...", "", ""
+	);
 }
 
 function invitationRefused(targetName)
 {
-
-    messagePopUp('❌ Oops! ❌', 'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp', "Invitation cancelled!", "Invitation cancelled!", "", "")
+    messagePopUp(
+		'❌ Oops! ❌',
+		'https://dansylvain.github.io/pictures/non-je-ne-contracte-pas.webp',
+		"Invitation cancelled!", "Invitation cancelled!", "", ""
+	);
     if (window.busyElement)
 		window.busyElement.classList.remove("invitation-waiting");
 	window.busyElement = null;
@@ -345,7 +346,9 @@ function messagePopUp(titre, url, text, traduction, start_var, end_var)
 {
     Swal.fire({
         title: titre,
-        html: `<span>${start_var}</span><span data-translate="${traduction}">${text}</span><span>${end_var}</span>`,
+        html:
+			`<span>${start_var}</span><span data-translate="${traduction}">` +
+			`${text}</span><span>${end_var}</span>`,
         imageUrl: url,
         imageWidth: 300,
         imageHeight: 300,
@@ -354,11 +357,7 @@ function messagePopUp(titre, url, text, traduction, start_var, end_var)
 }
 
 function invitationConfirmed(matchId, targetId)
-{
-    // document.getElementById("response").innerHTML = '<img id="myGif" src="https://media1.tenor.com/m/A-ozELwp694AAAAC/thumbs-thumbs-up-kid.gif" alt="gif marrant">';
-	// setTimeout(() => {
-    //     document.getElementById("myGif")?.remove();
-    //   }, 3000);
+{  
     
     window.selectedElement = document.getElementById("players")
 		.querySelector(`[id='${targetId}']`)
@@ -406,55 +405,6 @@ function sendPlayerClick(socket, selectedId, selectedName)
 			selectedName: selectedName
 		}));
 }
-
-// function selfInvitation(event, socket)
-// {
-// 	event.stopPropagation();
-// }
-
-// function addPlayerToContainer(socket, container, playerId) {
-
-// 	const div = document.createElement("div");
-// 	div.className = "user";
-// 	div.textContent = `user: ${playerId}`;
-// 	div.id = playerId;	
-// 	if (playerId === window.selfId)
-// 		div.classList.add("self-player");
-// 	// 	div.onclick = event => {
-// 	// 		selfInvitation(event, socket)
-// 	// 		event.stopPropagation();
-// 	// 		alert("you can't choose yourself");
-// 	// 	}		
-// 	// }
-// 	// else	
-// 	div.onclick = event => playerClick(socket, event, div);	
-//     container.appendChild(div);
-// }
-
-// function updatePlayers(socket, players) {
-
-//     const playersContainer = document.getElementById("players");
-// 	let playerElements = [...playersContainer.children];	
-  
-// 	playerElements.slice().reverse().forEach(player => {	
-// 		if (players.every(el => el.playerId != player.id))		
-// 			playersContainer.removeChild(player);					
-// 	});
-// 	playerElements = [...playersContainer.children];
-// 	players.forEach(player => {	
-// 		if (playerElements.every(el => el.id != player.playerId))		
-// 			addPlayerToContainer(socket, playersContainer, player.playerId);		
-// 	});	
-// }
-
-
-
-// function setSelfId(selfId) {
-
-// 	window.selfId = selfId;	
-// 	document.getElementById("player").innerText = 
-// 		"Je suis le joueur " + window.selfId + " " + window.user_name;	
-// }
 
 function invitation(socket, data)
 {
@@ -514,24 +464,10 @@ function closeWsSimpleMatch()
 	const closeWs = socket => {
 		if (socket && socket.readyState === WebSocket.OPEN)	
 			socket.close();					
-	};
-    // closeWs(window.matchSocket); 
-    // closeWs(window.matchSocket2);
-    closeWs(window.simpleMatchSocket);
-    // closeWs(window.tournamentSocket);
-    // window.websockets?.forEach(ws => closeWsNav(ws.socket));
+	}; 
+    closeWs(window.simpleMatchSocket);   
 }
 window.closeWsSimpleMatch = closeWsSimpleMatch;
-// function closeSimpleMatchSocket()
-// {
-// 	if (typeof stopMatch === 'function')
-// 		stopMatch(window.selfMatchId);
-//     if (
-// 		window.simpleMatchSocket && 
-// 		window.simpleMatchSocket.readyState === WebSocket.OPEN
-// 	)
-//         window.simpleMatchSocket.close();    
-// }
 
 function updateSimplePlayers(socket, playersUp)
 {
@@ -563,7 +499,6 @@ function updateSimpleWinPlayers(socket, playersUp)
 
 function updateSimplePlayersCont(playersUp)
 {
-
 	console.log("UPDATE SIMPLE PLAYERS CONT ", playersUp);
 
 	const playersCont = document.getElementById("players");
@@ -620,7 +555,8 @@ function initSimpleMatch()
     if (window.simpleMatchSocket)
         window.simpleMatchSocket.close();//!!!!!!!!!!
     window.simpleMatchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/simple-match/${window.selfId}/${window.selfName}/`
+        `wss://${window.pidom}/ws/tournament/simple-match/` + 
+		`${window.selfId}/${window.selfName}/`
     );
 	window.simpleMatchSocket.onopen = () => {
         console.log("Connexion Simple Match établie 😊");	

@@ -22,7 +22,8 @@ function initTournament()
     if (window.tournamentSocket)
         window.tournamentSocket.close();//!!!!!!
     window.tournamentSocket = new WebSocket(
-        `wss://${window.pidom}/ws/tournament/tournament/${window.selfId}/${window.selfName}/${window.selfId}/`
+        `wss://${window.pidom}/ws/tournament/tournament/` + 
+		`${window.selfId}/${window.selfName}/${window.selfId}/`
     );
 	window.tournamentSocket.onopen = () => {
 		console.log("Connexion Tournament établie 😊");		
@@ -98,6 +99,7 @@ function connectNewPlayer(playerId, playerName)
 function newPlayer(socket)
 {  
 	const playerName = document.getElementById("player-name").value;
+
 	if (playerName.trim() === "")	
         return messagePopUp(
 			'🔤 Oops! 🔤',
@@ -129,6 +131,7 @@ function newTournament(socket)
 function enterTournament(socket, tournamentId)
 {
 	const scripts = Array.from(document.getElementsByTagName("script"));
+	
     scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
 	if (scripts.some(script => script.className === "match-script")) {
 		console.log("DEJA SCRIPT");
