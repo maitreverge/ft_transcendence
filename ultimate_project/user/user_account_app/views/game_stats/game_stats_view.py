@@ -39,7 +39,6 @@ async def game_stats_overview(request: HttpRequest):
         username = context["username"]
         if request.method == "GET":
             response, is_error_page = await handle_get_game_stats(request, username, context)
-        
         if request.headers.get("HX-Request"):
             header = request.headers.get("HX-Target")
             if header == "account-content":

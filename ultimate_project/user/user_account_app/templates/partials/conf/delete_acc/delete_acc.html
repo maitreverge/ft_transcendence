@@ -1,19 +1,19 @@
 {% load static %}
 <div class="container-fluid" id="delete-acc-p">
   <!-- Page Heading -->
-  <h1 data-translate="DELETE ACCOUNT" class="h3 my-2 mx-2 font-weight: 800">
+  <h1 data-translate="Delete-ur-account" class="h3 my-2 mx-2 font-weight: 800 text-account">
     Delete Your Account
   </h1>
-  <h2 class="mb-4 mx-2">
+  <h2  data-translate="" class="mb-4 mx-2 text-account">
     Please confirm your identity to permanently delete your account. This action
     cannot be undone.
   </h2>
   <div class="row justify-content-center">
-    <!-- CONFIRMATION FORM COLUMN -->
+    <!-- CONFIRMATION Deletion -->
     <div class="col-lg-6 mb-4">
       <div class="card shadow mb-4 h-100 mx-auto" style="width: 95%;">
         <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold">Confirm Deletion</h6>
+          <h6  data-translate="" class="m-0 font-weight-bold">Confirm Deletion</h6>
         </div>
         <div class="card-body">
           <form
@@ -24,7 +24,7 @@
           >
             {% csrf_token %}
             <div class="form-group">
-              <label for="password">Enter your password:</label>
+              <label  data-translate="" for="password">Enter your password:</label>
               <input
                 id="password"
                 type="password"
@@ -37,7 +37,7 @@
             </div>
             {% if user.two_fa_enabled %}
             <div class="form-group">
-              <label for="otp-code">Enter your 2FA code:</label>
+              <label data-translate="" for="otp-code">Enter your 2FA code:</label>
               <input
                 id="otp-code"
                 type="number"
@@ -55,6 +55,7 @@
                 id="delete-acc-btn"
                 class="btn btn-danger-custom btn-rounded btn-block m-0"
                 hx-push-url="true"
+                data-translate=""
               >
                 Delete Account
               </button>
@@ -64,6 +65,7 @@
                 hx-get="/account/confidentiality/"
                 hx-target="#account-content"
                 hx-push-url="true"
+                data-translate=""
               >
                 Cancel
               </a>
@@ -83,6 +85,10 @@
 </div>
 
 <style>
+  .text-account {
+    color: var(--navbars-color) !important;
+  }
+
   #delete-acc-btn {
     display: block;
     visibility: visible;
@@ -132,4 +138,5 @@
     color: white;
     border-color: #dc3545;
   }
+
 </style>

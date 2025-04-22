@@ -1,10 +1,12 @@
 {% load static %}
 <div id="disable-2fa-content" class="container-fluid m-0 p-0">
   <!-- Page Heading -->
-  <h1 data-translate="Disable 2FA" class="h3 my-2 mx-2 font-weight: 800">
-    Disable 2FA for {{ username }}
+  <h1 class="h3 my-2 mx-2 font-weight: 800">
+    <span data-translate="Disable 2FA">Disable 2FA</span>
+    <span>for {{ username }}</span>
   </h1>
-  <h2 class="mb-4 mx-2">
+
+  <h2 data-translate="" class="mb-4 mx-2">
     To disable two-factor authentication, please verify your identity by
     entering the 6-digit code from your authenticator app.
   </h2>
@@ -32,7 +34,7 @@
           >
             {% csrf_token %}
             <div class="form-group">
-              <label for="token">Enter the 6-digit code from your authenticator app:</label>
+              <label data-translate="" for="token">Enter the 6-digit code from your authenticator app:</label>
               <input
                 id="token"
                 type="number"
@@ -49,6 +51,7 @@
                 name="otp_verify"
                 type="submit"
                 class="btn btn-danger btn-user btn-block m-0"
+                data-translate=""
               >
                 Verify and Disable 2FA
               </button>
@@ -58,6 +61,7 @@
                 hx-get="/account/security/"
                 hx-target="#account-content"
                 hx-push-url="true"
+                data-translate=""
               >
                 Cancel
               </a>

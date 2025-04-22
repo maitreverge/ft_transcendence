@@ -11,7 +11,7 @@
   <div class="poly-card d-flex flex-wrap mb-4 mx-auto" style="width: 95%;">
     <!-- First section: Games Played -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Games Played</p>
+      <h1 data-translate="" class="label-text mb-1">Games Played</h1>
       <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.games_played }}</h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
@@ -19,7 +19,7 @@
     <div class="small-vertical-accent-bar d-none d-md-block"></div>
     <!-- Second section: Games Won -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Games Won</p>
+      <p data-translate="" class="label-text mb-1">Games Won</p>
       <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.games_won }}</h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
@@ -27,7 +27,7 @@
     <div class="big-vertical-accent-bar d-none d-md-block"></div>
     <!-- Third section: Tournaments Played -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Tournaments Played</p>
+      <p data-translate="" class="label-text mb-1">Tournaments Played</p>
       <h1 class="stats-top-number mb-1 mt-1">
         {{ main_stats.nb_tournaments_played }}
       </h1>
@@ -37,19 +37,20 @@
     <div class="small-vertical-accent-bar d-none d-md-block"></div>
     <!-- Fourth section: Tournaments Won -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Tournaments Won</p>
+      <p data-translate="" class="label-text mb-1">Tournaments Won</p>
       <h1 class="stats-top-number mb-1 mt-1">
         {{ main_stats.nb_tournaments_won }}
       </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
   </div>
+
   <!-- Second Card for Win/Loss Streaks -->
   <div class="poly-card d-flex flex-wrap col-12 mx-auto py-2 thinner-card mb-4" 
     style="width: 95%;">
     <!-- First section: Current Win Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Current Win Streak</p>
+      <p data-translate="" class="label-text mb-1">Current Win Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.c_win_streak }}
       </h1>
@@ -60,7 +61,7 @@
 
     <!-- Second section: Current Lose Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Current Lose Streak</p>
+      <p data-translate="" class="label-text mb-1">Current Lose Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.c_lose_streak }}
       </h1>
@@ -71,7 +72,7 @@
 
     <!-- Third section: Best Win Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Best Win Streak</p>
+      <p data-translate="" class="label-text mb-1">Best Win Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.best_win_streak }}
       </h1>
@@ -82,13 +83,14 @@
 
     <!-- Fourth section: Worst Lose Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p class="label-text mb-1">Worst Lose Streak</p>
+      <p data-translate="" class="label-text mb-1">Worst Lose Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.worst_lose_streak }}
       </h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
   </div>
+
   <!-- Charts Section -->
   <div class="row mt-4">
     <!-- First Chart: Win/Loss Pie Chart -->
@@ -97,19 +99,19 @@
         <p class="label-text mb-1">Win / Loss</p>
         <div class="pie-chart-container">
           <canvas id="gamesPie"></canvas>
-          <div class="chart-center-label">
+          <div class="chart-center-label inside-doughnut-text">
             {{ main_stats.win_rate }}%
-            <div class="inside-doughnut-text">Win Rate</div>
+            <div data-translate="" class="inside-doughnut-text">Win Rate</div>
           </div>
         </div>
         <hr />
         <div class="under-chart-container">
           <p>
-            <span>Games won : </span
+            <span data-translate="" class="label-text-span mr-3">Games won : </span
             ><span class="text-blue">{{ main_stats.games_won }}</span>
           </p>
           <p>
-            <span>Games lost : </span
+            <span data-translate="" class="label-text-span mr-3">Games lost : </span
             ><span class="text-red">{{ main_stats.games_lost }}</span>
           </p>
         </div>
@@ -122,19 +124,19 @@
         <p class="label-text mb-1">Scoring</p>
         <div class="pie-chart-container">
           <canvas id="pointsPie"></canvas>
-          <div class="chart-center-label">
+          <div class="chart-center-label inside-doughnut-text">
             {{ main_stats.average_score }}
-            <div class="inside-doughnut-text">Average Score</div>
+            <div data-translate="" class="inside-doughnut-text">Average Score</div>
           </div>
         </div>
         <hr />
         <div class="under-chart-container">
           <p>
-            <span>Scored : </span
-            ><span class="text-blue"> {{ main_stats.points_scored }}</span>
+            <span data-translate="" class="label-text-span mr-3" >Scored : </span>
+            <span class="text-blue"> {{ main_stats.points_scored }}</span>
           </p>
           <p>
-            <span>Conceded : </span
+            <span data-translate="" class="label-text-span mr-3">Conceded : </span
             ><span class="text-red"> {{ main_stats.points_conceded }}</span>
           </p>
         </div>
@@ -159,6 +161,10 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: #858796;
+  }
+
+  .inside-doughnut-text {
+    color: var(--text-color);
   }
 
   .under-chart-container {
@@ -188,11 +194,9 @@
 <style>
   .poly-card {
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--navbars-color);
     backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1.25rem;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     padding: 1rem;
     width: 100%;
     align-items: center;
@@ -214,7 +218,7 @@
 
   .label-text {
     font-size: 0.8rem;
-    color: #858796;
+    color: var(--text-color);
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -223,7 +227,7 @@
   .stats-top-number {
     font-size: 3rem;
     font-weight: 800;
-    color: #5a5c69;
+    color: var(--text-color);
     max-width: 100%;
   }
 
@@ -234,20 +238,20 @@
   /* accent bar */
   .vertical-accent-bar {
     width: 0.3rem;
-    background-color: var(--navbars-color);
+    background-color: var(--text-color);
     border-radius: 2px;
   }
 
   .small-vertical-accent-bar {
     width: 0.3rem;
-    background-color: var(--navbars-color);
+    background-color: var(--text-color);
     border-radius: 2px;
     height: 2rem;
   }
 
   .big-vertical-accent-bar {
     width: 0.3rem;
-    background-color: var(--navbars-color);
+    background-color: var(--text-color);
     border-radius: 2px;
     height: 4rem;
   }
@@ -255,19 +259,27 @@
   .accent-bar {
     height: 4px;
     width: 5rem;
-    background-color: var(--navbars-color);
+    background-color: var(--text-color);
     border-radius: 2px;
   }
 
+  .label-text-span
+  {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-color) !important;
+    max-width: 100%;
+  }
+
   .text-blue {
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.4rem;
+    font-weight: 800;
     color: #4e73df !important;
   }
 
   .text-red {
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.4rem;
+    font-weight: 800;
     color: #e74a3b !important;
   }
 </style>

@@ -1,6 +1,5 @@
 {% load static %}
-<div class="container-fluid">
-  <!-- Page Heading -->
+<div class="container-fluid m-0 p-0" id="error-page">
   <div
     class="row justify-content-center align-items-center"
     style="min-height: 80vh"
@@ -11,17 +10,18 @@
           <div class="mb-3">
             <i class="fas fa-exclamation-triangle fa-4x text-danger"></i>
           </div>
-          <h1 id="error-delete-account">
+          <h1 id="error-message" class="mb-4">
             {{ error|default:"An unexpected error occurred." }}
           </h1>
           <a
             href="/account/confidentiality/"
-            class="btn btn-primary btn-user mt-3 btn-rounded"
+            class="btn-error btn-rounded-error"
             hx-get="/account/confidentiality/"
             hx-target="#account-content"
             hx-push-url="true"
+            data-translate=""
           >
-            Return to Confidentiality Settings
+            Return to Your Confidentiality Settings
           </a>
         </div>
       </div>
@@ -30,49 +30,32 @@
 </div>
 
 <style>
-  .btn-rounded {
+  .btn-rounded-error {
+    border: 2px solid var(--text-color);
     border-radius: 50px;
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     text-align: center;
     border-width: 2px;
-    background-color: transparent;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   }
 
-  .btn-primary {
-    border-color: #007bff;
-    color: #007bff;
-    background-color: transparent;
+  .btn-error {
+    color: var(--text-color) !important;
+    background-color: var(--background-color) !important;
   }
 
-  .btn-primary:hover {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
-
-  .btn-primary.active,
-  .btn-primary:focus {
-    background-color: #007bff !important;
-    color: white;
-    border-color: #007bff !important;
+  .btn-error.btn-rounded-error:hover,
+  .btn-error.btn-rounded-error:focus {
+    color: var(--text-color) !important;
+    text-decoration: none !important;
+    border-color: var(--title-color) !important;
+    background-color: var(--background-color) !important;
   }
 
   #error {
     color: #dc3545;
     font-size: 1.25rem;
     margin-top: 20px;
-  }
-
-  @media (max-width: 576px) {
-    #error {
-      font-size: 1rem;
-    }
-  }
-
-  .form-control-user.form-control-lg {
-    font-size: 1.25rem;
-    padding: 0.75rem;
   }
 </style>
