@@ -268,7 +268,7 @@
 
 .config_buttons {
     justify-content: center;
-    min-width: 100px;
+    min-width: 110px;
     border: 3px solid rgb(0, 0, 0);
     border-radius: 5px;
     background-color: black;
