@@ -40,18 +40,23 @@
     <div id="score">Score</div>
     <p id="inst-right"> <br> </p>
     <p id="inst-left"> <br> </p>
-    <p>Be the first one to score 5 points.</p><button id="quit-match-button" onclick="
-    stopMatch('{{matchId}}');
-    // const rulesOverlay = document.getElementById('rules-overlay');
-    // if (rulesOverlay) rulesOverlay.style.display = 'none';
-    //     window.gameStartTimestamp = undefined;
-    // const matchDiv = document.getElementById('match');
-    // setTimeout(()=>{
-    //     if (matchDiv) matchDiv.remove(); 
-    // }, 3000);
-    
-   ">GIVE UP</button>
-    <button onclick="quitMatch()">BACK</button>
+    <p>Be the first one to score 5 points.</p>
+	
+	<!-- !DIV FOR STYLYZING BOTH BUTTONS -->
+	<div class="match-buttons">
+		<button id="quit-match-button" onclick="
+		stopMatch('{{matchId}}');
+		// const rulesOverlay = document.getElementById('rules-overlay');
+		// if (rulesOverlay) rulesOverlay.style.display = 'none';
+		//     window.gameStartTimestamp = undefined;
+		// const matchDiv = document.getElementById('match');
+		// setTimeout(()=>{
+			//     if (matchDiv) matchDiv.remove(); 
+			// }, 3000);
+			
+			">GIVE UP</button>
+		<button id="go-back-button" onclick="quitMatch()">BACK</button>
+	</div>
 </div>
 <script>
     document.body.classList.add("match-active");
