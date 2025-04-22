@@ -19,9 +19,6 @@ NAME = os.getenv("name")
 
 HOST_IP = os.getenv("HOST_IP")
 
-
-PI_DOMAIN = os.getenv("pi_domain")
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
@@ -33,7 +30,7 @@ SECRET_KEY = os.getenv("DJANGO_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("env", "prod") != "prod"
 
-ALLOWED_HOSTS = ["*", f"https://{PI_DOMAIN}"]
+ALLOWED_HOSTS = ["*", f"https://{HOST_IP}"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://127.0.0.1:8443",

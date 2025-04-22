@@ -10,10 +10,7 @@ from pprint import PrettyPrinter
 async def build_context(request: HttpRequest) -> Dict:
     """Build the base context with username from Request if found"""
     username = request.headers.get("X-Username")
-    context = {
-        "rasp": os.getenv("rasp", "false"),
-        "pidom": os.getenv("pi_domain", "localhost:8443"),
-    }
+    context = {}
     if username:
         context["username"] = username
     else:
