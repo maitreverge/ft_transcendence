@@ -54,7 +54,7 @@ function displayGiveUp3D(visible)
 
 function cancelMatchAnimations3D()
 { 
-    cancelAnimationFrame(window.pongAnim);
+    cancelAnimationFrame(window.pong3DAnim);
     cancelAnimationFrame(window.animationFrameId);
     cancelAnimationFrame(window.countDown3DAnim);
 }
