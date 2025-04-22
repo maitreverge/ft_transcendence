@@ -590,6 +590,10 @@ function createSimplePlayerElement(socket, playerId, playerName)
 	div.name = playerName;	
 	if (playerId == window.selfId)
 		div.classList.add("self-player");
+	// if (window.busyElement && window.busyElement.id == playerId)
+	// 	div.classList.add("invitation-waiting");
+	// if (window.selectedElement && window.selectedElement.id == playerId)
+	// 	div.classList.add("invitation-confirmed");
 	div.onclick = event => playerClick(socket, event, div);	  
 	return div;
 }

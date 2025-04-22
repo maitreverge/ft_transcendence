@@ -229,7 +229,7 @@ class Pong:
 					data = {'p1': False, 'p2': False}	
 				else:
 					data = await response.json()
-				# print(f"PLAYERS CHECKING ALIVE: {data} {self.id}", flush=True)
+				print(f"PLAYERS CHECKING ALIVE: {data} {self.id}", flush=True)
 				await self.alives_players_strategy(data)
 
 	async def alives_players_strategy(self, data):
@@ -237,6 +237,7 @@ class Pong:
 		alives_players = (data.get("p1"), data.get("p2"))
 		# print(f"\033[31m VOILA LES TYPES {type(alives_players[0])} {type(alives_players[1])} \033[0m]", flush=True)
 		if all(alives_players):
+			print(f"\033[36m EVERYONE IS HERE\033[0m", flush=True)
 			return
 		if not any(alives_players):
 			self.winner = None
