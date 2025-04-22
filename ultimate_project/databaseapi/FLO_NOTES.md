@@ -7,6 +7,10 @@
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
 
+🟧 id 1 = bot, id2 == admin
+
+🟧 Agrandir le tuto, et mettre le tuto en plus explicite
+
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
 🟧 DELETE THIS FLO_NOTES FILES
