@@ -5,18 +5,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.body.addEventListener("htmx:load", function () {
-  if (document.getElementById("mainStats")) {
+  /* if (document.getElementById("mainStats")) {
     initializeCharts();
-  }
+  } */
   requestAnimationFrame(() => {
     window.scrollTo(0, 0);
   });
 });
 
 document.body.addEventListener("htmx:afterSwap", function () {
-  if (document.getElementById("mainStats")) {
+  /* if (document.getElementById("mainStats")) {
     initializeCharts();
-  }
+  } */
   requestAnimationFrame(() => {
     window.scrollTo(0, 0);
   });
@@ -128,4 +128,4 @@ function initializeCharts() {
 }
 
 // if want to use the onload in the html
-//window.initializeCharts = initializeCharts;
+window.initializeCharts = initializeCharts;

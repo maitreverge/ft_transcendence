@@ -1,11 +1,14 @@
 {% load static %}
 <script src="/static/static_files/static_files/vendor/chart.js/Chart.min.js"></script>
 {{ main_stats|json_script:"mainStats" }}
-<script src="{% static '/js/overview_chart.js' %}"></script>
+<script
+  src="{% static 'js/overview_chart.js' %}"
+  onload="initializeCharts();"
+></script>
 
 <div id="overview-content" class="container-fluid px-0 mt-4">
   <!-- Single Card with Multiple Stats -->
-  <div class="poly-card d-flex flex-wrap mb-4">
+  <div class="poly-card d-flex flex-wrap mb-4 mx-auto" style="width: 95%;">
     <!-- First section: Games Played -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Games Played</p>
@@ -42,7 +45,8 @@
     </div>
   </div>
   <!-- Second Card for Win/Loss Streaks -->
-  <div class="poly-card d-flex flex-wrap col-12 mx-auto py-2 thinner-card mb-4">
+  <div class="poly-card d-flex flex-wrap col-12 mx-auto py-2 thinner-card mb-4" 
+    style="width: 95%;">
     <!-- First section: Current Win Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
       <p class="label-text mb-1">Current Win Streak</p>
@@ -89,7 +93,7 @@
   <div class="row mt-4">
     <!-- First Chart: Win/Loss Pie Chart -->
     <div class="col-md-6 mb-4">
-      <div class="poly-card text-center">
+      <div class="poly-card text-center mx-auto" style="width: 95%;">
         <p class="label-text mb-1">Win / Loss</p>
         <div class="pie-chart-container">
           <canvas id="gamesPie"></canvas>
@@ -114,7 +118,7 @@
 
     <!-- Second Chart: Points Scored / Conceded Pie Chart -->
     <div class="col-md-6 mb-4">
-      <div class="poly-card text-center">
+      <div class="poly-card text-center mx-auto" style="width: 95%;">
         <p class="label-text mb-1">Scoring</p>
         <div class="pie-chart-container">
           <canvas id="pointsPie"></canvas>
@@ -186,7 +190,6 @@
     justify-content: space-between;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 1.25rem;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
@@ -267,5 +270,4 @@
     font-weight: 700;
     color: #e74a3b !important;
   }
-
 </style>

@@ -1,19 +1,19 @@
 {% load static %}
 <div class="container-fluid" id="delete-acc-p">
   <!-- Page Heading -->
-  <h1 data-translate="DELETE ACCOUNT" class="h3 mb-2 text-gray-800">
+  <h1 data-translate="DELETE ACCOUNT" class="h3 my-2 mx-2 font-weight: 800">
     Delete Your Account
   </h1>
-  <p class="mb-4">
+  <h2 class="mb-4 mx-2">
     Please confirm your identity to permanently delete your account. This action
     cannot be undone.
-  </p>
+  </h2>
   <div class="row justify-content-center">
     <!-- CONFIRMATION FORM COLUMN -->
     <div class="col-lg-6 mb-4">
-      <div class="card shadow mb-4 h-100">
+      <div class="card shadow mb-4 h-100 mx-auto" style="width: 95%;">
         <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">Confirm Deletion</h6>
+          <h6 class="m-0 font-weight-bold">Confirm Deletion</h6>
         </div>
         <div class="card-body">
           <form
@@ -24,7 +24,7 @@
           >
             {% csrf_token %}
             <div class="form-group">
-              <label>Enter your password:</label>
+              <label for="password">Enter your password:</label>
               <input
                 id="password"
                 type="password"
@@ -37,7 +37,7 @@
             </div>
             {% if user.two_fa_enabled %}
             <div class="form-group">
-              <label>Enter your 2FA code:</label>
+              <label for="otp-code">Enter your 2FA code:</label>
               <input
                 id="otp-code"
                 type="number"

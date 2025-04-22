@@ -1,11 +1,12 @@
 {% load static %}
-<div class="container-fluid m-0">
+<div class="container-fluid m-0" id="main-container-account-content">
   <div class="m-0 p-0">
     <div class="row">
       <!--Sidebar for account-->
       <nav
-        class="sidebar col-12 col-sm-4 col-md-3 col-lg-3 col-xl-2 d-sm-block shadow-sm m-0 p-0 d-flex flex-column "
+        class="sidebar d-none col-sm-4 col-md-3 col-lg-3 col-xl-2 d-sm-block shadow-sm m-0 p-0 d-sm-flex flex-column "
         style="min-height: 75vh; position: sticky; top: 0; overflow-y: auto;"
+        id="sidebar-account"
       >
         <div class="sidebar-sticky text-center">
           <!-- Account Settings Title -->
@@ -20,7 +21,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-profile"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/profile/"
                   hx-target="#account-content"
@@ -35,7 +36,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-stats"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/game-stats/overview/"
                   hx-target="#account-content"
@@ -50,7 +51,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-security"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/security/"
                   hx-target="#account-content"
@@ -65,7 +66,7 @@
               <li class="side-nav nav-item">
                 <a
                   id="acc-conf"
-                  class="nav-link btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
+                  class="nav-link btn btn-sm rounded-pill d-flex align-items-center justify-content-center sidebar-btn px-4 mx-auto"
                   style="width: 85%"
                   hx-get="/account/confidentiality/"
                   hx-target="#account-content"
@@ -117,8 +118,9 @@
       <!-- Main Content -->
       <main
         role="main"
-        class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 pl-3 pr-0 m-0"
-      >
+        class="col-12 col-md-9 col-sm-8 ml-sm-auto col-lg-9 col-xl-10 pl-0 pr-0 m-0"
+        id="main-account-content"
+        >
         <!-- prettier-ignore -->
         <div id="account-content">
           {% if page %}
@@ -134,3 +136,23 @@
     </div>
   </div>
 </div>
+
+<style>
+
+  #main-container-account-content .container-fluid {
+    /* background-color: var(--background-color); */
+    background-color: transparent !important;
+  }
+
+  #main-account-content {
+    background-color: var(--text-color) !important;
+  }
+
+  #account-content {
+    height: 100%;
+    background-color: var(--text-color) !important;
+  }
+
+  
+
+</style>

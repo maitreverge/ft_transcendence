@@ -1,19 +1,19 @@
 {% load static %}
 <div id="disable-2fa-content" class="container-fluid m-0 p-0">
   <!-- Page Heading -->
-  <h1 data-translate="Disable 2FA" class="h3 mb-2 text-gray-800">
+  <h1 data-translate="Disable 2FA" class="h3 my-2 mx-2 font-weight: 800">
     Disable 2FA for {{ username }}
   </h1>
-  <p class="mb-4">
+  <h2 class="mb-4 mx-2">
     To disable two-factor authentication, please verify your identity by
     entering the 6-digit code from your authenticator app.
-  </p>
+  </h2>
 
   <div class="row">
     <div class="col-lg-6 mb-4 mx-auto">
-      <div class="card shadow mb-4">
+      <div class="card shadow mb-4 h-100 mx-auto" style="width: 95%;">
         <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-danger">
+          <h6 class="m-0 font-weight-bold">
             Enter Verification Code
           </h6>
         </div>
@@ -32,7 +32,7 @@
           >
             {% csrf_token %}
             <div class="form-group">
-              <label>Enter the 6-digit code from your authenticator app:</label>
+              <label for="token">Enter the 6-digit code from your authenticator app:</label>
               <input
                 id="token"
                 type="number"
