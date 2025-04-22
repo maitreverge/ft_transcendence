@@ -278,15 +278,15 @@ input:checked + .slider:before {
 
 	width:100%;
 	height:100%;
-	background-color: var(--text-color);
+	/* background-color: var(--text-color); */
 }
 
 .invitation-waiting {
-	background-color: rgb(151, 175, 16);
+	background-color: var(--alien-player-color);
 }
 
 .invitation-confirmed {
-	background-color: rgb(16, 90, 175);
+	background-color: var(--phantom-player-color);
 	/* margin-left: 20px; */ 
 }
 
@@ -306,7 +306,7 @@ input:checked + .slider:before {
 }
 
 .self-match {
-	background: rgb(48, 48, 25);
+	background: var(--main-color);
 	/* margin-right: 20px; */
 }
 
@@ -333,15 +333,15 @@ button {
 
 
 .winner {
-	background-color: rgb(8, 250, 20) !important;		
+	background-color: var(--self-player-color) !important;		
 }
 
 .looser {
-	background-color: rgb(250, 8, 48) !important;	
+	background-color: var(--loser) !important;	
 }
 
 .undef {
-	background-color: hwb(0 9% 5%) !important;
+	background-color: var(--loser) !important;
 }
 
 .phantom::before {
@@ -456,11 +456,11 @@ button {
   }
   
   .input:checked + .slider {
-    background-color: #183153;
+    background-color: var(--main-color);
   }
   
   .input:focus + .slider {
-    box-shadow: 0 0 1px #183153;
+    box-shadow: 0 0 1px var(--main-color);
   }
   
   .input:checked + .slider:before {
@@ -497,7 +497,7 @@ button {
   }
 
     /* Option styles */
-    option {
+    /* option {
       padding: 10px;
       background-color: #222;
       color: #00ff99;
@@ -508,4 +508,4 @@ button {
     option:hover {
       background-color: #00ff99;
       color: #111;
-    }
+    } */
