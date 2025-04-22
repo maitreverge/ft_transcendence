@@ -47,9 +47,9 @@ span
   color: var(--text-color);
 }
 
-span:hover
+a:hover
 {
-  /* color: var(--background-color); */
+  color: var(--background-color);
 }
 #homelogo  {
   font-size: 30px;
