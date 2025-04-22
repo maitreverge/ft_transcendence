@@ -7,15 +7,11 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<style>
-		/* Optional fade-in animation */
-		.swal2-popup.fade-in {
-		  animation: fadeIn 0.3s ease-in-out;
-		}
-	
-		@keyframes fadeIn {
-		  from { opacity: 0; transform: scale(0.95); }
-		  to { opacity: 1; transform: scale(1); }
-		}
+    .swal2-image {
+        max-width: 100%;
+        height: auto !important; /* Force height to adjust to width */
+        object-fit: contain; /* Ensures image is fully visible */
+    }
 	  </style>
 </head>
 
@@ -27,30 +23,37 @@
 		function startCarousel() {
 			const steps = [
 			{
+					width: "1000%",
 					title: '🎮 MATCH TUTORIAL 🎮',
 					text: 'In the next steps, you\'ll learn how to play Simple Matches',
 					imageUrl: 'https://dansylvain.github.io/pictures/tuto.webp',
-					imageWidth: 600,
-					imageHeight: 300,
+					imageWidth: "1000%",
+					// width: 'auto',         // Let the popup size to content
+					// heightAuto: true,      // Allow height to adjust to content
+					// padding: '2em',        // More padd
+					// imageHeight: 300,
 				},
 				{
 					title: 'Step 1',
-					text: 'This is the first step.',
-					imageUrl: 'https://dansylvain.github.io/pictures/',
-					imageWidth: 600,
-					imageHeight: 300,
+					text: 'hsdgvjhsfbjvh',
+					imageUrl: 'https://dansylvain.github.io/pictures/match_1.png',
+					// imageWidth: 20000,
+					// imageWidth: "1000%",
+					imageHeight: 1500,
+					// grow: 'fullscreen'
+					// imageHeight: 600,
 				},
 				{
 					title: 'Step 2',
 					text: 'Here\'s the second step.',
-					imageUrl: 'https://dansylvain.github.io/pictures/',
+					imageUrl: 'https://dansylvain.github.io/pictures/match_2.png',
 					imageWidth: 600,
 					imageHeight: 300,
 				},
 				{
 					title: 'Step 3',
 					text: 'Final step!',
-					imageUrl: 'https://dansylvain.github.io/pictures/',
+					imageUrl: 'https://dansylvain.github.io/pictures/match_3.png',
 					imageWidth: 600,
 					imageHeight: 300,
 				}
