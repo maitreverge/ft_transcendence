@@ -11,7 +11,7 @@
   <div class="poly-card d-flex flex-wrap mb-4 mx-auto" style="width: 95%;">
     <!-- First section: Games Played -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <h1 data-translate="" class="label-text mb-1">Games Played</h1>
+      <h1 data-translate="overview-dt-1" class="label-text mb-1">Games Played</h1>
       <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.games_played }}</h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
@@ -19,7 +19,7 @@
     <div class="small-vertical-accent-bar d-none d-md-block"></div>
     <!-- Second section: Games Won -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <p data-translate="" class="label-text mb-1">Games Won</p>
+      <p data-translate="overview-dt-2" class="label-text mb-1">Games Won</p>
       <h1 class="stats-top-number mb-1 mt-1">{{ main_stats.games_won }}</h1>
       <div class="accent-bar mx-auto mt-1"></div>
     </div>
@@ -27,7 +27,7 @@
     <div class="big-vertical-accent-bar d-none d-md-block"></div>
     <!-- Third section: Tournaments Played -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <p data-translate="" class="label-text mb-1">Tournaments Played</p>
+      <p data-translate="overview-dt-3" class="label-text mb-1">Tournaments Played</p>
       <h1 class="stats-top-number mb-1 mt-1">
         {{ main_stats.nb_tournaments_played }}
       </h1>
@@ -37,7 +37,7 @@
     <div class="small-vertical-accent-bar d-none d-md-block"></div>
     <!-- Fourth section: Tournaments Won -->
     <div class="games-stat text-center col-12 col-md-3 mb-3">
-      <p data-translate="" class="label-text mb-1">Tournaments Won</p>
+      <p data-translate="overview-dt-4" class="label-text mb-1">Tournaments Won</p>
       <h1 class="stats-top-number mb-1 mt-1">
         {{ main_stats.nb_tournaments_won }}
       </h1>
@@ -50,7 +50,7 @@
     style="width: 95%;">
     <!-- First section: Current Win Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p data-translate="" class="label-text mb-1">Current Win Streak</p>
+      <p data-translate="overview-dt-5" class="label-text mb-1">Current Win Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.c_win_streak }}
       </h1>
@@ -61,7 +61,7 @@
 
     <!-- Second section: Current Lose Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p data-translate="" class="label-text mb-1">Current Lose Streak</p>
+      <p data-translate="overview-dt-6" class="label-text mb-1">Current Lose Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.c_lose_streak }}
       </h1>
@@ -72,7 +72,7 @@
 
     <!-- Third section: Best Win Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p data-translate="" class="label-text mb-1">Best Win Streak</p>
+      <p data-translate="overview-dt-7" class="label-text mb-1">Best Win Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.best_win_streak }}
       </h1>
@@ -83,7 +83,7 @@
 
     <!-- Fourth section: Worst Lose Streak -->
     <div class="streak-stat text-center col-12 col-md-3 mb-3">
-      <p data-translate="" class="label-text mb-1">Worst Lose Streak</p>
+      <p data-translate="overview-dt-8" class="label-text mb-1">Worst Lose Streak</p>
       <h1 class="stats-top-number smaller-stats-top-number mb-1 mt-1">
         {{ main_stats.worst_lose_streak }}
       </h1>
@@ -96,22 +96,22 @@
     <!-- First Chart: Win/Loss Pie Chart -->
     <div class="col-md-6 mb-4">
       <div class="poly-card text-center mx-auto" style="width: 95%;">
-        <p class="label-text mb-1">Win / Loss</p>
+        <p data-translate="overview-dt-9" class="label-text mb-1">Win / Loss</p>
         <div class="pie-chart-container">
           <canvas id="gamesPie"></canvas>
           <div class="chart-center-label inside-doughnut-text">
             {{ main_stats.win_rate }}%
-            <div data-translate="" class="inside-doughnut-text">Win Rate</div>
+            <div data-translate="overview-dt-10" class="inside-doughnut-text">Win Rate</div>
           </div>
         </div>
         <hr />
         <div class="under-chart-container">
           <p>
-            <span data-translate="" class="label-text-span mr-3">Games won : </span
+            <span data-translate="overview-dt-11" class="label-text-span mr-3">Games won :</span
             ><span class="text-blue">{{ main_stats.games_won }}</span>
           </p>
           <p>
-            <span data-translate="" class="label-text-span mr-3">Games lost : </span
+            <span data-translate="overview-dt-12" class="label-text-span mr-3">Games lost :</span
             ><span class="text-red">{{ main_stats.games_lost }}</span>
           </p>
         </div>
@@ -121,22 +121,22 @@
     <!-- Second Chart: Points Scored / Conceded Pie Chart -->
     <div class="col-md-6 mb-4">
       <div class="poly-card text-center mx-auto" style="width: 95%;">
-        <p class="label-text mb-1">Scoring</p>
+        <p data-translate="overview-dt-13" class="label-text mb-1">Scoring</p>
         <div class="pie-chart-container">
           <canvas id="pointsPie"></canvas>
           <div class="chart-center-label inside-doughnut-text">
             {{ main_stats.average_score }}
-            <div data-translate="" class="inside-doughnut-text">Average Score</div>
+            <div data-translate="overview-dt-14" class="inside-doughnut-text">Average Score</div>
           </div>
         </div>
         <hr />
         <div class="under-chart-container">
           <p>
-            <span data-translate="" class="label-text-span mr-3" >Scored : </span>
+            <span data-translate="overview-dt-15" class="label-text-span mr-3" >Scored : </span>
             <span class="text-blue"> {{ main_stats.points_scored }}</span>
           </p>
           <p>
-            <span data-translate="" class="label-text-span mr-3">Conceded : </span
+            <span data-translate="overview-dt-16" class="label-text-span mr-3">Conceded : </span
             ><span class="text-red"> {{ main_stats.points_conceded }}</span>
           </p>
         </div>

@@ -39,7 +39,7 @@
     <div
       class="d-flex flex-column justify-content-center align-items-center text-center mb-3 mb-md-0 col-12 col-md-4"
     >
-      <p data-translate="" class="mb-1 card-text">PLAYERS</p>
+      <p data-translate="match-hist-dt-1" class="mb-1 card-text">PLAYERS</p>
       <div
         class="fw-bold mb-2 d-flex justify-content-center align-items-center gap-2 flex-wrap"
         style="font-size: 1.1rem"
@@ -65,7 +65,7 @@
         </div>
       </div>
       <!-- Score Label -->
-      <p data-translate="" class="card-text mb-1">SCORE</p>
+      <p data-translate="match-hist-dt-2" class="card-text mb-1">SCORE</p>
       <!-- Score Values -->
       <div
         class="fw-medium d-flex justify-content-center align-items-center gap-2 flex-wrap"
@@ -95,16 +95,16 @@
     >
       <div class="d-flex flex-column align-items-center">
         <div class="d-flex flex-row align-items-center mb-1 flex-wrap">
-          <span data-translate="" class="badge bg-time card-text-bg"
-            >Start-Time:
+          <span data-translate="match-hist-dt-3" class="badge bg-time card-text-bg"
+            >Start-Time
           </span>
           <span class="badge bg-time card-text-bg ml-1">
             {{ match.start_time }}</span
           >
         </div>
         <div class="d-flex flex-row align-items-center mb-1 flex-wrap">
-          <span data-translate="" class="badge bg-time card-text-bg"
-            >End-Time:
+          <span data-translate="match-hist-dt-4" class="badge bg-time card-text-bg"
+            >End-Time
           </span>
           <span class="badge bg-time card-text-bg ml-1">
             {{ match.end_time }}</span
@@ -125,7 +125,7 @@
       class="d-flex flex-column justify-content-center align-items-center text-center col-12 col-md-6"
     >
       <h5 class="card-text">No Match History</h5>
-      <h5 data-translate="" class="card-text">
+      <h5 data-translate="match-hist-dt-5" class="card-text">
         You haven’t played any matches yet. Your match history will appear here
         once you start playing!
       </h5>
@@ -135,7 +135,7 @@
         hx-target="#main_div"
         hx-swap="innerHTML"
         hx-push-url="true"
-        data-translate=""
+        data-translate="match-hist-dt-6"
       >
         Start Playing
       </a>
