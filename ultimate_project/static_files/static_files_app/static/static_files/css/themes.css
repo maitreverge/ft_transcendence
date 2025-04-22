@@ -9,6 +9,7 @@
     --phantom-player-color: #266df0;
     --next-match-color: #00ff15;
     --loser: rgb(250, 8, 48);
+	--not-my-match: rgb(75, 75, 75);
 }
 
 
@@ -22,7 +23,8 @@
 	--alien-player-color: #627c60;
 	--phantom-player-color: #266df0;
 	--next-match-color: #00ff15;
-  --loser: rgb(250, 8, 48);
+	--loser: rgb(250, 8, 48);
+	--not-my-match: rgb(75, 75, 75);
 
 }
 

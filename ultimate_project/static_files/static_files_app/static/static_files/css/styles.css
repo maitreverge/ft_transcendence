@@ -67,7 +67,7 @@ body, h5 {
 	width: 100%;
     min-height: 14rem; /* Hauteur minimale */
     min-width: fit-content;
-	background-color: rgb(109, 94, 96);	
+	background-color: var(--background-color);	
 	border-radius: 5%;
 	padding: 5px;
     margin-bottom: 1rem;
@@ -248,7 +248,7 @@ input:checked + .slider:before {
 	display: flex;
 	justify-content: center;
 	align-items: center;  
-	background: rgb(251, 255, 0);
+	background: var(--not-my-match);
 }
 
 @keyframes shrink {
@@ -306,7 +306,7 @@ input:checked + .slider:before {
 }
 
 .self-match {
-	background: var(--main-color);
+	background: var(--self-player-color);
 	/* margin-right: 20px; */
 }
 
