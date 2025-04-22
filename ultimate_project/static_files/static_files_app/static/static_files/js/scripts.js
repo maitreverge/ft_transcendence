@@ -39,7 +39,7 @@
   interceptUrlChanges();
 
   function handleNavigation() {
-    alert("truc: ");
+    // alert("truc: ");
     console.log('***************************** Navigation event *************************');
  
 	  // const closeWsNav = (socket)=> {
@@ -51,10 +51,13 @@
     // closeWsNav(window.simpleMatchSocket);
     // closeWsNav(window.tournamentSocket);
     // window.websockets?.forEach(ws => closeWsNav(ws.socket));
-    
+    // alert(`LA ${window.selfBusy} ${window.selectedBusy}`);
+
       window.quitMatch?.(window.selfMatchId);
       window.closeWsTournament?.();
       window.closeWsSimpleMatch?.();
+      // alert(`L0 ${window.selfBusy} ${window.selectedBusy}`);
+
   }
   
   // Se déclenche sur back/forward

@@ -1,14 +1,4 @@
 {% load static %}
-
-<!-- <script class="match-script">
-    window.rasp = "{{ rasp }}"; 
-    window.pidom = "{{ pidom }}";
-    window.matchId = "{{ matchId }}";
-    window.playerId = "{{ playerId }}";
-    window.selfName = "{{ playerName }}";
-    window.player2Id = "{{ player2Id }}";
-    window.player2Name = "{{ player2Name }}";
-</script> -->
 <div style="display:none">
 	<head>
         <link rel="stylesheet" href="{% static 'match/styles3d.css' %}">
@@ -56,17 +46,9 @@
     <div id="score">Score</div>
     <p id="inst-right"> <br> </p>
     <p id="inst-left"> <br> </p>
-    <p>Be the first one to score 5 points.</p><button id="quit-match-button" onclick="
-    stopMatch3D('{{matchId}}');
-    const rulesOverlay = document.getElementById('rules-overlay');
-    if (rulesOverlay) rulesOverlay.style.display = 'none';
-        window.gameStartTimestamp = undefined;
-    const matchDiv = document.getElementById('match');
-    setTimeout(()=>{
-        if (matchDiv) matchDiv.remove(); 
-    }, 3000);
-    
-   ">EXIT</button>
+    <p>Be the first one to score 5 points.</p>
+    <button id="quit-match-button" onclick="stopMatch3D('{{matchId}}')"
+        >GIVE UP</button>
     <button onclick="quitMatch3D()">BACK</button>
 </div>
 

@@ -7,6 +7,7 @@ var is_towplayer = false;
 function quitMatch3D()
 {
 	document.body.classList.remove("match-active");
+    window.gameStartTimestamp = undefined;
 	cancelAnimationFrame(window.pongAnim);	
 	closeWebSocket3D(window.matchSocket);
 	closeWebSocket3D(window.matchSocket2);

@@ -21,6 +21,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		self.id = self.scope["url_route"]["kwargs"]["user_id"]
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		players[:] = [p for p in players if p.get('playerId') != self.id]
+		print(f"\033[36mNONE APP\033[0m", flush=True)
 		players.append(
 			{'playerId': self.id, 'playerName': self.name, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
@@ -38,6 +39,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 				(p for p in players if p.get('playerId') == player.get('busy')),
 			None)
 			if busy:
+				print(f"\033[36mNONE DISCO\033[0m", flush=True)
 				busy['busy'] = None			
 		selfPlayers[:] = [p for p in selfPlayers if p['socket'] != self]
 		players[:] = [p for p in players if p['playerId'] != self.id]
@@ -84,9 +86,11 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			(p for p in players if p['playerId'] == self.id), None)
 		if (await self.self_invitation(
 			selectedId, selectedPlayer, selectedName)):
+			print(f"\033[31mRETURN 1\033[0m", flush=True)	
 			return
 		if await self.cancel_invitation(
-			applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):		
+			applicantPlayer, selectedPlayer, selfSelectedPlayer, selectedId):
+			print(f"\033[31mRETURN 2\033[0m", flush=True)		
 			return
 		if applicantPlayer and applicantPlayer.get('busy'):
 			await self.send_back("selfBusy")
@@ -100,6 +104,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 	async def self_invitation(self, selectedId, selectedPlayer, selectedName):
 
 		if selectedId == self.id and not selectedPlayer.get('busy'):
+			print(f"\033[36mNONE -SELC\033[0m", flush=True)
 			selectedPlayer['busy'] = -selectedId
 			match_id = await self.start_match(
 				self.id, self.name, -selectedId, selectedName)
@@ -128,7 +133,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			await self.send_cancel(
 				self, selectedId, selectedPlayer.get('playerName'))		
 			await self.send_cancel(
-				selfSelectedPlayer['socket'], self.id, self.name)		
+				selfSelectedPlayer['socket'], self.id, self.name)	
+			print(f"\033[36mNONE CANCEL INVIT\033[0m", flush=True)	
 			selectedPlayer['busy'], applicantPlayer['busy'] = None, None					
 			match = next(
 				(m for m in matchs 
@@ -163,7 +169,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			"subtype": "demand",
 			"applicantId": self.id,
 			"applicantName": self.name
-		}))				
+		}))		
+		print(f"\033[36mNONE SEND DEMAND\033[0m", flush=True)		
 		selectedPlayer['busy'] = applicantPlayer.get('playerId')
 		applicantPlayer['busy'] = selectedPlayer.get('playerId')
 			
@@ -184,6 +191,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 			else:		
 				return
 		elif self.is_busy_with(applicant_player, self.id):
+			print(f"\033[36mNONE WEIRD\033[0m", flush=True)
 			applicant_player['busy'], selected_player['busy'] = None, None			
 		else:			
 			return	
@@ -292,8 +300,10 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		p1 = next((p for p in players if p.get("playerId") == p1_id), None)
 		p2 = next((p for p in players if p.get("playerId") == p2_id), None)
 		if p1:
+			print(f"\033[36mNONE RESULT ONE\033[0m", flush=True)
 			p1["busy"] = None
 		if p2:
+			print(f"\033[36mNONE RESULT TWO\033[0m", flush=True)
 			p2["busy"] = None 
 		match = next(
 			(m for m in matchs if m.get("matchId") == match_id), None)

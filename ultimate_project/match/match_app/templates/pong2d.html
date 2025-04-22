@@ -16,12 +16,10 @@
 	</head>
 </div>
     <div id="match" class="match-sylvain-gif">
-        <!-- <div id="p3"></div> -->
         <div id="spec">
             <img src="https://dansylvain.github.io/pictures/tennis.webp">
         </div>
         <button id="resize-button" onclick="toggleSize()">🔄<span>Size</span></button>
-        <!-- <h1 id="spec" style="display: none">Je suis spectateur</h1>			 -->
         <div id="p1"></div>
         <div id="p2"></div>
         <div id="ball"></div>
@@ -32,7 +30,6 @@
         </div>
         <div id="end-cont" style="display:none">
         <div id="end"></div>
-
         </div>
     </div>
 
@@ -40,29 +37,13 @@
     <div id="score">Score</div>
     <p id="inst-right"> <br> </p>
     <p id="inst-left"> <br> </p>
-    <p>Be the first one to score 5 points.</p><button id="quit-match-button" onclick="
-    stopMatch('{{matchId}}');
-    // const rulesOverlay = document.getElementById('rules-overlay');
-    // if (rulesOverlay) rulesOverlay.style.display = 'none';
-    //     window.gameStartTimestamp = undefined;
-    // const matchDiv = document.getElementById('match');
-    // setTimeout(()=>{
-    //     if (matchDiv) matchDiv.remove(); 
-    // }, 3000);
-    
-   ">GIVE UP</button>
+    <p>Be the first one to score 5 points.</p>
+    <button id="quit-match-button" onclick="stopMatch('{{matchId}}')"
+        >GIVE UP</button>
     <button onclick="quitMatch()">BACK</button>
 </div>
 <script>
-    document.body.classList.add("match-active");
-
-    // window.gameInProgress = true;
-
-    // document.addEventListener('keydown', function(e) {
-    //     if (window.gameInProgress && ['ArrowUp', 'ArrowDown'].includes(e.key)) {
-    //         e.preventDefault();
-    //     }
-    // });
+    document.body.classList.add("match-active");    
 
     window.addEventListener("DOMContentLoaded", () => {
     let lastVisitedPage = history.state?.lastVisitedPage || sessionStorage.getItem("lastVisitedPage");
