@@ -240,19 +240,25 @@ function areMyPlayersPlayInSomeMatch(data)
 	)
 }
 
+function castDictToListId(players)
+{
+	return players.map(player => player['playerId']);
+}
+
 function areMyPlayersInTournament(data)
 {
-	console.log("ARE IN ", window.tournamentList);
 	return (window.tournamentList && window.tournamentList.some(tour => 
 		tour.tournamentId == data.tournamentId
-		&& areMyPlayersIn(tour.players)	
+		&& areMyPlayersIn(castDictToListId(tour.players))	
 	))
 }
 			
 function tournamentResult(data)
 {			
 	console.log("TOURNAMENT RESULT ", data);
-
+	console.log("%cARE IN ", "color: violet; background: black; font-weight: bold;", window.tournamentList);
+	console.log("%cARE IN in tournament", "color: violet; background: black; font-weight: bold;", areMyPlayersInTournament(data));
+	console.log("%cARE IN in some match", "color: violet; background: black; font-weight: bold;", areMyPlayersPlayInSomeMatch(data));
 	if (!(areMyPlayersPlayInSomeMatch(data) || areMyPlayersInTournament(data)))
 		return;
     messagePopUp(

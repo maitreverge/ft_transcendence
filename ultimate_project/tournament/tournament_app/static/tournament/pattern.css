@@ -65,8 +65,10 @@
 #pattern {
 	position:relative;
 	margin:10px;
-	background-image: url('https://dansylvain.github.io/pictures/matrix.gif');	
-}
+	background-image: url('https://dansylvain.github.io/pictures/matrix2.webp');
+    background-size: 100% 100%;
+	background-position: center;
+	background-repeat: no-repeat;}
 
 /* #m1 {
 	position:relative;
