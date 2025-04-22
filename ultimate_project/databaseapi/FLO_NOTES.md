@@ -7,52 +7,31 @@
 									LAST DEV WEEK
 --------------------------------------------------------------------------------
 
-# FRONT WORK
-
-
-🟧 Faire du front 20
-
-# OPTIONNAL WORK
-
-# DONE FRONT
-✅ Petit decallage entre le joeur (ml-2, dans le html de match)
-✅ Message popus, celui de trump, son z index est bcp trop eleve (entre le z index du match et celui du tournois, 95 bonne valeur (match est a 100))
-✅ Couleurs des match patterns (lizeret de couleurs / couleurs des block des joueurs)
-✅ Tailles des videos tutos (agrandir)
-✅ Certains messages popus ont le message "OOPS" (changer le titre)
-✅ GIF Matrix
-
-{
-	.self-player::before {
-    font-size: 2rem;
-	content: "😀 ";
-	margin-right: 4px;
-}
-}
-
-# BACK WORK
-
 🟧 DELETE ALL THE PRINT OF DEBUG WITH SENSITIVE INFOS
 
 🟧 DELETE THIS FLO_NOTES FILES
 
 🟧 CLEAN AND SIMPLIFY COMMENTS
 
-⚠️ DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT... => Les logs 
-
-{
-	WARN[0000] The "PI_DOMAIN" variable is not set. Defaulting to a blank string. 
-	WARN[0000] The "PI_DOMAIN" variable is not set. Defaulting to a blank string. 
-	WARN[0000] The "PI_DOMAIN" variable is not set. Defaulting to a blank string. 
-	WARN[0000] The "rasp" variable is not set. Defaulting to a blank string. 
-	WARN[0000] The "rasp" variable is not set. Defaulting to a blank string.
-}
-
 🟧 Switch from `user_prod.csv` to `user.csv` in correction in `init_users.py` + ADMIN DOIT RESTER ID 1
 
 ======================================= DONE =====================================
 
 
+
+✅ Petit decallage entre le joeur (ml-2, dans le html de match)
+
+✅ Message popus, celui de trump, son z index est bcp trop eleve (entre le z index du match et celui du tournois, 95 bonne valeur (match est a 100))
+
+✅ Couleurs des match patterns (lizeret de couleurs / couleurs des block des joueurs)
+
+✅ Tailles des videos tutos (agrandir)
+
+✅ Certains messages popus ont le message "OOPS" (changer le titre)
+
+✅ GIF Matrix
+
+✅ DELETE ALL SENSITIVE FILES ON RASPBERRY ENDPOINT, ECT... => Les logs 
 
 ✅ Disable SwaggerUI in `docs_url=None,`  ===>  `main.py`
 
