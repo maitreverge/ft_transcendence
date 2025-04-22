@@ -175,14 +175,18 @@ body.match-active::before {
     left: 10px;
     font-size: 1.2em;
 	text-align: center;
+	/* Left player margin */
+	margin-left: 3%;
 }
 
 #inst-right {
-    position: absolute;
+	position: absolute;
     top: 10px;
     right: 10px;
     font-size: 1.2em;
 	text-align: center;
+	/* Right player margin */
+	margin-right: 3%;
 }
 
 #end {

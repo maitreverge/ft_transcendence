@@ -84,6 +84,7 @@
     left: 10px;
     font-size: 1.2em;
 	text-align: center;
+	margin-left: 3%;
 }
 
 #inst-right {
@@ -92,6 +93,7 @@
     right: 10px;
     font-size: 1.2em;
 	text-align: center;
+	margin-right: 3%;
 }
 
 #end {
