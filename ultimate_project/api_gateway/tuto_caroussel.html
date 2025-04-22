@@ -5,6 +5,18 @@
 	<meta charset="UTF-8">
 	<title>SweetAlert2 Carousel</title>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<style>
+		/* Optional fade-in animation */
+		.swal2-popup.fade-in {
+		  animation: fadeIn 0.3s ease-in-out;
+		}
+	
+		@keyframes fadeIn {
+		  from { opacity: 0; transform: scale(0.95); }
+		  to { opacity: 1; transform: scale(1); }
+		}
+	  </style>
 </head>
 
 <body>
@@ -14,26 +26,33 @@
 	<script>
 		function startCarousel() {
 			const steps = [
+			{
+					title: '🎮 MATCH TUTORIAL 🎮',
+					text: 'In the next steps, you\'ll learn how to play Simple Matches',
+					imageUrl: 'https://dansylvain.github.io/pictures/tuto.webp',
+					imageWidth: 600,
+					imageHeight: 300,
+				},
 				{
 					title: 'Step 1',
 					text: 'This is the first step.',
-					imageUrl: 'https://via.placeholder.com/300x150?text=Step+1',
-					imageWidth: 300,
-					imageHeight: 150,
+					imageUrl: 'https://dansylvain.github.io/pictures/',
+					imageWidth: 600,
+					imageHeight: 300,
 				},
 				{
 					title: 'Step 2',
 					text: 'Here\'s the second step.',
-					imageUrl: 'https://via.placeholder.com/300x150?text=Step+2',
-					imageWidth: 300,
-					imageHeight: 150,
+					imageUrl: 'https://dansylvain.github.io/pictures/',
+					imageWidth: 600,
+					imageHeight: 300,
 				},
 				{
 					title: 'Step 3',
 					text: 'Final step!',
-					imageUrl: 'https://via.placeholder.com/300x150?text=Step+3',
-					imageWidth: 300,
-					imageHeight: 150,
+					imageUrl: 'https://dansylvain.github.io/pictures/',
+					imageWidth: 600,
+					imageHeight: 300,
 				}
 
 				// Add more steps here if needed!
