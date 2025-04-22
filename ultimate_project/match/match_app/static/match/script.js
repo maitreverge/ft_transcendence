@@ -8,7 +8,7 @@ function quitMatch()
 	window.gameStartTimestamp = undefined; 	
 	removeKeyBoardEvent();
 	cancelMatchAnimations();
-	manualCloseMatchWss();//!
+	manualCloseMatchWss();
 	delMatchScript();
 	delMatch();
 }
@@ -60,14 +60,12 @@ function cancelMatchAnimations()
 }
 
 function stopMatch(matchId)
-{
-	// if (!matchId)	//////////!!!!!!!!!
-	// 	return delMatchScript();		//////////!!!!!!!!!	
+{	
 	removeKeyBoardEvent();
 	cancelMatchAnimations();
 	displayGiveUp(false);		
 	window.gameStartTimestamp = undefined; 	
-	if (window.selfMatchId == matchId)	//!!!!!!!!!!!!!!!!!
+	if (window.selfMatchId == matchId)
 		sendStopMatch(matchId);	
 	setTimeout(manualCloseMatchWss, 1000);		
 }

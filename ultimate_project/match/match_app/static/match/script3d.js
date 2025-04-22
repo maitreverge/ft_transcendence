@@ -8,20 +8,23 @@ function quitMatch3D()
 {
 	document.body.classList.remove("match-active");
     window.gameStartTimestamp = undefined;
-	cancelAnimationFrame(window.pongAnim);	
-	closeWebSocket3D(window.matchSocket);
-	closeWebSocket3D(window.matchSocket2);
+    removeKeyBoardEvent3D();
+    cancelMatchAnimations3D();
+	manualCloseMatchWss3D();
 	delMatchScript3D();
 	delMatch3D();
 }
+window.quitMatch3D = quitMatch3D;
 
-function closeWebSocket3D(socket)
+function manualCloseMatchWss3D()
 {
-	if (socket && socket.readyState === WebSocket.OPEN)
-	{		
-		window.stopFlag = true
-		socket.close(3666);		
-	} 
+    window.stopFlag = true;
+    const closeMatchWs = (socket)=> {
+        if (socket && socket.readyState === WebSocket.OPEN)			
+            socket.close(3666);		
+    };
+    closeMatchWs(window.matchSocket);
+    closeMatchWs(window.matchSocket2);
 }
 
 function delMatchScript3D()
@@ -32,97 +35,146 @@ function delMatchScript3D()
 
 function delMatch3D()
 {
-	const matchDiv = document.getElementById('match');
-    if (matchDiv)
-		matchDiv.remove();
-    const rulesOverlay = document.getElementById('rules-overlay');
-    if (rulesOverlay)
-		rulesOverlay.style.display = 'none';
+	document.getElementById('match')?.remove();  
+	document.getElementById('rules-overlay')?.remove(); 
 }
 
-function stopMatch3D(matchId) {
-    // unregister the event listeners
-    window.gameInProgress = false;
-	document.body.classList.remove("match-active");
-	cancelAnimationFrame(window.pong3DAnim);
-	const input = document.getElementById("match-player-name");
 
+function displayGiveUp3D(visible)
+{
+	const giveUp = document.getElementById("quit-match-button");
+	if (giveUp)
+	{
+		if (visible)
+			giveUp.style.display = "block";
+		else
+			giveUp.style.display = "none";	
+	}	
+}
+
+function cancelMatchAnimations3D()
+{ 
+    cancelAnimationFrame(window.pongAnim);
+    cancelAnimationFrame(window.animationFrameId);
+    cancelAnimationFrame(window.countDown3DAnim);
+}
+
+function stopMatch3D(matchId)
+{	
+	removeKeyBoardEvent3D();
+	cancelMatchAnimations3D();
+	displayGiveUp3D(false);		
+	window.gameStartTimestamp = undefined; 	
+	if (window.selfMatchId == matchId)
+		sendStopMatch3D(matchId);	
+	setTimeout(manualCloseMatchWss3D, 1000);		
+}
+window.stopMatch3D = stopMatch3D;
+
+function sendStopMatch3D(matchId)
+{
+	fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
+		.then(response => {
+			if (!response.ok) 
+				throw new Error(`Error HTTP! Status: ${response.status}`);		  
+			return response.text();
+		})
+		.then(()=> window.selfMatchId = null)
+		.catch(error => console.log(error))
+}
+
+function removeKeyBoardEvent3D()
+{
     if (tjs_keyup)
         document.removeEventListener("keyup", tjs_keyup);
     if (tjs_keydown)
         document.removeEventListener("keydown", tjs_keydown);
-
-    stopEventListener3D();
-	document.body.classList.remove("match-active");
-
-    if (!matchId)
-    {
-        console.log("matchID EST NULLE");
-        const oldScripts = document.querySelectorAll("script.match-script");
-        console.log("olscript len", oldScripts.length);
-        oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-        return;
-    }
-
-    if (window.selfMatchId == matchId)
-    {
-        fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
-        .then(response => {
-            if (!response.ok)
-                throw new Error(`Error HTTP! Status: ${response.status}`);
-            return response.text();
-        })
-        .catch(error => console.log(error))
-    }
-    else
-        document.getElementById('match').remove()
-    console.log("YOUHOUHOUHOU");
-    // if (window.selfMatchId != window.matchId)
-    // {
-        console.log("jypigequeuedalle");
-        if (!window.matchSocket)
-            console.log("LE WEBSOCKET ETS NULL.");
-			else 
-			{
-				setTimeout(()=> {
-					console.log("je sais pas ce qu eje fou la");
-					if (window.matchSocket.readyState === WebSocket.OPEN)
-					{
-						console.log("je vais envoyer 42");
-						window.stopFlag = true
-						window.matchSocket.close(3666);
-						if (window.matchSocket2)
-							window.matchSocket2.close(3666);
-					} 
-					else 
-					{
-						console.log("La WebSocket était déjà fermée.");
-					}
-					console.log("je nai pas plante");
-				}, 1000);
-				// console.log("je sais pas ce qu eje fou la");
-				// if (window.matchSocket.readyState === WebSocket.OPEN)
-				// {
-				// 	console.log("je vais envoyer 42");
-				// 	window.stopFlag = true
-				// 	window.matchSocket.close(3666);
-				// 	if (window.matchSocket2)
-				// 		window.matchSocket2.close(3666);
-				// } 
-				// else 
-				// {
-				// 	console.log("La WebSocket était déjà fermée.");
-				// }
-				// console.log("je nai pas plante");
-			}
-        console.log("toujours vivant");
-        const oldScripts = document.querySelectorAll("script.match-script");
-        console.log("olscript len", oldScripts.length);
-        oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
-    // }
-    // else
-    //  console.log("pas spec!!");
 }
+
+
+// function stopMatch3D(matchId) {
+//     // unregister the event listeners
+//     window.gameInProgress = false;
+// 	document.body.classList.remove("match-active");
+// 	cancelAnimationFrame(window.pong3DAnim);
+// 	const input = document.getElementById("match-player-name");
+
+//     if (tjs_keyup)
+//         document.removeEventListener("keyup", tjs_keyup);
+//     if (tjs_keydown)
+//         document.removeEventListener("keydown", tjs_keydown);
+
+//     stopEventListener3D();
+// 	document.body.classList.remove("match-active");
+
+//     if (!matchId)
+//     {
+//         console.log("matchID EST NULLE");
+//         const oldScripts = document.querySelectorAll("script.match-script");
+//         console.log("olscript len", oldScripts.length);
+//         oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
+//         return;
+//     }
+
+//     if (window.selfMatchId == matchId)
+//     {
+//         fetch(`/match/stop-match/${window.playerId}/${matchId}/`)
+//         .then(response => {
+//             if (!response.ok)
+//                 throw new Error(`Error HTTP! Status: ${response.status}`);
+//             return response.text();
+//         })
+//         .catch(error => console.log(error))
+//     }
+//     else
+//         document.getElementById('match').remove()
+//     console.log("YOUHOUHOUHOU");
+//     // if (window.selfMatchId != window.matchId)
+//     // {
+//         console.log("jypigequeuedalle");
+//         if (!window.matchSocket)
+//             console.log("LE WEBSOCKET ETS NULL.");
+// 			else 
+// 			{
+// 				setTimeout(()=> {
+// 					console.log("je sais pas ce qu eje fou la");
+// 					if (window.matchSocket.readyState === WebSocket.OPEN)
+// 					{
+// 						console.log("je vais envoyer 42");
+// 						window.stopFlag = true
+// 						window.matchSocket.close(3666);
+// 						if (window.matchSocket2)
+// 							window.matchSocket2.close(3666);
+// 					} 
+// 					else 
+// 					{
+// 						console.log("La WebSocket était déjà fermée.");
+// 					}
+// 					console.log("je nai pas plante");
+// 				}, 1000);
+// 				// console.log("je sais pas ce qu eje fou la");
+// 				// if (window.matchSocket.readyState === WebSocket.OPEN)
+// 				// {
+// 				// 	console.log("je vais envoyer 42");
+// 				// 	window.stopFlag = true
+// 				// 	window.matchSocket.close(3666);
+// 				// 	if (window.matchSocket2)
+// 				// 		window.matchSocket2.close(3666);
+// 				// } 
+// 				// else 
+// 				// {
+// 				// 	console.log("La WebSocket était déjà fermée.");
+// 				// }
+// 				// console.log("je nai pas plante");
+// 			}
+//         console.log("toujours vivant");
+//         const oldScripts = document.querySelectorAll("script.match-script");
+//         console.log("olscript len", oldScripts.length);
+//         oldScripts.forEach(oldScript =>{console.log("old: ", oldScript.src); oldScript.remove()});
+//     // }
+//     // else
+//     //  console.log("pas spec!!");
+// }
 
 
 // ? =============================== THREE JS ============================
@@ -377,7 +429,7 @@ animate3D();
 
 function setCommands3D(socket, socket2) {
     const keysPressed = {}; // Stocker les touches enfoncées
-    let animationFrameId = null; // Stocke l'ID du requestAnimationFrame
+    window.animationFrameId = null; // Stocke l'ID du requestAnimationFrame
 
     function sendCommands3D() {
         if (keysPressed[" "]) {
@@ -405,7 +457,7 @@ function setCommands3D(socket, socket2) {
             }
         }
 
-        animationFrameId = requestAnimationFrame(sendCommands3D); // Appelle la fonction en boucle
+        window.animationFrameId = requestAnimationFrame(sendCommands3D); // Appelle la fonction en boucle
     }
 
     function handleKeyDown(event) {
@@ -427,8 +479,8 @@ function setCommands3D(socket, socket2) {
             delete keysPressed["Enter"];
 
         // Démarre l'animation seulement si elle n'est pas déjà en cours
-        if (!animationFrameId) {
-            animationFrameId = requestAnimationFrame(sendCommands3D);
+        if (!window.animationFrameId) {
+            window.animationFrameId = requestAnimationFrame(sendCommands3D);
         }
     }
 
@@ -442,8 +494,8 @@ function setCommands3D(socket, socket2) {
 
         // Si plus aucune touche n'est pressée, on stoppe l'animation
         if (Object.keys(keysPressed).length === 0) {
-            cancelAnimationFrame(animationFrameId);
-            animationFrameId = null;
+            cancelAnimationFrame(window.animationFrameId);
+            window.animationFrameId = null;
         }
     }
 
@@ -463,10 +515,10 @@ function startCountdown3D(delay)
 
         if (remaining > 0) {
             countdownEl.textContent = remaining;
-            requestAnimationFrame(updateCountdown3D);
+            window.countDown3DAnim = requestAnimationFrame(updateCountdown3D);
         } else if (remaining > -1) {
             countdownEl.textContent = "GO!";
-            requestAnimationFrame(updateCountdown3D);
+            window.countDown3DAnim = requestAnimationFrame(updateCountdown3D);
         } else {
             countdownEl.textContent = "";
             window.gameStartTimestamp = undefined;
@@ -476,45 +528,73 @@ function startCountdown3D(delay)
 	updateCountdown3D();
 }
 
-function displayPlayersInfos3D(data, score_div)
+// function displayPlayersInfos3D(data, score_div)
+// {
+// 	if (!data.names)
+// 		return;
+//     score_div.innerText = data.score[0] + " | " + data.score[1];
+// 	const leftName = document.getElementById("inst-left");
+// 	const rightName = document.getElementById("inst-right");
+// 	if (window.selfMatchId != window.matchId)
+// 	{
+// 		leftName.innerHTML = data.names[0];
+// 		rightName.innerHTML = data.names[1];		
+// 	}			
+// 	else if (window.player2Id != 0)
+// 	{			
+// 		leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+// 		rightName.innerHTML = data.names[1] + "<br> keys: enter / +";	
+// 	}			
+// 	else if (data.plyIds)
+// 	{
+// 		if (window.playerId == data.plyIds[0])
+// 		{
+// 			leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
+// 			rightName.innerHTML = data.names[1];
+// 		}
+// 		else
+// 		{
+// 			leftName.innerHTML = data.names[0];
+// 			rightName.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
+// 		} 
+// 	}	
+// }
+
+function displayPlayersInfos3D(data, score)
 {
 	if (!data.names)
 		return;
-    score_div.innerText = data.score[0] + " | " + data.score[1];
-	const leftName = document.getElementById("inst-left");
-	const rightName = document.getElementById("inst-right");
-	if (window.selfMatchId != window.matchId)
-	{
-		leftName.innerHTML = data.names[0];
-		rightName.innerHTML = data.names[1];		
-	}			
-	else if (window.player2Id != 0)
-	{			
-		leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-		rightName.innerHTML = data.names[1] + "<br> keys: enter / +";	
-	}			
+	score.innerText = data.score[0] + " | " + data.score[1];	
+	const left = document.getElementById("inst-left");
+	const rght = document.getElementById("inst-right");
+	if (window.selfMatchId != window.matchId)	
+		assignInfos3D(left, rght, data.names[0], data.names[1]);				
+	else if (window.player2Id != 0)	
+		assignInfos3D(left, rght, data.names[0] + "<br> keys: ↑ / ↓",
+			data.names[1] + "<br> keys: enter / +");		
 	else if (data.plyIds)
 	{
-		if (window.playerId == data.plyIds[0])
-		{
-			leftName.innerHTML = data.names[0] + "<br> keys: ↑ / ↓";
-			rightName.innerHTML = data.names[1];
-		}
-		else
-		{
-			leftName.innerHTML = data.names[0];
-			rightName.innerHTML = data.names[1] + "<br> keys: ↑ / ↓";
-		} 
+		if (window.playerId == data.plyIds[0])		
+			assignInfos3D(left, rght, data.names[0] + "<br> keys: ↑ / ↓",
+				data.names[1]);
+		else		
+			assignInfos3D(left, rght, data.names[0],
+				data.names[1] + "<br> keys: ↑ / ↓");	
 	}	
 }
 
-function onMatchWsMessage3D(
-    event, score_div, [waiting, endCont, end, spec], waitingState) {
+function assignInfos3D(left, rght, leftInfo, rghtInfo)
+{
+	left.innerHTML = leftInfo;
+	rght.innerHTML = rghtInfo;
+}
+
+function onMatchWsMessage3D(event, elements, waitingState) {
     const data = JSON.parse(event.data);
     startDelay3D(data);
-    displayPlayersInfos3D(data, score_div);
-    setEnd3D(data, endCont, end, spec);
-    setWaiting3D(data, waiting, waitingState);
+    displayPlayersInfos3D(data, elements.score);
+    setEnd3D(data, elements.endCont, elements.end, elements.spec);
+    setWaiting3D(data, elements.waiting, waitingState);
 	
     if (data.yp1 !== undefined && data.yp2 !== undefined) {
         window.tjs_r1.position.z = (60 / 100) * (data.yp1);
@@ -523,6 +603,20 @@ function onMatchWsMessage3D(
         window.tjs_ball.position.x = (100 / 100) * (data.ball[0] - 1);
         window.tjs_ball.position.z = (60 / 100) * (data.ball[1] - 1);
     }
+}
+
+function get_match_elements3D()
+{	
+	const elements = {		
+		waiting: document.getElementById("waiting"),
+		endCont: document.getElementById("end-cont"),
+		end: document.getElementById("end"),
+		left: document.getElementById("inst-left"),
+		rght: document.getElementById("inst-right"),
+		score: document.getElementById("score"),
+		spec: document.getElementById("spec")		
+	};
+	return elements;
 }
 
 function startDelay3D(data)
@@ -584,89 +678,160 @@ function setWaiting3D(data, waiting, waitingState)
 }
 
 function setSpec3D(spec)
-{
-	if (spec)
+{	
+	if (!spec)
+		return;	
+	if (window.selfMatchId != window.matchId)
 	{
-		if (window.selfMatchId != window.matchId)
-			spec.style.display = "block";
-		else
-			spec.style.display = "none";
+		spec.style.display = "block";
+		displayGiveUp3D(false);			
 	}
+	else
+	{
+		spec.style.display = "none";
+		displayGiveUp3D(true);		
+	}	
 }
 
-function sequelInitMatchWs3D(socket) {
-    const [waiting, endCont, end] = [
-		document.getElementById("waiting"),
-        document.getElementById("end-cont"),
-        document.getElementById("end")
-    ];
-	let waitingState = ["waiting"];
-    const score_div = document.getElementById("score");
-    const spec = document.getElementById("spec")
-    setSpec3D(spec);
-    socket.onmessage = event => onMatchWsMessage3D(
-        event, score_div, [waiting, endCont, end, spec], waitingState);
-    if (window.player2Id != 0)
-		initSecPlayer3D();	
-    setCommands3D(socket, window.matchSocket2);
-}
+// function sequelInitMatchWs3D(socket) {
+//     const [waiting, endCont, end] = [
+// 		document.getElementById("waiting"),
+//         document.getElementById("end-cont"),
+//         document.getElementById("end")
+//     ];
+// 	let waitingState = ["waiting"];
+//     const score_div = document.getElementById("score");
+//     const spec = document.getElementById("spec")
+//     setSpec3D(spec);
+//     socket.onmessage = event => onMatchWsMessage3D(
+//         event, score_div, [waiting, endCont, end, spec], waitingState);
+//     if (window.player2Id != 0)
+// 		initSecPlayer3D();	
+//     setCommands3D(socket, window.matchSocket2);
+// }
 
-function initSecPlayer3D() {
+// function initSecPlayer3D() {
 
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+//     if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+//         window.pidom = "localhost:8443";
+// 	else
+// 		window.pidom = window.location.hostname + ":8443";
+
+//     window.matchSocket2 = new WebSocket(
+//         `wss://${window.pidom}/ws/match/${window.matchId}/` +
+//         `?playerId=${window.player2Id}`);
+// 	window.matchSocket2.onopen = () => {
+// 		console.log("Connexion Match établie 2nd Player😊");
+// 	};
+// 	window.matchSocket2.onclose = (event) => {
+// 		console.log("Connexion Match disconnected 😈 2nd Player");
+// 	};
+// }
+
+function initDomain3D()
+{
+	if (window.location.hostname === "localhost" ||
+		window.location.hostname === "127.0.0.1")
         window.pidom = "localhost:8443";
 	else
 		window.pidom = window.location.hostname + ":8443";
+}
 
-    window.matchSocket2 = new WebSocket(
+function closeMatchWssOnEnter3D()
+{
+	const socket = window.matchSocket;
+	const socket2 = window.matchSocket2;	
+
+	const closeMatchWsOnEnter = socket => {
+		if (socket && socket.readyState === WebSocket.OPEN && window.antiLoop)	
+			return socket.close(), true;
+		return false;			
+	};
+	const ret = closeMatchWsOnEnter(socket); 
+	const ret2 = closeMatchWsOnEnter(socket2);
+	return (ret || ret2); 
+}
+
+function createWebSocket3D(playerId)
+{
+	return new WebSocket(
         `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${window.player2Id}`);
-	window.matchSocket2.onopen = () => {
-		console.log("Connexion Match établie 2nd Player😊");
-	};
-	window.matchSocket2.onclose = (event) => {
-		console.log("Connexion Match disconnected 😈 2nd Player");
-	};
+        `?playerId=${playerId}`);
+}
+
+function matchWsDisconnectStrategy3D(event)
+{
+	console.log("Connexion Match disconnected 😈");	
+	
+	removeKeyBoardEvent3D();
+	window.antiLoop = false;	
+	if (event.code !== 3000 && !window.stopFlag)		
+		initMatchWs3D();	
+	window.stopFlag = false;
+}
+
+function initFirstPlayer3D(elements)
+{
+	let waitingState = ["waiting"];
+	
+    window.matchSocket = createWebSocket3D(window.playerId);
+	window.matchSocket.onopen = ()=> console.log("Connexion Match établie 😊");
+	window.matchSocket.onclose = event => matchWsDisconnectStrategy3D(event);
+	window.matchSocket.onmessage = event => onMatchWsMessage3D(
+        event, elements, waitingState);
+}
+
+function initSecPlayer3D()
+{
+	if (window.player2Id != 0)
+	{
+		window.matchSocket2 = createWebSocket3D(window.player2Id);
+		window.matchSocket2.onopen = () => {
+			console.log("Connexion Match établie 2nd Player😊");
+		};
+		window.matchSocket2.onclose = () => {
+			console.log("Connexion Match disconnected 😈 2nd Player");
+		};	
+	}
 }
 
 function initMatchWs3D() {
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-        window.pidom = "localhost:8443";
-    else
-        window.pidom = window.location.hostname + ":8443";
+    
+    if (closeMatchWssOnEnter3D())
+		return;    
+	initDomain3D();
+	window.antiLoop = true;
+    const elements = get_match_elements3D();
+    setSpec3D(elements.spec);//!!!!!!    
+    initFirstPlayer3D(elements);
+    initSecPlayer3D();
+    setCommands3D(window.matchSocket, window.matchSocket2);
+    // addKeyBoardEvent3D();
+	// pongUpdate3D(pads);
 
-//si je viens du debut je sui sclosé (et je reviens par boucle) si je viens de onclse je continu normal
-    console.log("INIT MATCH 😊😊😊");
-    console.log("STOP: " + window.stopFlag);
-    console.log("ANTILOPP: " + window.antiLoop);
-    if (window.matchSocket && window.antiLoop)
-        return window.matchSocket.close();
-    if (window.matchSocket2 && window.antiLoop)
-		return window.matchSocket2.close();
-    // if (window.matchSocket)
-    //     window.matchSocket.close();
-    window.antiLoop = true;
-    window.matchSocket = new WebSocket(
-        `wss://${window.pidom}/ws/match/${window.matchId}/` +
-        `?playerId=${window.playerId}`);
-    window.matchSocket.onopen = () => {
-        console.log("Connexion Match établie 😊");
-    };
-    window.matchSocket.onclose = (event) => {
-        console.log("Connexion Match disconnected 😈");
-        window.antiLoop = false;
-        console.log("CODE: " + event.code);
-        console.log("STOP: " + window.stopFlag);
-        if (event.code !== 3000 && !window.stopFlag)
-        {
-            console.log("codepas42");
-            initMatchWs3D();
-        }
-        else
-            console.log("code42");
-        window.stopFlag = false;
-    };
-    sequelInitMatchWs3D(window.matchSocket);
+
+    // sequelInitMatchWs3D(window.matchSocket);
 }
 
 initMatchWs3D();
+
+
+// window.matchSocket = new WebSocket(
+//     `wss://${window.pidom}/ws/match/${window.matchId}/` +
+//     `?playerId=${window.playerId}`);
+// window.matchSocket.onopen = () => {
+//     console.log("Connexion Match établie 😊");
+// };
+// window.matchSocket.onclose = (event) => {
+//     console.log("Connexion Match disconnected 😈");
+//     window.antiLoop = false;
+//     console.log("CODE: " + event.code);
+//     console.log("STOP: " + window.stopFlag);
+//     if (event.code !== 3000 && !window.stopFlag)
+//     {
+//         console.log("codepas42");
+//         initMatchWs3D();
+//     }
+//     else
+//         console.log("code42");
+//     window.stopFlag = false;

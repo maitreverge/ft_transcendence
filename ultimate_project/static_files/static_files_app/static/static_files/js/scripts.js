@@ -54,8 +54,11 @@
     // alert(`LA ${window.selfBusy} ${window.selectedBusy}`);
 
       window.quitMatch?.(window.selfMatchId);
+      window.quitMatch3D?.(window.selfMatchId);
       window.closeWsTournament?.();
       window.closeWsSimpleMatch?.();
+
+     
       // alert(`L0 ${window.selfBusy} ${window.selectedBusy}`);
 
   }
