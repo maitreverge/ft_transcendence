@@ -135,7 +135,7 @@ function newTournament(socket)
 //     // scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
 // 	// if (scripts.some(script => script.className === "match-script")) {
 // 	// 	console.log("DEJA SCRIPT");
-// 	// 	return; // Ne pas exécuter fetch si un script "match-script" existe déjà
+// 	// 	return;
 // 	// };
 // 	console.log("ENTER LOCALS TOURNAMENT: ", tournamentId);
 // 	if (socket.readyState === WebSocket.OPEN) 
@@ -151,7 +151,7 @@ function enterTournament(socket, tournamentId)
     scripts.forEach(el => {console.log("SCRIPTNAME: ", el.src)});
 	if (scripts.some(script => script.className === "match-script")) {
 		console.log("DEJA SCRIPT");
-		return; // Ne pas exécuter fetch si un script "match-script" existe déjà
+		return;
 	};
 	console.log("entertournement: ", socket, " ", tournamentId);
 	if (socket.readyState === WebSocket.OPEN) 

@@ -136,7 +136,6 @@ USE_TZ = True
 
 STATIC_URL = f"/static/{NAME}/" if DEBUG else "/static/"
 
-# Répertoire où collecter les fichiers statiques (après collectstatic)
 STATIC_ROOT = "/app/staticfiles"
 
 # Default primary key field type
@@ -179,7 +178,7 @@ LOGGING = {
     },
 }
 
-CORS_ALLOW_CREDENTIALS = True  # 🔥 Allow cookies in requests
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies in requests
 CORS_ALLOW_ORIGINS = [
     "http://localhost:8007",
     "https://localhost:8443",
@@ -199,13 +198,13 @@ JWT_AUTH = {
 }
 
 # Cookie settings
-SESSION_COOKIE_SECURE = True  # Ensures session cookies are only sent over HTTPS
+SESSION_COOKIE_SECURE = True    # Ensures session cookies are only sent over HTTPS
 SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access (for security)
 SESSION_COOKIE_SAMESITE = (
     "Lax"  # Allows cookies on same-site navigation, blocks cross-site
 )
 
-CSRF_COOKIE_SECURE = True  # Ensures CSRF cookie is only sent over HTTPS
+CSRF_COOKIE_SECURE = True     # Ensures CSRF cookie is only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = False  # JavaScript needs access to CSRF token
 CSRF_COOKIE_SAMESITE = "Lax"  # Allows CSRF cookie on same-site requests
 

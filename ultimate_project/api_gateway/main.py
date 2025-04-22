@@ -651,7 +651,7 @@ async def two_factor_auth_proxy(request: Request):
 @app.api_route("/auth/verify-2fa/", methods=["POST"])
 async def verify_2fa_login(request: Request):
     
-    # print("🔐 Processing 2FA verification during login", flush=True)
+    # print("Processing 2FA verification during login", flush=True)
 
     # Get the form data
     form_data = await request.form()

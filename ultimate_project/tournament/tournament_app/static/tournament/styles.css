@@ -37,7 +37,7 @@
 	border-radius: 5px;
 	display: flex;
 	justify-content: center;
-	align-items: center;  
+	align-items: center;
 	background: rgb(251, 255, 0);
 }
 
@@ -52,7 +52,7 @@
 	border-radius: 5px;
 	display: flex;
 	justify-content: center;
-	align-items: center;  
+	align-items: center;
 	background : var(--not-my-match);
   z-index: 200;
 }
@@ -69,7 +69,7 @@
 }
 
 .disappear {
-  animation: shrink 1s ease forwards;  
+  animation: shrink 1s ease forwards;
 }
 /* .tournament {
 	width:fit-content;
@@ -109,7 +109,7 @@ button {
 /* #players {
 	width: fit-content;
 	height: fit-content;
-	
+
 	border-style:solid;
 	border-radius:5px;
 	border-width: 5px;
@@ -125,11 +125,11 @@ button {
 
 
 .winner {
-	background-color: rgb(8, 250, 20) !important;		
+	background-color: rgb(8, 250, 20) !important;
 }
 
 .looser {
-	background-color: rgb(250, 8, 48) !important;	
+	background-color: rgb(250, 8, 48) !important;
 }
 
 .undef {
@@ -164,7 +164,7 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.75); /* fond semi-transparent */
+    background: rgba(0, 0, 0, 0.75);
     display: none;
     align-items: center;
     justify-content: center;
@@ -180,7 +180,7 @@ button {
 	text-align: center;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   }
-  
+
   .tuto-box img {
 	  width: 100%;
 	  max-height: 1000px;
@@ -199,13 +199,13 @@ button {
     width: 60px;
     height: 34px;
 }
-  
+
   .switch input {
     opacity: 0;
     width: 0;
     height: 0;
   }
-  
+
   .slider {
     position: absolute;
     cursor: pointer;
@@ -217,7 +217,7 @@ button {
     transition: 0.4s;
     border-radius: 34px;
   }
-  
+
   .slider:before {
     position: absolute;
     content: "";
@@ -229,11 +229,11 @@ button {
     background-color: white;
     transition: 0.4s;
   }
-  
+
   input:checked + .slider {
     background-color: #2196F3;
   }
-  
+
   input:checked + .slider:before {
     transform: translateX(26px);
   }
@@ -241,7 +241,7 @@ button {
   /* THOMAS TEMPLATE STYLES */
 
   .sidebar-sticky {
-	height: 100%; /* Assure que le ul peut prendre toute la hauteur */
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 }
@@ -282,39 +282,39 @@ button {
     min-width: fit-content;
 
 	/* background-color: rgb(109, 94, 96);	 */
-	background-color: var(--background-color);	
+	background-color: var(--background-color);
 	border-radius: 5%;
 	padding: 5px;
     margin-bottom: 1rem;
     z-index: 100;
 }
-  
+
   #pattern {
 	border-radius: 5px;
   background-color: red;
 
   }
   #overlay-pattern {
-	width: 100%;          /* Ou une largeur spécifique si nécessaire */
-	min-width: 300px;     /* Largeur minimale */
-	margin: 0 auto;       /* Centre l'élément horizontalement dans son parent */
+	width: 100%;
+	min-width: 300px;
+	margin: 0 auto;
   }
- 
+
   #secline {
     display: flex;
-    justify-content: space-around; /* ou space-between / center selon l'espacement que tu veux */
-    gap: 1rem; /* optionnel, pour espacer les matchs */
+    justify-content: space-around;
+    gap: 1rem;
   }
 
   .pattern-pl-cont {
     display: flex;
-    justify-content: space-between; /* ou center / start / end selon le rendu souhaité */
-    gap: 0.5rem; /* optionnel, pour un petit espace entre les joueurs */
+    justify-content: space-between;
+    gap: 0.5rem;
   }
 
   .pattern-pl {
     flex: 1;
-    text-align: center; /* pour centrer le texte dans chaque bloc */
+    text-align: center;
   }
 
   #m1, #firstline, #m2, #m3, #secline {

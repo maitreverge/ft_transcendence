@@ -40,13 +40,11 @@ async function invitationPopup(socket, applicantId, applicantName)
 
 function handlePendingInvitations()
 {
-    // Traite toutes les invitations en attente lorsque la page devient active
     pendingInvitations.forEach(invitation => {
         const { applicantId, applicantName, socket } = invitation;
         invitationPopup(socket, applicantId, applicantName);
     });
 
-    // Vide la file d'attente une fois les invitations traitées
     pendingInvitations = [];
 }
 
@@ -55,7 +53,6 @@ function showNotification(message, applicantId)
     if (Notification.permission === "granted") {
         new Notification(message);
     } else if (Notification.permission !== "denied") {
-        // Demande la permission si elle n'a pas encore été accordée ni refusée
         Notification.requestPermission().then(permission => {
             if (permission === "granted") {
                 new Notification(message);
@@ -70,10 +67,8 @@ function receiveInvitation(socket, applicantId, applicantName) {
     console.log("I have had an invitation from: " + applicantName);
     
     if (isPageVisible) {
-        // Si l'onglet est actif, demande la confirmation immédiatement
         invitationPopup(socket, applicantId, applicantName);
     } else {
-        // Si l'onglet est en arrière-plan, stocke l'invitation en attente
         pendingInvitations.push({socket, applicantId, applicantName});
         // showNotification(`You have an invitation from ${applicantId}`, applicantId);
     }

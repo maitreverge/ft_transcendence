@@ -435,14 +435,12 @@ def is_pad_horz_intersect(self, cmp, limit, pad_y_idx):
 def segments_intersect(self, A, B, C, D, eps=1e-9):
 	# print(f"segment", flush=True)
 	def orientation(p, q, r):
-		# Déterminant orienté
 		val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
 		if abs(val) < eps:
-			return 0  # colinéaire
+			return 0
 		return 1 if val > 0 else 2  # 1: horaire, 2: anti-horaire
 
 	def on_segment(p, q, r):
-		# Vérifie si q est sur le segment [p, r]
 		return (
 			min(p[0], r[0]) - eps <= q[0] <= max(p[0], r[0]) + eps and
 			min(p[1], r[1]) - eps <= q[1] <= max(p[1], r[1]) + eps
@@ -453,11 +451,9 @@ def segments_intersect(self, A, B, C, D, eps=1e-9):
 	o3 = orientation(C, D, A)
 	o4 = orientation(C, D, B)
 
-	# Cas général
 	if o1 != o2 and o3 != o4:
 		return True
 
-	# Cas particuliers (colinéaires)
 	if o1 == 0 and on_segment(A, C, B): return True
 	if o2 == 0 and on_segment(A, D, B): return True
 	if o3 == 0 and on_segment(C, A, D): return True

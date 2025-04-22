@@ -69,7 +69,7 @@ def run(playwright: Playwright) -> None:
     def test_page(url: str):
         if url:
             navigate(url)
-            visited_urls.append(url)  # Enregistre l'URL après chaque navigation
+            visited_urls.append(url)
         test_js()
 
     def test_single_page(url: str):
@@ -229,7 +229,6 @@ def run(playwright: Playwright) -> None:
 
     # print("⭐ 3rd BLOCK PASSED  ⭐")
 
-    # Vérification de la navigation via le sidebar menu
     def test_navigation(locator, expected_url):
         try:
             # Check if the element exists in the DOM (even if hidden)
@@ -273,33 +272,30 @@ def run(playwright: Playwright) -> None:
         ("#field-stats", f"{base_url}/account/game-stats/overview/"),
     ]
 
-    # Vérification de la navigation via le menu topbar
     ensure_authenticated()
     ensure_on_home()
     for locator, expected_url in navigation_tests[
         :4
-    ]:  # Pour les éléments du menu topbar
+    ]: 
         test_navigation(page.locator(locator), expected_url)
         # Go back to home after each test to ensure we can find the next navigation element
         ensure_on_home()
     # print("⭐ 5th BLOCK PASSED ⭐")
 
-    # Vérification de la navigation via le menu latéral
     ensure_authenticated()
     ensure_sidebar_visible()  # Start from a page where sidebar is visible
     for locator, expected_url in navigation_tests[
         4:8
-    ]:  # Pour les éléments du menu latéral
+    ]:
         test_navigation(page.locator(locator), expected_url)
         # Go back to a page where sidebar is visible after each test
         ensure_sidebar_visible()
     # print("⭐ 6th BLOCK PASSED ⭐")
 
-    # Vérification de la navigation via les boutons sur la page home
     ensure_authenticated()
     for locator, expected_url in navigation_tests[
         8:
-    ]:  # Pour les éléments de la page home
+    ]: 
         ensure_on_home()
         test_navigation(page.locator(locator), expected_url)
     # print("⭐ 7th BLOCK PASSED ⭐")
