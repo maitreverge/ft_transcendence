@@ -22,6 +22,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		players[:] = [p for p in players if p.get('playerId') != self.id]
 		print(f"\033[36mNONE APP\033[0m", flush=True)
+
 		players.append(
 			{'playerId': self.id, 'playerName': self.name, 'busy': False})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
@@ -44,6 +45,18 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		selfPlayers[:] = [p for p in selfPlayers if p['socket'] != self]
 		players[:] = [p for p in players if p['playerId'] != self.id]
 		await SimpleConsumer.send_list('player', players)
+
+	async def is_in_match(self):
+
+		async with aiohttp.ClientSession() as session:
+			async with session.get(				
+					f"http://match:8002/match/is_in_match/&playerId={self.id}"
+				) as response:
+				if response.status == 200:
+					data = await response.json()
+					rsl = data.get('response', None)
+					rsl = True if rsl == "True" else False
+				return None
 
 	@staticmethod
 	async def send_list(message_type, source):	

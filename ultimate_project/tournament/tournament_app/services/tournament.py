@@ -146,7 +146,6 @@ class Tournament():
 		winner_id = match_result.get('winnerId')
 		winner_name = match_result.get('winnerName')	
 		n_match = match_result.get('nMatch')
-		print(f"n_match ******************************************************************* {n_match}", flush=True)
 		if n_match == 1:
 			p1_id = winner_id
 			p1_name = winner_name

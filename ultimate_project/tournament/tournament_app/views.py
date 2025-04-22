@@ -14,8 +14,8 @@ def simple_match(request: HttpRequest, user_id):
     print(f"dans simple match {user_id}", flush=True)
     if user_id:
         response = requests.get(
-                    f"http://databaseapi:8007/api/player/{user_id}/"
-                )
+            f"http://databaseapi:8007/api/player/{user_id}/"
+        )
         tmp = response.json()
         user_name = tmp["username"]
     else:
@@ -65,8 +65,8 @@ def tournament(request: HttpRequest, user_id):
     
     if user_id:
         response = requests.get(
-                    f"http://databaseapi:8007/api/player/{user_id}/"
-                )
+            f"http://databaseapi:8007/api/player/{user_id}/"
+        )
         tmp = response.json()
         user_name = tmp["username"]
     else:
@@ -91,17 +91,22 @@ def tournament_pattern(request: HttpRequest, tournament_id):
     )
 
 async def send_db(path, result):
+
     print(f"SEND DB {result}", flush=True)
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                f"http://databaseapi:8007/{path}", json=result, timeout=aiohttp.ClientTimeout(total=10)
+                f"http://databaseapi:8007/{path}", json=result,
+                timeout=aiohttp.ClientTimeout(total=10)
             ) as response:
                 if response.status in (200, 201):
                     print(f"Success: {response.status}", flush=True)
                 else:
                     err = await response.text()
-                    print(f"[HTTP ERROR] Status {response.status}: {err}", flush=True)
+                    print(
+                        f"[HTTP ERROR] Status {response.status}: {err}",
+                        flush=True
+                    )
     except aiohttp.ClientError as e:
         print(f"[REQUEST FAILED] Client error: {str(e)}", flush=True)
     except asyncio.TimeoutError:

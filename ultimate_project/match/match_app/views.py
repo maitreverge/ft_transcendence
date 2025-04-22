@@ -88,6 +88,22 @@ async def stop_match(request: HttpRequest, playerId, matchId):
 					return JsonResponse({"status": "fail"}, status=400)
 	return JsonResponse({"status": "not authorized"}, status=400)
 
+def is_in_match(request: HttpRequest):
+
+	print(f"IS IN MATCH pid: {request.GET.get('playerId')}", flush=True)
+
+	player_id = request.GET.get('playerId')	
+	player_id = safe_int(player_id)
+	if player_id:
+		pong = next(
+			(p for p in pongs if any(
+				po['playerId'] == player_id for po in getattr(p, 'players', [])
+			))
+		, None)
+		if pong:
+			return JsonResponse({"response": True})	
+	return JsonResponse({"response": False})
+	
 def del_pong(pong_id):
 
 	print(f"DEL PONG {pong_id}", flush=True)
