@@ -82,7 +82,6 @@ def match_simple_template(request, user_id):
         "index.html",
         {
             "username": username,
-            "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "page": page_html,
             "host_ip": os.getenv('HOST_IP')
@@ -102,7 +101,6 @@ def tournament_template(request, user_id):
         "index.html",
         {
             "username": username,
-            "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "page": page_html,
             "host_ip": os.getenv('HOST_IP')

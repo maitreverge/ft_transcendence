@@ -25,7 +25,6 @@ def simple_match(request: HttpRequest, user_id):
         request,
         "simple_match.html",
         {
-            "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "user_id": user_id,
             "user_name": user_name,
@@ -77,7 +76,6 @@ def tournament(request: HttpRequest, user_id):
         request,
         "tournament.html",
         {
-            "rasp": os.getenv("rasp", "false"),
             "pidom": os.getenv("HOST_IP", "localhost:8443"),
             "user_id": user_id,
             "user_name": user_name,

@@ -9,7 +9,6 @@ services:
       name: tournament
       port: $tournament_port
       HOST_IP: $HOST_IP
-      rasp: $rasp
       DJANGO_SETTINGS_MODULE: tournament.settings
     env_file:
       - ../../.env

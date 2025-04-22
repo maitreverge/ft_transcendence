@@ -43,7 +43,6 @@ def enter_match2d(request: HttpRequest):
 		request,
 		"pong2d.html",
 		{
-			"rasp": os.getenv("rasp", "false"),
 			"pidom": os.getenv("HOST_IP", "localhost:8443"),
 			"matchId": safe_int(request.GET.get("matchId", "0")),
 			"playerId": safe_int(request.GET.get("playerId", "0")),
@@ -66,7 +65,6 @@ def enter_match3d(request: HttpRequest):
 		request,
 		"pong3d.html",
 		{
-			"rasp": os.getenv("rasp", "false"),
 			"pidom": os.getenv("HOST_IP", "localhost:8443"),
 			"matchId": safe_int(request.GET.get("matchId", "0")),
 			"playerId": safe_int(request.GET.get("playerId", "0")),

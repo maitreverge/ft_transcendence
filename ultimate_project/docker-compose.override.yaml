@@ -10,7 +10,6 @@ services:
     environment:
       - env=dev
       - HOST_IP=${HOST_IP}
-      - rasp=true
     ports:
       - "${static_files_port}:${static_files_port}"
     volumes:    
@@ -23,7 +22,6 @@ services:
     environment:
       - env=dev
       - HOST_IP=${HOST_IP}
-      - rasp=true
     ports:
       - "${tournament_port}:${tournament_port}"
     volumes:
@@ -36,7 +34,6 @@ services:
     environment:
       - env=dev
       - HOST_IP=${HOST_IP}
-      - rasp=true
     env_file:
       - .env
     ports:
@@ -51,7 +48,6 @@ services:
     environment:
       - env=dev
       - HOST_IP=${HOST_IP}
-      - rasp=true
     ports:
       - "${match_port}:${match_port}"
     volumes:
@@ -65,7 +61,6 @@ services:
     environment:
       - env=dev
       - HOST_IP=${HOST_IP}
-      - rasp=true
     ports:
       - "${databaseapi_port}:${databaseapi_port}"
     volumes:
@@ -75,7 +70,6 @@ services:
     environment:
       - env=dev
       - HOST_IP=${HOST_IP}
-      - rasp=true
     ports:
       - "${api_gateway_port}:${api_gateway_port}"
     volumes:
