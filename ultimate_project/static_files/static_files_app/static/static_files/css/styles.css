@@ -282,7 +282,7 @@ input:checked + .slider:before {
 }
 
 .invitation-waiting {
-	background-color: var(--alien-player-color);
+	background-color: var(--self-player-color);
 }
 
 .invitation-confirmed {
@@ -509,3 +509,12 @@ button {
       background-color: #00ff99;
       color: #111;
     } */
+
+    span.clickable {
+      cursor: pointer;
+    }
+
+    span.clickable:hover {
+      text-decoration: underline;
+      color: #007bff; /* ou une autre couleur de ton thème */
+    }

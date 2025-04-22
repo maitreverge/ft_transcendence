@@ -264,9 +264,11 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		if match:
 			p1_id = int(request.GET.get('p1Id'))
 			p2_id = int(request.GET.get('p2Id'))
+			if p2_id < 0:
+				p2_id = p1_id 
 			return {
 				"p1": any(p.get('playerId') == p1_id for p in players),
-				"p2": any(p.get('playerId') == p1_id for p in players)
+				"p2": any(p.get('playerId') == p2_id for p in players)
 			}
 		else:
 			return None

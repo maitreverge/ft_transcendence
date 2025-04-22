@@ -88,26 +88,30 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-4">
-                            <h3 class="title_color_text text-uppercase-center font-weight-bold">🎮<span class="ml-2"
-                                    data-translate="Match">Match</span></h3>
+                            <h3 class="title_color_text text-uppercase-center font-weight-bold">🎮<span class="ml-2 clickable"
+                                    data-translate="Match" hx-get="/tournament/simple-match/" hx-target="#main_div" hx-swap="innerHTML"
+                                    hx-push-url="true">Match</span></h3>
                             <p data-translate="DuelDescription">Face another player in a duel and prove who's the king
                                 of digital ping pong.</p>
                         </div>
                         <div class="col-md-6 mb-4">
-                            <h3 class="title_color_text text-uppercase font-weight-bold">🏆 <span class="ml-2"
-                                    data-translate="Tournament">Tournament</span></h3>
+                            <h3 class="title_color_text text-uppercase font-weight-bold">🏆 <span class="ml-2 clickable"
+                                    data-translate="Tournament" hx-get="/tournament/tournament/" hx-target="#main_div" hx-swap="innerHTML"
+                                    hx-push-url="true">Tournament</span></h3>
                             <p data-translate="TournamentDescription">Join a knockout tournament against 3 other
                                 opponents.</p>
                         </div>
                         <div class="col-md-6 mb-4">
-                            <h3 class="title_color_text text-uppercase font-weight-bold">👤 <span class="ml-2"
-                                    data-translate="Profile">Profile</span></h3>
+                            <h3 class="title_color_text text-uppercase font-weight-bold">👤 <span class="ml-2 clickable"
+                                    data-translate="Profile" hx-get="/account/profile/" hx-target="#main_div" hx-swap="innerHTML"
+                                    hx-push-url="true">Profile</span></h3>
                             <p data-translate="ProfileDescription">Customize your profile and view your match history.
                             </p>
                         </div>
                         <div class="col-md-6 mb-4">
-                            <h3 class="title_color_text text-uppercase font-weight-bold">📊 <span class="ml-2"
-                                    data-translate="Statistics">Statistics</span></h3>
+                            <h3 class="title_color_text text-uppercase font-weight-bold">📊 <span class="ml-2 clickable"
+                                    data-translate="Statistics" hx-get="/account/game-stats/overview/" hx-target="#main_div" hx-swap="innerHTML"
+                                    hx-push-url="true">Statistics</span></h3>
                             <p data-translate="StatsDescription">Check your win rate, ranking, and past performances.
                             </p>
                         </div>
