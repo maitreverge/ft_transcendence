@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>SweetAlert2 Carousel</title>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+
+	<button onclick="startCarousel()">Start Carousel</button>
+
+	<script>
+		function startCarousel() {
+			const steps = [
+				{
+					title: 'Step 1',
+					text: 'This is the first step.',
+					imageUrl: 'https://via.placeholder.com/300x150?text=Step+1',
+					imageWidth: 300,
+					imageHeight: 150,
+				},
+				{
+					title: 'Step 2',
+					text: 'Here\'s the second step.',
+					imageUrl: 'https://via.placeholder.com/300x150?text=Step+2',
+					imageWidth: 300,
+					imageHeight: 150,
+				},
+				{
+					title: 'Step 3',
+					text: 'Final step!',
+					imageUrl: 'https://via.placeholder.com/300x150?text=Step+3',
+					imageWidth: 300,
+					imageHeight: 150,
+				}
+
+				// Add more steps here if needed!
+			];
+
+			let currentStep = 0;
+
+			const showStep = (index) => {
+				const step = steps[index];
+				Swal.fire({
+					title: step.title,
+					text: step.text,
+					imageUrl: step.imageUrl,
+					imageWidth: step.imageWidth,
+					imageHeight: step.imageHeight,
+
+					// ✅ Always show Cancel button except on the first step
+					showCancelButton: index > 0,
+
+					// ✅ Only show Confirm button if not on the last step
+					showConfirmButton: index < steps.length - 1,
+					confirmButtonText: 'Next →',
+					cancelButtonText: '← Back',
+
+					// ✅ Show a "Finish" button if on last step
+					footer: index === steps.length - 1 ? '<button class="swal2-confirm swal2-styled" onclick="Swal.close()">Finish</button>' : ''
+				}).then((result) => {
+					if (result.isConfirmed && index < steps.length - 1) {
+						showStep(index + 1);
+					} else if (result.dismiss === Swal.DismissReason.cancel && index > 0) {
+						showStep(index - 1);
+					}
+				});
+			};
+
+			showStep(currentStep);
+		}
+	</script>
+
+
+</body>
+
+</html>
