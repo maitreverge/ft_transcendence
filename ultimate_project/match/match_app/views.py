@@ -91,20 +91,22 @@ async def stop_match(request: HttpRequest, playerId, matchId):
 
 def is_in_match(request: HttpRequest):
 
-	print(f"IS IN MATCH pid: {request.GET.get('playerId')}", flush=True)
+	print(f"\033[31mIS IN MATCH pid: {request.GET.get('playerId')}\033[0m", flush=True)
 
 	player_id = request.GET.get('playerId')	
 	player_id = safe_int(player_id)
 	if player_id:
 		pong = next(
 			(p for p in pongs if any(
-				po['playerId'] == player_id and p.mode == 's'
-				for po in getattr(p, 'players', [])
+				plyId == player_id and p.mode == 's'
+				for plyId in getattr(p, 'plyIds', [])
 			))
 		, None)
 		if pong:
-			return JsonResponse({"response": True})	
-	return JsonResponse({"response": False})
+			print(f"\033[31m TRUE\033[0m", flush=True)	
+			return JsonResponse({"p1": pong.plyIds[0], "p2": pong.plyIds[1]})	
+	print(f"\033[31m PAS TRUE\033[0m", flush=True)	
+	return JsonResponse({'p1': False, 'p2': False})
 	
 def del_pong(pong_id):
 

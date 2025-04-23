@@ -15,6 +15,14 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 	id = 0
 
+	def safe_int(self, value, default=0):
+
+		try:
+			return int(value)
+		except (TypeError, ValueError) as e:
+			print(e)
+			return default
+
 	async def connect(self):
 		
 		await self.accept() 
@@ -50,12 +58,13 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
-					f"http://match:8002/match/is_in_match/&playerId={self.id}"
+					f"http://match:8002/match/is_in_match/?playerId={self.id}"
 				) as response:
 				if response.status == 200:
 					data = await response.json()
-					rsl = data.get('response', None)
-					rsl = True if rsl == "True" else False
+					p1 = self.safe_int(data.get('p1', None))
+					p2 = self.safe_int(data.get('p2', None))
+					return p1 if self.id != p1 else p2
 				return None
 
 	@staticmethod
@@ -312,6 +321,8 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		p1_id = data.get('p1Id')
 		p2_id = data.get('p2Id')
 		match_id = data.get('matchId')
+		for p in players:
+			print(f"\033[31m] TYPes {type(p1_id), type(p2_id), type(p.get('playerId')), p.get('playerId'), p1_id, p2_id } /033[0m", flush=True)
 		p1 = next((p for p in players if p.get("playerId") == p1_id), None)
 		p2 = next((p for p in players if p.get("playerId") == p2_id), None)
 		if p1:
