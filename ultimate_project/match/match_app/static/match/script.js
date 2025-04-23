@@ -316,8 +316,10 @@ function initSecPlayer()
 
 function initDomain()
 {
-	if (window.location.hostname === "localhost" ||
-		window.location.hostname === "127.0.0.1")
+	if (
+		window.location.hostname === "localhost" ||
+		window.location.hostname === "127.0.0.1"
+	)
         window.pidom = "localhost:8443";
 	else
 		window.pidom = window.location.hostname + ":8443";
