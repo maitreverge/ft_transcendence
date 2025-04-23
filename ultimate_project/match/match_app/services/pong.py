@@ -1,12 +1,12 @@
+from enum import Enum
+from django.utils import timezone
 import threading
 import time
-import match_app.services.match_consumer as match_consumer
 import asyncio
 import json
 import aiohttp
-from enum import Enum
-from django.utils import timezone
 
+import match_app.services.match_consumer as match_consumer
 import match_app.services.pong_physics as physics
 import match_app.services.pong_scores as scores
 

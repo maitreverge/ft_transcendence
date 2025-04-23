@@ -1,8 +1,9 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from tournament_app.services.tournament import Tournament
 from typing import List
 import json
 import html
+
+from tournament_app.services.tournament import Tournament
 
 players : List["TournamentConsumer"] = []
 tournaments : List["Tournament"] = []

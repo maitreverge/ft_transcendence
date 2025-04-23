@@ -1,9 +1,10 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 import urllib
-from match_app.views import pongs
 import aiohttp
 import asyncio
+
+from match_app.views import pongs
 
 players = []
 

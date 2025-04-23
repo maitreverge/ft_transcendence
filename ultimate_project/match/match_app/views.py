@@ -1,8 +1,9 @@
-import os
 from django.shortcuts import render
-from match_app.services.pong import Pong
 from django.http import JsonResponse
 from django.http import HttpRequest, JsonResponse
+import os
+
+from match_app.services.pong import Pong
 
 pongs = []
 

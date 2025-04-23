@@ -1,13 +1,14 @@
-import os
-import json
-import tournament_app.services.simple_match_consumer as sm_cs
 from django.shortcuts import render
 from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import tournament_app.services.tournament_consumer as t_cs
+import os
+import json
 import requests
 import aiohttp
 import asyncio
+
+import tournament_app.services.simple_match_consumer as sm_cs
+import tournament_app.services.tournament_consumer as t_cs
 
 def simple_match(request: HttpRequest, user_id):
     
