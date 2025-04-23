@@ -265,11 +265,9 @@ def run(playwright: Playwright) -> None:
         page1.locator("#player-name").fill(match3_player2)
         page2.locator("#player-name").fill(match2_player2)
 
-        # - chacun d'entre eux clique sur l'élément dont le contenu est "Add Player"
         page1.get_by_text("Add Player", exact=True).click()
         page2.get_by_text("Add Player", exact=True).click()
 
-        # - chacun d'entre eux clique sur l'élément dont le contenu est "Create Tournament"
         page1.get_by_role("button", name="Create Tournament").click()
 
         launch_tournament(page1, page2, match2_player2, match3_player1, match3_player2)

@@ -2,7 +2,7 @@ import os
 import json
 import tournament_app.services.simple_match_consumer as sm_cs
 from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import tournament_app.services.tournament_consumer as t_cs
 import requests
@@ -11,7 +11,6 @@ import asyncio
 
 def simple_match(request: HttpRequest, user_id):
     
-    print(f"dans simple match {user_id}", flush=True)
     if user_id:
         response = requests.get(
             f"http://databaseapi:8007/api/player/{user_id}/"
@@ -44,8 +43,8 @@ def watch_dog(request : HttpRequest):
 @csrf_exempt
 async def match_players_update(request: HttpRequest):
     
-    print(f"MATCH PLAYERS UPDATE VIEWS", flush=True)    
     data = json.loads(request.body.decode("utf-8"))
+
     await sm_cs.SimpleConsumer.match_players_update(data)
     await t_cs.TournamentConsumer.match_players_update(data)
     return JsonResponse({"status": "succes"})
@@ -53,16 +52,14 @@ async def match_players_update(request: HttpRequest):
 @csrf_exempt
 async def match_result(request: HttpRequest):
     
-    data = json.loads(request.body.decode("utf-8"))   
-    print(f"\033[31mMATCH RESULT {data}\033[0m", flush=True)
+    data = json.loads(request.body.decode("utf-8"))  
+
     await sm_cs.SimpleConsumer.match_result(data)
     await t_cs.TournamentConsumer.match_result(data)
     return JsonResponse({"status": "succes"})
 
 def tournament(request: HttpRequest, user_id):
-    
-    print(f"dans tournament {user_id}, {request.headers.get('X-Username')}", flush=True) 
-    
+        
     if user_id:
         response = requests.get(
             f"http://databaseapi:8007/api/player/{user_id}/"
@@ -84,7 +81,6 @@ def tournament(request: HttpRequest, user_id):
 
 def tournament_pattern(request: HttpRequest, tournament_id):
     
-    print(f"dans tournament pattern {tournament_id}", flush=True)
     return render(
         request,
         "tournament_pattern.html",
@@ -92,7 +88,6 @@ def tournament_pattern(request: HttpRequest, tournament_id):
 
 async def send_db(path, result):
 
-    print(f"SEND DB {result}", flush=True)
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(
@@ -113,4 +108,3 @@ async def send_db(path, result):
         print("[REQUEST FAILED] Timeout error", flush=True)
     except Exception as e:
         print(f"[REQUEST FAILED] Unexpected error: {str(e)}", flush=True)
-

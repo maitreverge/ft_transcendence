@@ -64,7 +64,7 @@ function initializeCharts() {
         tooltips: {
           backgroundColor: "rgb(255,255,255)",
           bodyFontColor: "#858796",
-          borderColor: "#5a5c69",
+          borderColor: "#000000",
           borderWidth: 1,
           xPadding: 15,
           yPadding: 15,
@@ -98,8 +98,8 @@ function initializeCharts() {
             {
               data: gamesData,
               backgroundColor: ["#007bff", "#ff4d4d"],
-              hoverBorderColor: "#5a5c69",
-              borderColor: "#5a5c69",
+              hoverBorderColor: "#000000",
+              borderColor: "#000000",
               borderWidth: 2,
             },
           ],
@@ -116,8 +116,8 @@ function initializeCharts() {
             {
               data: pointsData,
               backgroundColor: ["#007bff", "#ff4d4d"],
-              hoverBorderColor: "#5a5c69",
-              borderColor: "#5a5c69",
+              hoverBorderColor: "#000000",
+              borderColor: "#000000",
               borderWidth: 2,
             },
           ],

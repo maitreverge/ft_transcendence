@@ -28,8 +28,6 @@
 
 }
 
-/* Cibler les éléments spécifiques du site */
-
 /* Logo */
 
 body {
@@ -196,7 +194,7 @@ footer p {
     }
 
 .sidebar-sticky {
-    height: 100%; /* Assure que le ul peut prendre toute la hauteur */
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -226,7 +224,7 @@ footer p {
 
 .sidebar-btn:hover {
     background-color: var(--background-color);
-    color: var(--title-color) !important; /* typiquement blanc dans ton thème */
+    color: var(--title-color) !important;
   }
 
 /* 

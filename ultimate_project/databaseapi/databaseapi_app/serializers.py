@@ -2,11 +2,12 @@ from rest_framework import serializers
 from .models import Player, Tournament, Match, PlayerStatistics
 
 """ 
-🔄 Convert Django model instances (like your PlayerStatistics) to 
-JSON — so they can be sent over an API.
+Convert Django model instances (like your PlayerStatistics) to 
+JSON - so they can be sent over an API.
 
-📥 Validate and deserialize incoming JSON from requests — 
-so it can be saved to the database. """
+Validate and deserialize incoming JSON from requests -
+so it can be saved to the database.
+"""
 
 
 class PlayerSerializer(serializers.ModelSerializer):

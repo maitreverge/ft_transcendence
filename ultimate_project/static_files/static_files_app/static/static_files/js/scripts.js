@@ -1,6 +1,5 @@
   // this function is part of the history logic
   window.addEventListener("beforeunload", () => {
-    // console.log("URL sauvegardée avec history.state et sessionStorage");
     // stopMatchHtmx();
     let currentURL = window.location.href;
     history.replaceState({ lastVisitedPage: currentURL }, "");
@@ -35,10 +34,14 @@
       // closeWebsockets();
     };
   }
-
+  let recentlyNavigated = false;
   interceptUrlChanges();
 
   function handleNavigation() {
+    if (recentlyNavigated) return;
+
+    recentlyNavigated = true;
+    setTimeout(() => recentlyNavigated = false, 100);
     // alert("truc: ");
     console.log('***************************** Navigation event *************************');
  
@@ -63,7 +66,8 @@
 
   }
   
-  // Se déclenche sur back/forward
+  
+
   window.addEventListener('popstate', handleNavigation);
   
   // window.addEventListener('DOMContentLoaded', handleNavigation);

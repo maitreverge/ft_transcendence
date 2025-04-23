@@ -350,7 +350,7 @@ async def reverse_proxy_handler(
         content=response.content,
         status_code=response.status_code,
         headers=response_headers,
-        media_type=content_type if content_type else None,
+        media_type=content_type or "text/html; charset=utf-8"
     )
 
 
@@ -651,7 +651,7 @@ async def two_factor_auth_proxy(request: Request):
 @app.api_route("/auth/verify-2fa/", methods=["POST"])
 async def verify_2fa_login(request: Request):
     
-    # print("🔐 Processing 2FA verification during login", flush=True)
+    # print("Processing 2FA verification during login", flush=True)
 
     # Get the form data
     form_data = await request.form()

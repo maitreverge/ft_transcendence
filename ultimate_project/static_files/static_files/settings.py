@@ -122,7 +122,6 @@ USE_TZ = True
 
 STATIC_URL = f"/static/{NAME}/" if DEBUG else "/static/"
 
-# Répertoire où collecter les fichiers statiques (après collectstatic)
 STATIC_ROOT = "/app/staticfiles"
 
 # Default primary key field type

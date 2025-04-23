@@ -50,19 +50,17 @@ async def handle_get_verify(request, username, context):
         if not username:
             context["error"] = "You must be logged in to perform this action. Please log in and try again."
             return render(request, "partials/security/twofa/error_2fa.html", context), True
-        # Get user from database API
         user = await manage_user_data.get_user_info_w_username(username)
         if not user:
             context["error"] = "We couldn't find a user with the provided information. Please check your credentials and try again."
             return render(request, "partials/security/twofa/error_2fa.html", context), True
         context["user"] = user
-        # Check if 2FA is already verified
         if user.get("two_fa_enabled"):
             context["error"] = "2FA is already enabled for this account. You can disable it before making changes."
             return render(request, "partials/security/twofa/error_2fa.html", context), True
         return render(request, "partials/security/twofa/verify_2fa.html", context), False
     except Exception as e:
-        context["error"] = "Something went wrong during 2FA setup. Please try again later."
+        context["error"] = "Something went wrong during 2FA verify. Please try again later."
         return render(request, "partials/security/twofa/error_2fa.html", context), True
     
 @require_http_methods(["GET", "POST"])
@@ -172,7 +170,7 @@ async def handle_get_disable(request, username, context):
             return render(request, "partials/security/twofa/error_2fa.html", context), True
         return render(request, "partials/security/twofa/disable_2fa.html", context), False
     except Exception as e:
-        context["error"] = "Something went wrong during 2FA setup. Please try again later."
+        context["error"] = "Something went wrong while disabling 2FA. Please try again later."
         return render(request, "partials/security/twofa/error_2fa.html", context), True
     
 async def handle_post_disable(request, username, context):

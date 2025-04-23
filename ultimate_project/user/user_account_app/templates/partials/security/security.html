@@ -4,8 +4,8 @@
     <div class="col-lg-10 col-md-10 col-sm-12">
       <div class="card mb-3 shadow">
         <div class="card-body text-center">
-          <h1 class="card-title mb-3">Two-Factor Authentication (2FA)</h1>
-          <h2 class="card-text mb-3">Enhance your account security by enabling 2FA.</h2>
+          <h1 data-translate="security-dt-1" class="card-title mb-3">Two-Factor Authentication (2FA)</h1>
+          <h2 data-translate="security-dt-2" class="card-text mb-3">Enhance your account security by enabling 2FA.</h2>
 
           <!-- Button to enable/disable 2FA -->
           {% if user.two_fa_enabled %}
@@ -16,6 +16,7 @@
             hx-target="#account-content"
             hx-push-url="true"
             id="disable_2fa"
+            data-translate="security-dt-3"
           >
             Disable 2FA
           </a>
@@ -27,6 +28,7 @@
             hx-target="#account-content"
             hx-push-url="true"
             id="setup_2fa"
+            data-translate="security-dt-4"
           >
             Set Up 2FA
           </a>

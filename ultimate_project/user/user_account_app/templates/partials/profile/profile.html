@@ -1,168 +1,134 @@
 {% load static %}
 <div id="profile-content" class="container-fluid m-0 p-0">
-  <div class="row justify-content-center pt-5">
-    <!-- Profile Information Section -->
-    <div class="col-lg-10 col-md-10 col-sm-12">
-      <div class="card shadow mb-4">
-        <div class="card-header py-3">
-          <h1 class="m-0 text-center font-weight-bold">Profile</h1>
-        </div>
-
-        <div class="card-body">
-          <!-- Success Message -->
-          {% if success_message %}
-          <div
-            class="alert alert-success text-center"
-            id="successMessage"
-            role="alert"
-          >
-            ✅ {{ success_message }}
-          </div>
-          {% endif %}
-          <!-- Error Message -->
-          {% if error_message %}
-          <div
-            class="alert alert-danger text-center"
-            id="errorMessage"
-            role="alert"
-          >
-            ❌ {{ error_message }}
-          </div>
-          {% endif %}
-          <form
-            method="POST"
-            class="account_profile"
-            hx-post="/account/profile/"
-            hx-target="#account-content"
-            hx-swap="innerHTML"
-            id="form-profile"
-            autocomplete="off"
-          >
-            {% csrf_token %}
-            <!-- First and Last Name -->
-            <div class="form-group row">
-              <div class="col-sm-6 mb-3 mb-sm-0">
-                <label for="first_name">First Name</label>
-                <input
-                  type="text"
-                  class="form-control form-control-user"
-                  id="first_name"
-                  name="first_name"
-                  placeholder="First Name"
-                  autocomplete="off"
-                  value="{{ user.first_name|default:'' }}"
-                />
-              </div>
-              <div class="col-sm-6">
-                <label for="last_name">Last Name</label>
-                <input
-                  type="text"
-                  class="form-control form-control-user"
-                  id="last_name"
-                  name="last_name"
-                  placeholder="Last Name"
-                  autocomplete="off"
-                  value="{{ user.last_name|default:'' }}"
-                />
-              </div>
-            </div>
-            <!-- Username with Info Icon -->
-            <div class="form-group row align-items-center">
-              <div class="col-sm-6 mb-3 mb-sm-0">
-                <label for="username" class="mb-1">Username</label>
-                <div class="d-flex align-items-center">
-                  <input
-                    type="text"
-                    class="form-control form-control-user readonly-grid-input"
-                    id="username"
-                    name="username"
-                    autocomplete="off"
-                    value="{{ user.username|default:'' }}"
-                    readonly
-                  />
-                  <i
-                    class="fas fa-info-circle text-primary ml-2"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title="To update your username, go to Account Settings → Confidentiality, then delete your account and create a new one."
-                    style="cursor: pointer"
-                  ></i>
-                </div>
-              </div>
-            </div>
-            <!-- Email Address -->
-            <div class="form-group">
-              <label for="email">Email Address</label>
-              <input
-                type="email"
-                class="form-control form-control-user"
-                id="email"
-                name="email"
-                placeholder="Email Address"
-                autocomplete="off"
-                value="{{ user.email|default:'' }}"
-              />
-            </div>
-            <!-- Submit Button -->
-            <div class="form-group text-center">
-              <button type="submit" class="btn btn-primary btn-user">
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="row justify-content-center pt-5">
+		<!-- Profile Information Section -->
+		<div class="col-lg-10 col-md-10 col-sm-12">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3">
+					<h1 data-translate="profile-dt-1" class="m-0 text-center font-weight-bold">Profile</h1>
+				</div>
+				<div class="card-body">
+					<!-- Success Message -->
+					{% if success_message %}
+					<div class="alert alert-success text-center" id="successMessage" role="alert">
+						✅ {{ success_message }}
+					</div>
+					{% endif %}
+					<!-- Error Message -->
+					{% if error_message %}
+					<div class="alert alert-danger text-center" id="errorMessage" role="alert">
+						❌ {{ error_message }}
+					</div>
+					{% endif %}
+					<form method="POST" class="account_profile" hx-post="/account/profile/" hx-target="#account-content"
+						hx-swap="innerHTML" id="form-profile" autocomplete="off">
+						{% csrf_token %}
+						<!-- First and Last Name -->
+						<div class="form-group row">
+							<div class="col-sm-6 mb-3 mb-sm-0">
+								<label data-translate="profile-dt-2" for="first_name">First Name</label>
+								<input type="text" maxlength="100" class="form-control form-control-user"
+									id="first_name" name="first_name" placeholder="First Name" autocomplete="off"
+									required value="{{ user.first_name|default:'' }}" />
+							</div>
+							<!-- Last name -->
+							<div class="col-sm-6">
+								<label data-translate="profile-dt-3" for="last_name">Last Name</label>
+								<input type="text" maxlength="100" class="form-control form-control-user" id="last_name"
+									name="last_name" required placeholder="Last Name" autocomplete="off"
+									value="{{ user.last_name|default:'' }}" />
+							</div>
+						</div>
+						<!-- Username with Info Icon -->
+						<div class="form-group row align-items-center">
+							<div class="col-sm-6 mb-3 mb-sm-0">
+								<label data-translate="profile-dt-4" for="username" class="mb-1">Username</label>
+								<div class="d-flex align-items-center">
+									<input type="text" maxlength="20"
+										class="form-control form-control-user readonly-grey-input" id="username"
+										name="username" autocomplete="off" value="{{ user.username|default:'' }}"
+										readonly />
+									<!-- <i class="fas fa-info-circle text-primary ml-2" data-toggle="tooltip"
+										data-placement="top"
+										title="To update your username, go to Account Settings → Confidentiality, then delete your account and create a new one."
+										style="cursor: pointer"></i> -->
+								</div>
+							</div>
+						</div>
+						<!-- Email Address -->
+						<div class="form-group">
+							<label data-translate="profile-dt-5" for="email">Email Address</label>
+							<input type="email" maxlength="100" class="form-control form-control-user" id="email"
+								name="email" required placeholder="Email Address" autocomplete="off"
+								value="{{ user.email|default:'' }}" />
+						</div>
+						<!-- Submit Button -->
+						<div class="form-group text-center">
+							<button data-translate="profile-dt-6" type="submit" class="btn-submit btn-rounded">
+								Save Changes
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
-  // Function to handle hiding success/error message after 2 seconds
-  function handleMessageTimeout() {
-    var successMessage = document.getElementById("successMessage");
-    if (successMessage) {
-      setTimeout(function () {
-        successMessage.style.display = "none";
-      }, 2000);
-    }
-    var errorMessage = document.getElementById("errorMessage");
-    if (errorMessage) {
-      setTimeout(function () {
-        errorMessage.style.display = "none";
-      }, 2000);
-    }
-  }
-  document.body.addEventListener("htmx:afterSwap", handleMessageTimeout);
+	// Function to handle hiding success/error message after 2 seconds
+	function handleMessageTimeout() {
+		var successMessage = document.getElementById("successMessage");
+		if (successMessage) {
+			setTimeout(function () {
+				successMessage.style.display = "none";
+			}, 2000);
+		}
+		var errorMessage = document.getElementById("errorMessage");
+		if (errorMessage) {
+			setTimeout(function () {
+				errorMessage.style.display = "none";
+			}, 2000);
+		}
+	}
+	document.body.addEventListener("htmx:afterSwap", handleMessageTimeout);
 </script>
 
 <!-- Info bubble -->
 <script>
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-  });
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
 </script>
 
 <style>
-  .readonly-grid-input {
-    background-image: 
-      repeating-linear-gradient(
-        45deg,
-        #ccc,
-        #ccc 4px,
-        transparent 4px,
-        transparent 12px
-      ),
-      repeating-linear-gradient(
-        -45deg,
-        #ccc,
-        #ccc 4px,
-        transparent 4px,
-        transparent 12px
-      );
-    background-color: #d6d6d6;
-    background-size: 16px 16px;
-    color: #6c757d;
-    cursor: not-allowed;
-  }
-</style>
+	.btn-rounded {
+		border: 2px solid var(--text-color);
+		border-radius: 50px;
+		padding: 0.75rem 1.5rem;
+		font-size: 1rem;
+		text-align: center;
+		border-width: 2px;
+		transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+	}
 
+	.btn-submit {
+		color: var(--text-color) !important;
+		background-color: var(--background-color) !important;
+	}
+
+	.btn-submit.btn-rounded:hover,
+	.btn-submit.btn-rounded:focus {
+		color: var(--text-color) !important;
+		text-decoration: none !important;
+		border-color: var(--title-color) !important;
+		background-color: var(--background-color) !important;
+		cursor: pointer;
+	}
+
+	.readonly-grey-input {
+		background-color: #6d6969 !important;
+		cursor: not-allowed;
+		color: white;
+	}
+</style>

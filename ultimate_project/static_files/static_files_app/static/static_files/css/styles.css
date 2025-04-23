@@ -42,21 +42,21 @@ body, h5 {
 	/* font-family: var(--font-body); */
 	font-size: clamp(13px, 1.2vw, 40px);
   }
-  
+
   h1 {
 	  font-family: 'Orbitron', sans-serif;
 	  font-size: clamp(24px, 1.2vw, 60px);
-	
+
 	  /* font-family: var(--font-title); */
-	
+
 	}
-  
+
   h2, h3, h4, h6, .title, .button-title {
 	font-family: 'Orbitron', sans-serif;
 	font-size: clamp(13px, 1.2vw, 26px);
-  
+
 	/* font-family: var(--font-title); */
-  
+
   }
 
 
@@ -65,41 +65,41 @@ body, h5 {
 
 .tournament-cont {
 	width: 100%;
-    min-height: 14rem; /* Hauteur minimale */
+    min-height: 14rem;
     min-width: fit-content;
-	background-color: var(--background-color);	
+	background-color: var(--background-color);
 	border-radius: 5%;
 	padding: 5px;
     margin-bottom: 1rem;
     padding: 1rem;
 }
-  
+
   #pattern {
 	border-radius: 5px;
 
   }
   #overlay-pattern {
-	width: 100%;          /* Ou une largeur spécifique si nécessaire */
-	min-width: 300px;     /* Largeur minimale */
-	margin: 0 auto;       /* Centre l'élément horizontalement dans son parent */
+	width: 100%;
+	min-width: 300px;
+	margin: 0 auto;
     z-index: 400;
   }
- 
+
   #secline {
     display: flex;
-    justify-content: space-around; /* ou space-between / center selon l'espacement que tu veux */
-    gap: 1rem; /* optionnel, pour espacer les matchs */
+    justify-content: space-around;
+    gap: 1rem;
   }
 
   .pattern-pl-cont {
     display: flex;
-    justify-content: space-between; /* ou center / start / end selon le rendu souhaité */
-    gap: 0.5rem; /* optionnel, pour un petit espace entre les joueurs */
+    justify-content: space-between;
+    gap: 0.5rem;
   }
 
   .pattern-pl {
     flex: 1;
-    text-align: center; /* pour centrer le texte dans chaque bloc */
+    text-align: center;
   }
 
   #m1, #firstline, #m2, #m3, #secline {
@@ -108,14 +108,14 @@ body, h5 {
 
   /* TUTO OVERLAY */
 
-  
+
 .tuto-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* fond semi-transparent */
+  background: rgba(0, 0, 0, 0.5);
   display: none;
   align-items: center;
   justify-content: center;
@@ -232,7 +232,7 @@ input:checked + .slider:before {
 	border-radius: 5px;
 	display: flex;
 	justify-content: center;
-	align-items: center;  
+	align-items: center;
 	background: var(--alien-player-color);
 }
 
@@ -247,7 +247,7 @@ input:checked + .slider:before {
 	border-radius: 5px;
 	display: flex;
 	justify-content: center;
-	align-items: center;  
+	align-items: center;
 	background: var(--not-my-match);
 }
 
@@ -263,7 +263,7 @@ input:checked + .slider:before {
 }
 
 .disappear {
-  animation: shrink 1s ease forwards;  
+  animation: shrink 1s ease forwards;
 }
 /* .tournament {
 	width:fit-content;
@@ -287,7 +287,7 @@ input:checked + .slider:before {
 
 .invitation-confirmed {
 	background-color: var(--phantom-player-color);
-	/* margin-left: 20px; */ 
+	/* margin-left: 20px; */
 }
 
 /* Apply margin to alien player only when he's already inside a match */
@@ -317,7 +317,7 @@ button {
 /* #players {
 	width: fit-content;
 	height: fit-content;
-	
+
 	border-style:solid;
 	border-radius:5px;
 	border-width: 5px;
@@ -333,11 +333,11 @@ button {
 
 
 .winner {
-	background-color: var(--self-player-color) !important;		
+	background-color: var(--self-player-color) !important;
 }
 
 .looser {
-	background-color: var(--loser) !important;	
+	background-color: var(--loser) !important;
 }
 
 .undef {
@@ -357,7 +357,7 @@ button {
 
 /* toggler day/night */
 
-/* From Uiverse.io by andrew-demchenk0 */ 
+/* From Uiverse.io by andrew-demchenk0 */
 .switch {
     font-size: 17px;
     position: relative;
@@ -365,13 +365,13 @@ button {
     width: 64px;
     height: 34px;
   }
-  
+
   .switch input {
     opacity: 0;
     width: 0;
     height: 0;
   }
-  
+
   .slider {
     position: absolute;
     cursor: pointer;
@@ -384,7 +384,7 @@ button {
     border-radius: 30px;
   }
 
-  
+
   .slider:before {
     position: absolute;
     content: "";
@@ -397,7 +397,7 @@ button {
     background-color: var(--text-color);
     transition: .4s;
   }
-  
+
   .sun svg {
     position: absolute;
     top: 6px;
@@ -406,7 +406,7 @@ button {
     width: 24px;
     height: 24px;
   }
-  
+
   .moon svg {
     fill: #73C0FC;
     position: absolute;
@@ -416,53 +416,53 @@ button {
     width: 24px;
     height: 24px;
   }
-  
+
   /* .switch:hover */.sun svg {
     animation: rotate 15s linear infinite;
   }
-  
+
   @keyframes rotate {
-   
+
     0% {
       transform: rotate(0);
     }
-  
+
     100% {
       transform: rotate(360deg);
     }
   }
-  
+
   /* .switch:hover */.moon svg {
     animation: tilt 5s linear infinite;
   }
-  
+
   @keyframes tilt {
-   
+
     0% {
       transform: rotate(0deg);
     }
-  
+
     25% {
       transform: rotate(-10deg);
     }
-  
+
     75% {
       transform: rotate(10deg);
     }
-  
+
     100% {
       transform: rotate(0deg);
     }
   }
-  
+
   .input:checked + .slider {
     background-color: var(--main-color);
   }
-  
+
   .input:focus + .slider {
     box-shadow: 0 0 1px var(--main-color);
   }
-  
+
   .input:checked + .slider:before {
     transform: translateX(30px);
   }
@@ -504,7 +504,7 @@ button {
       border: none;
       transition: background-color 0.3s;
     }
-  
+
     option:hover {
       background-color: #00ff99;
       color: #111;
