@@ -21,16 +21,17 @@ class Pong:
 
 	id = 0
 
-	def __init__(self, multy, p1, p2):
+	def __init__(self, multy, p1, p2, mode):
 
-		self.init_vars(multy, p1, p2)
+		self.init_vars(multy, p1, p2, mode)
 		threading.Thread(target=self.launchTask, daemon=True).start()
 
-	def init_vars(self, multy, p1, p2):
+	def init_vars(self, multy, p1, p2, mode):
 
 		Pong.id += 1
 		self.id = Pong.id
-		self.multy = multy	
+		self.multy = multy
+		self.mode = mode	
 		self.plyIds = [p1[0], p2[0]]
 		self.names = [p1[1], p2[1]]
 		print(f"DANS LE MATCH LA PUTEEE {self.plyIds} {self.names}", flush=True)

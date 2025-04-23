@@ -22,9 +22,9 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		self.name = self.scope["url_route"]["kwargs"]["user_name"]
 		players[:] = [p for p in players if p.get('playerId') != self.id]
 		print(f"\033[36mNONE APP\033[0m", flush=True)
-
+		busy =  await self.is_in_match()
 		players.append(
-			{'playerId': self.id, 'playerName': self.name, 'busy': False})
+			{'playerId': self.id, 'playerName': self.name, 'busy': busy})
 		selfPlayers.append({'playerId': self.id, 'socket': self})
 		await SimpleConsumer.send_list('player', players)
 		await SimpleConsumer.send_list('match', matchs)
@@ -237,7 +237,7 @@ class SimpleConsumer(AsyncWebsocketConsumer):
 		multy = True if applicantId == -other_id else False
 		async with aiohttp.ClientSession() as session:
 			async with session.get(				
-    				f"http://match:8002/match/new-match/?multy={multy}"
+    				f"http://match:8002/match/new-match/?multy={multy}&m=s"
     				f"&p1Id={applicantId}&p1Name={applicantName}"
     				f"&p2Id={other_id}&p2Name={other_name}"
 				) as response:
