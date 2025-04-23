@@ -91,7 +91,7 @@ function newPlayer(socket)
 			'https://dansylvain.github.io/pictures/travolta.webp',
 			"Enter a name!", "Enter a name!", "", ""
 		);	
-	if (window.websockets.length >= 8)
+	if (window.websockets.length >= 3)
         return messagePopUp(
 			'🚫 Oops! 🚫', 'https://dansylvain.github.io/pictures/marioNo.webp',
 			"You can't create more than three players!",
