@@ -35,6 +35,15 @@
     "You can't drop yourself!" : "You can't drop yourself!",
     " has sent you an invitation!" : " has sent you an invitation!",
     
+    "playRemote": "Play remote games by sharing your IP address!",
+    "Players": "Players",
+    "Local Players": "Local Players",
+    "Remote Players": "Remote Players",
+    "Settings": "Settings",
+    "Match Center": "Match Center",
+    "Add Local Players": "Add Local Players",
+    "Available Players": "Available Players",
+    "Info": "Info",
 
     "account-dt-1":"Account Settings",
     "account-dt-2":"Profile",

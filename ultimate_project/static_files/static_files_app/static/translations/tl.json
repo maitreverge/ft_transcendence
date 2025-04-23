@@ -35,6 +35,16 @@
     "You can't drop yourself!" : "bISoHvaD yImejQo'!",
     " has sent you an invitation!" : " SoHvaD bachwI' nob!",
 
+    "playRemote": "Daq HopDaq QujmeH, IP Daghaj yIchev!",
+    "Players": "QujwI'pu'",
+    "Local Players": "naDev QujwI'pu'",
+    "Remote Players": "Hop QujwI'pu'",
+    "Settings": "SeHlaw",
+    "Match Center": "Quj Qe'",
+    "Add Local Players": "naDev QujwI'pu' chel",
+    "Available Players": "lup QujwI'pu'",
+    "Info": "De'",
+    
     "account-dt-1": "chovnatlh qechmey",
     "account-dt-2": "mIw",
     "account-dt-3": "Su'bej",

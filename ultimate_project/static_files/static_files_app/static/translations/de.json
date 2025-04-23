@@ -36,6 +36,15 @@
     "You can't drop yourself!" : "Du kannst dich nicht selbst entfernen!",
     " has sent you an invitation!" : " hat dir eine Einladung geschickt!",
 
+    "playRemote": "Spiele aus der Ferne, indem du deine IP-Adresse teilst!",
+    "Players": "Spieler",
+    "Local Players": "Lokale Spieler",
+    "Remote Players": "Entfernte Spieler",
+    "Settings": "Einstellungen",
+    "Match Center": "Spielzentrum",
+    "Add Local Players": "Lokale Spieler hinzufügen",
+    "Available Players": "Verfügbare Spieler",
+    "Info": "Info",
 
     "account-dt-1": "Kontoeinstellungen",
     "account-dt-2": "Profil",
