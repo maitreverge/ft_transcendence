@@ -34,10 +34,14 @@
       // closeWebsockets();
     };
   }
-
+  let recentlyNavigated = false;
   interceptUrlChanges();
 
   function handleNavigation() {
+    if (recentlyNavigated) return;
+
+    recentlyNavigated = true;
+    setTimeout(() => recentlyNavigated = false, 100);
     // alert("truc: ");
     console.log('***************************** Navigation event *************************');
  
@@ -62,6 +66,8 @@
 
   }
   
+  
+
   window.addEventListener('popstate', handleNavigation);
   
   // window.addEventListener('DOMContentLoaded', handleNavigation);
