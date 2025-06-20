@@ -83,5 +83,6 @@ https://github.com/user-attachments/assets/d413e4fc-fbc1-4276-8cca-855be4e4f7a5
 - **Dan SYLVAIN** ([@dsylvain](https://github.com/dansylvain)) – Responsible for the Front-End development. Built a solid logic for achieving the SPA, with a skilful blend of HTMX, JS, HTML and CSS.
 - **Sébastien VIDOT** ([@svidot](https://github.com/sierra182)) – Built the game logic from scratch in pure JS. Also developped the **Remote Players** feature, and managed to run tournaments seamlessly.
 - **Florian VERGE** ([@flverge](https://github.com/maitreverge)) – Focused on creating database core logic and its API. Also built the authentication whole process, from the register/login pages to the JWT and 2FA.
+- [@pf4](https://github.com/elydre) - Built the 3D game engine, and its seamlessly integration to the game API and the rest of the infrastructure. Made game customizations and some POV controls, both exclusive to the 3D engine.
 
 
